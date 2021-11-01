@@ -1,0 +1,11 @@
+@import './common/global.scss';
+@import './common/reset.css';
+
+html,
+body,
+#app,
+main {
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+}
