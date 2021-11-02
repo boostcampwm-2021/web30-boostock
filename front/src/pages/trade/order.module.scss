@@ -47,6 +47,16 @@
 	}
 }
 
+.order-type-cancel {
+	&.on {
+		border-bottom: 3px solid #17c128;
+
+		& .order-type-select-list-btn {
+			color: #17c128;
+		}
+	}
+}
+
 .order-info-container {
 	border-top: 1px solid #d4d6dc;
 	padding: 14px;
@@ -170,6 +180,11 @@
 .bid-action {
 	background-color: #d60000;
 }
+
 .ask-action {
 	background-color: #0051c7;
+}
+
+.cancel-action {
+	background-color: #17c128;
 }
