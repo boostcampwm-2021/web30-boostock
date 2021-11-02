@@ -5,10 +5,8 @@ import UserRepository from '@repositories/UserRepository';
 export default class UserService {
 	static instance: UserService | null = null;
 
-	protected userRepository: UserRepository | null = getCustomRepository(
-		UserRepository,
-		'mysql',
-	);
+	protected userRepository: UserRepository | null =
+		getCustomRepository(UserRepository);
 
 	constructor() {
 		if (UserService.instance) return UserService.instance;
