@@ -3,7 +3,7 @@ import React from 'react';
 // interface Props {}
 
 const SignUp = () => {
-	return <div />;
+	return <div>SIGNUP</div>;
 };
 
 export default SignUp;
