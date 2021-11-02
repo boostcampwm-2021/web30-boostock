@@ -22,11 +22,18 @@ function orderActionClass(orderType: string): string {
 	return result;
 }
 
+function orderAmountClass(isAmountError: boolean): string {
+	let result = style['order-info-text-input'];
+	if (isAmountError) result += ` ${style.error}`;
+	return result;
+}
+
 const Order = () => {
 	const [orderType, setOrderType] = useState<string>('매수');
 	const [orderOption, setOrderOption] = useState<string>('지정가');
 	const [orderPrice, setOrderPrice] = useState<number>(0);
 	const [orderAmount, setOrderAmount] = useState<number>(0);
+	const [isAmountError, setIsAmountError] = useState<boolean>(false);
 
 	const handleSetOrderType = (newType: string) => setOrderType(newType);
 
@@ -54,6 +61,16 @@ const Order = () => {
 	const handleReset = () => {
 		setOrderPrice(0);
 		setOrderAmount(0);
+		setIsAmountError(false);
+	};
+
+	const handleOrder = () => {
+		if (orderAmount === 0) {
+			setIsAmountError(true);
+			return;
+		}
+
+		/* API 로직 */
 	};
 
 	const calculateTotalOrderPrice = (price: number, amount: number) => {
@@ -63,6 +80,11 @@ const Order = () => {
 	useEffect(() => {
 		handleReset();
 	}, [orderOption]);
+
+	useEffect(() => {
+		if (!isAmountError) return;
+		if (orderAmount > 0) setIsAmountError(false);
+	}, [orderAmount, isAmountError]);
 
 	return (
 		<div className={style['order-container']}>
@@ -163,9 +185,9 @@ const Order = () => {
 						<span className={style['order-info-text']}>
 							주문수량
 						</span>
-						<div>
+						<div className={style['order-amount-container']}>
 							<input
-								className={style['order-info-text-input']}
+								className={orderAmountClass(isAmountError)}
 								type="text"
 								dir="rtl"
 								value={formatNumber(orderAmount)}
@@ -174,6 +196,11 @@ const Order = () => {
 							<span className={style['order-info-won-text']}>
 								주
 							</span>
+							{isAmountError && (
+								<small className={style['order-error-notice']}>
+									수량을 입력해 주세요.
+								</small>
+							)}
 						</div>
 					</li>
 					{orderOption === '지정가' && (
@@ -208,7 +235,12 @@ const Order = () => {
 				>
 					초기화
 				</button>
-				<button className={orderActionClass(orderType)} type="button">
+				<button
+					className={orderActionClass(orderType)}
+					type="button"
+					onClick={handleOrder}
+					disabled={isAmountError}
+				>
 					{orderType === '매수' ? '매수' : '매도'}
 				</button>
 			</div>

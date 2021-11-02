@@ -60,6 +60,7 @@
 }
 
 .order-info-list-item {
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -90,6 +91,7 @@
 .order-info-price {
 	font-weight: 700;
 }
+
 .order-info-won-text {
 	font-size: 12px;
 	margin-left: 2px;
@@ -105,6 +107,18 @@
 	border: 1px solid #d2d5e4;
 	border-radius: 4px;
 	padding: 8px;
+
+	&.error:not(:focus) {
+		border: 1px solid #d60000;
+		outline: 1px solid #d60000;
+	}
+}
+
+.order-error-notice {
+	position: absolute;
+	bottom: -14px;
+	right: 121px;
+	color: #d60000;
 }
 
 .order-total-price-container {
@@ -146,6 +160,11 @@
 	border: none;
 	outline: none;
 	cursor: pointer;
+
+	&:disabled {
+		background-color: #999999;
+		cursor: not-allowed;
+	}
 }
 
 .bid-action {
