@@ -1,5 +1,5 @@
-import { createConnection, Connection } from 'typeorm';
+import { createConnections } from 'typeorm';
 
 export default async () => {
-	await createConnection();
+	await createConnections();
 };

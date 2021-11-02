@@ -3,7 +3,7 @@ import user from './user';
 
 export default (): express.Router => {
 	const router = express.Router();
-	router.use('/', user);
+	router.use('/', user());
 
 	return router;
 };
