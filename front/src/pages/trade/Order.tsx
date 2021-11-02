@@ -8,6 +8,7 @@ function orderTypeClass(orderType: string, curType: string): string {
 
 	if (orderType === '매수') result += ` ${style['order-type-bid']}`;
 	if (orderType === '매도') result += ` ${style['order-type-ask']}`;
+	if (orderType === '정정/취소') result += ` ${style['order-type-cancel']}`;
 	if (orderType === curType) result += ` ${style.on}`;
 
 	return result;
@@ -18,6 +19,7 @@ function orderActionClass(orderType: string): string {
 
 	if (orderType === '매수') result += ` ${style['bid-action']}`;
 	if (orderType === '매도') result += ` ${style['ask-action']}`;
+	if (orderType === '정정/취소') result += ` ${style['cancel-action']}`;
 
 	return result;
 }
@@ -27,6 +29,8 @@ function orderAmountClass(isAmountError: boolean): string {
 	if (isAmountError) result += ` ${style.error}`;
 	return result;
 }
+
+const orderTypes = ['매수', '매도', '정정/취소'];
 
 const Order = () => {
 	const [orderType, setOrderType] = useState<string>('매수');
@@ -79,7 +83,7 @@ const Order = () => {
 
 	useEffect(() => {
 		handleReset();
-	}, [orderOption]);
+	}, [orderType, orderOption]);
 
 	useEffect(() => {
 		if (!isAmountError) return;
@@ -89,143 +93,156 @@ const Order = () => {
 	return (
 		<div className={style['order-container']}>
 			<ul className={style['order-type-select-list']}>
-				<li className={`${orderTypeClass('매수', orderType)}`}>
-					<button
-						className={style['order-type-select-list-btn']}
-						type="button"
-						onClick={() => handleSetOrderType('매수')}
-					>
-						매수
-					</button>
-				</li>
-				<li className={orderTypeClass('매도', orderType)}>
-					<button
-						className={style['order-type-select-list-btn']}
-						type="button"
-						onClick={() => handleSetOrderType('매도')}
-					>
-						매도
-					</button>
-				</li>
+				{orderTypes.map((type) => (
+					<li className={`${orderTypeClass(type, orderType)}`}>
+						<button
+							className={style['order-type-select-list-btn']}
+							type="button"
+							onClick={() => handleSetOrderType(type)}
+						>
+							{type}
+						</button>
+					</li>
+				))}
 			</ul>
 			<div className={style['order-info-container']}>
-				<ul className={style['order-info-list']}>
-					<li className={style['order-info-list-item']}>
-						<span className={style['order-info-text']}>
-							주문구분
-						</span>
-						<span>
-							<input
-								id="order-option-designated"
-								className={style['order-option-radio-input']}
-								type="radio"
-								name="order-option"
-								value="지정가"
-								checked={orderOption === '지정가'}
-								onChange={handleSetOrderOption}
-							/>
-							{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-							<label
-								className={style['order-option-label']}
-								htmlFor="order-option-designated"
-							>
-								지정가
-							</label>
-							<input
-								id="order-option-market"
-								className={style['order-option-radio-input']}
-								type="radio"
-								name="order-option"
-								value="시장가"
-								checked={orderOption === '시장가'}
-								onChange={handleSetOrderOption}
-							/>
-							{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-							<label
-								htmlFor="order-option-market"
-								className={style['order-option-label']}
-							>
-								시장가
-							</label>
-						</span>
-					</li>
-					<li className={style['order-info-list-item']}>
-						<span className={style['order-info-text']}>
-							{orderType === '매수' ? '매수가능' : '매도가능'}
-						</span>
-						<span className={style['order-info-price-container']}>
-							<span className={style['order-info-price']}>
-								123,456,789
-							</span>
-							<span className={style['order-info-won-text']}>
-								원
-							</span>
-						</span>
-					</li>
-					{orderOption === '지정가' && (
+				{orderType !== '정정/취소' && (
+					<ul className={style['order-info-list']}>
 						<li className={style['order-info-list-item']}>
 							<span className={style['order-info-text']}>
-								매수가격
+								주문구분
 							</span>
-							<div>
+							<span>
 								<input
-									className={style['order-info-text-input']}
+									id="order-option-designated"
+									className={
+										style['order-option-radio-input']
+									}
+									type="radio"
+									name="order-option"
+									value="지정가"
+									checked={orderOption === '지정가'}
+									onChange={handleSetOrderOption}
+								/>
+								{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+								<label
+									className={style['order-option-label']}
+									htmlFor="order-option-designated"
+								>
+									지정가
+								</label>
+								<input
+									id="order-option-market"
+									className={
+										style['order-option-radio-input']
+									}
+									type="radio"
+									name="order-option"
+									value="시장가"
+									checked={orderOption === '시장가'}
+									onChange={handleSetOrderOption}
+								/>
+								{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+								<label
+									htmlFor="order-option-market"
+									className={style['order-option-label']}
+								>
+									시장가
+								</label>
+							</span>
+						</li>
+						<li className={style['order-info-list-item']}>
+							<span className={style['order-info-text']}>
+								{orderType === '매수' ? '매수가능' : '매도가능'}
+							</span>
+							<span
+								className={style['order-info-price-container']}
+							>
+								<span className={style['order-info-price']}>
+									123,456,789
+								</span>
+								<span className={style['order-info-won-text']}>
+									원
+								</span>
+							</span>
+						</li>
+						{orderOption === '지정가' && (
+							<li className={style['order-info-list-item']}>
+								<span className={style['order-info-text']}>
+									매수가격
+								</span>
+								<div>
+									<input
+										className={
+											style['order-info-text-input']
+										}
+										type="text"
+										dir="rtl"
+										value={formatNumber(orderPrice)}
+										onChange={handleOrderPrice}
+									/>
+									<span
+										className={style['order-info-won-text']}
+									>
+										원
+									</span>
+								</div>
+							</li>
+						)}
+						<li className={style['order-info-list-item']}>
+							<span className={style['order-info-text']}>
+								주문수량
+							</span>
+							<div className={style['order-amount-container']}>
+								<input
+									className={orderAmountClass(isAmountError)}
 									type="text"
 									dir="rtl"
-									value={formatNumber(orderPrice)}
-									onChange={handleOrderPrice}
+									value={formatNumber(orderAmount)}
+									onChange={handleOrderAmount}
 								/>
 								<span className={style['order-info-won-text']}>
-									원
+									주
 								</span>
+								{isAmountError && (
+									<small
+										className={style['order-error-notice']}
+									>
+										수량을 입력해 주세요.
+									</small>
+								)}
 							</div>
 						</li>
-					)}
-					<li className={style['order-info-list-item']}>
-						<span className={style['order-info-text']}>
-							주문수량
-						</span>
-						<div className={style['order-amount-container']}>
-							<input
-								className={orderAmountClass(isAmountError)}
-								type="text"
-								dir="rtl"
-								value={formatNumber(orderAmount)}
-								onChange={handleOrderAmount}
-							/>
-							<span className={style['order-info-won-text']}>
-								주
-							</span>
-							{isAmountError && (
-								<small className={style['order-error-notice']}>
-									수량을 입력해 주세요.
-								</small>
-							)}
-						</div>
-					</li>
-					{orderOption === '지정가' && (
-						<li className={style['order-info-list-item']}>
-							<span className={style['order-info-text']}>
-								주문총액
-							</span>
-							<div
-								className={style['order-total-price-container']}
-							>
-								<span className={style['order-total-price']}>
-									{formatNumber(
-										calculateTotalOrderPrice(
-											orderPrice,
-											orderAmount,
-										),
-									)}
+						{orderOption === '지정가' && (
+							<li className={style['order-info-list-item']}>
+								<span className={style['order-info-text']}>
+									주문총액
 								</span>
-								<span className={style['order-info-won-text']}>
-									원
-								</span>
-							</div>
-						</li>
-					)}
-				</ul>
+								<div
+									className={
+										style['order-total-price-container']
+									}
+								>
+									<span
+										className={style['order-total-price']}
+									>
+										{formatNumber(
+											calculateTotalOrderPrice(
+												orderPrice,
+												orderAmount,
+											),
+										)}
+									</span>
+									<span
+										className={style['order-info-won-text']}
+									>
+										원
+									</span>
+								</div>
+							</li>
+						)}
+					</ul>
+				)}
 			</div>
 			<div className={style['order-action-container']}>
 				<button
@@ -241,7 +258,7 @@ const Order = () => {
 					onClick={handleOrder}
 					disabled={isAmountError}
 				>
-					{orderType === '매수' ? '매수' : '매도'}
+					{orderType}
 				</button>
 			</div>
 		</div>
