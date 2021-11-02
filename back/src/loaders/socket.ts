@@ -12,14 +12,17 @@ export default (app: express.Application): void => {
 	});
 
 	const webSocketServer = new wsModule.Server({ server: HTTPServer });
+	const broadcast = (message: string) => {
+		webSocketServer.clients.forEach((client) => {
+			client.send(message);
+		});
+	};
 
-	webSocketServer.on('connection', (ws, req) => {
-		setInterval(() => {
-			const data: IStockInformation = {
-				name: 'Boostock',
-				current: 3000,
-			};
-			ws.send(translateSocketData(data));
-		}, 1000);
-	});
+	setInterval(() => {
+		const message: IStockInformation = {
+			name: 'Boostock',
+			current: 3000,
+		};
+		broadcast(translateSocketData(message));
+	}, 1000);
 };
