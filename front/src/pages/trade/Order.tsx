@@ -26,6 +26,7 @@ const Order = () => {
 	const [orderType, setOrderType] = useState<string>('매수');
 	const [orderOption, setOrderOption] = useState<string>('지정가');
 	const [orderPrice, setOrderPrice] = useState<number>(0);
+	const [orderAmount, setOrderAmount] = useState<number>(0);
 
 	const handleSetOrderType = (newType: string) => setOrderType(newType);
 
@@ -40,6 +41,14 @@ const Order = () => {
 
 		if (Number.isNaN(price)) return;
 		setOrderPrice(price);
+	};
+
+	const handleOrderAmount = (e: SyntheticEvent) => {
+		const target = e.target as HTMLInputElement;
+		const amount = Number(target.value.replace(/,/g, ''));
+
+		if (Number.isNaN(amount)) return;
+		setOrderAmount(amount);
 	};
 
 	return (
@@ -138,6 +147,8 @@ const Order = () => {
 							className={style['order-info-text-input']}
 							type="text"
 							dir="rtl"
+							value={formatNumber(orderAmount)}
+							onChange={handleOrderAmount}
 						/>
 					</li>
 					<li className={style['order-info-list-item']}>
