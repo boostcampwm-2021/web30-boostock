@@ -51,6 +51,10 @@ const Order = () => {
 		setOrderAmount(amount);
 	};
 
+	const calculateTotalOrderPrice = (price: number, amount: number) => {
+		return price * amount;
+	};
+
 	return (
 		<div className={style['order-container']}>
 			<ul className={style['order-type-select-list']}>
@@ -155,11 +159,19 @@ const Order = () => {
 						<span className={style['order-info-text']}>
 							주문총액(원)
 						</span>
-						<input
-							className={style['order-info-text-input']}
-							type="text"
-							dir="rtl"
-						/>
+						<div className={style['order-total-price-container']}>
+							<span className={style['order-total-price']}>
+								{formatNumber(
+									calculateTotalOrderPrice(
+										orderPrice,
+										orderAmount,
+									),
+								)}
+							</span>
+							<span className={style['order-info-won-text']}>
+								원
+							</span>
+						</div>
 					</li>
 				</ul>
 				<div className={style['order-action-container']}>

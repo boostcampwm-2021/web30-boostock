@@ -97,6 +97,19 @@
 	padding: 8px;
 }
 
+.order-total-price-container {
+	display: flex;
+	align-items: center;
+	max-width: 80%;
+}
+
+.order-total-price {
+	display: inline-block;
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .order-action-container {
 	display: flex;
 	justify-content: space-between;
