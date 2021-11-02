@@ -1,1 +1,1 @@
-export { default as AuthError } from './auth-error.js'
+export { default as AuthError } from './auth-error.js';
