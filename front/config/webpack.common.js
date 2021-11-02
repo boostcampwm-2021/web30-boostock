@@ -15,6 +15,10 @@ export default {
 		extensions: ['.wasm', '.ts', '.tsx', '.mjs', '.cjs', '.js', '.json'],
 		alias: {
 			'@src': path.resolve('src'),
+			'@common': path.resolve('src', 'common'),
+			'@assets': path.resolve('assets'),
+			'@pages': path.resolve('src', 'pages'),
+			'@tools': path.resolve('src', 'tools'),
 		},
 	},
 	module: {
