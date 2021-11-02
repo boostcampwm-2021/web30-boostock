@@ -1,5 +1,5 @@
 {
-    "name": "bmcamp-back",
+    "name": "boostock",
     "description": "",
     "main": "./src/app.ts",
     "version": "0.0.0",
