@@ -1,14 +1,23 @@
 import express, { Request, Response } from 'express';
-import UserService from '@services/user';
-import { User } from '@models/index';
+import User from '@models/User';
+import UserService from '@services/UserService';
 
 export default (): express.Router => {
 	const router = express.Router();
 	router.get('/', async (req: Request, res: Response) => {
-		return res.status(200).send('heartbeat!').end();
-		// const userServiceInstance = new UserService();
-		// const users = await userServiceInstance.Find();
-		// res.status(200).json(users);
+		const userServiceInstance = new UserService();
+		const users = await userServiceInstance.getLoggedUser();
+		res.status(200).json(users);
+	});
+	router.get('/new', async (req: Request, res: Response) => {
+		const userServiceInstance = new UserService();
+		const user = new User();
+		user.username = 'test';
+		user.email = 'test@naver.com';
+		user.social_github = '0';
+		user.balance = 0;
+		await userServiceInstance.signUp(user);
+		res.status(200);
 	});
 	router.get('/:id', async (req: Request, res: Response) => {
 		res.send('heartbeat!');

@@ -1,13 +1,20 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import 'reflect-metadata';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export default class User extends BaseEntity {
+export default class User {
 	@PrimaryGeneratedColumn()
-	id: number;
+	user_id: number;
 
 	@Column()
-	firstName: string;
+	username: string;
 
 	@Column()
-	lastName: string;
+	email: string;
+
+	@Column()
+	social_github: string;
+
+	@Column()
+	balance: number;
 }
