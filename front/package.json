@@ -12,19 +12,6 @@
 		"lint": "eslint ./src",
 		"lint:fix": "eslint --fix ./src"
 	},
-	"lint-staged": {
-		"src/**/*.{ts,tsx}": [
-			"eslint --ext .tsx --ext .ts ./src --fix"
-		],
-		"./src/**": [
-			"prettier --write ."
-		]
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
-	},
 	"author": "nawhes <nawhes@naver.com>",
 	"license": "ISC",
 	"devDependencies": {
@@ -46,8 +33,6 @@
 		"eslint-plugin-prettier": "^4.0.0",
 		"eslint-plugin-react-hooks": "^4.2.0",
 		"html-webpack-plugin": "^5.5.0",
-		"husky": "^7.0.0",
-		"lint-staged": "^11.2.6",
 		"prettier": "2.4.1",
 		"sass": "^1.43.4",
 		"sass-loader": "^12.3.0",
