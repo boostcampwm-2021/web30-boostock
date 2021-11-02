@@ -6,14 +6,14 @@ import morgan from 'morgan';
 import api from '@api/index';
 import config from '@config/index';
 
-export default async ({ app }: { app: express.Application }) => {
+export default async ({ app }: { app: express.Application }): Promise<void> => {
 	app.get('/status', (req, res) => {
 		res.status(200).end();
 	});
 	app.head('/status', (req, res) => {
 		res.status(200).end();
 	});
-	
+
 	app.enable('trust proxy');
 	app.use(morgan('tiny'));
 	app.use(cors({ origin: config.clientURL, credentials: true }));
