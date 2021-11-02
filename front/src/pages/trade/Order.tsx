@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
 import formatNumber from '@src/common/utils/formatNumber';
 
 import style from './order.module.scss';
@@ -59,6 +59,10 @@ const Order = () => {
 	const calculateTotalOrderPrice = (price: number, amount: number) => {
 		return price * amount;
 	};
+
+	useEffect(() => {
+		handleReset();
+	}, [orderOption]);
 
 	return (
 		<div className={style['order-container']}>
