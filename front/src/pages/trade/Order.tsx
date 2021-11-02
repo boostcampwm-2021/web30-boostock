@@ -1,4 +1,5 @@
 import React, { SyntheticEvent, useState } from 'react';
+import formatNumber from '@src/common/utils/formatNumber';
 
 import style from './order.module.scss';
 
@@ -22,8 +23,8 @@ function orderActionClass(orderType: string): string {
 }
 
 const Order = () => {
-	const [orderType, setOrderType] = useState('매수');
-	const [orderOption, setOrderOption] = useState('지정가');
+	const [orderType, setOrderType] = useState<string>('매수');
+	const [orderOption, setOrderOption] = useState<string>('지정가');
 
 	const handleSetOrderType = (newType: string) => setOrderType(newType);
 
