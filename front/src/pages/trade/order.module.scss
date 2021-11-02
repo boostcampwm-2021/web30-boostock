@@ -1,0 +1,135 @@
+.order-container {
+	width: 490px;
+	height: 475px;
+	box-shadow: 2px 2px 4px #dee1e7;
+}
+
+.order-type-select-list {
+	display: flex;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.order-type-select-list-item {
+	color: #1a1a1a;
+	font-weight: 700;
+	width: 50%;
+	text-align: center;
+}
+
+.order-type-select-list-btn {
+	background: none;
+	border: none;
+	outline: none;
+	width: 100%;
+	padding: 20px 0;
+	cursor: pointer;
+}
+
+.order-type-bid {
+	&.on {
+		border-bottom: 3px solid #d60000;
+	}
+}
+
+.order-type-ask {
+	&.on {
+		border-bottom: 3px solid #0051c7;
+	}
+}
+
+.order-info-container {
+	border-top: 1px solid #d4d6dc;
+	padding: 14px;
+}
+
+.order-info-list {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.order-info-list-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 16px;
+	height: 46px;
+}
+
+.order-option-radio-input {
+	display: none;
+}
+
+.order-option-label {
+	border: 1px solid #d2d5e4;
+	cursor: pointer;
+	border-radius: 4px;
+	padding: 10px 20px;
+
+	&:last-child {
+		margin-left: 10px;
+	}
+
+	.order-option-radio-input:checked + & {
+		border: 1px solid #28367f;
+		box-shadow: 0px 0px 0px 1px #28367f;
+	}
+}
+
+.order-info-price-container {
+}
+
+.order-info-price {
+	font-weight: 700;
+}
+.order-info-won-text {
+	font-size: 12px;
+}
+
+.order-info-text {
+	font-size: 13px;
+	color: #555;
+	font-weight: 700;
+}
+
+.order-info-text-input {
+	border: 1px solid #d2d5e4;
+	border-radius: 4px;
+	padding: 8px;
+}
+
+.order-action-container {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.order-reset-btn {
+	color: #fff;
+	font-weight: 700;
+	width: 25%;
+	height: 40px;
+	background-color: #95959e;
+	border: none;
+	outline: none;
+	cursor: pointer;
+}
+
+.order-action-btn {
+	color: #fff;
+	font-weight: 700;
+	width: 65%;
+	height: 40px;
+	border: none;
+	outline: none;
+	cursor: pointer;
+}
+
+.bid-action {
+	background-color: #d60000;
+}
+.ask-action {
+	background-color: #0051c7;
+}
