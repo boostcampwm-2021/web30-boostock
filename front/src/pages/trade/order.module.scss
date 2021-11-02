@@ -30,12 +30,20 @@
 .order-type-bid {
 	&.on {
 		border-bottom: 3px solid #d60000;
+
+		& .order-type-select-list-btn {
+			color: #d60000;
+		}
 	}
 }
 
 .order-type-ask {
 	&.on {
 		border-bottom: 3px solid #0051c7;
+
+		& .order-type-select-list-btn {
+			color: #0051c7;
+		}
 	}
 }
 
