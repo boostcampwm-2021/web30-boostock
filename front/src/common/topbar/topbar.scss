@@ -1,0 +1,13 @@
+@import '@common/global.scss';
+
+.top-bar {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	align-content: center;
+	background-color: $primary;
+	height: 50px;
+	box-shadow: 0 5px 5px;
+	padding: 0 5px;
+}
