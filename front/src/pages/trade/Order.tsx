@@ -143,33 +143,43 @@ const Order = () => {
 					{orderOption === '지정가' && (
 						<li className={style['order-info-list-item']}>
 							<span className={style['order-info-text']}>
-								매수가격(원)
+								매수가격
 							</span>
-							<input
-								className={style['order-info-text-input']}
-								type="text"
-								dir="rtl"
-								value={formatNumber(orderPrice)}
-								onChange={handleOrderPrice}
-							/>
+							<div>
+								<input
+									className={style['order-info-text-input']}
+									type="text"
+									dir="rtl"
+									value={formatNumber(orderPrice)}
+									onChange={handleOrderPrice}
+								/>
+								<span className={style['order-info-won-text']}>
+									원
+								</span>
+							</div>
 						</li>
 					)}
 					<li className={style['order-info-list-item']}>
 						<span className={style['order-info-text']}>
-							주문수량(주)
+							주문수량
 						</span>
-						<input
-							className={style['order-info-text-input']}
-							type="text"
-							dir="rtl"
-							value={formatNumber(orderAmount)}
-							onChange={handleOrderAmount}
-						/>
+						<div>
+							<input
+								className={style['order-info-text-input']}
+								type="text"
+								dir="rtl"
+								value={formatNumber(orderAmount)}
+								onChange={handleOrderAmount}
+							/>
+							<span className={style['order-info-won-text']}>
+								주
+							</span>
+						</div>
 					</li>
 					{orderOption === '지정가' && (
 						<li className={style['order-info-list-item']}>
 							<span className={style['order-info-text']}>
-								주문총액(원)
+								주문총액
 							</span>
 							<div
 								className={style['order-total-price-container']}
