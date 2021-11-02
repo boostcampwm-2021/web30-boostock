@@ -51,6 +51,11 @@ const Order = () => {
 		setOrderAmount(amount);
 	};
 
+	const handleReset = () => {
+		setOrderPrice(0);
+		setOrderAmount(0);
+	};
+
 	const calculateTotalOrderPrice = (price: number, amount: number) => {
 		return price * amount;
 	};
@@ -175,7 +180,11 @@ const Order = () => {
 					</li>
 				</ul>
 				<div className={style['order-action-container']}>
-					<button className={style['order-reset-btn']} type="button">
+					<button
+						onClick={handleReset}
+						className={style['order-reset-btn']}
+						type="button"
+					>
 						초기화
 					</button>
 					<button
