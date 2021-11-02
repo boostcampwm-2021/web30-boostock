@@ -4,9 +4,7 @@ import * as ReactDOM from 'react-dom';
 import './app.scss';
 import style from './app.module.scss';
 
-interface Props {}
-
-const App = ({}: Props) => {
+const App = () => {
 	return (
 		<h1 className={style.test}>
 			<div> TTT </div>
