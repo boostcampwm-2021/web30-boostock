@@ -136,18 +136,20 @@ const Order = () => {
 							</span>
 						</span>
 					</li>
-					<li className={style['order-info-list-item']}>
-						<span className={style['order-info-text']}>
-							매수가격(원)
-						</span>
-						<input
-							className={style['order-info-text-input']}
-							type="text"
-							dir="rtl"
-							value={formatNumber(orderPrice)}
-							onChange={handleOrderPrice}
-						/>
-					</li>
+					{orderOption === '지정가' && (
+						<li className={style['order-info-list-item']}>
+							<span className={style['order-info-text']}>
+								매수가격(원)
+							</span>
+							<input
+								className={style['order-info-text-input']}
+								type="text"
+								dir="rtl"
+								value={formatNumber(orderPrice)}
+								onChange={handleOrderPrice}
+							/>
+						</li>
+					)}
 					<li className={style['order-info-list-item']}>
 						<span className={style['order-info-text']}>
 							주문수량(주)
@@ -160,40 +162,41 @@ const Order = () => {
 							onChange={handleOrderAmount}
 						/>
 					</li>
-					<li className={style['order-info-list-item']}>
-						<span className={style['order-info-text']}>
-							주문총액(원)
-						</span>
-						<div className={style['order-total-price-container']}>
-							<span className={style['order-total-price']}>
-								{formatNumber(
-									calculateTotalOrderPrice(
-										orderPrice,
-										orderAmount,
-									),
-								)}
+					{orderOption === '지정가' && (
+						<li className={style['order-info-list-item']}>
+							<span className={style['order-info-text']}>
+								주문총액(원)
 							</span>
-							<span className={style['order-info-won-text']}>
-								원
-							</span>
-						</div>
-					</li>
+							<div
+								className={style['order-total-price-container']}
+							>
+								<span className={style['order-total-price']}>
+									{formatNumber(
+										calculateTotalOrderPrice(
+											orderPrice,
+											orderAmount,
+										),
+									)}
+								</span>
+								<span className={style['order-info-won-text']}>
+									원
+								</span>
+							</div>
+						</li>
+					)}
 				</ul>
-				<div className={style['order-action-container']}>
-					<button
-						onClick={handleReset}
-						className={style['order-reset-btn']}
-						type="button"
-					>
-						초기화
-					</button>
-					<button
-						className={orderActionClass(orderType)}
-						type="button"
-					>
-						{orderType === '매수' ? '매수' : '매도'}
-					</button>
-				</div>
+			</div>
+			<div className={style['order-action-container']}>
+				<button
+					onClick={handleReset}
+					className={style['order-reset-btn']}
+					type="button"
+				>
+					초기화
+				</button>
+				<button className={orderActionClass(orderType)} type="button">
+					{orderType === '매수' ? '매수' : '매도'}
+				</button>
 			</div>
 		</div>
 	);
