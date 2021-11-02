@@ -13,7 +13,7 @@ export default async ({ app }: { app: express.Application }) => {
 	app.head('/status', (req, res) => {
 		res.status(200).end();
 	});
-
+	
 	app.enable('trust proxy');
 	app.use(morgan('tiny'));
 	app.use(cors({ origin: config.clientURL, credentials: true }));
@@ -21,7 +21,7 @@ export default async ({ app }: { app: express.Application }) => {
 	app.use(express.urlencoded({ extended: false }));
 	app.use(cookieParser());
 
-	app.use('/api', api);
+	app.use('/api', api());
 
 	/// catch 404 and forward to error handler
 	app.use((req, res, next) => {
