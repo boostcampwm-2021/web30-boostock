@@ -1,4 +1,4 @@
 export interface Sample {
-    sample: string;
-    optional?: string;
+	sample: string;
+	optional?: string;
 }

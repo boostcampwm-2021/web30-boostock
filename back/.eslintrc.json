@@ -15,7 +15,7 @@
         "ecmaVersion": 12,
         "sourceType": "module",
         "project": "tsconfig.json",
-        "tsconfigRootDir": "./back/"
+        "tsconfigRootDir": "./"
     },
     "plugins": [
         "@typescript-eslint",
