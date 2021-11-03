@@ -165,6 +165,9 @@
 }
 
 .order-reset-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	color: #fff;
 	font-weight: 700;
 	width: 25%;
@@ -187,6 +190,18 @@
 	&:disabled {
 		background-color: #999999;
 		cursor: not-allowed;
+	}
+}
+
+.order-action-reset-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 1px;
+	margin-right: 3px;
+
+	& > svg > path {
+		stroke: #fff;
 	}
 }
 
