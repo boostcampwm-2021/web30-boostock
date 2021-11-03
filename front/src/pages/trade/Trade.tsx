@@ -5,6 +5,12 @@ import BidAsk from './bidAsk/BidAsk';
 import './Trade.scss';
 
 // interface Props {}
+interface IRequestStock {
+	type: string;
+	stock: string;
+}
+
+const translateSocketData = (data: object | []) => JSON.stringify(data);
 
 const info: Info = {
 	name: '호눅스 코인',
@@ -17,6 +23,15 @@ const info: Info = {
 };
 
 const Trade = () => {
+	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
+	webSocket.onopen = () => {
+		const data: IRequestStock = { type: 'visited', stock: 'Boostock' };
+		webSocket.send(translateSocketData(data));
+	};
+	webSocket.onmessage = (event) => {};
+	webSocket.onclose = () => {};
+	webSocket.onerror = (event) => {};
+
 	return (
 		<main className="trade">
 			<section className="trade-container">
