@@ -1,6 +1,6 @@
 import React from 'react';
 import SideBar from './sideBar/SideBar';
-import BidAsk from './BidAsk';
+import BidAsk from './bidAsk/BidAsk';
 import './Trade.scss';
 
 // interface Props {}

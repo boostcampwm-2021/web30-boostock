@@ -1,4 +1,8 @@
+@import '@common/global.scss';
+
 .order-container {
+	display: flex;
+	flex-direction: column;
 	width: 100%;
 	height: 100%;
 }
@@ -21,7 +25,7 @@
 		&::before {
 			content: '';
 			position: absolute;
-			border-left: 1px solid #d4d6dc;
+			border-left: 1px solid $borderColor;
 			height: 100%;
 		}
 	}
@@ -38,36 +42,36 @@
 
 .order-type-bid {
 	&.on {
-		border-bottom: 3px solid #d60000;
+		border-bottom: 3px solid $red;
 
 		& .order-type-select-list-btn {
-			color: #d60000;
+			color: $red;
 		}
 	}
 }
 
 .order-type-ask {
 	&.on {
-		border-bottom: 3px solid #0051c7;
+		border-bottom: 3px solid $blue;
 
 		& .order-type-select-list-btn {
-			color: #0051c7;
+			color: $blue;
 		}
 	}
 }
 
 .order-type-cancel {
 	&.on {
-		border-bottom: 3px solid #17c128;
+		border-bottom: 3px solid $lightGreen;
 
 		& .order-type-select-list-btn {
-			color: #17c128;
+			color: $lightGreen;
 		}
 	}
 }
 
 .order-info-container {
-	border-top: 1px solid #d4d6dc;
+	border-top: 1px solid $borderColor;
 	padding: 14px;
 	height: 63%;
 }
@@ -92,20 +96,20 @@
 }
 
 .order-option-label {
-	border: 1px solid #d2d5e4;
+	border: 1px solid $borderColor;
 	cursor: pointer;
 	border-radius: 4px;
 	padding: 10px 20px;
-	box-shadow: 2px 2px 4px #dee1e7;
+	box-shadow: 2px 2px 4px $boxShadowColor;
 
 	&:last-child {
 		margin-left: 10px;
 	}
 
 	.order-option-radio-input:checked + & {
-		background-color: #28367f;
-		color: #fff;
-		border: 1px solid #28367f;
+		background-color: $indigo;
+		color: $white;
+		border: 1px solid $indigo;
 		box-shadow: none;
 	}
 }
@@ -126,13 +130,13 @@
 }
 
 .order-info-text-input {
-	border: 1px solid #d2d5e4;
+	border: 1px solid $borderColor;
 	border-radius: 4px;
 	padding: 8px;
 
 	&.error:not(:focus) {
-		border: 1px solid #d60000;
-		outline: 1px solid #d60000;
+		border: 1px solid $red;
+		outline: 1px solid $red;
 	}
 }
 
@@ -141,7 +145,7 @@
 	position: absolute;
 	bottom: -14px;
 	right: 108px;
-	color: #d60000;
+	color: $red;
 }
 
 .order-total-price-container {
@@ -161,14 +165,14 @@
 	display: flex;
 	justify-content: space-between;
 	padding: 0 14px;
-	margin-top: 30px;
+	margin: 30px 0 10px;
 }
 
 .order-reset-btn {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: #fff;
+	color: $white;
 	font-weight: 700;
 	width: 25%;
 	height: 40px;
@@ -179,7 +183,7 @@
 }
 
 .order-action-btn {
-	color: #fff;
+	color: $white;
 	font-weight: 700;
 	width: 65%;
 	height: 40px;
@@ -201,18 +205,18 @@
 	margin-right: 3px;
 
 	& > svg > path {
-		stroke: #fff;
+		stroke: $white;
 	}
 }
 
 .bid-action {
-	background-color: #d60000;
+	background-color: $red;
 }
 
 .ask-action {
-	background-color: #0051c7;
+	background-color: $blue;
 }
 
 .cancel-action {
-	background-color: #17c128;
+	background-color: $lightGreen;
 }
