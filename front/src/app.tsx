@@ -7,6 +7,7 @@ import './app.scss';
 import HelloWorld from './HelloWorld';
 import SignIn from './pages/signIn/SignIn';
 import SignUp from './pages/signUp/SignUp';
+import Trade from './pages/trade/Trade';
 
 export interface Ipage {
 	id: number;
@@ -42,6 +43,11 @@ const App = () => {
 					))}
 					<Route path="/signin" component={SignIn} />
 					<Route path="/signup" component={SignUp} />
+					<Route
+						path="/exchange/:stockName"
+						component={Trade}
+						exact
+					/>
 					<Route component={HelloWorld} />
 				</Switch>
 			</main>
