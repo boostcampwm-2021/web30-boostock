@@ -1,9 +1,19 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { GrPowerReset } from 'react-icons/gr';
 import { BiInfoCircle } from 'react-icons/bi';
+import toast, { Toaster } from 'react-hot-toast';
 import formatNumber from '@src/common/utils/formatNumber';
 
 import style from './order.module.scss';
+
+interface IOrderData {
+	user_id: number;
+	stock_id: number;
+	type: number;
+	option: number;
+	amount: number;
+	price: number;
+}
 
 function orderTypeClass(orderType: string, curType: string): string {
 	let result = style['order-type-select-list-item'];
@@ -70,13 +80,48 @@ const BidAsk = () => {
 		setIsAmountError(false);
 	};
 
-	const handleOrder = () => {
+	const handleOrder = async () => {
 		if (orderAmount === 0) {
 			setIsAmountError(true);
 			return;
 		}
 
-		/* API 로직 */
+		const orderData: IOrderData = {
+			user_id: 1,
+			stock_id: 1,
+			type: orderType === '매도' ? 0 : 1,
+			option: orderOption === '지정가' ? 0 : 1,
+			amount: orderAmount,
+			price: orderPrice,
+		};
+
+		const config = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(orderData),
+		};
+
+		try {
+			const res = await fetch(
+				`${process.env.SERVER_URL}/api/order`,
+				config,
+			);
+			const data = await res;
+
+			if (data.status !== 200) throw new Error();
+			handleReset();
+			toast.success('주문이 접수되었습니다.');
+		} catch (error) {
+			// 추후 상세 에러 처리 요망
+			toast.error('주문 접수에 실패했습니다. \n\n다시 시도해 주세요.', {
+				style: {
+					textAlign: 'center',
+					maxWidth: '236px',
+				},
+			});
+		}
 	};
 
 	const calculateTotalOrderPrice = (price: number, amount: number) => {
@@ -94,6 +139,7 @@ const BidAsk = () => {
 
 	return (
 		<div className={style['order-container']}>
+			<Toaster />
 			<ul className={style['order-type-select-list']}>
 				{orderTypes.map((type) => (
 					<li
