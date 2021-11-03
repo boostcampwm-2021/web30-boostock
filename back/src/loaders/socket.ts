@@ -35,16 +35,16 @@ export default (app: express.Application): void => {
 	}, 1000);
 
 	webSocketServer.on('connection', (ws, req) => {
-		const clientIP =
-			req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-
 		ws.on('message', (message: string) => {
 			const requestData: ISocketRequest = translateRequestFormat(
 				message,
 			) || { type: 'error' };
-			if (requestData.type === 'visited') {
+			if (requestData.type === 'open') {
 				socketClientMap.set(ws, requestData.stock);
 			}
+		});
+		ws.on('close', () => {
+			socketClientMap.delete(ws);
 		});
 	});
 };
