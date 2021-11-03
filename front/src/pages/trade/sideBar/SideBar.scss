@@ -1,0 +1,83 @@
+@import '@common/global.scss';
+
+.sidebar {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    
+    border: 1px solid #ccc;
+}
+
+.sidebar__menu {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    border-bottom: 1px solid #ccc;
+
+    .sidebar__menu-item {
+        width: 100%;
+        height: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+        cursor: pointer;
+
+        &:hover {
+            font-weight: bold;
+        }
+        
+        &.selected {
+            font-weight: bold;
+            border-bottom: 4px solid $primary;
+        }
+    }
+}
+
+.sidebar__legend {
+    width: 100%;
+    height: 32px;
+    padding: 0px 16px 0px 8px;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 9pt;
+
+    border-bottom: 1px solid #ccc;
+    background-color: #eee;
+
+    .sidebar__legend-favorite {
+        width: 5%;
+        text-align: center;
+    }
+
+    .sidebar__legend-name {
+        width: 25%;
+        text-align: left;
+    }
+
+    .sidebar__legend-price {
+        width: 25%;
+        text-align: right;
+    }
+
+    .sidebar__legend-percent {
+        width: 20%;
+        text-align: right;
+    }
+
+    .sidebar__legend-volume {
+        width: 25%;
+        text-align: right;
+    }
+}
