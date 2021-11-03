@@ -16,7 +16,7 @@ interface IProps {
 }
 
 function orderAmountClass(isAmountError: boolean): string {
-	let result = style['order-info-text-input'];
+	let result = style['bidask-info-text-input'];
 	if (isAmountError) result += ` ${style.error}`;
 	return result;
 }
@@ -57,77 +57,79 @@ const BidAskInputs = ({
 	};
 
 	return (
-		<ul className={style['order-info-list']}>
-			<li className={style['order-info-list-item']}>
-				<span className={style['order-info-text']}>주문구분</span>
+		<ul className={style['bidask-info-list']}>
+			<li className={style['bidask-info-list-item']}>
+				<span className={style['bidask-info-text']}>주문구분</span>
 				<span>
 					<input
-						id="order-option-designated"
-						className={style['order-option-radio-input']}
+						id="bidask-option-designated"
+						className={style['bidask-option-radio-input']}
 						type="radio"
-						name="order-option"
+						name="bidask-option"
 						value="지정가"
 						checked={orderOption === '지정가'}
 						onChange={handleSetOrderOption}
 					/>
 					{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 					<label
-						className={style['order-option-label']}
-						htmlFor="order-option-designated"
+						className={style['bidask-option-label']}
+						htmlFor="bidask-option-designated"
 					>
 						지정가
 					</label>
 					<input
-						id="order-option-market"
-						className={style['order-option-radio-input']}
+						id="bidask-option-market"
+						className={style['bidask-option-radio-input']}
 						type="radio"
-						name="order-option"
+						name="bidask-option"
 						value="시장가"
 						checked={orderOption === '시장가'}
 						onChange={handleSetOrderOption}
 					/>
 					{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 					<label
-						htmlFor="order-option-market"
-						className={style['order-option-label']}
+						htmlFor="bidask-option-market"
+						className={style['bidask-option-label']}
 					>
 						시장가
 					</label>
 				</span>
 			</li>
-			<li className={style['order-info-list-item']}>
-				<span className={style['order-info-text']}>
+			<li className={style['bidask-info-list-item']}>
+				<span className={style['bidask-info-text']}>
 					{orderType === '매수' ? '매수가능' : '매도가능'}
 				</span>
-				<span className={style['order-info-price-container']}>
-					<span className={style['order-info-price']}>
+				<span className={style['bidask-info-price-container']}>
+					<span className={style['bidask-info-price']}>
 						123,456,789
 					</span>
-					<span className={style['order-info-won-text']}>
+					<span className={style['bidask-info-won-text']}>
 						{orderType === '매수' ? '원' : '주'}
 					</span>
 				</span>
 			</li>
 			{orderOption === '지정가' && (
-				<li className={style['order-info-list-item']}>
-					<span className={style['order-info-text']}>
+				<li className={style['bidask-info-list-item']}>
+					<span className={style['bidask-info-text']}>
 						{orderType === '매수' ? '매수가격' : '매도가격'}
 					</span>
 					<div>
 						<input
-							className={style['order-info-text-input']}
+							className={style['bidask-info-text-input']}
 							type="text"
 							dir="rtl"
 							value={formatNumber(orderPrice)}
 							onChange={handleOrderPrice}
 						/>
-						<span className={style['order-info-won-text']}>원</span>
+						<span className={style['bidask-info-won-text']}>
+							원
+						</span>
 					</div>
 				</li>
 			)}
-			<li className={style['order-info-list-item']}>
-				<span className={style['order-info-text']}>주문수량</span>
-				<div className={style['order-amount-container']}>
+			<li className={style['bidask-info-list-item']}>
+				<span className={style['bidask-info-text']}>주문수량</span>
+				<div className={style['bidask-amount-container']}>
 					<input
 						className={orderAmountClass(isAmountError)}
 						type="text"
@@ -135,9 +137,9 @@ const BidAskInputs = ({
 						value={formatNumber(orderAmount)}
 						onChange={handleOrderAmount}
 					/>
-					<span className={style['order-info-won-text']}>주</span>
+					<span className={style['bidask-info-won-text']}>주</span>
 					{isAmountError && (
-						<small className={style['order-error-notice']}>
+						<small className={style['bidask-error-notice']}>
 							<span>
 								<BiInfoCircle />
 							</span>
@@ -147,10 +149,10 @@ const BidAskInputs = ({
 				</div>
 			</li>
 			{orderOption === '지정가' && (
-				<li className={style['order-info-list-item']}>
-					<span className={style['order-info-text']}>주문총액</span>
-					<div className={style['order-total-price-container']}>
-						<span className={style['order-total-price']}>
+				<li className={style['bidask-info-list-item']}>
+					<span className={style['bidask-info-text']}>주문총액</span>
+					<div className={style['bidask-total-price-container']}>
+						<span className={style['bidask-total-price']}>
 							{formatNumber(
 								calculateTotalOrderPrice(
 									orderPrice,
@@ -158,7 +160,9 @@ const BidAskInputs = ({
 								),
 							)}
 						</span>
-						<span className={style['order-info-won-text']}>원</span>
+						<span className={style['bidask-info-won-text']}>
+							원
+						</span>
 					</div>
 				</li>
 			)}
