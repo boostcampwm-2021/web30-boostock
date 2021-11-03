@@ -46,6 +46,7 @@ export default class OrderService {
 		userId: number;
 		stockId: number;
 		type: number;
+		option: number;
 		amount: number;
 		price: number;
 	}): Promise<void> {

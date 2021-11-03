@@ -40,6 +40,7 @@ export default (): express.Router => {
 				userId: req.body.user_id,
 				stockId: req.body.stock_id,
 				type: req.body.type,
+				option: req.body.option,
 				amount: req.body.amount,
 				price: req.body.price,
 			})
