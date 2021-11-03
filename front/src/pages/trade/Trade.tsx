@@ -5,9 +5,9 @@ import BidAsk from './bidAsk/BidAsk';
 import './Trade.scss';
 
 // interface Props {}
-interface IRequestStock {
+interface IConnection {
 	type: string;
-	stock: string;
+	stock?: string;
 }
 
 const translateSocketData = (data: object | []) => JSON.stringify(data);
@@ -25,11 +25,11 @@ const info: Info = {
 const Trade = () => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.onopen = () => {
-		const data: IRequestStock = { type: 'visited', stock: 'Boostock' };
+		const data: IConnection = { type: 'open', stock: 'Boostock' };
 		webSocket.send(translateSocketData(data));
 	};
-	webSocket.onmessage = (event) => {};
 	webSocket.onclose = () => {};
+	webSocket.onmessage = (event) => {};
 	webSocket.onerror = (event) => {};
 
 	return (
