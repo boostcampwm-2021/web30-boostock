@@ -96,7 +96,10 @@ const BidAsk = () => {
 		<div className={style['order-container']}>
 			<ul className={style['order-type-select-list']}>
 				{orderTypes.map((type) => (
-					<li className={`${orderTypeClass(type, orderType)}`}>
+					<li
+						key={type}
+						className={`${orderTypeClass(type, orderType)}`}
+					>
 						<button
 							className={style['order-type-select-list-btn']}
 							type="button"
