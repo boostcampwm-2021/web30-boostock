@@ -32,7 +32,7 @@ function orderAmountClass(isAmountError: boolean): string {
 
 const orderTypes = ['매수', '매도', '정정/취소'];
 
-const Order = () => {
+const BidAsk = () => {
 	const [orderType, setOrderType] = useState<string>('매수');
 	const [orderOption, setOrderOption] = useState<string>('지정가');
 	const [orderPrice, setOrderPrice] = useState<number>(0);
@@ -267,4 +267,4 @@ const Order = () => {
 	);
 };
 
-export default Order;
+export default BidAsk;

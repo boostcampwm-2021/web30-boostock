@@ -54,7 +54,7 @@ $aside-width: 400px;
 .trade-status {
 	display: flex;
 	flex-direction: row;
-	min-height: 400px;
+	min-height: 470px;
 	gap: 0px $gap;
 }
 .trade-order {
@@ -68,7 +68,7 @@ $aside-width: 400px;
 	flex: 1;
 	height: 100%;
 
-	background-color: lightyellow;
+	background-color: #fff;
 }
 .trade-conclusion {
 	min-height: 400px;
