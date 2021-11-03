@@ -162,14 +162,16 @@ const Order = () => {
 									123,456,789
 								</span>
 								<span className={style['order-info-won-text']}>
-									원
+									{orderType === '매수' ? '원' : '주'}
 								</span>
 							</span>
 						</li>
 						{orderOption === '지정가' && (
 							<li className={style['order-info-list-item']}>
 								<span className={style['order-info-text']}>
-									매수가격
+									{orderType === '매수'
+										? '매수가격'
+										: '매도가격'}
 								</span>
 								<div>
 									<input
