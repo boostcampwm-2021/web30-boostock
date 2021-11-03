@@ -1,4 +1,5 @@
 import React from 'react';
+import BidAsk from './BidAsk';
 import './Trade.scss';
 
 // interface Props {}
@@ -14,7 +15,9 @@ const Trade = () => {
 					<section className="trade-chart">chart</section>
 					<section className="trade-status">
 						<section className="trade-order">order</section>
-						<section className="trade-bid-ask">bid-ask</section>
+						<section className="trade-bid-ask">
+							<BidAsk />
+						</section>
 					</section>
 					<section className="trade-conclusion">conclusion</section>
 				</section>
