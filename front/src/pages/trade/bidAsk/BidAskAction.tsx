@@ -11,7 +11,7 @@ interface IProps {
 }
 
 function orderActionClass(orderType: string): string {
-	let result = style['order-action-btn'];
+	let result = style['bidask-action-btn'];
 
 	if (orderType === '매수') result += ` ${style['bid-action']}`;
 	if (orderType === '매도') result += ` ${style['ask-action']}`;
@@ -27,13 +27,13 @@ const BidAskAction = ({
 	handleOrder,
 }: IProps) => {
 	return (
-		<div className={style['order-action-container']}>
+		<div className={style['bidask-action-container']}>
 			<button
 				onClick={handleReset}
-				className={style['order-reset-btn']}
+				className={style['bidask-reset-btn']}
 				type="button"
 			>
-				<span className={style['order-action-reset-icon']}>
+				<span className={style['bidask-action-reset-icon']}>
 					<GrPowerReset />
 				</span>
 				초기화

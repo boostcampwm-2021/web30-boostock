@@ -55,7 +55,7 @@ const BidAsk = () => {
 
 		try {
 			const res = await fetch(
-				`${process.env.SERVER_URL}/api/order`,
+				`${process.env.SERVER_URL}/api/bidask`,
 				config,
 			);
 			const data = await res;
@@ -84,13 +84,13 @@ const BidAsk = () => {
 	}, [orderAmount, isAmountError]);
 
 	return (
-		<div className={style['order-container']}>
+		<div className={style['bidask-container']}>
 			<Toaster />
 			<BidAskType
 				orderType={orderType}
 				handleSetOrderType={handleSetOrderType}
 			/>
-			<div className={style['order-info-container']}>
+			<div className={style['bidask-info-container']}>
 				{orderType !== '정정/취소' && (
 					<BidAskInputs
 						orderType={orderType}

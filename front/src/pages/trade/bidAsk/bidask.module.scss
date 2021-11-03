@@ -1,20 +1,20 @@
 @import '@common/global.scss';
 
-.order-container {
+.bidask-container {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
 	height: 100%;
 }
 
-.order-type-select-list {
+.bidask-type-select-list {
 	display: flex;
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
 
-.order-type-select-list-item {
+.bidask-type-select-list-item {
 	position: relative;
 	color: #1a1a1a;
 	font-weight: 700;
@@ -31,7 +31,7 @@
 	}
 }
 
-.order-type-select-list-btn {
+.bidask-type-select-list-btn {
 	background: none;
 	border: none;
 	outline: none;
@@ -40,49 +40,49 @@
 	cursor: pointer;
 }
 
-.order-type-bid {
+.bidask-type-bid {
 	&.on {
 		border-bottom: 3px solid $red;
 
-		& .order-type-select-list-btn {
+		& .bidask-type-select-list-btn {
 			color: $red;
 		}
 	}
 }
 
-.order-type-ask {
+.bidask-type-ask {
 	&.on {
 		border-bottom: 3px solid $blue;
 
-		& .order-type-select-list-btn {
+		& .bidask-type-select-list-btn {
 			color: $blue;
 		}
 	}
 }
 
-.order-type-cancel {
+.bidask-type-cancel {
 	&.on {
 		border-bottom: 3px solid $lightGreen;
 
-		& .order-type-select-list-btn {
+		& .bidask-type-select-list-btn {
 			color: $lightGreen;
 		}
 	}
 }
 
-.order-info-container {
+.bidask-info-container {
 	border-top: 1px solid $borderColor;
 	padding: 14px;
 	height: 63%;
 }
 
-.order-info-list {
+.bidask-info-list {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
 
-.order-info-list-item {
+.bidask-info-list-item {
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -91,11 +91,11 @@
 	height: 46px;
 }
 
-.order-option-radio-input {
+.bidask-option-radio-input {
 	display: none;
 }
 
-.order-option-label {
+.bidask-option-label {
 	border: 1px solid $borderColor;
 	cursor: pointer;
 	border-radius: 4px;
@@ -106,7 +106,7 @@
 		margin-left: 10px;
 	}
 
-	.order-option-radio-input:checked + & {
+	.bidask-option-radio-input:checked + & {
 		background-color: $indigo;
 		color: $white;
 		border: 1px solid $indigo;
@@ -114,22 +114,22 @@
 	}
 }
 
-.order-info-price {
+.bidask-info-price {
 	font-weight: 700;
 }
 
-.order-info-won-text {
+.bidask-info-won-text {
 	font-size: 12px;
 	margin-left: 2px;
 }
 
-.order-info-text {
+.bidask-info-text {
 	font-size: 13px;
 	color: #555;
 	font-weight: 700;
 }
 
-.order-info-text-input {
+.bidask-info-text-input {
 	border: 1px solid $borderColor;
 	border-radius: 4px;
 	padding: 8px;
@@ -140,7 +140,7 @@
 	}
 }
 
-.order-error-notice {
+.bidask-error-notice {
 	display: flex;
 	position: absolute;
 	bottom: -14px;
@@ -148,27 +148,27 @@
 	color: $red;
 }
 
-.order-total-price-container {
+.bidask-total-price-container {
 	display: flex;
 	align-items: center;
 	max-width: 80%;
 }
 
-.order-total-price {
+.bidask-total-price {
 	display: inline-block;
 	max-width: 100%;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-.order-action-container {
+.bidask-action-container {
 	display: flex;
 	justify-content: space-between;
 	padding: 0 14px;
 	margin: 30px 0 10px;
 }
 
-.order-reset-btn {
+.bidask-reset-btn {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -182,7 +182,7 @@
 	cursor: pointer;
 }
 
-.order-action-btn {
+.bidask-action-btn {
 	color: $white;
 	font-weight: 700;
 	width: 65%;
@@ -197,7 +197,7 @@
 	}
 }
 
-.order-action-reset-icon {
+.bidask-action-reset-icon {
 	display: flex;
 	align-items: center;
 	justify-content: center;
