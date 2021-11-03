@@ -6,9 +6,8 @@ import './Trade.scss';
 
 const Trade = () => {
 	return (
-		<>
-			<header className="trade-header">header</header>
-			<main className="trade-container">
+		<main className="trade">
+			<section className="trade-container">
 				<aside className="aside-bar">aside</aside>
 				<section className="trade-body">
 					<section className="trade-info">info</section>
@@ -21,8 +20,8 @@ const Trade = () => {
 					</section>
 					<section className="trade-conclusion">conclusion</section>
 				</section>
-			</main>
-		</>
+			</section>
+		</main>
 	);
 };
 

@@ -5,7 +5,6 @@ import morgan from 'morgan';
 
 import api from '@api/index';
 import config from '@config/index';
-import openWebSocket from './socket';
 
 export default async ({ app }: { app: express.Application }): Promise<void> => {
 	app.get('/status', (req, res) => {
@@ -22,7 +21,6 @@ export default async ({ app }: { app: express.Application }): Promise<void> => {
 	app.use(express.urlencoded({ extended: false }));
 	app.use(cookieParser());
 
-	openWebSocket(app);
 	app.use('/api', api());
 
 	/// catch 404 and forward to error handler

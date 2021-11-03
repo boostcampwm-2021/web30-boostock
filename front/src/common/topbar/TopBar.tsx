@@ -10,10 +10,12 @@ import './topbar.scss';
 const TopBar = ({ pages }: { pages: Ipage[] }) => {
 	return (
 		<header className="top-bar">
-			<Link to="/home" style={{ display: 'flex' }}>
-				<Logo />
-			</Link>
-			<Menu pages={pages} />
+			<section className="top-bar-wrapper">
+				<Link to="/home" style={{ display: 'flex' }}>
+					<Logo />
+				</Link>
+				<Menu pages={pages} />
+			</section>
 		</header>
 	);
 };
