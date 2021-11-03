@@ -12,10 +12,20 @@
 }
 
 .order-type-select-list-item {
+	position: relative;
 	color: #1a1a1a;
 	font-weight: 700;
 	width: 100%;
 	text-align: center;
+
+	& + & {
+		&::before {
+			content: '';
+			position: absolute;
+			border-left: 1px solid #d4d6dc;
+			height: 100%;
+		}
+	}
 }
 
 .order-type-select-list-btn {
@@ -87,14 +97,17 @@
 	cursor: pointer;
 	border-radius: 4px;
 	padding: 10px 20px;
+	box-shadow: 2px 2px 4px #dee1e7;
 
 	&:last-child {
 		margin-left: 10px;
 	}
 
 	.order-option-radio-input:checked + & {
+		background-color: #28367f;
+		color: #fff;
 		border: 1px solid #28367f;
-		box-shadow: 0px 0px 0px 1px #28367f;
+		box-shadow: none;
 	}
 }
 
