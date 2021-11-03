@@ -1,4 +1,5 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react';
+import { GrPowerReset } from 'react-icons/gr';
 import formatNumber from '@src/common/utils/formatNumber';
 
 import style from './order.module.scss';
@@ -252,6 +253,9 @@ const BidAsk = () => {
 					className={style['order-reset-btn']}
 					type="button"
 				>
+					<span className={style['order-action-reset-icon']}>
+						<GrPowerReset />
+					</span>
 					초기화
 				</button>
 				<button
