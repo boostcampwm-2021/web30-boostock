@@ -1,4 +1,5 @@
 import React from 'react';
+import SideBar from './sideBar/SideBar';
 import BidAsk from './BidAsk';
 import './Trade.scss';
 
@@ -8,7 +9,9 @@ const Trade = () => {
 	return (
 		<main className="trade">
 			<section className="trade-container">
-				<aside className="aside-bar">aside</aside>
+				<aside className="aside-bar">
+					<SideBar />
+				</aside>
 				<section className="trade-body">
 					<section className="trade-info">info</section>
 					<section className="trade-chart">chart</section>
