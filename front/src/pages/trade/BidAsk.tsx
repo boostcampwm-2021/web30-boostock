@@ -1,5 +1,6 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { GrPowerReset } from 'react-icons/gr';
+import { BiInfoCircle } from 'react-icons/bi';
 import formatNumber from '@src/common/utils/formatNumber';
 
 import style from './order.module.scss';
@@ -211,6 +212,9 @@ const BidAsk = () => {
 									<small
 										className={style['order-error-notice']}
 									>
+										<span>
+											<BiInfoCircle />
+										</span>
 										수량을 입력해 주세요.
 									</small>
 								)}

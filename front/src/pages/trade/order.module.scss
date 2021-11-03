@@ -138,9 +138,10 @@
 }
 
 .order-error-notice {
+	display: flex;
 	position: absolute;
 	bottom: -14px;
-	right: 121px;
+	right: 108px;
 	color: #d60000;
 }
 
