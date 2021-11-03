@@ -1,34 +1,28 @@
+@use '../../common/global.scss';
 $gap: 15px;
-$header-height: 80px;
 $aside-width: 400px;
 
-.trade-header {
-	position: fixed;
-	width: 100%;
-	min-height: $header-height;
-	z-index: 10;
-
-	background-color: lightsteelblue;
+.trade {
+	display: flex;
+	justify-content: center;
+	width: 100vw;
+	background-color: #eaecf0;
 }
 .trade-container {
 	display: flex;
 	flex-direction: row;
-
-	width: 100%;
-	min-height: calc(100vh - $header-height);
+	width: global.$trade-body-width;
 	height: fit-content;
 	padding: $gap;
 	gap: $gap;
 	box-sizing: border-box;
-
-	background-color: #eaecf0;
 }
 .aside-bar {
 	position: fixed;
-	height: calc(100vh - $header-height);
+	height: calc(100vh - global.$header-height - $gap * 2);
 	width: $aside-width;
-	margin-top: $header-height;
-	overflow: scroll;
+	margin-top: global.$header-height;
+	overflow-y: scroll;
 
 	background-color: lightpink;
 }
@@ -38,41 +32,46 @@ $aside-width: 400px;
 	display: flex;
 	flex-direction: column;
 	gap: $gap 0px;
-	margin-top: $header-height;
+	margin-top: global.$header-height;
 	margin-left: $aside-width + $gap;
 }
 .trade-info {
 	height: 100px;
+	box-shadow: 2px 2px 4px #dee1e7;
 
 	background-color: lightblue;
 }
 .trade-chart {
 	min-height: 400px;
+	box-shadow: 2px 2px 4px #dee1e7;
 
 	background-color: lightgreen;
 }
 .trade-status {
 	display: flex;
 	flex-direction: row;
-	min-height: 470px;
+	min-height: fit-content;
 	gap: 0px $gap;
 }
 .trade-order {
 	flex: 1;
 	height: 100%;
-	overflow: scroll;
+	overflow-y: scroll;
+	box-shadow: 2px 2px 4px #dee1e7;
 
 	background-color: lightsalmon;
 }
 .trade-bid-ask {
 	flex: 1;
 	height: 100%;
+	box-shadow: 2px 2px 4px #dee1e7;
 
 	background-color: #fff;
 }
 .trade-conclusion {
 	min-height: 400px;
 	overflow: scroll;
+	box-shadow: 2px 2px 4px #dee1e7;
 
 	background-color: lightseagreen;
 }
