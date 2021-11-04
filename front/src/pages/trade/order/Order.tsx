@@ -10,7 +10,7 @@ function backgroundColorClass(orderType: number): string {
 }
 
 function calculateTotalAndMaxVolumes(data: IStockQuoteItem[]) {
-	const LENGTH = 20;
+	const LENGTH = data.length;
 	let buyVolume = 0;
 	let sellVolume = 0;
 	let maxVolume = 0;
@@ -43,21 +43,29 @@ function buyVolumeBarClass(quoteType: number) {
 }
 
 const Order = () => {
-	const tableRef = useRef<HTMLDivElement>(null);
+	const orderContentRef = useRef<HTMLDivElement>(null);
 	const stockQuotes = useRecoilValue<IStockQuoteItem[]>(stockQuoteAtom);
 	const [totalAndMaxVolumes, setTotalAndMaxVolumes] = useState(() =>
 		calculateTotalAndMaxVolumes(stockQuotes),
 	);
 
 	useEffect(() => {
-		if (!tableRef.current) return;
-		tableRef.current.scrollTo(0, 166);
-	}, [tableRef]);
+		if (!orderContentRef.current) return;
+
+		const tableElem = orderContentRef.current
+			.children[0] as HTMLTableElement;
+		const tableHeight = tableElem.offsetHeight;
+		const TABLE_MAX_HEIGHT = 470;
+		orderContentRef.current.scrollTo(
+			0,
+			(tableHeight - TABLE_MAX_HEIGHT) / 2,
+		);
+	}, [orderContentRef]);
 
 	return (
 		<div className={style['order-container']}>
 			<header className={style['order-header']}>호가정보</header>
-			<div className={style['order-content']} ref={tableRef}>
+			<div className={style['order-content']} ref={orderContentRef}>
 				<table className={style['order-table']}>
 					<tbody>
 						{stockQuotes.map((quote) => (
