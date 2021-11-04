@@ -1,28 +1,31 @@
 import React from 'react';
-import StockInfo, { Info } from './stockInfo/StockInfo';
+import { useRecoilValue } from 'recoil';
+import { Redirect, RouteComponentProps } from 'react-router-dom';
+import StockList, { IStockListItem } from '@recoil/stockList/index';
+import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
 import BidAsk from './bidAsk/BidAsk';
 import './Trade.scss';
 
-// interface Props {}
 interface IConnection {
 	type: string;
 	stock?: string;
 }
 
+type Props = RouteComponentProps<MatchParams>;
+
+interface MatchParams {
+	stockName: string;
+}
+
 const translateSocketData = (data: object | []) => JSON.stringify(data);
 
-const info: Info = {
-	name: '호눅스 코인',
-	price: 1234567,
-	percent: 1234,
-	high: 1234,
-	low: 1234,
-	amount: 1234,
-	volume: 1234567,
-};
+const Trade = ({ match }: Props) => {
+	const stockListState = useRecoilValue(StockList);
+	const stockState = stockListState.filter(
+		(stock: IStockListItem) => stock.name === match.params.stockName,
+	)[0];
 
-const Trade = () => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.onopen = () => {
 		const data: IConnection = { type: 'open', stock: 'Boostock' };
@@ -32,6 +35,10 @@ const Trade = () => {
 	webSocket.onmessage = (event) => {};
 	webSocket.onerror = (event) => {};
 
+	if (!stockState) {
+		return <Redirect to="/" />;
+	}
+
 	return (
 		<main className="trade">
 			<section className="trade-container">
@@ -40,7 +47,7 @@ const Trade = () => {
 				</aside>
 				<section className="trade-body">
 					<section className="trade-info">
-						<StockInfo info={info} />
+						<StockInfo info={stockState} />
 					</section>
 					<section className="trade-chart">chart</section>
 					<section className="trade-status">
