@@ -5,11 +5,22 @@
 	justify-content: space-between;
 	align-items: center;
 	box-sizing: border-box;
+	color: rgba(189, 189, 189, 0.459);
 	a {
-		color: unset;
-		padding: 5px;
+		text-decoration: none;
+		.active {
+			color: #fff;
+		}
+		&:hover {
+			color: rgba(189, 189, 189, 0.8);
+		}
 	}
 	div {
 		display: flex;
+		align-items: center;
+		& > * {
+			color: unset;
+			padding: 5px;
+		}
 	}
 }
