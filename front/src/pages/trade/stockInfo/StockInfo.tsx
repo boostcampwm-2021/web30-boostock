@@ -1,25 +1,26 @@
 import React from 'react';
+import { IStockListItem } from '@recoil/stockList/index';
 
 import './StockInfo.scss';
 
 interface Props {
-	info: Info;
-}
-
-export interface Info {
-	name: string;
-	price: number;
-	percent: number;
-	high: number;
-	low: number;
-	amount: number;
-	volume: number;
+	info: IStockListItem;
 }
 
 const StockInfo = (props: Props) => {
 	const { info } = props;
-	const { name, price, percent, high, low, amount, volume } = info;
+	const {
+		name,
+		currentPrice,
+		highPrice,
+		lowPrice,
+		previousClosingPrice,
+		tradingVolume,
+		tradingAmount,
+	} = info;
 
+	const percent =
+		((currentPrice - previousClosingPrice) / previousClosingPrice) * 100;
 	let status = '';
 	if (percent === 0) status = '';
 	else if (percent > 0) status = 'up';
@@ -29,39 +30,39 @@ const StockInfo = (props: Props) => {
 		<div className="stock-info">
 			<div className="stock-info__top ">
 				<p className="stock-info__top-name">{name}</p>
-				<p className={`stock-info__top-price ${status}`}>
+				<div className={`stock-info__top-price ${status}`}>
 					<p className="stock-info__top-price-value">
-						{price.toLocaleString()}
+						{currentPrice.toLocaleString()}
 					</p>
 					<p className="stock-info__top-price-percent">
 						{percent > 0 ? '+' : ''}
-						{percent.toLocaleString()}%
-					</p>
-				</p>
-			</div>
-			<div className="stock-info__bottom">
-				<div className="stock-info__bottom-data">
-					<p className="stock-info__bottom-data-key">고가</p>
-					<p className="stock-info__bottom-data-value">
-						{high.toLocaleString()}
+						{percent.toFixed(1)}%
 					</p>
 				</div>
-				<div className="stock-info__bottom-data">
+			</div>
+			<div className="stock-info__bottom">
+				<div className="stock-info__bottom-data stock-info__bottom-data--up">
+					<p className="stock-info__bottom-data-key">고가</p>
+					<p className="stock-info__bottom-data-value">
+						{highPrice.toLocaleString()}
+					</p>
+				</div>
+				<div className="stock-info__bottom-data  stock-info__bottom-data--down">
 					<p className="stock-info__bottom-data-key">저가</p>
 					<p className="stock-info__bottom-data-value">
-						{low.toLocaleString()}
+						{lowPrice.toLocaleString()}
 					</p>
 				</div>
 				<div className="stock-info__bottom-data">
 					<p className="stock-info__bottom-data-key">거래량</p>
 					<p className="stock-info__bottom-data-value">
-						{amount.toLocaleString()}
+						{tradingVolume.toLocaleString()} 주
 					</p>
 				</div>
 				<div className="stock-info__bottom-data">
 					<p className="stock-info__bottom-data-key">거래대금</p>
 					<p className="stock-info__bottom-data-value">
-						{volume.toLocaleString()}
+						{tradingAmount.toLocaleString()} 원
 					</p>
 				</div>
 			</div>

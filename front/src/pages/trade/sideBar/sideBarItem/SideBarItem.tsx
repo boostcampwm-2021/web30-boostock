@@ -1,53 +1,49 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AiFillStar } from 'react-icons/ai';
+import { IStockListItem } from '@src/recoil/stockList/index';
 
 import './SideBarItem.scss';
 
 export interface Props {
-	stock: Stock;
-}
-
-export interface Stock {
-	id: number;
-	name: string;
-	price: number;
-	dtdPercent: number;
-	dtdValue: number;
-	volume: number;
+	stock: IStockListItem;
 }
 
 const SideBarItem = (props: Props) => {
 	const { stock } = props;
-	const { id, name, price, dtdPercent, dtdValue, volume } = stock;
+	const { name, currentPrice, previousClosingPrice, tradingAmount } = stock;
 
+	const percent =
+		((currentPrice - previousClosingPrice) / previousClosingPrice) * 100;
 	let status = '';
-	if (dtdPercent === 0) status = '';
-	else if (dtdPercent > 0) status = 'up';
-	else if (dtdPercent < 0) status = 'down';
+	if (percent === 0) status = '';
+	else if (percent > 0) status = 'up';
+	else if (percent < 0) status = 'down';
 
 	return (
-		<Link className={`sidebar__item ${status}`} to={`/exchange/${id}`}>
+		<Link className={`sidebar__item ${status}`} to={`/exchange/${name}`}>
 			<div className="sidebar__item-favorite">
 				<AiFillStar color="#999" />
 			</div>
 			<div className="sidebar__item-name">{name}</div>
-			<div className="sidebar__item-price">{price.toLocaleString()}</div>
+			<div className="sidebar__item-price">
+				{currentPrice.toLocaleString()}
+			</div>
 			<div className="sidebar__item-percent">
 				<p className="sidebar__item-percent-top">
-					{dtdPercent > 0 ? '+' : ''}
-					{dtdPercent.toLocaleString()}%
+					{percent > 0 ? '+' : ''}
+					{percent.toFixed(1)}%
 				</p>
 				<p className="sidebar__item-percent-bottom">
-					{dtdValue > 0 ? '+' : ''}
-					{dtdValue.toLocaleString()}
+					{currentPrice - previousClosingPrice > 0 ? '+' : ''}
+					{(currentPrice - previousClosingPrice).toLocaleString()}
 				</p>
 			</div>
-			<div className="sidebar__item-volume">
-				<p className="sidebar__item-volume-value">
-					{volume.toLocaleString()}
+			<div className="sidebar__item-amount">
+				<p className="sidebar__item-amount-value">
+					{tradingAmount.toLocaleString()}
 				</p>
-				<p className="sidebar__item-volume-unit">만원</p>
+				<p className="sidebar__item-amount-unit">원</p>
 			</div>
 		</Link>
 	);
