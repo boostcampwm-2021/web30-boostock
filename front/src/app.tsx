@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { RecoilRoot } from 'recoil';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import TopBar from '@common/topbar/TopBar';
@@ -30,28 +31,30 @@ const App = () => {
 	];
 
 	return (
-		<BrowserRouter>
-			<TopBar pages={pages} />
-			<main>
-				<Switch>
-					{pages.map((page) => (
+		<RecoilRoot>
+			<BrowserRouter>
+				<TopBar pages={pages} />
+				<main>
+					<Switch>
+						{pages.map((page) => (
+							<Route
+								path={page.url}
+								component={page.component}
+								key={page.id}
+							/>
+						))}
+						<Route path="/signin" component={SignIn} />
+						<Route path="/signup" component={SignUp} />
 						<Route
-							path={page.url}
-							component={page.component}
-							key={page.id}
+							path="/exchange/:stockName"
+							component={Trade}
+							exact
 						/>
-					))}
-					<Route path="/signin" component={SignIn} />
-					<Route path="/signup" component={SignUp} />
-					<Route
-						path="/exchange/:stockName"
-						component={Trade}
-						exact
-					/>
-					<Route component={HelloWorld} />
-				</Switch>
-			</main>
-		</BrowserRouter>
+						<Route component={HelloWorld} />
+					</Switch>
+				</main>
+			</BrowserRouter>
+		</RecoilRoot>
 	);
 };
 
