@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
+import User, { IUser } from '@recoil/user/index';
 import StockList, { IStockListItem } from '@recoil/stockList/index';
 import SideBarItem from './sideBarItem/SideBarItem';
 
@@ -14,8 +15,29 @@ export enum MENU {
 // interface Props {}
 
 const SideBar = () => {
-	const [menu, setMenu] = useState(MENU.FAVORITE);
+	const [menu, setMenu] = useState(MENU.ALL);
+	const userState = useRecoilValue(User);
 	const stockListState = useRecoilValue(StockList);
+	const [filteredStockListState, setFilteredStockListState] = useState<
+		IStockListItem[]
+	>([]);
+
+	useEffect(() => {
+		setFilteredStockListState(() => {
+			switch (menu) {
+				case MENU.FAVORITE:
+					return stockListState.filter((stock: IStockListItem) =>
+						userState.favorite.includes(stock.id),
+					);
+				case MENU.HOLD:
+					return stockListState.filter((stock: IStockListItem) =>
+						userState.hold.includes(stock.id),
+					);
+				default:
+					return stockListState;
+			}
+		});
+	}, [menu]);
 
 	return (
 		<div className="sidebar">
@@ -61,8 +83,12 @@ const SideBar = () => {
 				<div className="sidebar__legend-percent">전일대비</div>
 				<div className="sidebar__legend-amount">거래대금</div>
 			</div>
-			{stockListState.map((stock: IStockListItem) => (
-				<SideBarItem key={stock.id} stock={stock} />
+			{filteredStockListState.map((stock: IStockListItem) => (
+				<SideBarItem
+					key={stock.id}
+					stock={stock}
+					isFavorite={userState.favorite.includes(stock.id)}
+				/>
 			))}
 		</div>
 	);
