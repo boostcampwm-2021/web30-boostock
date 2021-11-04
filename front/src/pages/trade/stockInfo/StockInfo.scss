@@ -1,3 +1,5 @@
+@import '@common/global.scss';
+
 .stock-info {
     width: 100%;
     height: 100%;
@@ -6,7 +8,7 @@
     display: flex;
     flex-direction: column;
 
-    border: 1px solid #ccc;
+    border: 1px solid $borderColor;
 }
 
 .stock-info__top {
@@ -32,11 +34,11 @@
         justify-content: space-between;
 
         &.up {
-            color: red;
+            color: $red;
         }
 
         &.down {
-            color: blue;
+            color: $blue;
         }
 
         .stock-info__top-price-value {
@@ -64,8 +66,8 @@
     align-items: center;
     justify-content: space-between;
 
-    background-color: #eee;
-    border-top: 1px solid #ccc;
+    background-color: $whiteOff;
+    border-top: 1px solid $borderColor;
 
     font-size: 9pt;
     line-height: 12pt;
@@ -79,13 +81,19 @@
         align-items: flex-start;
         justify-content: space-between;
         
+        &.stock-info__bottom-data--up {
+            color: $red;
+        }
+
+        &.stock-info__bottom-data--down {
+            color: $blue;
+        }
+
         .stock-info__bottom-data-key {
-            color: #000;
             font-weight: bold;
         }
     
         .stock-info__bottom-data-value {
-            color: #000;
             text-align: right;
         }
     }
