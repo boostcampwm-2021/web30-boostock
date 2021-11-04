@@ -19,6 +19,7 @@ export default {
 			'@assets': path.resolve('assets'),
 			'@pages': path.resolve('src', 'pages'),
 			'@tools': path.resolve('src', 'tools'),
+			'@recoil': path.resolve('src', 'recoil'),
 		},
 	},
 	module: {
