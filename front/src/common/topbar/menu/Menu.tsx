@@ -19,7 +19,7 @@ const Menu = ({ pages }: Props) => {
 					</Link>
 				))}
 			</div>
-			<div>
+			<div style={{ position: 'relative' }}>
 				<SearchBar />
 				<Link to="./signin">로그인</Link>
 				<Link to="./signup">회원가입</Link>
