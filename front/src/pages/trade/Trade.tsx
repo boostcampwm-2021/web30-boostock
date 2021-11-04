@@ -58,7 +58,7 @@ const Trade = ({ match }: Props) => {
 						</section>
 					</section>
 					<section className="trade-conclusion">
-						<Conclusion />
+						<Conclusion previousClosingPrice={74210000} />
 					</section>
 				</section>
 			</section>
