@@ -1,8 +1,13 @@
 import { atom } from 'recoil';
 
+export enum IStockQuoteType {
+	SELL = 0,
+	BUY = 1,
+}
 export interface IStockQuoteItem {
+	type: IStockQuoteType;
 	price: number;
-	amount: number;
+	volume: number;
 }
 
 const stockQuoteAtom = atom<IStockQuoteItem[]>({
@@ -10,7 +15,8 @@ const stockQuoteAtom = atom<IStockQuoteItem[]>({
 	default: [
 		{
 			price: 0,
-			amount: 0,
+			type: IStockQuoteType.SELL,
+			volume: 0,
 		},
 	],
 });
