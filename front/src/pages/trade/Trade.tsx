@@ -5,6 +5,7 @@ import StockList, { IStockListItem } from '@recoil/stockList/index';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
 import BidAsk from './bidAsk/BidAsk';
+import Conclusion from './conclusion/Conclusion';
 import './Trade.scss';
 
 interface IConnection {
@@ -56,7 +57,9 @@ const Trade = ({ match }: Props) => {
 							<BidAsk />
 						</section>
 					</section>
-					<section className="trade-conclusion">conclusion</section>
+					<section className="trade-conclusion">
+						<Conclusion />
+					</section>
 				</section>
 			</section>
 		</main>
