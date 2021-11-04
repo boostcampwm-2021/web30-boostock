@@ -26,6 +26,13 @@
 .conclusion-content {
 	overflow-y: auto;
 	height: 340px;
+
+	.up {
+		color: global.$red;
+	}
+	.down {
+		color: global.$blue;
+	}
 }
 .conclusion-head {
 	display: flex;
@@ -48,6 +55,7 @@
 .conclusion-total-price {
 	flex: 10;
 	text-align: right;
+	padding: 0 10px;
 }
 .conclusion-volumn {
 	flex: 10;
@@ -56,7 +64,6 @@
 .conclusion-single-price {
 	flex: 10;
 	text-align: right;
-	padding: 0 10px;
 }
 .conclusion-row {
 	display: flex;
