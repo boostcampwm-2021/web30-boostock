@@ -50,7 +50,8 @@ $aside-width: 400px;
 .trade-status {
 	display: flex;
 	flex-direction: row;
-	min-height: fit-content;
+	min-height: 480px;
+	height: fit-content;
 	gap: 0px $gap;
 }
 .trade-order {
