@@ -7,10 +7,11 @@ import './SideBarItem.scss';
 
 export interface Props {
 	stock: IStockListItem;
+	isFavorite: boolean;
 }
 
 const SideBarItem = (props: Props) => {
-	const { stock } = props;
+	const { stock, isFavorite } = props;
 	const { name, currentPrice, previousClosingPrice, tradingAmount } = stock;
 
 	const percent =
@@ -23,7 +24,7 @@ const SideBarItem = (props: Props) => {
 	return (
 		<Link className={`sidebar__item ${status}`} to={`/exchange/${name}`}>
 			<div className="sidebar__item-favorite">
-				<AiFillStar color="#999" />
+				<AiFillStar color={isFavorite ? '$primary' : '#999'} />
 			</div>
 			<div className="sidebar__item-name">{name}</div>
 			<div className="sidebar__item-price">
