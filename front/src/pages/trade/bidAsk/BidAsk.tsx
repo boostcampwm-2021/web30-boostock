@@ -55,7 +55,7 @@ const BidAsk = () => {
 
 		try {
 			const res = await fetch(
-				`${process.env.SERVER_URL}/api/bidask`,
+				`${process.env.SERVER_URL}/api/order`,
 				config,
 			);
 			const data = await res;
