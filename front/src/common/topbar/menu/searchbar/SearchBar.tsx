@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import SearchResult from './searchresult/SearchResult';
 
 interface Props {}
 
-const searchResult = [
-	{ korean: '호눅스', code: 'honux', target: '호눅스' },
-	{ korean: '크롱', code: 'crong', target: '크롱' },
+const stockList = [
+	{ korean: '호눅스코인', english: 'honux', target: '호눅스코인' },
+	{ korean: '크롱코인', english: 'crong', target: '크롱코인' },
+	{ korean: 'JK코인', english: 'jk', target: 'JK코인' },
 ];
 
 const SearchBar = (props: Props) => {
 	const [search, setSearch] = useState('');
+
 	const searchEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSearch(event?.target?.value);
 	};
@@ -21,7 +24,7 @@ const SearchBar = (props: Props) => {
 				placeholder="What stocks are you looking for"
 				onChange={searchEvent}
 			/>
-			<div></div>
+			<SearchResult stockList={stockList} search={search} />
 		</>
 	);
 };
