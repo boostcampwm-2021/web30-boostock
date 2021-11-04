@@ -35,7 +35,6 @@
 
 .order-row {
 	height: 40px;
-	cursor: pointer;
 	letter-spacing: 1px;
 }
 
@@ -44,6 +43,7 @@
 	text-align: center;
 	font-size: 14px;
 	font-weight: 700;
+	cursor: pointer;
 }
 
 .order-row-volume {
@@ -55,6 +55,10 @@
 
 .sell-volume {
 	text-align: right;
+
+	&.active {
+		cursor: pointer;
+	}
 
 	&.active:hover {
 		background-color: #f4faff;
@@ -70,6 +74,10 @@
 
 .buy-volume {
 	text-align: left;
+
+	&.active {
+		cursor: pointer;
+	}
 
 	&.active:hover {
 		background-color: #f9f0ef;
