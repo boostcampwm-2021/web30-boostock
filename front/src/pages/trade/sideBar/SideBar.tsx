@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import SideBarItem, { Stock } from './sideBarItem/SideBarItem';
+import { useRecoilValue } from 'recoil';
+import StockList, { IStockListItem } from '@recoil/stockList/index';
+import SideBarItem from './sideBarItem/SideBarItem';
 
 import './SideBar.scss';
 
@@ -11,35 +13,9 @@ export enum MENU {
 
 // interface Props {}
 
-const stocks = [
-	{
-		id: 1,
-		name: '호눅스코인',
-		price: 1234567,
-		dtdPercent: 1234,
-		dtdValue: 1234,
-		volume: 123456789,
-	},
-	{
-		id: 2,
-		name: '크롱코인',
-		price: 1234,
-		dtdPercent: -12,
-		dtdValue: -1234,
-		volume: 123456789,
-	},
-	{
-		id: 3,
-		name: 'JK코인',
-		price: 1234,
-		dtdPercent: 0,
-		dtdValue: 0,
-		volume: 123456789,
-	},
-];
-
 const SideBar = () => {
 	const [menu, setMenu] = useState(MENU.FAVORITE);
+	const stockListState = useRecoilValue(StockList);
 
 	return (
 		<div className="sidebar">
@@ -83,9 +59,9 @@ const SideBar = () => {
 				<div className="sidebar__legend-name">이름</div>
 				<div className="sidebar__legend-price">현재가</div>
 				<div className="sidebar__legend-percent">전일대비</div>
-				<div className="sidebar__legend-volume">거래량</div>
+				<div className="sidebar__legend-amount">거래대금</div>
 			</div>
-			{stocks.map((stock: Stock) => (
+			{stockListState.map((stock: IStockListItem) => (
 				<SideBarItem key={stock.id} stock={stock} />
 			))}
 		</div>
