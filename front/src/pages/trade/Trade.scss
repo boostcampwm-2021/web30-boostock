@@ -57,10 +57,9 @@ $aside-width: 400px;
 .trade-order {
 	flex: 1;
 	height: 100%;
-	overflow-y: scroll;
 	box-shadow: 2px 2px 4px #dee1e7;
 
-	background-color: lightsalmon;
+	background-color: global.$white;
 }
 .trade-bid-ask {
 	flex: 1;

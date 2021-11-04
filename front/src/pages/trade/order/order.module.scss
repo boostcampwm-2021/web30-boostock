@@ -1,0 +1,152 @@
+@import '@common/global.scss';
+
+.order-container {
+	width: 100%;
+	height: 100%;
+}
+
+.order-header {
+	font-weight: 700;
+	text-align: center;
+	padding: 10px 0;
+	border-bottom: 1px solid $borderColor;
+}
+
+.order-content {
+	max-height: 470px;
+	overflow-y: auto;
+	&::-webkit-scrollbar {
+		width: 6px;
+	}
+	&::-webkit-scrollbar-track {
+		background-color: transparent;
+	}
+	&::-webkit-scrollbar-thumb {
+		background-color: #ccc;
+		border-radius: 8px;
+	}
+}
+
+.order-table {
+	width: 100%;
+	height: 100%;
+	border-collapse: collapse;
+}
+
+.order-row {
+	height: 40px;
+	cursor: pointer;
+	letter-spacing: 1px;
+}
+
+.order-row-price-data {
+	width: 30%;
+	text-align: center;
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.order-row-volume {
+	position: relative;
+	padding: 6px 0;
+	font-size: 12px;
+	width: 35%;
+}
+
+.sell-volume {
+	text-align: right;
+
+	&.active:hover {
+		background-color: #f4faff;
+	}
+}
+
+.sell-volume-bar {
+	display: inline-block;
+	background-color: $lightBlue;
+	height: 100%;
+	margin: 6px 0;
+}
+
+.buy-volume {
+	text-align: left;
+
+	&.active:hover {
+		background-color: #f9f0ef;
+	}
+}
+
+.buy-volume-bar {
+	display: inline-block;
+	background-color: $rose;
+	height: 100%;
+	margin: 6px 0;
+}
+
+.order-sell {
+	border-top: 1px solid #c1e4ff;
+	background-color: $lightBlue;
+
+	&:hover {
+		background-color: darken($lightBlue, 10%);
+	}
+}
+
+.volume-sell-text {
+	position: absolute;
+	margin: 0;
+	right: 1px;
+	top: 12px;
+}
+
+.volume-buy-text {
+	position: absolute;
+	margin: 0;
+	left: 1px;
+	top: 12px;
+}
+
+.order-buy {
+	border-top: 1px solid #f7cdc6;
+	background-color: $rose;
+
+	&:hover {
+		background-color: darken($rose, 10%);
+	}
+}
+
+.total-volumes {
+	display: flex;
+	font-size: 14px;
+	letter-spacing: 1px;
+	background-color: #eee;
+	border-top: 1px solid $borderColor;
+
+	& > div {
+		padding: 9px 5px;
+	}
+
+	& > .total-buy-volume {
+		padding-right: 11px;
+	}
+}
+
+.sell-volume-bar {
+}
+
+.total-sell-volume {
+	width: 35%;
+	text-align: right;
+}
+
+.total-volumes-text {
+	width: 30%;
+	font-size: 16px;
+	text-align: center;
+	border-left: 1px solid $borderColor;
+	border-right: 1px solid $borderColor;
+}
+
+.total-buy-volume {
+	width: 35%;
+}
