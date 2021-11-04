@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import StockExecution, {
 	IStockExecutionItem,
 } from '@recoil/stockExecution/index';
 import './conclusion.scss';
+
+export enum TAB {
+	TICK = '체결',
+	DAY = '일별',
+}
 
 interface Props {
 	previousClosingPrice: number;
@@ -25,15 +30,34 @@ const translateTimestampFormat = (timestamp: string): string => {
 };
 
 const Conclusion = (props: Props) => {
+	const [tab, setTab] = useState(TAB.TICK);
 	const stockExecutionState = useRecoilValue(StockExecution);
 	const { previousClosingPrice } = props;
 	return (
 		<div className="conclusion-container">
 			<div className="conclusion-title">
-				<div className="conclusion-tab conclusion-tab-clicked">
+				<div
+					className={`conclusion-tab ${
+						tab === TAB.TICK ? 'conclusion-tab-clicked' : ''
+					}`}
+					tabIndex={0}
+					onClick={() => setTab(TAB.TICK)}
+					onKeyDown={() => setTab(TAB.TICK)}
+					role="button"
+				>
 					체결
 				</div>
-				<div className="conclusion-tab">일별</div>
+				<div
+					className={`conclusion-tab ${
+						tab === TAB.DAY ? 'conclusion-tab-clicked' : ''
+					}`}
+					tabIndex={0}
+					onClick={() => setTab(TAB.DAY)}
+					onKeyDown={() => setTab(TAB.DAY)}
+					role="button"
+				>
+					일별
+				</div>
 			</div>
 			<div className="conclusion-head">
 				<div className="conclusion-timestamp">체결시간</div>
