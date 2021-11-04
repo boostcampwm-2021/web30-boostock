@@ -27,6 +27,7 @@ const Trade = ({ match }: Props) => {
 		(stock: IStockListItem) => stock.name === match.params.stockName,
 	)[0];
 
+	/*
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.onopen = () => {
 		const data: IConnection = { type: 'open', stock: 'Boostock' };
@@ -35,9 +36,11 @@ const Trade = ({ match }: Props) => {
 	webSocket.onclose = () => {};
 	webSocket.onmessage = (event) => {};
 	webSocket.onerror = (event) => {};
+	*/
 
 	if (!stockState) {
-		return <Redirect to="/" />;
+		if (stockListState.length === 0) return <Redirect to="/" />;
+		return <Redirect to={`/exchange/${stockListState[0].name}`} />;
 	}
 
 	return (
