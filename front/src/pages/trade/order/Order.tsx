@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import stockQuoteAtom, { IStockQuoteItem } from '@src/recoil/stockQuote/atom';
 import formatNumber from '@src/common/utils/formatNumber';
@@ -43,15 +43,21 @@ function buyVolumeBarClass(quoteType: number) {
 }
 
 const Order = () => {
+	const tableRef = useRef<HTMLDivElement>(null);
 	const stockQuotes = useRecoilValue<IStockQuoteItem[]>(stockQuoteAtom);
 	const [totalAndMaxVolumes, setTotalAndMaxVolumes] = useState(() =>
 		calculateTotalAndMaxVolumes(stockQuotes),
 	);
 
+	useEffect(() => {
+		if (!tableRef.current) return;
+		tableRef.current.scrollTo(0, 166);
+	}, [tableRef]);
+
 	return (
 		<div className={style['order-container']}>
 			<header className={style['order-header']}>호가정보</header>
-			<div className={style['order-content']}>
+			<div className={style['order-content']} ref={tableRef}>
 				<table className={style['order-table']}>
 					<tbody>
 						{stockQuotes.map((quote) => (
