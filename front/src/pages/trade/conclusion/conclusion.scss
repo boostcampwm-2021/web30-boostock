@@ -1,0 +1,70 @@
+@use '../../../common/global.scss';
+
+.conclusion-container {
+	width: 100%;
+	height: 100%;
+	background-color: global.$white;
+}
+.conclusion-title {
+	display: flex;
+	height: 40px;
+
+	.conclusion-tab {
+		flex: 1;
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: 700;
+		box-sizing: border-box;
+	}
+}
+.conclusion-tab-clicked {
+	color: global.$blue;
+	border-bottom: 3px solid #115dcb;
+}
+.conclusion-content {
+	overflow-y: auto;
+	height: 340px;
+}
+.conclusion-head {
+	display: flex;
+	align-items: center;
+	height: 30px;
+	border-bottom: 1px solid #f1f1f4;
+	background-color: #f9fafc;
+	color: #666;
+	font-size: 11px;
+}
+.conclusion-timestamp {
+	flex: 3;
+	text-align: center;
+	padding: 0 2px;
+	.timestamp-time {
+		color: #999;
+		margin-left: 5px;
+	}
+}
+.conclusion-total-price {
+	flex: 10;
+	text-align: right;
+}
+.conclusion-volumn {
+	flex: 10;
+	text-align: right;
+}
+.conclusion-single-price {
+	flex: 10;
+	text-align: right;
+	padding: 0 10px;
+}
+.conclusion-row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	height: 34px;
+	font-size: 11px;
+}
+.conclusion-row:nth-child(2n) {
+	background-color: #f9fafc;
+}
