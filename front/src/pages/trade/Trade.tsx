@@ -6,6 +6,7 @@ import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
 import BidAsk from './bidAsk/BidAsk';
 import Conclusion from './conclusion/Conclusion';
+import Order from './order/Order';
 import './Trade.scss';
 
 interface IConnection {
@@ -55,7 +56,9 @@ const Trade = ({ match }: Props) => {
 					</section>
 					<section className="trade-chart">chart</section>
 					<section className="trade-status">
-						<section className="trade-order">order</section>
+						<section className="trade-order">
+							<Order />
+						</section>
 						<section className="trade-bid-ask">
 							<BidAsk />
 						</section>
