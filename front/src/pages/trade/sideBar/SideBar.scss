@@ -1,83 +1,81 @@
 @import '@common/global.scss';
 
 .sidebar {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
 
-    display: flex;
-    flex-direction: column;
-    
-    border: 1px solid $borderColor;
+	display: flex;
+	flex-direction: column;
 }
 
 .sidebar__menu {
-    width: 100%;
+	width: 100%;
 
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 
-    border-bottom: 1px solid $borderColor;
+	border-bottom: 1px solid $borderColor;
 
-    .sidebar__menu-item {
-        width: 100%;
-        height: 48px;
+	.sidebar__menu-item {
+		width: 100%;
+		height: 48px;
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
-        text-align: center;
-        cursor: pointer;
+		text-align: center;
+		cursor: pointer;
 
-        &:hover {
-            font-weight: bold;
-        }
-        
-        &.selected {
-            font-weight: bold;
-            border-bottom: 4px solid $primary;
-        }
-    }
+		&:hover {
+			font-weight: bold;
+		}
+
+		&.selected {
+			font-weight: bold;
+			border-bottom: 4px solid $primary;
+		}
+	}
 }
 
 .sidebar__legend {
-    width: 100%;
-    height: 32px;
-    padding: 0px 16px 0px 8px;
-    box-sizing: border-box;
+	width: 100%;
+	height: 32px;
+	padding: 0px 16px 0px 8px;
+	box-sizing: border-box;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 
-    font-size: 9pt;
+	font-size: 9pt;
 
-    border-bottom: 1px solid $borderColor;
-    background-color: $whiteOff;
+	border-bottom: 1px solid $borderColor;
+	background-color: $whiteOff;
 
-    .sidebar__legend-favorite {
-        width: 5%;
-        text-align: center;
-    }
+	.sidebar__legend-favorite {
+		width: 5%;
+		text-align: center;
+	}
 
-    .sidebar__legend-name {
-        width: 25%;
-        text-align: left;
-    }
+	.sidebar__legend-name {
+		width: 25%;
+		text-align: left;
+	}
 
-    .sidebar__legend-price {
-        width: 25%;
-        text-align: right;
-    }
+	.sidebar__legend-price {
+		width: 25%;
+		text-align: right;
+	}
 
-    .sidebar__legend-percent {
-        width: 20%;
-        text-align: right;
-    }
+	.sidebar__legend-percent {
+		width: 20%;
+		text-align: right;
+	}
 
-    .sidebar__legend-amount {
-        width: 25%;
-        text-align: right;
-    }
+	.sidebar__legend-amount {
+		width: 25%;
+		text-align: right;
+	}
 }

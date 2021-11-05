@@ -22,6 +22,8 @@ $aside-width: 400px;
 	height: calc(100vh - global.$header-height - $gap * 2);
 	width: $aside-width;
 	margin-top: global.$header-height;
+	border: 1px solid global.$cardBorderColor;
+	border-radius: global.$cardBorderRadius;
 	overflow-y: scroll;
 
 	background-color: #fff;
@@ -37,6 +39,7 @@ $aside-width: 400px;
 }
 .trade-chart {
 	box-shadow: 2px 2px 4px #dee1e7;
+	border-radius: global.$cardBorderRadius;
 
 	& > img {
 		width: 100%;
@@ -56,6 +59,7 @@ $aside-width: 400px;
 	box-shadow: 2px 2px 4px #dee1e7;
 
 	background-color: global.$white;
+	border-radius: global.$cardBorderRadius;
 }
 .trade-bid-ask {
 	flex: 1;
@@ -63,9 +67,11 @@ $aside-width: 400px;
 	box-shadow: 2px 2px 4px #dee1e7;
 
 	background-color: #fff;
+	border-radius: global.$cardBorderRadius;
 }
 .trade-conclusion {
 	min-height: 400px;
 	overflow: scroll;
 	box-shadow: 2px 2px 4px #dee1e7;
+	border-radius: global.$cardBorderRadius;
 }
