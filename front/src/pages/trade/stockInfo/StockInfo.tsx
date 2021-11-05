@@ -66,7 +66,7 @@ const StockInfo = (props: Props) => {
 			<div className="stock-info__right">
 				<div className="extra-info highest-price">
 					<span className="extra-info-data">
-						{formatNumber(lowPrice)}원 ~ {formatNumber(highPrice)}원
+						{formatNumber(lowPrice)}원 — {formatNumber(highPrice)}원
 					</span>
 					<span className="extra-info-text">일일 가격 범위</span>
 				</div>
