@@ -6,7 +6,7 @@ $aside-width: 400px;
 	display: flex;
 	justify-content: center;
 	width: 100vw;
-	background-color: #eaecf0;
+	background-color: #F5F8FF;
 }
 .trade-container {
 	display: flex;
@@ -34,12 +34,6 @@ $aside-width: 400px;
 	gap: $gap 0px;
 	margin-top: global.$header-height;
 	margin-left: $aside-width + $gap;
-}
-.trade-info {
-	height: 100px;
-	box-shadow: 2px 2px 4px #dee1e7;
-
-	background-color: #fff;
 }
 .trade-chart {
 	min-height: 400px;
