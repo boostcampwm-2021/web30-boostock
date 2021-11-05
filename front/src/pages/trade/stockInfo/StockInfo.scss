@@ -1,100 +1,91 @@
 @import '@common/global.scss';
 
 .stock-info {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-
-    display: flex;
-    flex-direction: column;
-
-    border: 1px solid $borderColor;
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	height: 100%;
 }
 
-.stock-info__top {
-    width: 100%;
-    height: 70%;
-    padding: 0px 16px 0px 16px;
-    box-sizing: border-box;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    .stock-info__top-name {
-        font-size: 16pt;
-        font-weight: bold;
-    }
-
-    .stock-info__top-price {
-        width: 256px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        justify-content: space-between;
-
-        &.up {
-            color: $red;
-        }
-
-        &.down {
-            color: $blue;
-        }
-
-        .stock-info__top-price-value {
-            margin: 16px 0px -16px 0px;
-
-            font-size: 24pt;
-            font-weight: bold;
-            text-align: right;
-        }
-        .stock-info__top-price-percent {
-            font-size: 10pt;
-            line-height: 12pt;
-            text-align: right;
-        }
-    }
+.stock-info__left {
+	padding: 12px;
+	border-radius: $cardBorderRadius;
+	box-shadow: 2px 2px 4px $boxShadowColor;
+	border: 1px solid $cardBorderColor;
+	width: 38%;
+	background-color: $white;
 }
 
-.stock-info__bottom {
-    width: 100%;
-    height: 30%;
-    padding: 0px 16px 0px 16px;
-    box-sizing: border-box;
+.stock-info__right {
+	display: flex;
+	justify-content: space-between;
+	padding: 12px;
+	border-radius: $cardBorderRadius;
+	box-shadow: 2px 2px 4px $boxShadowColor;
+	width: 55%;
+	border: 1px solid $cardBorderColor;
+	background-color: $white;
+}
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.stock-name {
+	font-size: 26px;
+	margin-bottom: 14px;
+}
 
-    background-color: $whiteOff;
-    border-top: 1px solid $borderColor;
+.current-price-info {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-size: 32px;
+	letter-spacing: 1.5px;
+}
 
-    font-size: 9pt;
-    line-height: 12pt;
+.current-price {
+	position: relative;
+	margin-bottom: 10px;
+	font-weight: 600;
+}
 
-    .stock-info__bottom-data {
-        width: 100%;
-        padding: 0px 32px 0px 32px;
-        box-sizing: border-box;
-        
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        
-        &.stock-info__bottom-data--up {
-            color: $red;
-        }
+.price-plus {
+	color: $red;
+}
 
-        &.stock-info__bottom-data--down {
-            color: $blue;
-        }
+.price-minus {
+	color: $blue;
+}
 
-        .stock-info__bottom-data-key {
-            font-weight: bold;
-        }
-    
-        .stock-info__bottom-data-value {
-            text-align: right;
-        }
-    }
+.price-neutral {
+	color: #1a1a1a;
+}
+
+.price-percent {
+	position: relative;
+	padding-left: 16px;
+	font-size: 16px;
+
+	&.price-neutral {
+		padding-left: 0;
+	}
+
+	& > svg {
+		position: absolute;
+		left: 0;
+		top: 3px;
+	}
+}
+
+.extra-info {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	& .extra-info-data {
+		margin-bottom: 8px;
+		font-weight: 700;
+		font-size: 18px;
+	}
+
+	& .extra-info-text {
+		color: #6d6d6d;
+	}
 }
