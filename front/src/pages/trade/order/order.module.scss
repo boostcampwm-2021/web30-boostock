@@ -25,6 +25,10 @@
 		background-color: #ccc;
 		border-radius: 8px;
 	}
+
+	@media screen and (max-width: $responsiveSize2) {
+		max-height: 440px;
+	}
 }
 
 .order-table {
@@ -44,6 +48,9 @@
 	font-size: 14px;
 	font-weight: 700;
 	cursor: pointer;
+
+	@media screen and (max-width: $responsiveSize2) {
+	}
 }
 
 .order-row-volume {
