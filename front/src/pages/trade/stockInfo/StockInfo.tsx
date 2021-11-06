@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { AiFillCaretUp, AiFillCaretDown } from 'react-icons/ai';
 import { IStockListItem } from '@recoil/stockList/index';
 import formatNumber from '@src/common/utils/formatNumber';
+import caretIcon from '@src/common/utils/caretIcon';
 
 import './StockInfo.scss';
 
@@ -13,12 +13,6 @@ function priceColorClass(percent: number): string {
 	if (percent < 0) return 'price-minus';
 	if (percent > 0) return 'price-plus';
 	return 'price-neutral';
-}
-
-function caretIcon(percent: number) {
-	if (percent < 0) return <AiFillCaretDown />;
-	if (percent > 0) return <AiFillCaretUp />;
-	return '';
 }
 
 function formatTradingData(data: number, postfix: string) {
