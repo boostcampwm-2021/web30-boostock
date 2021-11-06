@@ -83,13 +83,15 @@ const SideBar = () => {
 				<div className="sidebar__legend-percent">전일대비</div>
 				<div className="sidebar__legend-amount">거래대금</div>
 			</div>
-			{filteredStockListState.map((stock: IStockListItem) => (
-				<SideBarItem
-					key={stock.id}
-					stock={stock}
-					isFavorite={userState.favorite.includes(stock.id)}
-				/>
-			))}
+			<div className="sidebar__items">
+				{filteredStockListState.map((stock: IStockListItem) => (
+					<SideBarItem
+						key={stock.id}
+						stock={stock}
+						isFavorite={userState.favorite.includes(stock.id)}
+					/>
+				))}
+			</div>
 		</div>
 	);
 };

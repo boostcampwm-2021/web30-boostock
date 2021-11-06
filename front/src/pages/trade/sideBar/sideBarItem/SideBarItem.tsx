@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AiFillStar } from 'react-icons/ai';
+import caretIcon from '@src/common/utils/caretIcon';
+
 import { IStockListItem } from '@src/recoil/stockList/index';
 
 import './SideBarItem.scss';
+import formatNumber from '@src/common/utils/formatNumber';
 
 export interface Props {
 	stock: IStockListItem;
@@ -24,25 +27,24 @@ const SideBarItem = (props: Props) => {
 	return (
 		<Link className={`sidebar__item ${status}`} to={`/exchange/${name}`}>
 			<div className="sidebar__item-favorite">
-				<AiFillStar color={isFavorite ? '$primary' : '#999'} />
+				<AiFillStar color={isFavorite ? '#FFA800' : '#999'} />
 			</div>
 			<div className="sidebar__item-name">{name}</div>
 			<div className="sidebar__item-price">
-				{currentPrice.toLocaleString()}
+				{formatNumber(currentPrice)}
 			</div>
 			<div className="sidebar__item-percent">
 				<p className="sidebar__item-percent-top">
-					{percent > 0 ? '+' : ''}
+					{caretIcon(percent)}&nbsp;
 					{percent.toFixed(1)}%
 				</p>
 				<p className="sidebar__item-percent-bottom">
-					{currentPrice - previousClosingPrice > 0 ? '+' : ''}
-					{(currentPrice - previousClosingPrice).toLocaleString()}
+					{formatNumber(currentPrice - previousClosingPrice)}
 				</p>
 			</div>
 			<div className="sidebar__item-amount">
 				<p className="sidebar__item-amount-value">
-					{tradingAmount.toLocaleString()}
+					{formatNumber(tradingAmount)}
 				</p>
 				<p className="sidebar__item-amount-unit">원</p>
 			</div>
