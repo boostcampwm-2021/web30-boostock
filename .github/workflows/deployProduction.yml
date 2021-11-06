@@ -70,8 +70,8 @@ jobs:
         script: |
           cd ${{ secrets.REMOTE_TARGET }}-${{ steps.extract_branch.outputs.branch }}/back
           chown -R ${{ secrets.REMOTE_USER }}:${{ secrets.REMOTE_USER }} *
-          echo ${{ secrets.BACK_ENV }} >> .env
-          echo ${{ secrets.BACK_ORM_CONFIG }} >> ormconfig.json
+          echo "${{ secrets.BACK_ENV }}" >> .env
+          echo "${{ secrets.BACK_ORM_CONFIG }}" >> ormconfig.json
           npm install -g pm2
           npm install -g ts-node
           npm install
@@ -103,7 +103,7 @@ jobs:
     
     - name: Create Environment File
       run: |
-        echo ${{ secrets.FRONT_ENV }} >> .env
+        echo "${{ secrets.FRONT_ENV }}" >> .env
       working-directory: ./front
 
     - name: Run Build Task
