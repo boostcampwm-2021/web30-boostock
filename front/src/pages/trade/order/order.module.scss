@@ -9,7 +9,7 @@
 	font-weight: 700;
 	text-align: center;
 	padding: 10px 0;
-	border-bottom: 1px solid $borderColor;
+	border-bottom: 4px solid $primary;
 }
 
 .order-content {
@@ -127,8 +127,12 @@
 	display: flex;
 	font-size: 14px;
 	letter-spacing: 1px;
-	background-color: #eee;
-	border-top: 1px solid $borderColor;
+	background-color: $white2;
+	border-top: 1px solid $cardBorderColor;
+	border-end-start-radius: $cardBorderRadius;
+	border-end-end-radius: $cardBorderRadius;
+	text-align: center;
+	color: $darkBlue;
 
 	& > div {
 		padding: 9px 5px;
@@ -141,15 +145,13 @@
 
 .total-sell-volume {
 	width: 35%;
-	text-align: right;
 }
 
 .total-volumes-text {
 	width: 30%;
 	font-size: 16px;
-	text-align: center;
-	border-left: 1px solid $borderColor;
-	border-right: 1px solid $borderColor;
+	border-left: 1px solid $cardBorderColor;
+	border-right: 1px solid $cardBorderColor;
 }
 
 .total-buy-volume {
