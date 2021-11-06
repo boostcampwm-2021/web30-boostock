@@ -36,35 +36,31 @@ const Conclusion = (props: Props) => {
 	return (
 		<div className="conclusion-container">
 			<div className="conclusion-title">
-				<div
+				<button
+					type="button"
 					className={`conclusion-tab ${
 						tab === TAB.TICK ? 'conclusion-tab-clicked' : ''
 					}`}
-					tabIndex={0}
 					onClick={() => setTab(TAB.TICK)}
-					onKeyDown={() => setTab(TAB.TICK)}
-					role="button"
 				>
 					체결
-				</div>
-				<div
+				</button>
+				<button
+					type="button"
 					className={`conclusion-tab ${
 						tab === TAB.DAY ? 'conclusion-tab-clicked' : ''
 					}`}
-					tabIndex={0}
 					onClick={() => setTab(TAB.DAY)}
-					onKeyDown={() => setTab(TAB.DAY)}
-					role="button"
 				>
 					일별
-				</div>
+				</button>
 			</div>
-			<div className="conclusion-head">
+			<header className="conclusion-header">
 				<div className="conclusion-timestamp">체결시간</div>
 				<div className="conclusion-single-price">체결가격(원)</div>
 				<div className="conclusion-volumn">체결량(주)</div>
 				<div className="conclusion-total-price">체결금액(원)</div>
-			</div>
+			</header>
 			<div className="conclusion-content">
 				{stockExecutionState.map((log: IStockExecutionItem) => {
 					const [day, time] = translateTimestampFormat(
