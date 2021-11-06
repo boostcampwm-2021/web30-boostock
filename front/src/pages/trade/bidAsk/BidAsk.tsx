@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import toast, { Toaster } from 'react-hot-toast';
 import BidAskType from './BidAskType';
 import BidAskInputs from './BidAskInputs';
@@ -16,22 +17,22 @@ interface IOrderData {
 }
 
 const BidAsk = () => {
-	const [orderType, setOrderType] = useState<string>('매수');
-	const [orderOption, setOrderOption] = useState<string>('지정가');
-	const [orderPrice, setOrderPrice] = useState<number>(0);
-	const [orderAmount, setOrderAmount] = useState<number>(0);
+	const [bidAskType, setBidAskType] = useState<string>('매수');
+	const [bidAskOption, setBidAskOption] = useState<string>('지정가');
+	const [bidAskPrice, setBidAskPrice] = useState<number>(0);
+	const [bidAskAmount, setBidAskAmount] = useState<number>(0);
 	const [isAmountError, setIsAmountError] = useState<boolean>(false);
 
-	const handleSetOrderType = (newType: string) => setOrderType(newType);
+	const handleSetBidAskType = (newType: string) => setBidAskType(newType);
 
 	const handleReset = () => {
-		setOrderPrice(0);
-		setOrderAmount(0);
+		setBidAskPrice(0);
+		setBidAskAmount(0);
 		setIsAmountError(false);
 	};
 
-	const handleOrder = async () => {
-		if (orderAmount === 0) {
+	const handleBidAsk = async () => {
+		if (bidAskAmount === 0) {
 			setIsAmountError(true);
 			return;
 		}
@@ -39,10 +40,10 @@ const BidAsk = () => {
 		const orderData: IOrderData = {
 			user_id: 1,
 			stock_id: 1,
-			type: orderType === '매도' ? 0 : 1,
-			option: orderOption === '지정가' ? 0 : 1,
-			amount: orderAmount,
-			price: orderPrice,
+			type: bidAskType === '매도' ? 0 : 1,
+			option: bidAskOption === '지정가' ? 0 : 1,
+			amount: bidAskAmount,
+			price: bidAskPrice,
 		};
 
 		const config = {
@@ -76,39 +77,39 @@ const BidAsk = () => {
 
 	useEffect(() => {
 		handleReset();
-	}, [orderType, orderOption]);
+	}, [bidAskType, bidAskOption]);
 
 	useEffect(() => {
 		if (!isAmountError) return;
-		if (orderAmount > 0) setIsAmountError(false);
-	}, [orderAmount, isAmountError]);
+		if (bidAskAmount > 0) setIsAmountError(false);
+	}, [bidAskAmount, isAmountError]);
 
 	return (
 		<div className={style['bidask-container']}>
 			<Toaster />
 			<BidAskType
-				orderType={orderType}
-				handleSetOrderType={handleSetOrderType}
+				bidAskType={bidAskType}
+				handleSetBidAskType={handleSetBidAskType}
 			/>
 			<div className={style['bidask-info-container']}>
-				{orderType !== '정정/취소' && (
+				{bidAskType !== '정정/취소' && (
 					<BidAskInputs
-						orderType={orderType}
-						orderOption={orderOption}
-						orderPrice={orderPrice}
-						orderAmount={orderAmount}
+						bidAskType={bidAskType}
+						bidAskOption={bidAskOption}
+						bidAskPrice={bidAskPrice}
+						bidAskAmount={bidAskAmount}
 						isAmountError={isAmountError}
-						setOrderOption={setOrderOption}
-						setOrderPrice={setOrderPrice}
-						setOrderAmount={setOrderAmount}
+						setBidAskOption={setBidAskOption}
+						setBidAskPrice={setBidAskPrice}
+						setBidAskAmount={setBidAskAmount}
 					/>
 				)}
 			</div>
 			<BidAskAction
-				orderType={orderType}
+				bidAskType={bidAskType}
 				isAmountError={isAmountError}
 				handleReset={handleReset}
-				handleOrder={handleOrder}
+				handleBidAsk={handleBidAsk}
 			/>
 		</div>
 	);
