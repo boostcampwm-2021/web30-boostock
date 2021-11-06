@@ -4,27 +4,27 @@ import { GrPowerReset } from 'react-icons/gr';
 import style from './bidask.module.scss';
 
 interface IProps {
-	orderType: string;
+	bidAskType: string;
 	isAmountError: boolean;
 	handleReset: () => void;
-	handleOrder: () => void;
+	handleBidAsk: () => void;
 }
 
-function orderActionClass(orderType: string): string {
+function orderActionClass(bidAskType: string): string {
 	let result = style['bidask-action-btn'];
 
-	if (orderType === '매수') result += ` ${style['bid-action']}`;
-	if (orderType === '매도') result += ` ${style['ask-action']}`;
-	if (orderType === '정정/취소') result += ` ${style['cancel-action']}`;
+	if (bidAskType === '매수') result += ` ${style['bid-action']}`;
+	if (bidAskType === '매도') result += ` ${style['ask-action']}`;
+	if (bidAskType === '정정/취소') result += ` ${style['cancel-action']}`;
 
 	return result;
 }
 
 const BidAskAction = ({
-	orderType,
+	bidAskType,
 	isAmountError,
 	handleReset,
-	handleOrder,
+	handleBidAsk,
 }: IProps) => {
 	return (
 		<div className={style['bidask-action-container']}>
@@ -39,12 +39,12 @@ const BidAskAction = ({
 				초기화
 			</button>
 			<button
-				className={orderActionClass(orderType)}
+				className={orderActionClass(bidAskType)}
 				type="button"
-				onClick={handleOrder}
+				onClick={handleBidAsk}
 				disabled={isAmountError}
 			>
-				{orderType}
+				{bidAskType}
 			</button>
 		</div>
 	);
