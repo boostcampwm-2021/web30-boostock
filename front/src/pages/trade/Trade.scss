@@ -20,16 +20,24 @@ $aside-width: 400px;
 	top: 65px;
 	height: calc(100vh - global.$header-height - $gap * 2);
 	width: $aside-width;
+	flex-shrink: 0;
 	margin-top: global.$header-height;
 	border: 1px solid global.$cardBorderColor;
 	border-radius: global.$cardBorderRadius;
 	box-shadow: 2px 2px 4px global.$boxShadowColor;
 
 	background-color: #fff;
+
+	@media screen and (max-width: global.$responsiveSize1) {
+		width: 380px;
+	}
+
+	@media screen and (max-width: global.$responsiveSize2) {
+		width: 360px;
+	}
 }
 .trade-body {
 	flex-grow: 1;
-	min-width: 900px;
 	display: flex;
 	flex-direction: column;
 	gap: $gap 0px;
@@ -47,7 +55,6 @@ $aside-width: 400px;
 .trade-status {
 	display: flex;
 	flex-direction: row;
-	min-height: 480px;
 	height: fit-content;
 	gap: 0px $gap;
 }

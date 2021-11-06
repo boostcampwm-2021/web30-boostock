@@ -25,12 +25,24 @@
 	width: 60%;
 	border: 1px solid $cardBorderColor;
 	background-color: $white;
+
+	@media screen and (max-width: $responsiveSize2) {
+		width: 55%;
+	}
 }
 
 .stock-name {
 	font-size: 24px;
 	font-weight: 700;
 	margin-bottom: 14px;
+
+	@media screen and (max-width: $responsiveSize1) {
+		font-size: 22px;
+	}
+
+	@media screen and (max-width: $responsiveSize2) {
+		font-size: 20px;
+	}
 }
 
 .current-price-info {
@@ -39,6 +51,14 @@
 	align-items: center;
 	font-size: 28px;
 	letter-spacing: 1px;
+
+	@media screen and (max-width: $responsiveSize1) {
+		font-size: 26px;
+	}
+
+	@media screen and (max-width: $responsiveSize2) {
+		font-size: 24px;
+	}
 }
 
 .current-price {
@@ -81,6 +101,10 @@
 	justify-content: center;
 
 	& .extra-info-data {
+		@media screen and (max-width: $responsiveSize1) {
+			font-size: 14px;
+		}
+
 		margin-bottom: 8px;
 		font-weight: 700;
 		font-size: 16px;
@@ -89,5 +113,9 @@
 	& .extra-info-text {
 		color: #6d6d6d;
 		font-size: 14px;
+
+		@media screen and (max-width: $responsiveSize1) {
+			font-size: 12px;
+		}
 	}
 }

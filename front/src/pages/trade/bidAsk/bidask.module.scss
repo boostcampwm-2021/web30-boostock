@@ -72,8 +72,12 @@
 
 .bidask-info-container {
 	border-top: 1px solid $borderColor;
-	padding: 14px;
-	height: 63%;
+	padding: 30px 16px 16px;
+	height: 65%;
+
+	@media screen and (max-width: $responsiveSize2) {
+		font-size: 14px;
+	}
 }
 
 .bidask-info-list {
@@ -166,6 +170,10 @@
 	justify-content: space-between;
 	padding: 0 14px;
 	margin: 30px 0 10px;
+
+	@media screen and (max-width: $responsiveSize2) {
+		font-size: 14px;
+	}
 }
 
 .bidask-reset-btn {
@@ -194,6 +202,10 @@
 	&:disabled {
 		background-color: #999999;
 		cursor: not-allowed;
+	}
+
+	@media screen and (max-width: $responsiveSize2) {
+		width: 60%;
 	}
 }
 
