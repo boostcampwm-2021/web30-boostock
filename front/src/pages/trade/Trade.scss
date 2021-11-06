@@ -5,8 +5,6 @@ $aside-width: 400px;
 .trade {
 	display: flex;
 	justify-content: center;
-	width: 100vw;
-	background-color: #f0f1f5;
 }
 .trade-container {
 	display: flex;
@@ -18,13 +16,14 @@ $aside-width: 400px;
 	box-sizing: border-box;
 }
 .aside-bar {
-	position: fixed;
+	position: sticky;
+	top: 65px;
 	height: calc(100vh - global.$header-height - $gap * 2);
 	width: $aside-width;
 	margin-top: global.$header-height;
 	border: 1px solid global.$cardBorderColor;
 	border-radius: global.$cardBorderRadius;
-	overflow-y: scroll;
+	box-shadow: 2px 2px 4px global.$boxShadowColor;
 
 	background-color: #fff;
 }
@@ -35,7 +34,6 @@ $aside-width: 400px;
 	flex-direction: column;
 	gap: $gap 0px;
 	margin-top: global.$header-height;
-	margin-left: $aside-width + $gap;
 }
 .trade-chart {
 	box-shadow: 2px 2px 4px #dee1e7;
