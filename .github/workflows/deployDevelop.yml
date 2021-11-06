@@ -1,18 +1,19 @@
-name: DEPLOY
+name: Deploy Develop
 ###################################
 # Required Secret : SSH_PRIVATE_KEY, REMOTE_HOST, REMOTE_USER, REMOTE_PORT, REMOTE_TARGET, REMOTE_PM2, BACK_ENV, BACK_ORM_CONFIG, FRONT_ENV
 ###################################
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ develop ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ develop ]
   workflow_dispatch:
     
 jobs:
   initialize:
     runs-on: ubuntu-latest
-
+    environment: develop
+    
     steps:
       - uses: actions/checkout@v2
         
@@ -37,8 +38,9 @@ jobs:
             mkdir -p front
         
   backend:
-    runs-on: ubuntu-latest
     needs: initialize
+    runs-on: ubuntu-latest
+    environment: develop
     
     steps:
     - uses: actions/checkout@v2
@@ -78,9 +80,11 @@ jobs:
           export PM2_HOME=${{ secrets.REMOTE_PM2 }}
           pm2 kill
           npm run service
+          
   frontend:
-    runs-on: ubuntu-latest
     needs: initialize
+    runs-on: ubuntu-latest
+    environment: develop
     
     steps:
     - uses: actions/checkout@v2
