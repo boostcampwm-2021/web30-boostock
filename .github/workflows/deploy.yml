@@ -1,0 +1,121 @@
+name: DEPLOY
+###################################
+# Required Secret : SSH_PRIVATE_KEY, REMOTE_HOST, REMOTE_USER, REMOTE_PORT, REMOTE_TARGET, REMOTE_PM2, BACK_ENV, BACK_ORM_CONFIG, FRONT_ENV
+###################################
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    
+jobs:
+  initialize:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Extract Branch Name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
+        id: extract_branch
+  
+      - name: Initialize Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          port: ${{ secrets.REMOTE_PORT }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "brench=${{ steps.extract_branch.outputs.branch }}"
+            rm -r ${{ secrets.REMOTE_TARGET }}-${{ steps.extract_branch.outputs.branch }}
+            mkdir ${{ secrets.REMOTE_TARGET }}-${{ steps.extract_branch.outputs.branch }}
+            cd ${{ secrets.REMOTE_TARGET }}-${{ steps.extract_branch.outputs.branch }}
+            mkdir -p back
+            mkdir -p front
+        
+  backend:
+    runs-on: ubuntu-latest
+    needs: initialize
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Extract Branch Name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
+      id: extract_branch
+        
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@main
+      env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "back/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}-${{ steps.extract_branch.outputs.branch }}/back
+          EXCLUDE: "back/node_modules/"
+          
+    - name: Run Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        port: ${{ secrets.REMOTE_PORT }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd ${{ secrets.REMOTE_TARGET }}-${{ steps.extract_branch.outputs.branch }}/back
+          chown -R ${{ secrets.REMOTE_USER }}:${{ secrets.REMOTE_USER }} *
+          echo ${{ secrets.BACK_ENV }} >> .env
+          echo ${{ secrets.BACK_ORM_CONFIG }} >> ormconfig.json
+          npm install -g pm2
+          npm install -g ts-node
+          npm install
+          export PM2_HOME=${{ secrets.REMOTE_PM2 }}
+          pm2 kill
+          npm run service
+  frontend:
+    runs-on: ubuntu-latest
+    needs: initialize
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Extract Branch Name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
+      id: extract_branch
+
+    - name: Install Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16.x'
+    
+    - name: Install NPM Dependencies
+      run: npm install
+      working-directory: ./front
+    
+    - name: Create Environment File
+      run: |
+        echo ${{ secrets.FRONT_ENV }} >> .env
+      working-directory: ./front
+
+    - name: Run Build Task
+      run: npm run build
+      working-directory: ./front
+
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@main
+      env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "front/dist/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}-${{ steps.extract_branch.outputs.branch }}/front
+          EXCLUDE: "front/dist/, front/node_modules/"
