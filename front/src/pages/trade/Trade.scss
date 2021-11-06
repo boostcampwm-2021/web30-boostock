@@ -11,7 +11,7 @@ $aside-width: 400px;
 .trade-container {
 	display: flex;
 	flex-direction: row;
-	width: global.$trade-body-width;
+	max-width: 1440px;
 	height: fit-content;
 	padding: $gap;
 	gap: $gap;
