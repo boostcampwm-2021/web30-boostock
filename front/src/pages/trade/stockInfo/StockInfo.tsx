@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AiFillCaretUp, AiFillCaretDown } from 'react-icons/ai';
 import { IStockListItem } from '@recoil/stockList/index';
 import formatNumber from '@src/common/utils/formatNumber';
@@ -47,6 +47,14 @@ const StockInfo = (props: Props) => {
 	const percent =
 		((currentPrice - previousClosingPrice) / previousClosingPrice) * 100;
 
+	useEffect(() => {
+		document.title = `boostock/${name}`;
+
+		return () => {
+			document.title = 'boostock';
+		};
+	}, [name]);
+
 	return (
 		<div className="stock-info">
 			<div className="stock-info__left">
@@ -64,11 +72,17 @@ const StockInfo = (props: Props) => {
 				</div>
 			</div>
 			<div className="stock-info__right">
-				<div className="extra-info highest-price">
+				<div className="extra-info high-price">
 					<span className="extra-info-data">
-						{formatNumber(lowPrice)}원 — {formatNumber(highPrice)}원
+						{formatNumber(highPrice)}원
 					</span>
-					<span className="extra-info-text">일일 가격 범위</span>
+					<span className="extra-info-text">고가</span>
+				</div>
+				<div className="extra-info low-price">
+					<span className="extra-info-data">
+						{formatNumber(lowPrice)}원
+					</span>
+					<span className="extra-info-text">저가</span>
 				</div>
 				<div className="extra-info trading-volume">
 					<span className="extra-info-data">

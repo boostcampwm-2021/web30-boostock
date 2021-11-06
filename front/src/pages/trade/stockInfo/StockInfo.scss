@@ -12,7 +12,7 @@
 	border-radius: $cardBorderRadius;
 	box-shadow: 2px 2px 4px $boxShadowColor;
 	border: 1px solid $cardBorderColor;
-	width: 38%;
+	width: 32%;
 	background-color: $white;
 }
 
@@ -22,13 +22,14 @@
 	padding: 12px;
 	border-radius: $cardBorderRadius;
 	box-shadow: 2px 2px 4px $boxShadowColor;
-	width: 55%;
+	width: 60%;
 	border: 1px solid $cardBorderColor;
 	background-color: $white;
 }
 
 .stock-name {
-	font-size: 26px;
+	font-size: 24px;
+	font-weight: 700;
 	margin-bottom: 14px;
 }
 
@@ -36,8 +37,8 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	font-size: 32px;
-	letter-spacing: 1.5px;
+	font-size: 28px;
+	letter-spacing: 1px;
 }
 
 .current-price {
@@ -82,10 +83,11 @@
 	& .extra-info-data {
 		margin-bottom: 8px;
 		font-weight: 700;
-		font-size: 18px;
+		font-size: 16px;
 	}
 
 	& .extra-info-text {
 		color: #6d6d6d;
+		font-size: 14px;
 	}
 }
