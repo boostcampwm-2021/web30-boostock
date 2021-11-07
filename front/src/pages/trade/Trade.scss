@@ -1,4 +1,5 @@
-@use '../../common/global.scss';
+@import '@common/global.scss';
+@import '@common/mixins.scss';
 $gap: 20px;
 $aside-width: 400px;
 
@@ -18,21 +19,22 @@ $aside-width: 400px;
 .aside-bar {
 	position: sticky;
 	top: 65px;
-	height: calc(100vh - global.$header-height - $gap * 2);
+	height: calc(100vh - $header-height - $gap * 2);
 	width: $aside-width;
 	flex-shrink: 0;
-	margin-top: global.$header-height;
-	border: 1px solid global.$cardBorderColor;
-	border-radius: global.$cardBorderRadius;
-	box-shadow: 2px 2px 4px global.$boxShadowColor;
+	margin-top: $header-height;
+	border-radius: $cardBorderRadius;
+	box-shadow: 2px 2px 4px $boxShadowColor;
 
 	background-color: #fff;
 
-	@media screen and (max-width: global.$responsiveSize1) {
+	@include darkModeCardStyle();
+
+	@media screen and (max-width: $responsiveSize1) {
 		width: 380px;
 	}
 
-	@media screen and (max-width: global.$responsiveSize2) {
+	@media screen and (max-width: $responsiveSize2) {
 		width: 360px;
 	}
 }
@@ -41,15 +43,20 @@ $aside-width: 400px;
 	display: flex;
 	flex-direction: column;
 	gap: $gap 0px;
-	margin-top: global.$header-height;
+	margin-top: $header-height;
 }
 .trade-chart {
+	width: 950px;
+	height: 400px;
 	box-shadow: 2px 2px 4px #dee1e7;
-	border-radius: global.$cardBorderRadius;
+	border-radius: $cardBorderRadius;
+	background-image: url('@assets/stock-chart-placeholder.png');
+	background-size: cover;
 
-	& > img {
-		width: 100%;
-		height: 100%;
+	@include darkModeCardStyle();
+
+	.dark-theme & {
+		background-image: url('@assets/stock-chart-placeholder-dark.png');
 	}
 }
 .trade-status {
@@ -63,8 +70,10 @@ $aside-width: 400px;
 	height: 100%;
 	box-shadow: 2px 2px 4px #dee1e7;
 
-	background-color: global.$white;
-	border-radius: global.$cardBorderRadius;
+	background-color: $white;
+	border-radius: $cardBorderRadius;
+
+	@include darkModeCardStyle();
 }
 .trade-bid-ask {
 	flex: 1;
@@ -72,9 +81,14 @@ $aside-width: 400px;
 	box-shadow: 2px 2px 4px #dee1e7;
 
 	background-color: #fff;
-	border-radius: global.$cardBorderRadius;
+	border-radius: $cardBorderRadius;
+
+	@include darkModeCardStyle();
 }
 .trade-conclusion {
 	min-height: 400px;
+	background-color: $white;
 	box-shadow: 2px 2px 4px #dee1e7;
+
+	@include darkModeCardStyle();
 }

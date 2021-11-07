@@ -58,7 +58,7 @@ const Conclusion = (props: Props) => {
 			<header className="conclusion-header">
 				<div className="conclusion-timestamp">체결시간</div>
 				<div className="conclusion-single-price">체결가격(원)</div>
-				<div className="conclusion-volumn">체결량(주)</div>
+				<div className="conclusion-volume">체결량(주)</div>
 				<div className="conclusion-total-price">체결금액(원)</div>
 			</header>
 			<div className="conclusion-content">
@@ -81,7 +81,7 @@ const Conclusion = (props: Props) => {
 								{log.price.toLocaleString('ko-kr')}
 							</div>
 							<div
-								className={`conclusion-volumn ${
+								className={`conclusion-volume ${
 									log.type === 'bid' ? 'up' : 'down'
 								}`}
 							>

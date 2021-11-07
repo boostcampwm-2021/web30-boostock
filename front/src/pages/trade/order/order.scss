@@ -1,4 +1,5 @@
 @import '@common/global.scss';
+@import '@common/mixins.scss';
 
 .order-container {
 	width: 100%;
@@ -10,22 +11,17 @@
 	text-align: center;
 	padding: 10px 0;
 	border-bottom: 4px solid $primary;
+
+	.dark-theme & {
+		border-bottom: 4px solid $primary2;
+	}
 }
 
 .order-content {
 	max-height: 470px;
 	overflow-y: auto;
 	padding-left: 6px;
-	&::-webkit-scrollbar {
-		width: 6px;
-	}
-	&::-webkit-scrollbar-track {
-		background-color: transparent;
-	}
-	&::-webkit-scrollbar-thumb {
-		background-color: #ccc;
-		border-radius: 8px;
-	}
+	@include scrollBarStyle();
 
 	@media screen and (max-width: $responsiveSize2) {
 		max-height: 440px;
@@ -71,6 +67,12 @@
 	&.active:hover {
 		background-color: #f4faff;
 	}
+
+	.dark-theme & {
+		&.active:hover {
+			background-color: darken($darkModeLightBlue, 10%);
+		}
+	}
 }
 
 .sell-volume-bar {
@@ -78,6 +80,10 @@
 	background-color: $lightBlue;
 	height: 100%;
 	margin: 6px 0;
+
+	.dark-theme & {
+		background-color: $darkModeLightBlue;
+	}
 }
 
 .buy-volume {
@@ -90,6 +96,12 @@
 	&.active:hover {
 		background-color: #f9f0ef;
 	}
+
+	.dark-theme & {
+		&.active:hover {
+			background-color: lighten($darkModeRose, 10%);
+		}
+	}
 }
 
 .buy-volume-bar {
@@ -97,14 +109,29 @@
 	background-color: $rose;
 	height: 100%;
 	margin: 6px 0;
+
+	.dark-theme & {
+		background-color: $darkModeRose;
+	}
 }
 
 .order-sell {
 	border-top: 1px solid #c1e4ff;
 	background-color: $lightBlue;
 
+	.dark-theme & {
+		border-top: 1px solid #3170a1;
+		background-color: $darkModeLightBlue;
+	}
+
 	&:hover {
 		background-color: darken($lightBlue, 10%);
+	}
+
+	.dark-theme & {
+		&:hover {
+			background-color: darken($darkModeLightBlue, 10%);
+		}
 	}
 }
 
@@ -125,6 +152,15 @@
 .order-buy {
 	border-top: 1px solid #f7cdc6;
 	background-color: $rose;
+
+	.dark-theme & {
+		border-top: 1px solid #af5040;
+		background-color: $darkModeRose;
+
+		&:hover {
+			background-color: darken($darkModeRose, 10%);
+		}
+	}
 
 	&:hover {
 		background-color: darken($rose, 10%);
@@ -153,6 +189,12 @@
 	& > .total-sell-volume {
 		padding-left: 11px;
 	}
+
+	.dark-theme & {
+		color: $gray;
+		background-color: $darkGray;
+		border-top: 1px solid $darkModeBorderColor;
+	}
 }
 
 .total-sell-volume {
@@ -164,6 +206,11 @@
 	font-size: 16px;
 	border-left: 1px solid $cardBorderColor;
 	border-right: 1px solid $cardBorderColor;
+
+	.dark-theme & {
+		border-left: 1px solid $darkModeBorderColor;
+		border-right: 1px solid $darkModeBorderColor;
+	}
 }
 
 .total-buy-volume {

@@ -13,6 +13,10 @@
 	box-shadow: 2px 2px 4px #dee1e7;
 
 	z-index: 10;
+
+	.dark-theme & {
+		box-shadow: none;
+	}
 }
 .top-bar-wrapper {
 	display: flex;

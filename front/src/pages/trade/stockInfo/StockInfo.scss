@@ -1,4 +1,5 @@
 @import '@common/global.scss';
+@import '@common/mixins.scss';
 
 .stock-info {
 	display: flex;
@@ -11,9 +12,10 @@
 	padding: 12px;
 	border-radius: $cardBorderRadius;
 	box-shadow: 2px 2px 4px $boxShadowColor;
-	border: 1px solid $cardBorderColor;
 	width: 32%;
 	background-color: $white;
+
+	@include darkModeCardStyle();
 }
 
 .stock-info__right {
@@ -23,8 +25,9 @@
 	border-radius: $cardBorderRadius;
 	box-shadow: 2px 2px 4px $boxShadowColor;
 	width: 60%;
-	border: 1px solid $cardBorderColor;
 	background-color: $white;
+
+	@include darkModeCardStyle();
 
 	@media screen and (max-width: $responsiveSize2) {
 		width: 55%;
@@ -69,14 +72,26 @@
 
 .price-plus {
 	color: $red;
+
+	.dark-theme & {
+		color: $darkModeRed;
+	}
 }
 
 .price-minus {
 	color: $blue;
+
+	.dark-theme & {
+		color: $darkModeBlue;
+	}
 }
 
 .price-neutral {
 	color: #1a1a1a;
+
+	.dark-theme & {
+		color: $gray;
+	}
 }
 
 .price-percent {
@@ -116,6 +131,12 @@
 
 		@media screen and (max-width: $responsiveSize1) {
 			font-size: 12px;
+		}
+	}
+
+	.dark-theme & {
+		& .extra-info-text {
+			color: $gray;
 		}
 	}
 }

@@ -6,7 +6,7 @@ import BidAskType from './BidAskType';
 import BidAskInputs from './BidAskInputs';
 import BidAskAction from './BidAskAction';
 
-import style from './bidask.module.scss';
+import './bidask.scss';
 
 interface IOrderData {
 	user_id: number;
@@ -86,13 +86,13 @@ const BidAsk = () => {
 	}, [bidAskAmount, isAmountError]);
 
 	return (
-		<div className={style['bidask-container']}>
+		<div className="bidask-container">
 			<Toaster />
 			<BidAskType
 				bidAskType={bidAskType}
 				handleSetBidAskType={handleSetBidAskType}
 			/>
-			<div className={style['bidask-info-container']}>
+			<div className="bidask-info-container">
 				{bidAskType !== '정정/취소' && (
 					<BidAskInputs
 						bidAskType={bidAskType}

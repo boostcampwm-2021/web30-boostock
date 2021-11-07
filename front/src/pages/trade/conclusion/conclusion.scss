@@ -1,10 +1,10 @@
-@use '../../../common/global.scss';
+@import '@common/global.scss';
+@import '@common/mixins.scss';
 
 .conclusion-container {
 	width: 100%;
 	height: 100%;
-	background-color: global.$white;
-	border-radius: global.$cardBorderRadius;
+	border-radius: $cardBorderRadius;
 }
 .conclusion-title {
 	display: flex;
@@ -31,12 +31,28 @@
 			left: 0;
 			content: '';
 			height: 100%;
-			border-left: 1px solid global.$borderColor;
+			border-left: 1px solid $borderColor;
 		}
 	}
 
 	.conclusion-tab-clicked {
-		border-bottom: 3px solid global.$primary;
+		border-bottom: 4px solid $primary;
+	}
+
+	.dark-theme & {
+		.conclusion-tab {
+			color: $white2;
+		}
+
+		.conclusion-tab-clicked {
+			border-bottom: 4px solid $primary2;
+		}
+	}
+
+	.dark-theme & .conclusion-tab + .conclusion-tab {
+		&::before {
+			border-left: 1px solid $darkModeBorderColor;
+		}
 	}
 }
 
@@ -44,22 +60,21 @@
 	overflow-y: auto;
 	height: 340px;
 
-	&::-webkit-scrollbar {
-		width: 6px;
-	}
-	&::-webkit-scrollbar-track {
-		background-color: transparent;
-	}
-	&::-webkit-scrollbar-thumb {
-		background-color: #ccc;
-		border-radius: 8px;
-	}
+	@include scrollBarStyle();
 
 	.up {
-		color: global.$red;
+		color: $red;
+
+		.dark-theme & {
+			color: $darkModeRed;
+		}
 	}
 	.down {
-		color: global.$blue;
+		color: $blue;
+
+		.dark-theme & {
+			color: $darkModeBlue;
+		}
 	}
 }
 .conclusion-header {
@@ -69,12 +84,19 @@
 	background-color: #f9fafc;
 	color: #858b9b;
 	font-weight: 700;
-	border-top: 1px solid global.$borderColor;
-	border-bottom: 1px solid #f1f2f7;
+	border-top: 1px solid $borderColor;
+	border-bottom: 1px solid $borderColor;
 	font-size: 12px;
 
 	.conclusion-timestamp {
 		margin-left: 6px;
+	}
+
+	.dark-theme & {
+		border-top: 1px solid $darkModeBorderColor;
+		border-bottom: 1px solid $darkModeBorderColor;
+		color: $gray;
+		background-color: $darkGray;
 	}
 }
 .conclusion-timestamp {
@@ -86,13 +108,21 @@
 		margin-left: 5px;
 		font-size: 12px;
 	}
+
+	.dark-theme & {
+		color: $white2;
+
+		.timestamp-time {
+			color: $blueGray;
+		}
+	}
 }
 .conclusion-total-price {
 	flex: 10;
 	text-align: right;
 	padding: 0 10px;
 }
-.conclusion-volumn {
+.conclusion-volume {
 	flex: 10;
 	text-align: right;
 }
@@ -111,10 +141,20 @@
 	cursor: pointer;
 
 	& + & {
-		border-top: 1px solid #f2f4f8;
+		border-top: 1px solid $borderColor;
 	}
 
 	&:hover {
-		background-color: #f8fafb;
+		background-color: $listHoverColor;
+	}
+
+	.dark-theme & {
+		&:hover {
+			background-color: $darkModeListHoverColor;
+		}
+	}
+
+	.dark-theme & + & {
+		border-top: 1px solid $darkModeBorderColor;
 	}
 }

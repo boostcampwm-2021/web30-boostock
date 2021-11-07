@@ -2,7 +2,6 @@ import React from 'react';
 import { useRecoilValue } from 'recoil';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import StockList, { IStockListItem } from '@recoil/stockList/index';
-import stockChartPlaceholder from '@assets/stock-chart-placeholder.png';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
 import BidAsk from './bidAsk/BidAsk';
@@ -55,12 +54,7 @@ const Trade = ({ match }: Props) => {
 					<section className="trade-info">
 						<StockInfo info={stockState} />
 					</section>
-					<section className="trade-chart">
-						<img
-							src={stockChartPlaceholder}
-							alt="stock chart placeholder"
-						/>
-					</section>
+					<section className="trade-chart">&nbsp;</section>
 					<section className="trade-status">
 						<section className="trade-order">
 							<Order />

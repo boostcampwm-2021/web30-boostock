@@ -29,6 +29,12 @@
 			height: 100%;
 		}
 	}
+
+	.dark-theme & + & {
+		&::before {
+			border-left: 1px solid $darkModeBorderColor;
+		}
+	}
 }
 
 .bidask-type-select-list-btn {
@@ -38,34 +44,67 @@
 	width: 100%;
 	padding: 20px 0;
 	cursor: pointer;
+	font-weight: 700;
+
+	.dark-theme & {
+		color: $white2;
+	}
 }
 
 .bidask-type-bid {
 	&.on {
-		border-bottom: 3px solid $red;
+		border-bottom: 4px solid $red;
 
 		& .bidask-type-select-list-btn {
 			color: $red;
+		}
+	}
+
+	.dark-theme & {
+		&.on {
+			border-bottom: 4px solid $darkModeRed;
+
+			& .bidask-type-select-list-btn {
+				color: $darkModeRed;
+			}
 		}
 	}
 }
 
 .bidask-type-ask {
 	&.on {
-		border-bottom: 3px solid $blue;
+		border-bottom: 4px solid $blue;
 
 		& .bidask-type-select-list-btn {
 			color: $blue;
+		}
+	}
+
+	.dark-theme & {
+		&.on {
+			border-bottom: 4px solid $darkModeBlue;
+
+			& .bidask-type-select-list-btn {
+				color: $darkModeBlue;
+			}
 		}
 	}
 }
 
 .bidask-type-cancel {
 	&.on {
-		border-bottom: 3px solid $lightGreen;
+		border-bottom: 4px solid $lightGreen;
 
 		& .bidask-type-select-list-btn {
 			color: $lightGreen;
+		}
+	}
+
+	&.on {
+		border-bottom: 4px solid $darkModeLightGreen;
+
+		& .bidask-type-select-list-btn {
+			color: $darkModeLightGreen;
 		}
 	}
 }
@@ -74,6 +113,10 @@
 	border-top: 1px solid $borderColor;
 	padding: 30px 16px 16px;
 	height: 65%;
+
+	.dark-theme & {
+		border-top: 1px solid $darkModeBorderColor;
+	}
 
 	@media screen and (max-width: $responsiveSize2) {
 		font-size: 14px;
@@ -116,6 +159,11 @@
 		border: 1px solid $indigo;
 		box-shadow: none;
 	}
+
+	.dark-theme & {
+		border: 1px solid $darkModeBorderColor;
+		box-shadow: none;
+	}
 }
 
 .bidask-info-price {
@@ -129,8 +177,12 @@
 
 .bidask-info-text {
 	font-size: 13px;
-	color: #555;
+	color: $darkBlue;
 	font-weight: 700;
+
+	.dark-theme & {
+		color: $gray;
+	}
 }
 
 .bidask-info-text-input {
@@ -142,6 +194,17 @@
 		border: 1px solid $red;
 		outline: 1px solid $red;
 	}
+
+	.dark-theme & {
+		background-color: $darkGray;
+		border: 1px solid $darkModeBorderColor;
+		color: $white2;
+
+		&.error:not(:focus) {
+			border: 1px solid $darkModeRed;
+			outline: 1px solid $darkModeRed;
+		}
+	}
 }
 
 .bidask-error-notice {
@@ -150,6 +213,10 @@
 	bottom: -14px;
 	right: 108px;
 	color: $red;
+
+	.dark-theme & {
+		color: $darkModeRed;
+	}
 }
 
 .bidask-total-price-container {
@@ -188,6 +255,10 @@
 	border: none;
 	outline: none;
 	cursor: pointer;
+
+	.dark-theme & {
+		background-color: #76767c;
+	}
 }
 
 .bidask-action-btn {
@@ -202,6 +273,12 @@
 	&:disabled {
 		background-color: #999999;
 		cursor: not-allowed;
+	}
+
+	.dark-theme & {
+		&:disabled {
+			background-color: #5f5f5f;
+		}
 	}
 
 	@media screen and (max-width: $responsiveSize2) {
@@ -223,12 +300,24 @@
 
 .bid-action {
 	background-color: $red;
+
+	.dark-theme & {
+		background-color: $darkModeRed;
+	}
 }
 
 .ask-action {
 	background-color: $blue;
+
+	.dark-theme & {
+		background-color: $darkModeBlue;
+	}
 }
 
 .cancel-action {
 	background-color: $lightGreen;
+
+	.dark-theme & {
+		background-color: $darkModeLightGreen;
+	}
 }

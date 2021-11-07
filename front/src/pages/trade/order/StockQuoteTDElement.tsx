@@ -2,7 +2,7 @@ import React from 'react';
 import { IStockQuoteItem } from '@src/recoil/stockQuote/atom';
 import formatNumber from '@src/common/utils/formatNumber';
 
-import style from './order.module.scss';
+import './order.scss';
 
 interface IProps {
 	quote: IStockQuoteItem;
@@ -15,21 +15,21 @@ interface IProps {
 }
 
 function sellVolumeBarClass(quoteType: number) {
-	let result = `${style['order-row-volume']} ${style['sell-volume']}`;
-	if (quoteType === 0) result += ` ${style.active}`;
+	let result = 'order-row-volume sell-volume';
+	if (quoteType === 0) result += ' active';
 
 	return result;
 }
 
 function buyVolumeBarClass(quoteType: number) {
-	let result = `${style['order-row-volume']} ${style['buy-volume']}`;
-	if (quoteType === 1) result += ` ${style.active}`;
+	let result = 'order-row-volume buy-volume';
+	if (quoteType === 1) result += ' active';
 
 	return result;
 }
 
 function backgroundColorClass(orderType: number): string {
-	return orderType === 0 ? style['order-sell'] : style['order-buy'];
+	return orderType === 0 ? 'order-sell' : 'order-buy';
 }
 
 function volumeWidth(volume: number, maxVolume: number): string {
@@ -58,11 +58,11 @@ const StockQuoteTDElement = ({
 									totalAndMaxVolumes.maxVolume,
 								),
 							}}
-							className={style['sell-volume-bar']}
+							className="sell-volume-bar"
 						>
 							&nbsp;
 						</div>
-						<p className={style['volume-sell-text']}>
+						<p className="volume-sell-text">
 							{formatNumber(quote.volume)}
 						</p>
 					</>
@@ -70,9 +70,9 @@ const StockQuoteTDElement = ({
 			</td>
 			<td
 				role="button"
-				className={`${
-					style['order-row-price-data']
-				} ${backgroundColorClass(quote.type)}`}
+				className={`order-row-price-data ${backgroundColorClass(
+					quote.type,
+				)}`}
 				onClick={() => setBidAskPrice(quote.price)}
 				onKeyDown={() => setBidAskPrice(quote.price)}
 				tabIndex={0}
@@ -94,11 +94,11 @@ const StockQuoteTDElement = ({
 									totalAndMaxVolumes.maxVolume,
 								),
 							}}
-							className={style['buy-volume-bar']}
+							className="buy-volume-bar"
 						>
 							&nbsp;
 						</div>
-						<p className={style['volume-buy-text']}>
+						<p className="volume-buy-text">
 							{formatNumber(quote.volume)}
 						</p>
 					</>
