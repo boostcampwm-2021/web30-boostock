@@ -4,6 +4,10 @@
 
 body {
 	background-color: #f0f1f5;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 #app {

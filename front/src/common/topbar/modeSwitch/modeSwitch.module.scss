@@ -1,0 +1,45 @@
+@import '@common/global.scss';
+
+.switch-container {
+	margin-top: 4px;
+	margin-left: 20px;
+}
+
+#mode-switch {
+	display: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	&:checked + .switch-label::before {
+		transform: translateX(32px);
+	}
+}
+
+.switch-label {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	width: 60px;
+	padding-top: 1px;
+	position: relative;
+	height: 28px;
+	border-radius: 15px;
+	background-color: lighten($primary, 15%);
+	transition: all 0.3s;
+	cursor: pointer;
+
+	&::before {
+		content: '';
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		width: 28px;
+		height: 28px;
+		background: $white;
+		border-radius: 50%;
+		z-index: 1;
+		transition: transform 0.2s;
+	}
+}
