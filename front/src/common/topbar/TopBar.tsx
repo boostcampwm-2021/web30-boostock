@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Logo from '@common/logo/Logo';
 import { Ipage } from '@src/app';
 import Menu from './menu/Menu';
+import ModeSwitch from './modeSwitch/ModeSwitch';
 
 import './topbar.scss';
 
@@ -15,6 +16,7 @@ const TopBar = ({ pages }: { pages: Ipage[] }) => {
 					<Logo />
 				</Link>
 				<Menu pages={pages} />
+				<ModeSwitch />
 			</section>
 		</header>
 	);
