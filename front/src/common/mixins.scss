@@ -1,0 +1,30 @@
+@import './global.scss';
+
+@mixin darkModeCardStyle() {
+	.dark-theme & {
+		box-shadow: none;
+		background-color: $darkModeCardBackgroundColor;
+		color: $white2;
+	}
+}
+
+@mixin scrollBarStyle() {
+	&::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background-color: transparent;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: #ccc;
+		border-radius: 8px;
+	}
+
+	.dark-theme & {
+		&::-webkit-scrollbar-thumb {
+			background-color: lighten($darkGray, 7%);
+		}
+	}
+}

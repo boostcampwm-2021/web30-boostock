@@ -23,10 +23,27 @@
 
 	&.up {
 		color: $red;
+
+		.dark-theme & {
+			color: $darkModeRed;
+		}
 	}
 
 	&.down {
 		color: $blue;
+
+		.dark-theme & {
+			color: $darkModeBlue;
+		}
+	}
+
+	.dark-theme & {
+		color: $blueGray;
+		border-bottom: 1px solid $darkModeBorderColor;
+
+		&:hover {
+			background-color: $darkModeListHoverColor;
+		}
 	}
 }
 
@@ -44,6 +61,10 @@
 	color: $black;
 	font-size: 14px;
 	font-weight: 700;
+
+	.dark-theme & {
+		color: $white2;
+	}
 }
 
 .sidebar__item-price {
@@ -56,6 +77,10 @@
 
 	&.changed-down {
 		border: 1px solid $blue;
+	}
+
+	.dark-theme & {
+		color: $white2;
 	}
 }
 
@@ -85,5 +110,9 @@
 	.sidebar__item-amount-unit {
 		margin: 0;
 		color: #bbb;
+	}
+
+	.dark-theme & {
+		color: $white2;
 	}
 }

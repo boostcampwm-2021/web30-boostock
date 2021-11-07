@@ -5,7 +5,7 @@ import stockQuoteAtom, { IStockQuoteItem } from '@src/recoil/stockQuote/atom';
 import formatNumber from '@src/common/utils/formatNumber';
 import StockQuoteTDElement from './StockQuoteTDElement';
 
-import style from './order.module.scss';
+import './order.scss';
 
 function calculateTotalAndMaxVolumes(data: IStockQuoteItem[]) {
 	const LENGTH = data.length;
@@ -44,13 +44,13 @@ const Order = () => {
 	}, [orderContentRef]);
 
 	return (
-		<div className={style['order-container']}>
-			<header className={style['order-header']}>호가정보</header>
-			<div className={style['order-content']} ref={orderContentRef}>
-				<table className={style['order-table']}>
+		<div className="order-container">
+			<header className="order-header">호가정보</header>
+			<div className="order-content" ref={orderContentRef}>
+				<table className="order-table">
 					<tbody>
 						{stockQuotes.map((quote) => (
-							<tr key={quote.id} className={style['order-row']}>
+							<tr key={quote.id} className="order-row">
 								<StockQuoteTDElement
 									quote={quote}
 									totalAndMaxVolumes={totalAndMaxVolumes}
@@ -61,12 +61,12 @@ const Order = () => {
 					</tbody>
 				</table>
 			</div>
-			<div className={style['total-volumes']}>
-				<div className={style['total-sell-volume']}>
+			<div className="total-volumes">
+				<div className="total-sell-volume">
 					{formatNumber(totalAndMaxVolumes.sellVolume)}&nbsp;주
 				</div>
-				<div className={style['total-volumes-text']}>총잔량</div>
-				<div className={style['total-buy-volume']}>
+				<div className="total-volumes-text">총잔량</div>
+				<div className="total-buy-volume">
 					{formatNumber(totalAndMaxVolumes.buyVolume)}&nbsp;주
 				</div>
 			</div>
