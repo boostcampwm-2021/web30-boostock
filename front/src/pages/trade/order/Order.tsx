@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import bidAskPriceAtom from '@src/recoil/bidAskPrice/atom';
 import stockQuoteAtom, { IStockQuoteItem } from '@src/recoil/stockQuote/atom';
 import formatNumber from '@src/common/utils/formatNumber';
+import StockQuoteTDElement from './StockQuoteTDElement';
 
 import style from './order.module.scss';
-
-function backgroundColorClass(orderType: number): string {
-	return orderType === 0 ? style['order-sell'] : style['order-buy'];
-}
 
 function calculateTotalAndMaxVolumes(data: IStockQuoteItem[]) {
 	const LENGTH = data.length;
@@ -24,26 +22,9 @@ function calculateTotalAndMaxVolumes(data: IStockQuoteItem[]) {
 	return { buyVolume, sellVolume, maxVolume };
 }
 
-function volumeWidth(volume: number, maxVolume: number): string {
-	return `${(volume / maxVolume) * 100}%`;
-}
-
-function sellVolumeBarClass(quoteType: number) {
-	let result = `${style['order-row-volume']} ${style['sell-volume']}`;
-	if (quoteType === 0) result += ` ${style.active}`;
-
-	return result;
-}
-
-function buyVolumeBarClass(quoteType: number) {
-	let result = `${style['order-row-volume']} ${style['buy-volume']}`;
-	if (quoteType === 1) result += ` ${style.active}`;
-
-	return result;
-}
-
 const Order = () => {
 	const orderContentRef = useRef<HTMLDivElement>(null);
+	const setBidAskPrice = useSetRecoilState(bidAskPriceAtom);
 	const stockQuotes = useRecoilValue<IStockQuoteItem[]>(stockQuoteAtom);
 	const [totalAndMaxVolumes, setTotalAndMaxVolumes] = useState(() =>
 		calculateTotalAndMaxVolumes(stockQuotes),
@@ -70,66 +51,11 @@ const Order = () => {
 					<tbody>
 						{stockQuotes.map((quote) => (
 							<tr key={quote.id} className={style['order-row']}>
-								<td className={sellVolumeBarClass(quote.type)}>
-									{quote.type === 0 && (
-										<>
-											<div
-												style={{
-													width: volumeWidth(
-														quote.volume,
-														totalAndMaxVolumes.maxVolume,
-													),
-												}}
-												className={
-													style['sell-volume-bar']
-												}
-											>
-												&nbsp;
-											</div>
-											<p
-												className={
-													style['volume-sell-text']
-												}
-											>
-												{formatNumber(quote.volume)}
-											</p>
-										</>
-									)}
-								</td>
-								<td
-									className={`${
-										style['order-row-price-data']
-									} ${backgroundColorClass(quote.type)}`}
-								>
-									{formatNumber(quote.price)}
-								</td>
-
-								<td className={buyVolumeBarClass(quote.type)}>
-									{quote.type === 1 && (
-										<>
-											<div
-												style={{
-													width: volumeWidth(
-														quote.volume,
-														totalAndMaxVolumes.maxVolume,
-													),
-												}}
-												className={
-													style['buy-volume-bar']
-												}
-											>
-												&nbsp;
-											</div>
-											<p
-												className={
-													style['volume-buy-text']
-												}
-											>
-												{formatNumber(quote.volume)}
-											</p>
-										</>
-									)}
-								</td>
+								<StockQuoteTDElement
+									quote={quote}
+									totalAndMaxVolumes={totalAndMaxVolumes}
+									setBidAskPrice={setBidAskPrice}
+								/>
 							</tr>
 						))}
 					</tbody>
