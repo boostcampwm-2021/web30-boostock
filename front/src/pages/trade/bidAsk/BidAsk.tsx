@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
+import bidAskPriceAtom from '@src/recoil/bidAskPrice/atom';
 import toast, { Toaster } from 'react-hot-toast';
 import BidAskType from './BidAskType';
 import BidAskInputs from './BidAskInputs';
@@ -19,7 +20,7 @@ interface IOrderData {
 const BidAsk = () => {
 	const [bidAskType, setBidAskType] = useState<string>('매수');
 	const [bidAskOption, setBidAskOption] = useState<string>('지정가');
-	const [bidAskPrice, setBidAskPrice] = useState<number>(0);
+	const [bidAskPrice, setBidAskPrice] = useRecoilState(bidAskPriceAtom);
 	const [bidAskAmount, setBidAskAmount] = useState<number>(0);
 	const [isAmountError, setIsAmountError] = useState<boolean>(false);
 

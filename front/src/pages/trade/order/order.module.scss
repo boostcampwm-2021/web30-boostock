@@ -15,6 +15,7 @@
 .order-content {
 	max-height: 470px;
 	overflow-y: auto;
+	padding-left: 6px;
 	&::-webkit-scrollbar {
 		width: 6px;
 	}
@@ -147,6 +148,10 @@
 
 	& > .total-buy-volume {
 		padding-right: 11px;
+	}
+
+	& > .total-sell-volume {
+		padding-left: 11px;
 	}
 }
 
