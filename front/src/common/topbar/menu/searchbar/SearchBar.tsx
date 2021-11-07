@@ -7,6 +7,7 @@ const stockList = [
 	{ korean: '호눅스코인', english: 'honux', target: '호눅스코인' },
 	{ korean: '크롱코인', english: 'crong', target: '크롱코인' },
 	{ korean: 'JK코인', english: 'jk', target: 'JK코인' },
+	{ korean: 'Ivy코인', english: 'Ivy', target: 'Ivy코인' },
 ];
 
 const SearchBar = (props: Props) => {

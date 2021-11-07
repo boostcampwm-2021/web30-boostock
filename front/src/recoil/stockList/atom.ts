@@ -44,6 +44,16 @@ const stockListAtom = atom<IStockListItem[]>({
 			tradingVolume: 123456,
 			tradingAmount: 123456,
 		},
+		{
+			id: 4,
+			name: 'Ivy코인',
+			currentPrice: 123456,
+			highPrice: 234567,
+			lowPrice: 123123,
+			previousClosingPrice: 123111,
+			tradingVolume: 1234567,
+			tradingAmount: 12345678,
+		},
 	],
 });
 
