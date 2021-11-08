@@ -1,7 +1,10 @@
+/* eslint-disable import/no-cycle */
 import 'reflect-metadata';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import UserFavorite from './UserFavorite';
+import UserStock from './UserStock';
 
-@Entity()
+@Entity({ name: 'user' })
 export default class User {
 	@PrimaryGeneratedColumn()
 	user_id: number;
@@ -17,4 +20,13 @@ export default class User {
 
 	@Column()
 	balance: number;
+
+	@OneToMany(
+		() => UserFavorite,
+		(userFavorite: UserFavorite) => userFavorite.user_id,
+	)
+	favorites: UserFavorite[];
+
+	@OneToMany(() => UserStock, (userStock: UserStock) => userStock.user_id)
+	stocks: UserStock[];
 }

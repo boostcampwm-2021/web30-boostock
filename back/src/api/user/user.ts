@@ -1,56 +1,105 @@
 import express, { Request, Response } from 'express';
-import User from '@models/User';
-import UserService from '@services/UserService';
+import { User } from '@models/index';
+import { UserService } from '@services/index';
+import { CommonError } from '@services/errors/index';
+import { QueryRunner, transaction } from '@helper/tools';
 
 export default (): express.Router => {
 	const router = express.Router();
-	router.get('/', async (req: Request, res: Response) => {
-		const userServiceInstance = new UserService();
-		const users = await userServiceInstance.getLoggedUser();
-		res.status(200).json(users);
-	});
-	router.get('/new', async (req: Request, res: Response) => {
-		const userServiceInstance = new UserService();
-		const user = new User();
-		user.username = 'test';
-		user.email = 'test@naver.com';
-		user.social_github = '0';
-		user.balance = 0;
-		await userServiceInstance.signUp(user);
-		res.status(200);
-	});
-	router.get('/:id', async (req: Request, res: Response) => {
-		res.send('heartbeat!');
-		// const userServiceInstance = new UserService();
-		// const result = await userServiceInstance.FindOne(req.params.id);
-		// res.status(200).json(result);
-	});
-	router.post('/', async (req: Request, res: Response) => {
-		res.send('heartbeat!');
-		// const userServiceInstance = new UserService();
-		// const result = userServiceInstance.SignUp(req.body as User);
-		// res.status(200).json(result);
-	});
-	router.put('/:id', async (req: Request, res: Response, next) => {
-		res.send('heartbeat!');
-		// const userserviceinstance = new userservice();
-		// const result = userserviceinstance.updatefirstname(
-		// 	req.params.id,
-		// 	req.params.firstname,
-		// );
 
-		// if (result === null) {
-		// 	next(new Error('can not find'));
-		// }
-		// res.status(200).json(result);
+	router.get('/', (req: Request, res: Response) => {
+		transaction(
+			req,
+			res,
+			(
+				queryRunner: QueryRunner,
+				then: () => void,
+				err: (err: CommonError) => void,
+				fin: () => void,
+			) => {
+				const loggedUserID = Number(req.cookies.id) || 0;
+				const userServiceInstance = new UserService();
+				userServiceInstance
+					.getUserById(queryRunner.manager, loggedUserID)
+					.then((users: User) => {
+						res.status(200).json(users).end();
+						then();
+					})
+					.catch(err)
+					.finally(fin);
+			},
+		);
 	});
-	router.delete('/:id', async (req: Request, res: Response) => {
-		res.send('heartbeat!');
-		// const userServiceInstance = new UserService();
-		// const results = await userServiceInstance.Delete(
-		// 	parseInt(req.params.id, 10),
-		// );
-		// res.status(200).json(results);
+
+	router.post('/', async (req: Request, res: Response) => {
+		transaction(
+			req,
+			res,
+			(
+				queryRunner: QueryRunner,
+				then: () => void,
+				err: (err: CommonError) => void,
+				fin: () => void,
+			) => {
+				const userServiceInstance = new UserService();
+				userServiceInstance
+					.signUp(queryRunner.manager, {
+						username: req.body.username,
+						email: req.body.email,
+						social_github: '0',
+					})
+					.then(() => {
+						res.status(200).end();
+						then();
+					})
+					.catch(err)
+					.finally(fin);
+			},
+		);
 	});
+
+	router.delete('/', async (req: Request, res: Response) => {
+		transaction(
+			req,
+			res,
+			(
+				queryRunner: QueryRunner,
+				then: () => void,
+				err: (err: CommonError) => void,
+				fin: () => void,
+			) => {
+				const loggedUserID = Number(req.cookies.id) || 0;
+				const userServiceInstance = new UserService();
+				userServiceInstance
+					.getUserById(queryRunner.manager, loggedUserID)
+					.then((users: User) => {
+						res.status(200).json(users).end();
+						then();
+					})
+					.catch(err)
+					.finally(fin);
+			},
+		);
+	});
+
+	// 테스트용 임시 로그인 시스템
+	// 페이지 진입 시, 1~3번 중 1개의 ID 선택되어 쿠키에 설정됨
+	// req.cookie.id를 통해 접근
+	router.get('/login', async (req: Request, res: Response) => {
+		res.cookie('id', 1 + Math.floor(Math.random() * 3), {
+			expires: new Date(Date.now() + 999999),
+			httpOnly: true,
+		});
+
+		res.status(200).end();
+	});
+
+	// 테스트용 임시 로그아웃 시스템
+	// req.cookie.id 제거
+	router.get('/logout', async (req: Request, res: Response) => {
+		res.clearCookie('id');
+		res.status(200).end();
+	});
+
 	return router;
 };
