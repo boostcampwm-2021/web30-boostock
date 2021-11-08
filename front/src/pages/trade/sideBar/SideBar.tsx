@@ -6,12 +6,7 @@ import SideBarItem from './sideBarItem/SideBarItem';
 
 import './SideBar.scss';
 import SearchBar from './searchbar/SearchBar';
-
-export enum MENU {
-	ALL = '전체',
-	FAVORITE = '관심',
-	HOLD = '보유',
-}
+import SideBarNav, { MENU } from './sideBarNav/SideBarNav';
 
 // interface Props {}
 
@@ -49,39 +44,17 @@ const SideBar = () => {
 	return (
 		<div className="sidebar">
 			<div className="sidebar__menu">
-				<div
-					className={`sidebar__menu-item ${
-						menu === MENU.ALL ? 'selected' : ''
-					}`}
-					role="button"
-					tabIndex={0}
-					onClick={() => setMenu(MENU.ALL)}
-					onKeyDown={() => setMenu(MENU.ALL)}
-				>
-					{MENU.ALL}
-				</div>
-				<div
-					className={`sidebar__menu-item ${
-						menu === MENU.FAVORITE ? 'selected' : ''
-					}`}
-					role="button"
-					tabIndex={0}
-					onClick={() => setMenu(MENU.FAVORITE)}
-					onKeyDown={() => setMenu(MENU.FAVORITE)}
-				>
-					{MENU.FAVORITE}
-				</div>
-				<div
-					className={`sidebar__menu-item ${
-						menu === MENU.HOLD ? 'selected' : ''
-					}`}
-					role="button"
-					tabIndex={0}
-					onClick={() => setMenu(MENU.HOLD)}
-					onKeyDown={() => setMenu(MENU.HOLD)}
-				>
-					{MENU.HOLD}
-				</div>
+				{Object.keys(MENU).map((key, index) => (
+					<SideBarNav
+						setMenu={setMenu}
+						index={index}
+						className={`sidebar__menu-item ${
+							menu === MENU[key as keyof typeof MENU]
+								? 'selected'
+								: ''
+						}`}
+					/>
+				))}
 			</div>
 			<SearchBar searchEvent={searchEvent} />
 			<div className="sidebar__legend">
