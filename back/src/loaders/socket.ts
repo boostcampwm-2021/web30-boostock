@@ -5,16 +5,9 @@ import Logger from './logger';
 import { IStockInformation } from '../interfaces/stockInformation';
 import { ISocketRequest } from '../interfaces/socketRequest';
 
+import StockService from '../services/StockService';
+
 const socketClientMap = new Map();
-const stockInformation: Map<string, IStockInformation> = new Map([
-	[
-		'Boostock',
-		{
-			name: 'Boostock',
-			current: 3000,
-		},
-	],
-]);
 const translateRequestFormat = (data) => JSON.parse(data);
 const translateResponseFormat = (data) => JSON.stringify(data);
 
@@ -24,14 +17,27 @@ export default (app: express.Application): void => {
 	});
 
 	const webSocketServer = new wsModule.Server({ server: HTTPServer });
-	const broadcast = (clients) => {
-		clients.forEach((stock, client) => {
-			const response = stockInformation.get(stock);
-			client.send(translateResponseFormat(response));
+	const broadcast = () => {
+		const stockService = new StockService();
+		const stockList = stockService.getStocksCurrent();
+
+		webSocketServer.clients.forEach((client) => {
+			client.send(
+				translateResponseFormat({ type: 'stocks', data: stockList }),
+			);
+			const targetStock = socketClientMap.get(client);
+			if (targetStock) {
+				client.send(
+					translateResponseFormat({
+						type: 'info',
+						data: targetStock,
+					}),
+				);
+			}
 		});
 	};
 	setInterval(() => {
-		broadcast(socketClientMap);
+		broadcast();
 	}, 1000);
 
 	webSocketServer.on('connection', (ws, req) => {
@@ -42,9 +48,13 @@ export default (app: express.Application): void => {
 			if (requestData.type === 'open') {
 				socketClientMap.set(ws, requestData.stock);
 			}
+
+			if (requestData.type === 'close') {
+				socketClientMap.delete(ws);
+			}
 		});
 		ws.on('close', () => {
-			socketClientMap.delete(ws);
+			console.log('닫힘');
 		});
 	});
 };
