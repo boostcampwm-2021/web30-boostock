@@ -35,13 +35,16 @@ const Trade = () => {
 	const stockName = stockState.code;
 
 	useEffect((): (() => void) => {
-		if (webSocket.readyState === 1) {
-			const openData: IConnection = {
-				type: 'open',
-				stock: stockName,
-			};
-			webSocket.send(translateRequestData(openData));
-		}
+		const connection = setInterval(() => {
+			if (webSocket.readyState === 1) {
+				const openData: IConnection = {
+					type: 'open',
+					stock: stockName,
+				};
+				webSocket.send(translateRequestData(openData));
+				clearInterval(connection);
+			}
+		});
 		return () => {
 			const closeData: IConnection = {
 				type: 'close',
