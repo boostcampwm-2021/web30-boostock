@@ -78,10 +78,6 @@
 	&.changed-down {
 		border: 1px solid $blue;
 	}
-
-	.dark-theme & {
-		color: $white2;
-	}
 }
 
 .sidebar__item-percent {
