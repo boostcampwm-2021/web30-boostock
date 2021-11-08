@@ -1,24 +1,33 @@
-import { EntityRepository, Repository } from 'typeorm';
+import {
+	EntityRepository,
+	Repository,
+	InsertResult,
+	DeleteResult,
+} from 'typeorm';
 import Stock from '@models/Stock';
 
 @EntityRepository(Stock)
 export default class StockRepository extends Repository<Stock> {
-	public async createOrder(stock: Stock): Promise<void> {
-		await this.insert(stock);
+	public async createStock(stock: Stock): Promise<boolean> {
+		const result: InsertResult = await this.insert(stock);
+		return result.identifiers.length > 0;
 	}
 
-	public async readOrder(stockId: number): Promise<Stock | undefined> {
-		return this.findOne(stockId);
+	public async readStockById(id: number): Promise<Stock | undefined> {
+		return this.findOne(id, {
+			lock: { mode: 'pessimistic_write' },
+		});
 	}
 
-	public async updateOrder(
-		stockId: number,
-		value: { name?: string },
-	): Promise<void> {
-		await this.update(stockId, value);
+	public async readStockByCode(code: string): Promise<Stock | undefined> {
+		return this.findOne({
+			where: { code },
+			lock: { mode: 'pessimistic_write' },
+		});
 	}
 
-	public async deleteOrder(stockId: number): Promise<void> {
-		await this.delete(stockId);
+	public async deleteStock(id: number): Promise<boolean> {
+		const result: DeleteResult = await this.delete(id);
+		return result.affected != null && result.affected > 0;
 	}
 }
