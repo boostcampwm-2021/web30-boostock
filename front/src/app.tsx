@@ -10,6 +10,8 @@ import SignIn from './pages/signIn/SignIn';
 import SignUp from './pages/signUp/SignUp';
 import Trade from './pages/trade/Trade';
 import userAtom from './recoil/user/atom';
+import webSocketAtom from './recoil/websocket/atom';
+import { translateResponseData } from './common/utils/socketUtils';
 
 export interface Ipage {
 	id: number;
@@ -19,6 +21,15 @@ export interface Ipage {
 
 const App: React.FC = () => {
 	const { theme } = useRecoilValue(userAtom);
+	const webSocket = useRecoilValue(webSocketAtom);
+
+	webSocket.onclose = () => {
+		console.log('close app');
+	};
+	webSocket.onmessage = (event) => {
+		console.log(translateResponseData(event.data));
+	};
+	webSocket.onerror = (event) => {};
 
 	useEffect(() => {
 		const $body = document.body;

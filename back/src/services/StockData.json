@@ -1,0 +1,64 @@
+{
+    "stockData": [
+        {
+            "stockCode": "HONUX",
+            "name": "호눅스",
+            "highPrice": 12345,
+            "currentPrice": 12345,
+            "lowPrice": 1234,
+            "previousClosingPrice": 1234,
+            "tradingVolume": 1234,
+            "tradingAmount": 1234
+        },
+        {
+            "stockCode": "CRONG",
+            "name": "크롱",
+            "highPrice": 12345,
+            "currentPrice": 12345,
+            "lowPrice": 1234,
+            "previousClosingPrice": 1234,
+            "tradingVolume": 1234,
+            "tradingAmount": 1234
+        },
+        {
+            "stockCode": "JK",
+            "name": "JK",
+            "highPrice": 12345,
+            "currentPrice": 12345,
+            "lowPrice": 1234,
+            "previousClosingPrice": 1234,
+            "tradingVolume": 1234,
+            "tradingAmount": 1234
+        },
+        {
+            "stockCode": "IVY",
+            "name": "아이비",
+            "highPrice": 12345,
+            "currentPrice": 12345,
+            "lowPrice": 1234,
+            "previousClosingPrice": 1234,
+            "tradingVolume": 1234,
+            "tradingAmount": 1234
+        },
+        {
+            "stockCode": "SPONGEBOB",
+            "name": "스펀지밥",
+            "highPrice": 12345,
+            "currentPrice": 12345,
+            "lowPrice": 1234,
+            "previousClosingPrice": 1234,
+            "tradingVolume": 1234,
+            "tradingAmount": 1234
+        },
+        {
+            "stockCode": "TESLA",
+            "name": "테슬라",
+            "highPrice": 12345,
+            "currentPrice": 12345,
+            "lowPrice": 1234,
+            "previousClosingPrice": 1234,
+            "tradingVolume": 1234,
+            "tradingAmount": 1234
+        }
+    ]
+}
