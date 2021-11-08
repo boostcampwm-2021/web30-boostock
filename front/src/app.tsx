@@ -23,9 +23,7 @@ const App: React.FC = () => {
 	const { theme } = useRecoilValue(userAtom);
 	const webSocket = useRecoilValue(webSocketAtom);
 
-	webSocket.onclose = () => {
-		console.log('close app');
-	};
+	webSocket.onclose = () => {};
 	webSocket.onmessage = (event) => {
 		console.log(translateResponseData(event.data));
 	};
