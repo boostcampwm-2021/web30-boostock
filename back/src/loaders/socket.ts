@@ -55,8 +55,6 @@ export default (app: express.Application): void => {
 				socketClientMap.delete(ws);
 			}
 		});
-		ws.on('close', () => {
-			console.log('닫힘');
-		});
+		ws.on('close', () => {});
 	});
 };
