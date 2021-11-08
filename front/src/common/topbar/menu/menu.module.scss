@@ -8,7 +8,7 @@
 	color: rgba(189, 189, 189, 0.459);
 	a {
 		text-decoration: none;
-		.active {
+		&.active {
 			color: #fff;
 		}
 		&:hover {
