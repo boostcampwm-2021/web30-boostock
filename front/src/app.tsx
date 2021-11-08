@@ -14,10 +14,10 @@ import userAtom from './recoil/user/atom';
 export interface Ipage {
 	id: number;
 	url: string;
-	component: React.FC;
+	title: string;
 }
 
-const App = () => {
+const App: React.FC = () => {
 	const { theme } = useRecoilValue(userAtom);
 
 	useEffect(() => {
@@ -29,13 +29,8 @@ const App = () => {
 	const pages: Ipage[] = [
 		{
 			id: 1,
-			url: '/home',
-			component: HelloWorld,
-		},
-		{
-			id: 2,
-			url: '/mypage',
-			component: HelloWorld,
+			url: '/trade',
+			title: 'Trade',
 		},
 	];
 
@@ -44,20 +39,9 @@ const App = () => {
 			<TopBar pages={pages} />
 			<main>
 				<Switch>
-					{pages.map((page) => (
-						<Route
-							path={page.url}
-							component={page.component}
-							key={page.id}
-						/>
-					))}
 					<Route path="/signin" component={SignIn} />
 					<Route path="/signup" component={SignUp} />
-					<Route
-						path="/exchange/:stockName"
-						component={Trade}
-						exact
-					/>
+					<Route path="/trade" component={Trade} />
 					<Route component={HelloWorld} />
 				</Switch>
 			</main>

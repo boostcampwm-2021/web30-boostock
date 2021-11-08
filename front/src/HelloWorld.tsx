@@ -1,9 +1,22 @@
 import React from 'react';
 
-interface Props {}
-
-const HelloWorld = (props: Props) => {
-	return <div>HELLOWORLD!!!!</div>;
+const HelloWorld = () => {
+	return (
+		<div>
+			<div>HELLOWORLD!!!!</div>
+			<div>HELLOWORLD!!!!</div>
+			<div>HELLOWORLD!!!!</div>
+			<div>HELLOWORLD!!!!</div>
+			<div>HELLOWORLD!!!!</div>
+			<div>HELLOWORLD!!!!</div>
+			<div>HELLOWORLD!!!!</div>
+			<div>HELLOWORLD!!!!</div>
+			<div>HELLOWORLD!!!!</div>
+			<div>HELLOWORLD!!!!</div>
+			<div>HELLOWORLD!!!!</div>
+			<div>HELLOWORLD!!!!</div>
+		</div>
+	);
 };
 
 export default HelloWorld;

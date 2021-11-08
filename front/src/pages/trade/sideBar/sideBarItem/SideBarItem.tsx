@@ -15,7 +15,8 @@ export interface Props {
 
 const SideBarItem = (props: Props) => {
 	const { stock, isFavorite } = props;
-	const { name, currentPrice, previousClosingPrice, tradingAmount } = stock;
+	const { code, korean, currentPrice, previousClosingPrice, tradingAmount } =
+		stock;
 
 	const percent =
 		((currentPrice - previousClosingPrice) / previousClosingPrice) * 100;
@@ -25,11 +26,11 @@ const SideBarItem = (props: Props) => {
 	else if (percent < 0) status = 'down';
 
 	return (
-		<Link className={`sidebar__item ${status}`} to={`/exchange/${name}`}>
+		<Link className={`sidebar__item ${status}`} to={`/trade/?code=${code}`}>
 			<div className="sidebar__item-favorite">
 				<AiFillStar color={isFavorite ? '#FFA800' : '#999'} />
 			</div>
-			<div className="sidebar__item-name">{name}</div>
+			<div className="sidebar__item-name">{korean}</div>
 			<div className="sidebar__item-price">
 				{formatNumber(currentPrice)}
 			</div>
