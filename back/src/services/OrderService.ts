@@ -1,86 +1,294 @@
-import { getCustomRepository } from 'typeorm';
-import Order, { OrderStatus } from '@models/Order';
-import OrderRepository from '@repositories/OrderRepository';
+/* eslint-disable class-methods-use-this */
+import { EntityManager } from 'typeorm';
+import { User, Stock, Order, OrderType, OrderStatus } from '@models/index';
+import { OrderRepository } from '@repositories/index';
+import { UserService, UserStockService, StockService } from '@services/index';
+import {
+	CommonError,
+	CommonErrorMessage,
+	OrderError,
+	OrderErrorMessage,
+} from '@services/errors/index';
 
 export default class OrderService {
 	static instance: OrderService | null = null;
-
-	protected orderRepository: OrderRepository | null =
-		getCustomRepository(OrderRepository);
 
 	constructor() {
 		if (OrderService.instance) return OrderService.instance;
 		OrderService.instance = this;
 	}
 
-	/* TODO: SEARCH METHOD
-	public async search(data: {
-		userId?: number;
-		stockId?: number;
-		type?: number;
-		amount?: number;
-		price?: number;
-		offset?: number;
-		limit?: number;
-	}): Promise<Order[]> {
-		if (!this.orderRepository) return [];
-		console.log(data);
-		await this.orderRepository.readOrdersByFilter(
-			{
-				user_id: data.userId,
-				stock_id: data.stockId,
-				type: data.type,
-				amount: data.amount,
-				price: data.price,
-			},
-			{
-				offset: data.offset,
-				limit: data.limit,
-			},
+	private getOrderRepository(entityManager: EntityManager): OrderRepository {
+		const orderRepository: OrderRepository | null =
+			entityManager.getCustomRepository(OrderRepository);
+
+		if (!entityManager || !orderRepository)
+			throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+		return orderRepository;
+	}
+
+	private isValidOrderId(orderId: number): boolean {
+		if (!Number.isInteger(orderId)) return false;
+		if (orderId < 1) return false;
+		return true;
+	}
+
+	private isValidUserId(userId: number): boolean {
+		if (!Number.isInteger(userId)) return false;
+		if (userId < 1) return false;
+		return true;
+	}
+
+	private isValidStockCode(stockCode: string): boolean {
+		if (typeof stockCode !== 'string') return false;
+		return true;
+	}
+
+	private isValidType(type: OrderType): boolean {
+		if (!Number.isInteger(type)) return false;
+		if (
+			!Object.values(OrderType)
+				.filter((v) => typeof v === 'number')
+				.includes(type)
+		)
+			return false;
+
+		return true;
+	}
+
+	private isValidAmount(
+		amount: number,
+		type: OrderType,
+		holdStockAmount: number,
+	): boolean {
+		if (!Number.isInteger(amount)) return false;
+		if (amount < 1) return false;
+		if (type === OrderType.SELL && holdStockAmount < amount) return false;
+
+		return true;
+	}
+
+	private isValidPrice(price: number, unit: number): boolean {
+		if (!Number.isInteger(price)) return false;
+		if (price < 1) return false;
+		if (price % unit !== 0) return false;
+
+		return true;
+	}
+
+	public async getOrderById(
+		entityManager: EntityManager,
+		id: number,
+	): Promise<Order> {
+		if (!this.isValidOrderId(id))
+			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
+
+		const orderRepository: OrderRepository =
+			this.getOrderRepository(entityManager);
+
+		const orderEntity = await orderRepository.readOrderById(id);
+		if (!orderEntity)
+			throw new OrderError(OrderErrorMessage.NOT_EXIST_ORDER);
+		return orderEntity;
+	}
+
+	public async order(
+		entityManager: EntityManager,
+		orderData: {
+			userId: number;
+			stockCode: string;
+			type: OrderType;
+			amount: number;
+			price: number;
+		},
+	): Promise<boolean> {
+		if (!this.isValidUserId(orderData.userId))
+			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
+		if (!this.isValidStockCode(orderData.stockCode))
+			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
+
+		const userService: UserService = new UserService();
+		const stockService: StockService = new StockService();
+		const orderRepository: OrderRepository =
+			this.getOrderRepository(entityManager);
+
+		const user: User = await userService.getUserById(
+			entityManager,
+			orderData.userId,
 		);
-		return [];
-	}
-    */
+		const stock: Stock = await stockService.getStockByCode(
+			entityManager,
+			orderData.stockCode,
+		);
+		const holdStock = user.stocks.filter(
+			(st) => st.stock_id === stock.stock_id,
+		)[0];
+		const holdStockAmount = holdStock ? holdStock.amount : 0;
+		const totalPrice: number = orderData.price * orderData.amount;
 
-	public async order(data: {
-		userId: number;
-		stockId: number;
-		type: number;
-		option: number;
-		amount: number;
-		price: number;
-	}): Promise<void> {
-		if (!this.orderRepository) return;
-		const orderEntity = new Order();
-		orderEntity.user_id = data.userId;
-		orderEntity.stock_id = data.stockId;
-		orderEntity.type = data.type;
-		orderEntity.amount = data.amount;
-		orderEntity.price = data.price;
-		orderEntity.created_at = new Date();
-		orderEntity.status = OrderStatus.PENDING;
-		await this.orderRepository.createOrder(orderEntity);
+		if (!this.isValidType(orderData.type))
+			throw new OrderError(OrderErrorMessage.INVALID_TYPE);
+		if (
+			!this.isValidAmount(
+				orderData.amount,
+				orderData.type,
+				holdStockAmount,
+			)
+		)
+			throw new OrderError(OrderErrorMessage.INVALID_AMOUNT);
+		if (!this.isValidPrice(orderData.price, stock.unit))
+			throw new OrderError(OrderErrorMessage.INVALID_PRICE);
+		if (user.balance < totalPrice)
+			throw new OrderError(OrderErrorMessage.LACK_OF_BALANCE);
+
+		let resultUpdate = false;
+		if (orderData.type === OrderType.SELL) {
+			const userStockService: UserStockService = new UserStockService();
+			resultUpdate = await userStockService.setAmount(
+				entityManager,
+				user.user_id,
+				holdStockAmount - orderData.amount,
+			);
+		} else if (orderData.type === OrderType.BUY) {
+			resultUpdate = await userService.setBalance(
+				entityManager,
+				user.user_id,
+				user.balance - totalPrice,
+			);
+		}
+
+		const orderEntity: Order = orderRepository.create({
+			user_id: user.user_id,
+			stock_id: stock.stock_id,
+			type: orderData.type,
+			amount: orderData.amount,
+			price: orderData.price,
+			created_at: new Date(),
+			status: OrderStatus.PENDING,
+		});
+		const resultOrder: boolean = await orderRepository.createOrder(
+			orderEntity,
+		);
+
+		if (!resultUpdate || !resultOrder)
+			throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+		return true;
 	}
 
-	public async cancel(orderId: number): Promise<void> {
-		if (!this.orderRepository) return;
-		await this.orderRepository.deleteOrder(orderId);
+	public async cancel(
+		entityManager: EntityManager,
+		orderData: {
+			userId: number;
+			orderId: number;
+		},
+	): Promise<boolean> {
+		if (!this.isValidOrderId(orderData.userId))
+			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
+
+		const userService: UserService = new UserService();
+		const stockService: StockService = new StockService();
+		const orderRepository: OrderRepository =
+			this.getOrderRepository(entityManager);
+
+		const order = await this.getOrderById(entityManager, orderData.orderId);
+		console.log(order);
+		if (order.user_id !== orderData.userId)
+			throw new OrderError(OrderErrorMessage.NOT_EXIST_ORDER);
+		if (order.status !== OrderStatus.PENDING)
+			throw new OrderError(OrderErrorMessage.NOT_PENDING_ORDER);
+
+		const user: User = await userService.getUserById(
+			entityManager,
+			orderData.userId,
+		);
+		const stock: Stock = await stockService.getStockById(
+			entityManager,
+			order.stock_id,
+		);
+		const holdStock = user.stocks.filter(
+			(st) => st.stock_id === stock.stock_id,
+		)[0];
+		const holdStockAmount = holdStock ? holdStock.amount : 0;
+		const totalPrice: number = order.price * order.amount;
+
+		let resultUpdate = false;
+		if (order.type === OrderType.SELL) {
+			const userStockService: UserStockService = new UserStockService();
+			resultUpdate = await userStockService.setAmount(
+				entityManager,
+				user.user_id,
+				holdStockAmount + order.amount,
+			);
+		} else if (order.type === OrderType.BUY) {
+			resultUpdate = await userService.setBalance(
+				entityManager,
+				user.user_id,
+				user.balance + totalPrice,
+			);
+		}
+
+		const orderEntity = orderRepository.create({
+			order_id: order.order_id,
+			status: OrderStatus.CANCELING,
+		});
+
+		const resultOrder: boolean = await orderRepository.updateOrder(
+			orderEntity,
+		);
+		if (!resultUpdate || !resultOrder)
+			throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+		return true;
 	}
 
 	public async modify(
-		orderId: number,
-		data: { amount?: number; price?: number },
-	): Promise<void> {
-		if (!this.orderRepository) return;
-		if (data.amount && data.price)
-			await this.orderRepository.updateOrder(orderId, data);
-		else if (data.amount)
-			await this.orderRepository.updateOrder(orderId, {
-				amount: data.amount,
-			});
-		else if (data.price)
-			await this.orderRepository.updateOrder(orderId, {
-				price: data.price,
-			});
+		entityManager: EntityManager,
+		orderData: {
+			userId: number;
+			orderId: number;
+			amount?: number;
+			price?: number;
+		},
+	): Promise<boolean> {
+		if (!this.isValidUserId(orderData.userId))
+			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
+		if (!this.isValidOrderId(orderData.userId))
+			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
+
+		const userService: UserService = new UserService();
+		const stockService: StockService = new StockService();
+		const orderRepository: OrderRepository =
+			this.getOrderRepository(entityManager);
+
+		const order = await this.getOrderById(entityManager, orderData.orderId);
+		if (order.user_id !== orderData.userId)
+			throw new OrderError(OrderErrorMessage.NOT_EXIST_ORDER);
+		if (order.status !== OrderStatus.PENDING)
+			throw new OrderError(OrderErrorMessage.NOT_PENDING_ORDER);
+
+		const user: User = await userService.getUserById(
+			entityManager,
+			orderData.userId,
+		);
+		const stock: Stock = await stockService.getStockById(
+			entityManager,
+			order.stock_id,
+		);
+
+		const resultCancel: boolean = await this.cancel(entityManager, {
+			userId: orderData.userId,
+			orderId: orderData.orderId,
+		});
+
+		const resultOrder: boolean = await this.order(entityManager, {
+			userId: orderData.userId,
+			stockCode: stock.code,
+			type: order.type,
+			amount: order.amount,
+			price: order.price,
+		});
+
+		if (!resultCancel || !resultOrder)
+			throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+		return true;
 	}
 }
