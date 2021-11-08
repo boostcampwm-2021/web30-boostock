@@ -6,6 +6,7 @@ import SideBarItem from './sideBarItem/SideBarItem';
 
 import './SideBar.scss';
 import SearchBar from './searchbar/SearchBar';
+import getRegExp from './getRegExp';
 import SideBarNav, { MENU } from './sideBarNav/SideBarNav';
 
 // interface Props {}
@@ -18,10 +19,10 @@ const SideBar = () => {
 		IStockListItem[]
 	>([]);
 
-	const [search, setSearch] = useState('');
+	const [regex, setRegex] = useState(/.*/);
 
 	const searchEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setSearch(event?.target?.value);
+		setRegex(getRegExp(event?.target?.value));
 	};
 
 	useEffect(() => {
@@ -66,8 +67,11 @@ const SideBar = () => {
 			</div>
 			<div className="sidebar__items">
 				{filteredStockListState
-					.filter((stock: IStockListItem) =>
-						stock.code.startsWith(search),
+					.filter(
+						(stock: IStockListItem) =>
+							regex.test(stock.code.toLowerCase()) ||
+							regex.test(stock.korean) ||
+							regex.test(stock.english.toLowerCase()),
 					)
 					.map((stock: IStockListItem) => (
 						<SideBarItem
