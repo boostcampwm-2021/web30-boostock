@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Ipage } from '@src/app';
 
 import style from './menu.module.scss';
@@ -13,14 +13,34 @@ const Menu = ({ pages }: Props) => {
 		<nav className={style.container}>
 			<div>
 				{pages.map((page) => (
-					<Link to={page.url} key={page.id}>
+					<NavLink
+						to={page.url}
+						key={page.id}
+						className={(isActive) =>
+							isActive ? `${style.active}` : ''
+						}
+					>
 						{page.title}
-					</Link>
+					</NavLink>
 				))}
 			</div>
 			<div style={{ position: 'relative' }}>
-				<Link to="/signin">로그인</Link>
-				<Link to="/signup">회원가입</Link>
+				<NavLink
+					to="/signin"
+					className={(isActive) =>
+						isActive ? `${style.active}` : ''
+					}
+				>
+					로그인
+				</NavLink>
+				<NavLink
+					to="/signup"
+					className={(isActive) =>
+						isActive ? `${style.active}` : ''
+					}
+				>
+					회원가입
+				</NavLink>
 			</div>
 		</nav>
 	);
