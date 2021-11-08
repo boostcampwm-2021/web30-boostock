@@ -1,42 +1,33 @@
-import { EntityRepository, Repository } from 'typeorm';
+import {
+	EntityRepository,
+	Repository,
+	InsertResult,
+	UpdateResult,
+	DeleteResult,
+} from 'typeorm';
 import Order from '@models/Order';
 
 @EntityRepository(Order)
-export default class StockRepository extends Repository<Order> {
-	public async createOrder(order: Order): Promise<void> {
-		await this.insert(order);
+export default class OrderRepository extends Repository<Order> {
+	public async createOrder(order: Order): Promise<boolean> {
+		const result: InsertResult = await this.insert(order);
+		return result.identifiers.length > 0;
 	}
 
-	public async readOrder(orderId: number): Promise<Order | undefined> {
-		return this.findOne(orderId);
+	public async readOrderById(id: number): Promise<Order | undefined> {
+		return this.findOne(id, {
+			lock: { mode: 'pessimistic_write' },
+			relations: ['user_id', 'stock_id'],
+		});
 	}
 
-	public async updateOrder(
-		orderId: number,
-		data: { amount?: number; price?: number },
-	): Promise<void> {
-		await this.update(orderId, data);
+	public async updateOrder(order: Order): Promise<boolean> {
+		const result: UpdateResult = await this.update(order.order_id, order);
+		return result.affected != null && result.affected > 0;
 	}
 
-	public async deleteOrder(orderId: number): Promise<void> {
-		await this.delete(orderId);
+	public async deleteOrder(id: number): Promise<boolean> {
+		const result: DeleteResult = await this.delete(id);
+		return result.affected != null && result.affected > 0;
 	}
-
-	/* TODO: FIND METHOD
-	public async readOrdersByFilter(
-		filter: {
-			user_id?: number;
-			stock_id?: number;
-			type?: number;
-			amount?: number;
-			price?: number;
-		},
-		skip: {
-			offset?: number;
-			limit?: number;
-		},
-	): Promise<Order[]> {
-		return this.find(filter);
-	}
-    */
 }

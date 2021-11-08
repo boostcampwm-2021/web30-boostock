@@ -10,12 +10,15 @@ import User from './User';
 import Stock from './Stock';
 
 export enum OrderType {
-	SELL = 0,
-	BUY = 1,
+	SELL = 1,
+	BUY = 2,
 }
 
 export enum OrderStatus {
 	PENDING = 'pending',
+	FINISHED = 'finished',
+	CANCELING = 'canceling',
+	CANCELED = 'canceled',
 }
 
 @Entity()
@@ -25,7 +28,7 @@ export default class Order {
 
 	@ManyToOne(() => User, (user: User) => user.user_id)
 	@JoinColumn({ name: 'user_id' })
-	user_id: number;
+	user: number;
 
 	@ManyToOne(() => Stock, (stock: Stock) => stock.stock_id)
 	@JoinColumn({ name: 'stock_id' })
