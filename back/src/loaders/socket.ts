@@ -19,8 +19,10 @@ const translateRequestFormat = (data) => JSON.parse(data);
 const translateResponseFormat = (data) => JSON.stringify(data);
 
 export default (app: express.Application): void => {
-	const HTTPServer = app.listen(3333, () => {
-		Logger.info('✌️ Socket loaded at port:3333');
+	const HTTPServer = app.listen(process.env.SOCKET_PORT || 3333, () => {
+		Logger.info(
+			`✌️ Socket loaded at port:${process.env.SOCKET_PORT || 3333}`,
+		);
 	});
 
 	const webSocketServer = new wsModule.Server({ server: HTTPServer });
