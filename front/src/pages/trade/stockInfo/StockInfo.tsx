@@ -29,7 +29,7 @@ function formatTradingData(data: number, postfix: string) {
 const StockInfo = (props: Props) => {
 	const { info } = props;
 	const {
-		name,
+		korean,
 		currentPrice,
 		highPrice,
 		lowPrice,
@@ -42,17 +42,17 @@ const StockInfo = (props: Props) => {
 		((currentPrice - previousClosingPrice) / previousClosingPrice) * 100;
 
 	useEffect(() => {
-		document.title = `boostock/${name}`;
+		document.title = `boostock/${korean}`;
 
 		return () => {
 			document.title = 'boostock';
 		};
-	}, [name]);
+	}, [korean]);
 
 	return (
 		<div className="stock-info">
 			<div className="stock-info__left">
-				<header className="stock-name">{name}</header>
+				<header className="stock-name">{korean}</header>
 				<div
 					className={`current-price-info ${priceColorClass(percent)}`}
 				>

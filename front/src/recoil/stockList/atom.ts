@@ -2,7 +2,9 @@ import { atom } from 'recoil';
 
 export interface IStockListItem {
 	id: number;
-	name: string;
+	code: string;
+	korean: string;
+	english: string;
 	currentPrice: number;
 	highPrice: number;
 	lowPrice: number;
@@ -16,7 +18,9 @@ const stockListAtom = atom<IStockListItem[]>({
 	default: [
 		{
 			id: 1,
-			name: '호눅스코인',
+			code: 'honux',
+			korean: '호눅스',
+			english: 'honux',
 			currentPrice: 12345,
 			highPrice: 12345,
 			lowPrice: 1234,
@@ -26,7 +30,9 @@ const stockListAtom = atom<IStockListItem[]>({
 		},
 		{
 			id: 2,
-			name: '크롱코인',
+			code: 'crong',
+			korean: '크롱',
+			english: 'crong',
 			currentPrice: 1234,
 			highPrice: 12345,
 			lowPrice: 1234,
@@ -36,7 +42,9 @@ const stockListAtom = atom<IStockListItem[]>({
 		},
 		{
 			id: 3,
-			name: 'JK코인',
+			code: 'jk',
+			korean: '제이케이',
+			english: 'JK',
 			currentPrice: 1234,
 			highPrice: 12345,
 			lowPrice: 123,
@@ -46,7 +54,9 @@ const stockListAtom = atom<IStockListItem[]>({
 		},
 		{
 			id: 4,
-			name: 'Ivy코인',
+			code: 'ivy',
+			korean: '아이비',
+			english: 'Ivy',
 			currentPrice: 123456,
 			highPrice: 234567,
 			lowPrice: 123123,

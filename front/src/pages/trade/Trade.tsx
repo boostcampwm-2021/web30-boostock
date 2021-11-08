@@ -1,6 +1,8 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import { Redirect, RouteComponentProps } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import QueryString from 'qs';
+
 import StockList, { IStockListItem } from '@recoil/stockList/index';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
@@ -14,19 +16,18 @@ interface IConnection {
 	stock?: string;
 }
 
-type Props = RouteComponentProps<MatchParams>;
-
-interface MatchParams {
-	stockName: string;
-}
-
 const translateSocketData = (data: object | []) => JSON.stringify(data);
 
-const Trade = ({ match }: Props) => {
+const Trade = () => {
+	const location = useLocation();
+	const queryData = QueryString.parse(location.search, {
+		ignoreQueryPrefix: true,
+	});
 	const stockListState = useRecoilValue(StockList);
-	const stockState = stockListState.filter(
-		(stock: IStockListItem) => stock.name === match.params.stockName,
-	)[0];
+	const stockState =
+		stockListState.find(
+			(stock: IStockListItem) => stock.code === queryData.code,
+		) || stockListState[0];
 
 	/*
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
@@ -38,11 +39,6 @@ const Trade = ({ match }: Props) => {
 	webSocket.onmessage = (event) => {};
 	webSocket.onerror = (event) => {};
 	*/
-
-	if (!stockState) {
-		if (stockListState.length === 0) return <Redirect to="/" />;
-		return <Redirect to={`/exchange/${stockListState[0].name}`} />;
-	}
 
 	return (
 		<main className="trade">

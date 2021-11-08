@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
-import User, { IUser } from '@recoil/user/index';
+import User from '@recoil/user/index';
 import StockList, { IStockListItem } from '@recoil/stockList/index';
 import SideBarItem from './sideBarItem/SideBarItem';
 
 import './SideBar.scss';
+import SearchBar from './searchbar/SearchBar';
 
 export enum MENU {
 	ALL = '전체',
@@ -22,6 +23,12 @@ const SideBar = () => {
 		IStockListItem[]
 	>([]);
 
+	const [search, setSearch] = useState('');
+
+	const searchEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setSearch(event?.target?.value);
+	};
+
 	useEffect(() => {
 		setFilteredStockListState(() => {
 			switch (menu) {
@@ -37,7 +44,7 @@ const SideBar = () => {
 					return stockListState;
 			}
 		});
-	}, [menu]);
+	}, [menu, stockListState, userState.favorite, userState.hold]);
 
 	return (
 		<div className="sidebar">
@@ -76,6 +83,7 @@ const SideBar = () => {
 					{MENU.HOLD}
 				</div>
 			</div>
+			<SearchBar searchEvent={searchEvent} />
 			<div className="sidebar__legend">
 				<div className="sidebar__legend-favorite" />
 				<div className="sidebar__legend-name">이름</div>
@@ -84,13 +92,17 @@ const SideBar = () => {
 				<div className="sidebar__legend-amount">거래대금</div>
 			</div>
 			<div className="sidebar__items">
-				{filteredStockListState.map((stock: IStockListItem) => (
-					<SideBarItem
-						key={stock.id}
-						stock={stock}
-						isFavorite={userState.favorite.includes(stock.id)}
-					/>
-				))}
+				{filteredStockListState
+					.filter((stock: IStockListItem) =>
+						stock.code.startsWith(search),
+					)
+					.map((stock: IStockListItem) => (
+						<SideBarItem
+							key={stock.id}
+							stock={stock}
+							isFavorite={userState.favorite.includes(stock.id)}
+						/>
+					))}
 			</div>
 		</div>
 	);
