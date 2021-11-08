@@ -1,5 +1,9 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager } from 'typeorm';
+import {
+	EntityManager,
+	getCustomRepository,
+	SimpleConsoleLogger,
+} from 'typeorm';
 import { Stock } from '@models/index';
 import { StockRepository } from '@repositories/index';
 import {
@@ -8,6 +12,19 @@ import {
 	StockError,
 	StockErrorMessage,
 } from '@services/errors/index';
+
+import Stocks from './StockData.json';
+
+interface IStock {
+	stockCode: string;
+	name: string;
+	highPrice: number;
+	currentPrice: number;
+	lowPrice: number;
+	previousClosingPrice: number;
+	tradingVolume: number;
+	tradingAmount: number;
+}
 
 export default class StockService {
 	static instance: StockService | null = null;
@@ -57,4 +74,8 @@ export default class StockService {
 			throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 		return stockEntity;
 	}
+
+	getStocksCurrent = (): IStock[] => {
+		return Stocks.stockData;
+	};
 }

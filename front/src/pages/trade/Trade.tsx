@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useLocation } from 'react-router-dom';
 import QueryString from 'qs';
 
 import StockList, { IStockListItem } from '@recoil/stockList/index';
+import {
+	translateRequestData,
+	translateResponseData,
+} from '@common/utils/socketUtils';
+import webSocketAtom from '@src/recoil/websocket/atom';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
 import BidAsk from './bidAsk/BidAsk';
@@ -16,29 +21,40 @@ interface IConnection {
 	stock?: string;
 }
 
-const translateSocketData = (data: object | []) => JSON.stringify(data);
-
 const Trade = () => {
 	const location = useLocation();
 	const queryData = QueryString.parse(location.search, {
 		ignoreQueryPrefix: true,
 	});
+	const webSocket = useRecoilValue(webSocketAtom);
 	const stockListState = useRecoilValue(StockList);
 	const stockState =
 		stockListState.find(
 			(stock: IStockListItem) => stock.code === queryData.code,
 		) || stockListState[0];
+	const stockName = stockState.code;
 
-	/*
-	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
-	webSocket.onopen = () => {
-		const data: IConnection = { type: 'open', stock: 'Boostock' };
-		webSocket.send(translateSocketData(data));
+	useEffect((): (() => void) => {
+		if (webSocket.readyState === 1) {
+			const openData: IConnection = {
+				type: 'open',
+				stock: stockName,
+			};
+			webSocket.send(translateRequestData(openData));
+		}
+		return () => {
+			const closeData: IConnection = {
+				type: 'close',
+				stock: stockName,
+			};
+			webSocket.send(translateRequestData(closeData));
+		};
+	}, [webSocket, webSocket.readyState, stockName]);
+
+	webSocket.onmessage = (event) => {
+		console.log(translateResponseData(event.data));
 	};
-	webSocket.onclose = () => {};
-	webSocket.onmessage = (event) => {};
 	webSocket.onerror = (event) => {};
-	*/
 
 	return (
 		<main className="trade">
