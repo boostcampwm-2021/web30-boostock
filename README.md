@@ -4,7 +4,7 @@
 **당신을 위한 주식 거래 플랫폼 - Boostock**
 
 ## 🧑‍💻 참여자
-|J008|J050|J089|J176|
+|J008|J050|J089|J176|ddd
 |:-:|:-:|:-:|:-:|
 |<img src="https://github.com/rnjsrntkd95.png" width="150px">|<img src="https://github.com/jaehyeon48.png" width="150px">|<img src="https://github.com/nawhes.png" width="150px">|<img src="https://github.com/SYN0P.png" width="150px">|
 |[권구상](https://github.com/rnjsrntkd95)|[김재현](https://github.com/jaehyeon48)|[박세환](https://github.com/nawhes)|[장민준](https://github.com/SYN0P)|
