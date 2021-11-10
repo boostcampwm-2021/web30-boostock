@@ -191,7 +191,6 @@ export default class OrderService {
 			this.getOrderRepository(entityManager);
 
 		const order = await this.getOrderById(entityManager, orderData.orderId);
-		console.log(order);
 		if (order.user_id !== orderData.userId)
 			throw new OrderError(OrderErrorMessage.NOT_EXIST_ORDER);
 		if (order.status !== OrderStatus.PENDING)
