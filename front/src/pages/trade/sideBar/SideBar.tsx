@@ -40,6 +40,7 @@ const SideBar = () => {
 					return stockListState;
 			}
 		});
+		console.log(stockListState);
 	}, [menu, stockListState, userState.favorite, userState.hold]);
 
 	return (
@@ -70,14 +71,16 @@ const SideBar = () => {
 					.filter(
 						(stock: IStockListItem) =>
 							regex.test(stock.code.toLowerCase()) ||
-							regex.test(stock.korean) ||
-							regex.test(stock.english.toLowerCase()),
+							regex.test(stock['name_korean']) ||
+							regex.test(stock['name_english'].toLowerCase()),
 					)
 					.map((stock: IStockListItem) => (
 						<SideBarItem
-							key={stock.id}
+							key={stock['stock_id']}
 							stock={stock}
-							isFavorite={userState.favorite.includes(stock.id)}
+							isFavorite={userState.favorite.includes(
+								stock['stock_id'],
+							)}
 						/>
 					))}
 			</div>

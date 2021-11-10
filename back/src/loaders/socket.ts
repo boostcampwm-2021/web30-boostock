@@ -18,9 +18,9 @@ const connectNewUser = (client) => {
 	transaction(
 		(
 			queryRunner: QueryRunner,
-			then: () => void,
-			err: (err: CommonError) => void,
-			fin: () => void,
+			commit: () => void,
+			rollback: (err: CommonError) => void,
+			release: () => void,
 		) => {
 			const stockService = new StockService();
 			stockService
@@ -30,7 +30,7 @@ const connectNewUser = (client) => {
 						translateResponseFormat('stocks_info', stockList),
 					);
 					socketClientMap.set(client, '');
-					then();
+					commit();
 				})
 				.catch((error) => {
 					client.send(
@@ -39,9 +39,9 @@ const connectNewUser = (client) => {
 							'종목 리스트를 받아올 수 없습니다.',
 						),
 					);
-					err(error);
+					rollback(error);
 				})
-				.finally(fin);
+				.finally(release);
 		},
 	);
 };
