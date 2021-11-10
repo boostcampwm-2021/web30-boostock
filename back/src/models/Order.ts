@@ -28,11 +28,11 @@ export default class Order {
 
 	@ManyToOne(() => User, (user: User) => user.user_id)
 	@JoinColumn({ name: 'user_id' })
-	user_id: number;
+	userId: number;
 
 	@ManyToOne(() => Stock, (stock: Stock) => stock.stock_id)
 	@JoinColumn({ name: 'stock_id' })
-	stock_id: number;
+	stockId: number;
 
 	@Column({ type: 'enum', enum: OrderType })
 	type: number;

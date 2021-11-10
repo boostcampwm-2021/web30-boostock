@@ -6,7 +6,7 @@
     "private": true,
     "scripts": {
         "start": "node ./src/app.ts",
-        "dev": "NODE_ENV=development nodemon --delay 500ms -r tsconfig-paths/register ./src/app.ts",
+        "dev": "SET NODE_ENV=development && nodemon --delay 500ms -r tsconfig-paths/register ./src/app.ts",
         "service": "NODE_ENV=production pm2 start ts-node -- -r tsconfig-paths/register -r ./src/app.ts",
         "format": "prettier --check ./src",
         "format:fix": "prettier --write ./src",
@@ -18,7 +18,6 @@
     "devDependencies": {
         "@types/express": "^4.17.13",
         "@types/node": "^16.11.6",
-        "@types/react-router-dom": "^5.3.2",
         "@typescript-eslint/eslint-plugin": "^4.33.0",
         "@typescript-eslint/parser": "^4.33.0",
         "cross-env": "^7.0.3",

@@ -16,7 +16,7 @@ export default class UserFavoriteRepository extends Repository<UserFavorite> {
 
 	async updateUserFavorite(userFavorite: UserFavorite): Promise<boolean> {
 		const result: UpdateResult = await this.update(
-			userFavorite.user_favorite_id,
+			userFavorite.userFavoriteId,
 			userFavorite,
 		);
 		return result.affected != null && result.affected > 0;
@@ -27,8 +27,8 @@ export default class UserFavoriteRepository extends Repository<UserFavorite> {
 		stockId: number,
 	): Promise<boolean> {
 		const result: DeleteResult = await this.delete({
-			user_id: userId,
-			stock_id: stockId,
+			userId,
+			stockId,
 		});
 		return result.affected != null && result.affected > 0;
 	}

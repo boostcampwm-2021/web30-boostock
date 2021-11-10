@@ -1,9 +1,9 @@
 import express from 'express';
-
-import message from './message/index';
+import message from './message';
 
 export default (): express.Router => {
 	const router = express.Router();
-	router.use('/message', message());
+	router.use('/', message());
+
 	return router;
 };

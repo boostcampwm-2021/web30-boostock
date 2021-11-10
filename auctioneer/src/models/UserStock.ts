@@ -11,15 +11,15 @@ import User from './User';
 
 @Entity({ name: 'user_stock' })
 export default class UserStock {
-	@PrimaryGeneratedColumn()
-	user_stock_id: number;
+	@PrimaryGeneratedColumn({ name: 'user_stock_id' })
+	userStockId: number;
 
-	@ManyToOne(() => User, (user: User) => user.user_id)
+	@ManyToOne(() => User, (user: User) => user.userId)
 	@JoinColumn({ name: 'user_id' })
-	user_id: number;
+	userId: number;
 
-	@Column()
-	stock_id: number;
+	@Column({ name: 'stock_id' })
+	stockId: number;
 
 	@Column()
 	amount: number;
