@@ -8,6 +8,16 @@ interface IProps {
 	children: React.ReactNode;
 }
 
+interface IIncomingStockList {
+	stock_id: number;
+	code: string;
+	name_english: string;
+	name_korean: string;
+	price: number;
+	previous_close: number;
+	unit: number;
+}
+
 const Socket = ({ children }: IProps) => {
 	const webSocket = useRecoilValue(webSocketAtom);
 	const setStockList = useSetRecoilState(stockListAtom);
@@ -16,8 +26,32 @@ const Socket = ({ children }: IProps) => {
 
 	webSocket.onmessage = (event) => {
 		const { type, data } = translateResponseData(event.data);
-		console.log(type, data);
-		setStockList(data);
+		switch (type) {
+			case 'stocks_info':
+				setStockList(
+					data.map(
+						({
+							stock_id,
+							code,
+							name_english,
+							name_korean,
+							price,
+							previous_close,
+							unit,
+						}: IIncomingStockList) => ({
+							stockId: stock_id,
+							code,
+							nameEnglish: name_english,
+							nameKorean: name_korean,
+							price,
+							previousClose: previous_close,
+							unit,
+						}),
+					),
+				);
+				break;
+			default:
+		}
 	};
 	webSocket.onerror = (event) => {};
 

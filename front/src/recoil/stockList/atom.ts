@@ -1,16 +1,13 @@
 import { atom } from 'recoil';
 
 export interface IStockListItem {
-	id: number;
+	stockId: number;
 	code: string;
-	korean: string;
-	english: string;
-	currentPrice: number;
-	highPrice: number;
-	lowPrice: number;
-	previousClosingPrice: number;
-	tradingVolume: number;
-	tradingAmount: number;
+	nameKorean: string;
+	nameEnglish: string;
+	price: number;
+	previousClose: number;
+	unit: number;
 }
 
 const stockListAtom = atom<IStockListItem[]>({
