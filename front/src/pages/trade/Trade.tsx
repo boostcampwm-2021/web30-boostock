@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
 import QueryString from 'qs';
 
@@ -9,6 +9,7 @@ import {
 	translateResponseData,
 } from '@common/utils/socketUtils';
 import webSocketAtom from '@src/recoil/websocket/atom';
+import stockListAtom from '@src/recoil/stockList/atom';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
 import BidAsk from './bidAsk/BidAsk';
@@ -22,16 +23,16 @@ interface IConnection {
 }
 
 const Trade = () => {
+	const [stockList, setStockList] = useRecoilState(stockListAtom);
 	const location = useLocation();
 	const queryData = QueryString.parse(location.search, {
 		ignoreQueryPrefix: true,
 	});
 	const webSocket = useRecoilValue(webSocketAtom);
-	const stockListState = useRecoilValue(StockList);
 	const stockState =
-		stockListState.find(
+		stockList.find(
 			(stock: IStockListItem) => stock.code === queryData.code,
-		) || stockListState[0];
+		) || stockList[0];
 	const stockName = stockState.code;
 
 	useEffect((): (() => void) => {
@@ -54,9 +55,6 @@ const Trade = () => {
 		};
 	}, [webSocket, webSocket.readyState, stockName]);
 
-	webSocket.onmessage = (event) => {
-		console.log(translateResponseData(event.data));
-	};
 	webSocket.onerror = (event) => {};
 
 	return (

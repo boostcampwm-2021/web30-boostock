@@ -1,9 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import {
-	EntityManager,
-	getCustomRepository,
-	SimpleConsoleLogger,
-} from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Stock } from '@models/index';
 import { StockRepository } from '@repositories/index';
 import {
@@ -16,8 +12,10 @@ import {
 import Stocks from './StockData.json';
 
 interface IStock {
-	stockCode: string;
-	name: string;
+	id: number;
+	code: string;
+	korean: string;
+	english: string;
 	highPrice: number;
 	currentPrice: number;
 	lowPrice: number;
@@ -76,6 +74,45 @@ export default class StockService {
 	}
 
 	getStocksCurrent = (): IStock[] => {
-		return Stocks.stockData;
+		const { stockData } = Stocks;
+
+		return [
+			{
+				...stockData[0],
+				currentPrice: Math.floor(Math.random() * 100000),
+				highPrice: Math.floor(Math.random() * 100000),
+				lowPrice: Math.floor(Math.random() * 100000),
+				previousClosingPrice: Math.floor(Math.random() * 100000),
+				tradingVolume: Math.floor(Math.random() * 10000000000),
+				tradingAmount: Math.floor(Math.random() * 10000000000),
+			},
+			{
+				...stockData[1],
+				currentPrice: Math.floor(Math.random() * 100000),
+				highPrice: Math.floor(Math.random() * 100000),
+				lowPrice: Math.floor(Math.random() * 100000),
+				previousClosingPrice: Math.floor(Math.random() * 100000),
+				tradingVolume: Math.floor(Math.random() * 10000000000),
+				tradingAmount: Math.floor(Math.random() * 10000000000),
+			},
+			{
+				...stockData[2],
+				currentPrice: Math.floor(Math.random() * 100000),
+				highPrice: Math.floor(Math.random() * 100000),
+				lowPrice: Math.floor(Math.random() * 100000),
+				previousClosingPrice: Math.floor(Math.random() * 100000),
+				tradingVolume: Math.floor(Math.random() * 10000000000),
+				tradingAmount: Math.floor(Math.random() * 10000000000),
+			},
+			{
+				...stockData[3],
+				currentPrice: Math.floor(Math.random() * 100000),
+				highPrice: Math.floor(Math.random() * 100000),
+				lowPrice: Math.floor(Math.random() * 100000),
+				previousClosingPrice: Math.floor(Math.random() * 100000),
+				tradingVolume: Math.floor(Math.random() * 10000000000),
+				tradingAmount: Math.floor(Math.random() * 10000000000),
+			},
+		];
 	};
 }

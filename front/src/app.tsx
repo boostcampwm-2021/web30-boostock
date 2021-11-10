@@ -10,8 +10,7 @@ import SignIn from './pages/signIn/SignIn';
 import SignUp from './pages/signUp/SignUp';
 import Trade from './pages/trade/Trade';
 import userAtom from './recoil/user/atom';
-import webSocketAtom from './recoil/websocket/atom';
-import { translateResponseData } from './common/utils/socketUtils';
+import Socket from './Socket';
 
 export interface Ipage {
 	id: number;
@@ -21,13 +20,6 @@ export interface Ipage {
 
 const App: React.FC = () => {
 	const { theme } = useRecoilValue(userAtom);
-	const webSocket = useRecoilValue(webSocketAtom);
-
-	webSocket.onclose = () => {};
-	webSocket.onmessage = (event) => {
-		console.log(translateResponseData(event.data));
-	};
-	webSocket.onerror = (event) => {};
 
 	useEffect(() => {
 		const $body = document.body;
@@ -46,14 +38,16 @@ const App: React.FC = () => {
 	return (
 		<BrowserRouter>
 			<TopBar pages={pages} />
-			<main>
-				<Switch>
-					<Route path="/signin" component={SignIn} />
-					<Route path="/signup" component={SignUp} />
-					<Route path="/trade" component={Trade} />
-					<Route component={HelloWorld} />
-				</Switch>
-			</main>
+			<Socket>
+				<main>
+					<Switch>
+						<Route path="/signin" component={SignIn} />
+						<Route path="/signup" component={SignUp} />
+						<Route path="/trade" component={Trade} />
+						<Route component={HelloWorld} />
+					</Switch>
+				</main>
+			</Socket>
 		</BrowserRouter>
 	);
 };
