@@ -1,6 +1,7 @@
 import { getConnection } from 'typeorm';
 import { Request, Response } from 'express';
 import { CommonError } from '@services/errors/index';
+import { resolve } from 'node:path';
 
 export const snakeToCamel = (str) => {
 	return str.toLowerCase().replace(/([-_][a-z])/g, (group) => {
@@ -27,9 +28,9 @@ export const toJsonFromError = (
 };
 
 export const transaction = async (
-	req: Request,
-	res: Response,
 	callback: any,
+	req?: Request,
+	res?: Response,
 ): Promise<void> => {
 	const connection = getConnection();
 	const queryRunner = connection.createQueryRunner();
@@ -38,7 +39,7 @@ export const transaction = async (
 	};
 	const catchTransaction = (err: CommonError) => {
 		const errJson = toJsonFromError(err);
-		res.status(errJson.status).json(errJson.json).end();
+		res?.status(errJson.status).json(errJson.json).end();
 		queryRunner.rollbackTransaction();
 	};
 	const finallyTransaction = () => {

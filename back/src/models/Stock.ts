@@ -10,7 +10,16 @@ export default class Stock {
 	code: string;
 
 	@Column()
-	name: string;
+	name_korean: string;
+
+	@Column()
+	name_english: string;
+
+	@Column()
+	price: number;
+
+	@Column()
+	previous_close: number;
 
 	@Column()
 	unit: number;

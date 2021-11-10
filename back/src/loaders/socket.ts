@@ -1,5 +1,8 @@
 import wsModule from 'ws';
 import express from 'express';
+import Emitter from '@helper/eventEmitter';
+import { QueryRunner, transaction } from '@helper/tools';
+import { CommonError } from '@services/errors/index';
 import Logger from './logger';
 import moment from '../helper/moment';
 
@@ -7,11 +10,41 @@ import { IStockInformation } from '../interfaces/stockInformation';
 import { ISocketRequest } from '../interfaces/socketRequest';
 
 import StockService from '../services/StockService';
-import Emitter from '../helper/eventEmitter';
 
 const socketClientMap = new Map();
 const translateRequestFormat = (data) => JSON.parse(data);
 const translateResponseFormat = (type, data) => JSON.stringify({ type, data });
+const connectNewUser = (client) => {
+	transaction(
+		(
+			queryRunner: QueryRunner,
+			then: () => void,
+			err: (err: CommonError) => void,
+			fin: () => void,
+		) => {
+			const stockService = new StockService();
+			stockService
+				.getStocksCurrent(queryRunner.manager)
+				.then((stockList) => {
+					client.send(
+						translateResponseFormat('stocks_info', stockList),
+					);
+					socketClientMap.set(client, '');
+					then();
+				})
+				.catch((error) => {
+					client.send(
+						translateResponseFormat(
+							'error',
+							'종목 리스트를 받아올 수 없습니다.',
+						),
+					);
+					err(error);
+				})
+				.finally(fin);
+		},
+	);
+};
 
 export default (app: express.Application) => {
 	const HTTPServer = app.listen(process.env.SOCKET_PORT || 3333, () => {
@@ -21,8 +54,7 @@ export default (app: express.Application) => {
 	});
 	const webSocketServer = new wsModule.Server({ server: HTTPServer });
 	const broadcast = ({ stockCode, msg }) => {
-		webSocketServer.clients.forEach((client) => {
-			const targetStockCode = socketClientMap.get(client);
+		socketClientMap.forEach((targetStockCode, client) => {
 			if (targetStockCode === stockCode) {
 				// 모든 데이터 전송, 현재가, 호가, 차트 등...
 				client.send(translateResponseFormat('update_target', msg));
@@ -35,27 +67,29 @@ export default (app: express.Application) => {
 	Emitter.on('broadcast', broadcast);
 
 	webSocketServer.on('connection', (ws, req) => {
-		socketClientMap.set(ws, '');
-		const stockService = new StockService();
-		const stockList = stockService.getStocksCurrent();
-		ws.send(translateResponseFormat('stocks_info', stockList));
+		connectNewUser(ws);
 
 		ws.on('message', (message: string) => {
 			const requestData: ISocketRequest = translateRequestFormat(message);
 
 			switch (requestData.type) {
 				case 'open':
+					if (!socketClientMap.has(ws)) return;
 					socketClientMap.set(ws, requestData.stockCode);
 					break;
 				case 'close':
 					socketClientMap.delete(ws);
 					break;
-				default:
-					ws.send({
-						type: 'error',
-						msg: '알 수 없는 오류가 발생했습니다.',
-					});
+				case 'reconnect':
+					// 모든 종목 기초 데이터 재전송
 					break;
+				default:
+					ws.send(
+						translateResponseFormat(
+							'error',
+							'알 수 없는 오류가 발생했습니다.',
+						),
+					);
 			}
 		});
 

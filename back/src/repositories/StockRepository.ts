@@ -13,6 +13,12 @@ export default class StockRepository extends Repository<Stock> {
 		return result.identifiers.length > 0;
 	}
 
+	public async readAllStocks(): Promise<Stock[] | undefined> {
+		return this.find({
+			lock: { mode: 'pessimistic_write' },
+		});
+	}
+
 	public async readStockById(id: number): Promise<Stock | undefined> {
 		return this.findOne(id, {
 			lock: { mode: 'pessimistic_write' },

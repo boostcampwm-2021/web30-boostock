@@ -9,21 +9,6 @@ import {
 	StockErrorMessage,
 } from '@services/errors/index';
 
-import Stocks from './StockData.json';
-
-interface IStock {
-	id: number;
-	code: string;
-	korean: string;
-	english: string;
-	highPrice: number;
-	currentPrice: number;
-	lowPrice: number;
-	previousClosingPrice: number;
-	tradingVolume: number;
-	tradingAmount: number;
-}
-
 export default class StockService {
 	static instance: StockService | null = null;
 
@@ -73,46 +58,15 @@ export default class StockService {
 		return stockEntity;
 	}
 
-	getStocksCurrent = (): IStock[] => {
-		const { stockData } = Stocks;
+	public async getStocksCurrent(
+		entityManager: EntityManager,
+	): Promise<Stock[]> {
+		const stockRepository: StockRepository =
+			this.getStockRepository(entityManager);
 
-		return [
-			{
-				...stockData[0],
-				currentPrice: Math.floor(Math.random() * 100000),
-				highPrice: Math.floor(Math.random() * 100000),
-				lowPrice: Math.floor(Math.random() * 100000),
-				previousClosingPrice: Math.floor(Math.random() * 100000),
-				tradingVolume: Math.floor(Math.random() * 10000000000),
-				tradingAmount: Math.floor(Math.random() * 10000000000),
-			},
-			{
-				...stockData[1],
-				currentPrice: Math.floor(Math.random() * 100000),
-				highPrice: Math.floor(Math.random() * 100000),
-				lowPrice: Math.floor(Math.random() * 100000),
-				previousClosingPrice: Math.floor(Math.random() * 100000),
-				tradingVolume: Math.floor(Math.random() * 10000000000),
-				tradingAmount: Math.floor(Math.random() * 10000000000),
-			},
-			{
-				...stockData[2],
-				currentPrice: Math.floor(Math.random() * 100000),
-				highPrice: Math.floor(Math.random() * 100000),
-				lowPrice: Math.floor(Math.random() * 100000),
-				previousClosingPrice: Math.floor(Math.random() * 100000),
-				tradingVolume: Math.floor(Math.random() * 10000000000),
-				tradingAmount: Math.floor(Math.random() * 10000000000),
-			},
-			{
-				...stockData[3],
-				currentPrice: Math.floor(Math.random() * 100000),
-				highPrice: Math.floor(Math.random() * 100000),
-				lowPrice: Math.floor(Math.random() * 100000),
-				previousClosingPrice: Math.floor(Math.random() * 100000),
-				tradingVolume: Math.floor(Math.random() * 10000000000),
-				tradingAmount: Math.floor(Math.random() * 10000000000),
-			},
-		];
-	};
+		const allStocks = await stockRepository.readAllStocks();
+		if (!allStocks) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+
+		return allStocks;
+	}
 }
