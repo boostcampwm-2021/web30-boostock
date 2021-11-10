@@ -29,7 +29,7 @@ const Trade = () => {
 		ignoreQueryPrefix: true,
 	});
 	const webSocket = useRecoilValue(webSocketAtom);
-	const stockState =
+	const stockState: IStockListItem =
 		stockList.find(
 			(stock: IStockListItem) => stock.code === queryData.code,
 		) ?? stockList[0];
@@ -77,11 +77,7 @@ const Trade = () => {
 						</section>
 					</section>
 					<section className="trade-conclusion">
-						<Conclusion
-							previousClosingPrice={
-								stockState.previousClosingPrice
-							}
-						/>
+						<Conclusion previousClose={stockState.previousClose} />
 					</section>
 				</section>
 			</section>

@@ -11,7 +11,7 @@ export enum TAB {
 }
 
 interface Props {
-	previousClosingPrice: number;
+	previousClose: number;
 }
 
 const colorPicker = (prev: number, current: number): string => {
@@ -29,10 +29,10 @@ const translateTimestampFormat = (timestamp: string): string => {
 	return `${month}.${day} ${hour}:${minute}`;
 };
 
-const Conclusion = (props: Props) => {
+const Conclusion = ({ previousClose }: Props) => {
 	const [tab, setTab] = useState(TAB.TICK);
 	const stockExecutionState = useRecoilValue(StockExecution);
-	const { previousClosingPrice } = props;
+
 	return (
 		<div className="conclusion-container">
 			<div className="conclusion-title">
@@ -74,7 +74,7 @@ const Conclusion = (props: Props) => {
 							</div>
 							<div
 								className={`conclusion-single-price ${colorPicker(
-									previousClosingPrice,
+									previousClose,
 									log.price,
 								)}`}
 							>
