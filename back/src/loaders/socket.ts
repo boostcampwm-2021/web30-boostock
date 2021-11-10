@@ -74,6 +74,7 @@ export default (app: express.Application) => {
 
 			switch (requestData.type) {
 				case 'open':
+					console.log('open');
 					if (!socketClientMap.has(ws)) return;
 					socketClientMap.set(ws, requestData.stockCode);
 					break;
