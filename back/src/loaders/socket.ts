@@ -20,17 +20,16 @@ export default (app: express.Application) => {
 		);
 	});
 	const webSocketServer = new wsModule.Server({ server: HTTPServer });
-	const broadcast = (stockCode, msg) => {
+	const broadcast = ({ stockCode, msg }) => {
 		webSocketServer.clients.forEach((client) => {
 			const targetStockCode = socketClientMap.get(client);
-			client.send(translateResponseFormat('test', 'testdata'));
-			// if (targetStockCode === stockCode) {
-			// 	// 모든 데이터 전송, 현재가, 호가, 차트 등...
-			// 	client.send(msg);
-			// } else {
-			// 	// msg 오브젝트의 데이터에서 aside 바에 필요한 데이터만 골라서 전송
-			// 	client.send(msg.data);
-			// }
+			if (targetStockCode === stockCode) {
+				// 모든 데이터 전송, 현재가, 호가, 차트 등...
+				client.send(translateResponseFormat('update_target', msg));
+			} else {
+				// msg 오브젝트의 데이터에서 aside 바에 필요한 데이터만 골라서 전송
+				client.send(translateResponseFormat('update_stock', msg.data));
+			}
 		});
 	};
 	Emitter.on('broadcast', broadcast);
@@ -46,7 +45,7 @@ export default (app: express.Application) => {
 
 			switch (requestData.type) {
 				case 'open':
-					socketClientMap.set(ws, requestData.stock);
+					socketClientMap.set(ws, requestData.stockCode);
 					break;
 				case 'close':
 					socketClientMap.delete(ws);

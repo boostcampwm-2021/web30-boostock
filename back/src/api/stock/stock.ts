@@ -1,13 +1,14 @@
 import express, { Request, Response } from 'express';
 import Emitter from '../../helper/eventEmitter';
-// import User from '@models/User';
-// import StockService from '@services/StockService';
 
 export default (): express.Router => {
 	const router = express.Router();
-	router.get('/', (req: Request, res: Response) => {
-		console.log('라우터 진입');
-		Emitter.emit('broadcast');
+	router.post('/conclusion', (req: Request, res: Response) => {
+		const { data } = req.body;
+
+		// 종목 코드 추출 과정 필요
+		Emitter.emit('broadcast', { stockCode: 'HNX', msg: data });
+		res.end();
 	});
 
 	return router;

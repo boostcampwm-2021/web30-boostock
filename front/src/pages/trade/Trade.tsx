@@ -19,7 +19,7 @@ import './Trade.scss';
 
 interface IConnection {
 	type: string;
-	stock?: string;
+	stockCode?: string;
 }
 
 const Trade = () => {
@@ -32,15 +32,15 @@ const Trade = () => {
 	const stockState =
 		stockList.find(
 			(stock: IStockListItem) => stock.code === queryData.code,
-		) || stockList[0];
-	const stockName = stockState.code;
+		) ?? stockList[0];
+	const stockCode = stockState.code;
 
 	useEffect((): (() => void) => {
 		const connection = setInterval(() => {
 			if (webSocket.readyState === 1) {
 				const openData: IConnection = {
 					type: 'open',
-					stock: stockName,
+					stockCode,
 				};
 				webSocket.send(translateRequestData(openData));
 				clearInterval(connection);
@@ -49,11 +49,11 @@ const Trade = () => {
 		return () => {
 			const closeData: IConnection = {
 				type: 'close',
-				stock: stockName,
+				stockCode,
 			};
 			webSocket.send(translateRequestData(closeData));
 		};
-	}, [webSocket, webSocket.readyState, stockName]);
+	}, [webSocket, webSocket.readyState, stockCode]);
 
 	webSocket.onerror = (event) => {};
 
