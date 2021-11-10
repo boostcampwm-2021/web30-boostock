@@ -14,13 +14,10 @@ export interface Props {
 }
 
 const SideBarItem = (props: Props) => {
-	console.log(111, stock);
 	const { stock, isFavorite } = props;
-	const { code, korean, currentPrice, previousClosingPrice, tradingAmount } =
-		stock;
+	const { code, nameKorean, nameEnglish, price, previousClose, unit } = stock;
 
-	const percent =
-		((currentPrice - previousClosingPrice) / previousClosingPrice) * 100;
+	const percent = ((price - previousClose) / previousClose) * 100;
 	let status = '';
 	if (percent === 0) status = '';
 	else if (percent > 0) status = 'up';
@@ -31,22 +28,20 @@ const SideBarItem = (props: Props) => {
 			<div className="sidebar__item-favorite">
 				<AiFillStar color={isFavorite ? '#FFA800' : '#999'} />
 			</div>
-			<div className="sidebar__item-name">{korean}</div>
-			<div className="sidebar__item-price">
-				{formatNumber(currentPrice)}
-			</div>
+			<div className="sidebar__item-name">{nameKorean}</div>
+			<div className="sidebar__item-price">{formatNumber(price)}</div>
 			<div className="sidebar__item-percent">
 				<p className="sidebar__item-percent-top">
 					{caretIcon(percent)}&nbsp;
 					{percent.toFixed(1)}%
 				</p>
 				<p className="sidebar__item-percent-bottom">
-					{formatNumber(currentPrice - previousClosingPrice)}
+					{formatNumber(price - previousClose)}
 				</p>
 			</div>
 			<div className="sidebar__item-amount">
 				<p className="sidebar__item-amount-value">
-					{formatNumber(tradingAmount)}
+					{/* {formatNumber(tradingAmount)} */}0
 				</p>
 				<p className="sidebar__item-amount-unit">원</p>
 			</div>
