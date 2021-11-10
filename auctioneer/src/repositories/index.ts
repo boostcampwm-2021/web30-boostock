@@ -12,3 +12,6 @@ export { default as StockRepository } from './StockRepository';
 
 export * from './OrderRepository';
 export { default as OrderRepository } from './OrderRepository';
+
+export * from './ChartRepository';
+export { default as ChartRepository } from './ChartRepository';

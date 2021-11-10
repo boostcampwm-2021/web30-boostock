@@ -23,16 +23,14 @@ export enum OrderStatus {
 
 @Entity()
 export default class Order {
-	@PrimaryGeneratedColumn()
-	order_id: number;
+	@PrimaryGeneratedColumn({ name: 'order_id' })
+	orderId: number;
 
-	@ManyToOne(() => User, (user: User) => user.user_id)
-	@JoinColumn({ name: 'user_id' })
-	user_id: number;
+	@Column({ name: 'user_id' })
+	userId: number;
 
-	@ManyToOne(() => Stock, (stock: Stock) => stock.stock_id)
-	@JoinColumn({ name: 'stock_id' })
-	stock_id: number;
+	@Column({ name: 'stock_id' })
+	stockId: number;
 
 	@Column({ type: 'enum', enum: OrderType })
 	type: number;
@@ -43,8 +41,8 @@ export default class Order {
 	@Column()
 	price: number;
 
-	@Column({ type: 'datetime' })
-	created_at: Date;
+	@Column({ name: 'created_at', type: 'datetime' })
+	createdAt: Date;
 
 	@Column({
 		type: 'enum',

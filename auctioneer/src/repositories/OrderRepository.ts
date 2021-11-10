@@ -17,12 +17,39 @@ export default class OrderRepository extends Repository<Order> {
 	public async readOrderById(id: number): Promise<Order | undefined> {
 		return this.findOne(id, {
 			lock: { mode: 'pessimistic_write' },
-			relations: ['user_id', 'stock_id'],
+		});
+	}
+
+	public async readOrderByAsc(
+		stockId: number,
+		type: number,
+	): Promise<Order | undefined> {
+		return this.findOne({
+			where: {
+				stockId,
+				type,
+			},
+			order: { price: 'ASC' },
+			lock: { mode: 'pessimistic_write' },
+		});
+	}
+
+	public async readOrderByDesc(
+		stockId: number,
+		type: number,
+	): Promise<Order | undefined> {
+		return this.findOne({
+			where: {
+				stockId,
+				type,
+			},
+			order: { price: 'DESC' },
+			lock: { mode: 'pessimistic_write' },
 		});
 	}
 
 	public async updateOrder(order: Order): Promise<boolean> {
-		const result: UpdateResult = await this.update(order.order_id, order);
+		const result: UpdateResult = await this.update(order.orderId, order);
 		return result.affected != null && result.affected > 0;
 	}
 
