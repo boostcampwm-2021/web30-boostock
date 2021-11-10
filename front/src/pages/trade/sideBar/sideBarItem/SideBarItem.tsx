@@ -14,6 +14,7 @@ export interface Props {
 }
 
 const SideBarItem = (props: Props) => {
+	console.log(111, stock);
 	const { stock, isFavorite } = props;
 	const { code, korean, currentPrice, previousClosingPrice, tradingAmount } =
 		stock;
