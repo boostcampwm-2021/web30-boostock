@@ -1,13 +1,10 @@
 import React, { useEffect } from 'react';
-import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
 import QueryString from 'qs';
 
-import StockList, { IStockListItem } from '@recoil/stockList/index';
-import {
-	translateRequestData,
-	translateResponseData,
-} from '@common/utils/socketUtils';
+import { IStockListItem } from '@recoil/stockList/index';
+import { translateRequestData } from '@common/utils/socketUtils';
 import webSocketAtom from '@src/recoil/websocket/atom';
 import stockListAtom from '@src/recoil/stockList/atom';
 import StockInfo from './stockInfo/StockInfo';
@@ -22,40 +19,44 @@ interface IConnection {
 	stockCode?: string;
 }
 
+const getStockState = (
+	stockList: IStockListItem[],
+	queryData: QueryString.ParsedQs,
+) => {
+	return (
+		stockList.find(
+			(stock: IStockListItem) => stock.code === queryData.code,
+		) ?? stockList[0]
+	);
+};
+
 const Trade = () => {
-	const [stockList, setStockList] = useRecoilState(stockListAtom);
+	const [stockList] = useRecoilState(stockListAtom);
 	const location = useLocation();
 	const queryData = QueryString.parse(location.search, {
 		ignoreQueryPrefix: true,
 	});
 	const webSocket = useRecoilValue(webSocketAtom);
-	const stockState: IStockListItem =
-		stockList.find(
-			(stock: IStockListItem) => stock.code === queryData.code,
-		) ?? stockList[0];
+	const stockState = getStockState(stockList, queryData);
 	const stockCode = stockState.code;
 
-	useEffect((): (() => void) => {
-		const connection = setInterval(() => {
-			if (webSocket.readyState === 1) {
-				const openData: IConnection = {
-					type: 'open',
-					stockCode,
-				};
-				webSocket.send(translateRequestData(openData));
-				clearInterval(connection);
-			}
-		});
-		return () => {
-			const closeData: IConnection = {
-				type: 'close',
+	const connection = setInterval(() => {
+		if (webSocket?.readyState === 1) {
+			console.log('open 보냄');
+			const openData: IConnection = {
+				type: 'open',
 				stockCode,
 			};
-			webSocket.send(translateRequestData(closeData));
-		};
-	}, [webSocket, webSocket.readyState, stockCode]);
+			webSocket.send(translateRequestData(openData));
+			clearInterval(connection);
+		}
+	}, 100);
 
-	webSocket.onerror = (event) => {};
+	useEffect(() => {
+		return () => {
+			clearInterval(connection);
+		};
+	}, [connection, stockCode, webSocket]);
 
 	return (
 		<main className="trade">
