@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
+import { ImSpinner8 } from 'react-icons/im';
 import QueryString from 'qs';
 
 import { IStockListItem } from '@recoil/stockList/index';
@@ -31,7 +32,7 @@ const Trade = () => {
 	});
 	const webSocket = useRecoilValue(webSocketAtom);
 	const stockState = getStockState(stockList, queryData);
-	const stockCode = stockState.code;
+	const stockCode = stockState?.code;
 
 	const connection = setInterval(() => {
 		if (webSocket?.readyState === 1) {
@@ -50,6 +51,15 @@ const Trade = () => {
 			clearInterval(connection);
 		};
 	}, [connection, stockCode, webSocket]);
+
+	if (!stockCode) {
+		return (
+			<div className="trade__loading">
+				<ImSpinner8 />
+				<span>데이터 로딩중...</span>
+			</div>
+		);
+	}
 
 	return (
 		<main className="trade">
