@@ -27,17 +27,7 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
 			case 'stocks_info':
-				setStockList(
-					data.map(({ stockId, code, nameEnglish, nameKorean, price, previousClose, unit }: IIncomingStockList) => ({
-						stockId,
-						code,
-						nameEnglish,
-						nameKorean,
-						price,
-						previousClose,
-						unit,
-					})),
-				);
+				setStockList(data);
 				break;
 			default:
 		}
