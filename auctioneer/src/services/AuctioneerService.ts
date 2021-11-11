@@ -37,7 +37,7 @@ export default class AuctioneerService {
 			const orderBid = await OrderRepositoryRunner.readOrderByAsc(stockId, OrderType.SELL);
 			if (orderBid === undefined || orderBid.amount <= 0) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
 
-			if (orderBid.price > orderAsk.price) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
+			if (orderBid.price < orderAsk.price) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
 
 			const task = new BidAskTransaction(
 				StockRepositoryRunner,
