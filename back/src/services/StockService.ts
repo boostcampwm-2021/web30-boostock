@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager } from 'typeorm';
+import { EntityManager, createQueryBuilder } from 'typeorm';
 import { Stock } from '@models/index';
 import { StockRepository } from '@repositories/index';
 import { CommonError, CommonErrorMessage, StockError, StockErrorMessage } from '@services/errors/index';
@@ -41,10 +41,11 @@ export default class StockService {
 
 	public async getStocksCurrent(entityManager: EntityManager): Promise<Stock[]> {
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
-
 		const allStocks = await stockRepository.readAllStocks();
 		if (!allStocks) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 
-		return allStocks;
+		return allStocks.map((stock) => {
+			return { ...stock, charts: stock.charts.filter(({ type }) => type === 1440) };
+		});
 	}
 }
