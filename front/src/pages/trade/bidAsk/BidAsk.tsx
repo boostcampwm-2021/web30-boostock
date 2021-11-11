@@ -10,14 +10,14 @@ import './bidask.scss';
 
 interface IOrderData {
 	userId: number;
-	stockId: number;
+	stockCode: string;
 	type: number;
 	option: number;
 	amount: number;
 	price: number;
 }
 
-const BidAsk = () => {
+const BidAsk = ({ stockCode }) => {
 	const [bidAskType, setBidAskType] = useState<string>('매수');
 	const [bidAskOption, setBidAskOption] = useState<string>('지정가');
 	const [bidAskPrice, setBidAskPrice] = useRecoilState(bidAskPriceAtom);
@@ -40,9 +40,9 @@ const BidAsk = () => {
 
 		const orderData: IOrderData = {
 			userId: 1,
-			stockId: 1,
-			type: bidAskType === '매도' ? 0 : 1,
-			option: bidAskOption === '지정가' ? 0 : 1,
+			stockCode,
+			type: bidAskType === '매도' ? 1 : 2,
+			option: bidAskOption === '지정가' ? 1 : 2,
 			amount: bidAskAmount,
 			price: bidAskPrice,
 		};
