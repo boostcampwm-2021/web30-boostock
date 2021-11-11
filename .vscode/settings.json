@@ -23,5 +23,5 @@
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
-	"eslint.workingDirectories": ["back", "front"]
+	"eslint.workingDirectories": ["auctioneer", "back", "front"]
 }
