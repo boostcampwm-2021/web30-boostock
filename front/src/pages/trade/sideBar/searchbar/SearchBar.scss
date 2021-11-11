@@ -1,0 +1,45 @@
+@import '@common/global.scss';
+
+.search-bar-container {
+	display: flex;
+	align-items: center;
+	position: relative;
+	height: 3em;
+}
+
+.search-bar-icon-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: calc(100% - 1px);
+	border-bottom: 1px solid $borderColor;
+	background-color: lighten($white2, 3%);
+	cursor: pointer;
+
+	.dark-theme & {
+		color: $white2;
+		background-color: lighten($darkModeCardBackgroundColor, 3%);
+		border-bottom: 1px solid $darkModeBorderColor;
+	}
+}
+
+.search-bar {
+	width: calc(100% - 30px);
+	height: 100%;
+	padding: 0.4em 0.5em;
+	outline: none;
+	border: none;
+	background-color: lighten($white2, 3%);
+	border-bottom: 1px solid $borderColor;
+
+	@media screen and (max-width: $responsiveSize1) {
+		font-size: 14px;
+	}
+
+	.dark-theme & {
+		color: $white2;
+		background-color: lighten($darkModeCardBackgroundColor, 3%);
+		border-bottom: 1px solid $darkModeBorderColor;
+	}
+}

@@ -28,7 +28,8 @@ export default class Order {
 
 	@ManyToOne(() => User, (user: User) => user.user_id)
 	@JoinColumn({ name: 'user_id' })
-	userId: number;
+	user_id: number;
+
 
 	@ManyToOne(() => Stock, (stock: Stock) => stock.stock_id)
 	@JoinColumn({ name: 'stock_id' })

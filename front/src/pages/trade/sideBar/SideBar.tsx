@@ -21,6 +21,8 @@ const SideBar = () => {
 
 	const [regex, setRegex] = useState(/.*/);
 
+	console.log(stockListState);
+
 	const searchEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setRegex(getRegExp(event?.target?.value));
 	};
@@ -30,11 +32,11 @@ const SideBar = () => {
 			switch (menu) {
 				case MENU.FAVORITE:
 					return stockListState.filter((stock: IStockListItem) =>
-						userState.favorite.includes(stock.id),
+						userState.favorite.includes(stock.stockId),
 					);
 				case MENU.HOLD:
 					return stockListState.filter((stock: IStockListItem) =>
-						userState.hold.includes(stock.id),
+						userState.hold.includes(stock.stockId),
 					);
 				default:
 					return stockListState;
@@ -70,14 +72,16 @@ const SideBar = () => {
 					.filter(
 						(stock: IStockListItem) =>
 							regex.test(stock.code.toLowerCase()) ||
-							regex.test(stock.korean) ||
-							regex.test(stock.english.toLowerCase()),
+							regex.test(stock.nameKorean) ||
+							regex.test(stock.nameEnglish.toLowerCase()),
 					)
 					.map((stock: IStockListItem) => (
 						<SideBarItem
-							key={stock.id}
+							key={stock.stockId}
 							stock={stock}
-							isFavorite={userState.favorite.includes(stock.id)}
+							isFavorite={userState.favorite.includes(
+								stock.stockId,
+							)}
 						/>
 					))}
 			</div>

@@ -57,4 +57,16 @@ export default class StockService {
 			throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 		return stockEntity;
 	}
+
+	public async getStocksCurrent(
+		entityManager: EntityManager,
+	): Promise<Stock[]> {
+		const stockRepository: StockRepository =
+			this.getStockRepository(entityManager);
+
+		const allStocks = await stockRepository.readAllStocks();
+		if (!allStocks) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+
+		return allStocks;
+	}
 }

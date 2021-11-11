@@ -10,6 +10,7 @@ import SignIn from './pages/signIn/SignIn';
 import SignUp from './pages/signUp/SignUp';
 import Trade from './pages/trade/Trade';
 import userAtom from './recoil/user/atom';
+import Socket from './Socket';
 
 export interface Ipage {
 	id: number;
@@ -37,14 +38,16 @@ const App: React.FC = () => {
 	return (
 		<BrowserRouter>
 			<TopBar pages={pages} />
-			<main>
-				<Switch>
-					<Route path="/signin" component={SignIn} />
-					<Route path="/signup" component={SignUp} />
-					<Route path="/trade" component={Trade} />
-					<Route component={HelloWorld} />
-				</Switch>
-			</main>
+			<Socket>
+				<main>
+					<Switch>
+						<Route path="/signin" component={SignIn} />
+						<Route path="/signup" component={SignUp} />
+						<Route path="/trade" component={Trade} />
+						<Route component={HelloWorld} />
+					</Switch>
+				</main>
+			</Socket>
 		</BrowserRouter>
 	);
 };

@@ -9,8 +9,6 @@ export default (): express.Router => {
 
 	router.post('/', async (req: Request, res: Response) => {
 		transaction(
-			req,
-			res,
 			(
 				queryRunner: QueryRunner,
 				then: () => void,
@@ -33,13 +31,13 @@ export default (): express.Router => {
 					.catch(err)
 					.finally(fin);
 			},
+			req,
+			res,
 		);
 	});
 
 	router.delete('/', async (req: Request, res: Response) => {
 		transaction(
-			req,
-			res,
 			(
 				queryRunner: QueryRunner,
 				then: () => void,
@@ -59,13 +57,13 @@ export default (): express.Router => {
 					.catch(err)
 					.finally(fin);
 			},
+			req,
+			res,
 		);
 	});
 
 	router.put('/', async (req: Request, res: Response) => {
 		transaction(
-			req,
-			res,
 			(
 				queryRunner: QueryRunner,
 				then: () => void,
@@ -87,6 +85,8 @@ export default (): express.Router => {
 					.catch(err)
 					.finally(fin);
 			},
+			req,
+			res,
 		);
 	});
 

@@ -1,9 +1,12 @@
-import React from 'react';
-import { useRecoilValue } from 'recoil';
+import React, { useEffect } from 'react';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
 import QueryString from 'qs';
 
-import StockList, { IStockListItem } from '@recoil/stockList/index';
+import { IStockListItem } from '@recoil/stockList/index';
+import { translateRequestData } from '@common/utils/socketUtils';
+import webSocketAtom from '@src/recoil/websocket/atom';
+import stockListAtom from '@src/recoil/stockList/atom';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
 import BidAsk from './bidAsk/BidAsk';
@@ -13,32 +16,47 @@ import './Trade.scss';
 
 interface IConnection {
 	type: string;
-	stock?: string;
+	stockCode?: string;
 }
 
-const translateSocketData = (data: object | []) => JSON.stringify(data);
+const getStockState = (
+	stockList: IStockListItem[],
+	queryData: QueryString.ParsedQs,
+) => {
+	return (
+		stockList.find(
+			(stock: IStockListItem) => stock.code === queryData.code,
+		) ?? stockList[0]
+	);
+};
 
 const Trade = () => {
+	const [stockList] = useRecoilState(stockListAtom);
 	const location = useLocation();
 	const queryData = QueryString.parse(location.search, {
 		ignoreQueryPrefix: true,
 	});
-	const stockListState = useRecoilValue(StockList);
-	const stockState =
-		stockListState.find(
-			(stock: IStockListItem) => stock.code === queryData.code,
-		) || stockListState[0];
+	const webSocket = useRecoilValue(webSocketAtom);
+	const stockState = getStockState(stockList, queryData);
+	const stockCode = stockState.code;
 
-	/*
-	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
-	webSocket.onopen = () => {
-		const data: IConnection = { type: 'open', stock: 'Boostock' };
-		webSocket.send(translateSocketData(data));
-	};
-	webSocket.onclose = () => {};
-	webSocket.onmessage = (event) => {};
-	webSocket.onerror = (event) => {};
-	*/
+	const connection = setInterval(() => {
+		if (webSocket?.readyState === 1) {
+			console.log('open 보냄');
+			const openData: IConnection = {
+				type: 'open',
+				stockCode,
+			};
+			webSocket.send(translateRequestData(openData));
+			clearInterval(connection);
+		}
+	}, 100);
+
+	useEffect(() => {
+		return () => {
+			clearInterval(connection);
+		};
+	}, [connection, stockCode, webSocket]);
 
 	return (
 		<main className="trade">
@@ -60,11 +78,7 @@ const Trade = () => {
 						</section>
 					</section>
 					<section className="trade-conclusion">
-						<Conclusion
-							previousClosingPrice={
-								stockState.previousClosingPrice
-							}
-						/>
+						<Conclusion previousClose={stockState.previousClose} />
 					</section>
 				</section>
 			</section>
