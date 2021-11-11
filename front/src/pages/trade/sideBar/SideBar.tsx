@@ -19,8 +19,6 @@ const SideBar = () => {
 
 	const [regex, setRegex] = useState(/.*/);
 
-	console.log(stockListState);
-
 	const searchEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setRegex(getRegExp(event?.target?.value));
 	};
@@ -43,6 +41,7 @@ const SideBar = () => {
 			<div className="sidebar__menu">
 				{Object.keys(MENU).map((key, index) => (
 					<SideBarNav
+						key={key}
 						setMenu={setMenu}
 						index={index}
 						className={`sidebar__menu-item ${menu === MENU[key as keyof typeof MENU] ? 'selected' : ''}`}

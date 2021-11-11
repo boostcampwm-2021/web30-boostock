@@ -34,23 +34,20 @@ const Trade = () => {
 	const stockState = getStockState(stockList, queryData);
 	const stockCode = stockState?.code;
 
-	const connection = setInterval(() => {
-		if (webSocket?.readyState === 1) {
-			console.log('open 보냄');
+	useEffect(() => {
+		const connection = setInterval(() => {
+			if (!stockCode || webSocket?.readyState !== 1) return;
 			const openData: IConnection = {
 				type: 'open',
 				stockCode,
 			};
 			webSocket.send(translateRequestData(openData));
 			clearInterval(connection);
-		}
-	}, 100);
-
-	useEffect(() => {
+		});
 		return () => {
 			clearInterval(connection);
 		};
-	}, [connection, stockCode, webSocket]);
+	}, [webSocket, stockCode]);
 
 	if (!stockCode) {
 		return (
@@ -77,7 +74,7 @@ const Trade = () => {
 							<Order />
 						</section>
 						<section className="trade-bid-ask">
-							<BidAsk />
+							<BidAsk stockCode={stockCode} />
 						</section>
 					</section>
 					<section className="trade-conclusion">

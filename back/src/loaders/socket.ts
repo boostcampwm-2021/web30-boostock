@@ -44,7 +44,7 @@ export default (app: express.Application) => {
 				client.send(translateResponseFormat('update_target', msg));
 			} else {
 				// msg 오브젝트의 데이터에서 aside 바에 필요한 데이터만 골라서 전송
-				client.send(translateResponseFormat('update_stock', msg.data));
+				client.send(translateResponseFormat('update_stock', msg.match));
 			}
 		});
 	};
@@ -63,9 +63,6 @@ export default (app: express.Application) => {
 					break;
 				case 'close':
 					socketClientMap.delete(ws);
-					break;
-				case 'reconnect':
-					// 모든 종목 기초 데이터 재전송
 					break;
 				default:
 					ws.send(translateResponseFormat('error', '알 수 없는 오류가 발생했습니다.'));

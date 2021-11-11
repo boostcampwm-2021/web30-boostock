@@ -12,3 +12,6 @@ export { default as Stock } from './Stock';
 
 export * from './Order';
 export { default as Order } from './Order';
+
+export * from './Chart';
+export { default as Chart } from './Chart';
