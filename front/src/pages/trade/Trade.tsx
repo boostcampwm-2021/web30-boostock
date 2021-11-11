@@ -74,7 +74,7 @@ const Trade = () => {
 							<Order />
 						</section>
 						<section className="trade-bid-ask">
-							<BidAsk />
+							<BidAsk stockCode={stockCode} />
 						</section>
 					</section>
 					<section className="trade-conclusion">
