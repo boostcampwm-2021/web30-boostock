@@ -5,7 +5,7 @@ import caretIcon from '@src/common/utils/caretIcon';
 
 import './StockInfo.scss';
 
-interface Props {
+interface IProps {
 	info: IStockListItem;
 }
 
@@ -25,8 +25,9 @@ function formatTradingData(data: number, postfix: string) {
 	return `${formatNumber(Math.round(data / ONE_MILLION))}백만${postfix}`;
 }
 
-const StockInfo = ({ info }: Props) => {
-	const { nameKorean, price, previousClose } = info;
+const StockInfo = ({ info }: IProps) => {
+	const { nameKorean, price, previousClose, charts } = info;
+	const { priceLow = 0, priceHigh = 0, volume = 0, amount = 0 } = charts[0] ?? [];
 
 	const percent = ((price - previousClose) / previousClose) * 100;
 
@@ -52,19 +53,19 @@ const StockInfo = ({ info }: Props) => {
 			</div>
 			<div className="stock-info__right">
 				<div className="extra-info high-price">
-					<span className="extra-info-data">{/* {formatNumber(highPrice)}원 */}0</span>
+					<span className="extra-info-data">{formatNumber(priceHigh)}원</span>
 					<span className="extra-info-text">고가</span>
 				</div>
 				<div className="extra-info low-price">
-					<span className="extra-info-data">{/* {formatNumber(lowPrice)}원 */}0</span>
+					<span className="extra-info-data">{formatNumber(priceLow)}원</span>
 					<span className="extra-info-text">저가</span>
 				</div>
 				<div className="extra-info trading-volume">
-					<span className="extra-info-data">{/* {formatTradingData(tradingVolume, '주')} */}0</span>
+					<span className="extra-info-data">{formatTradingData(amount, '주')}</span>
 					<span className="extra-info-text">거래량</span>
 				</div>
 				<div className="extra-info trading-amount">
-					<span className="extra-info-data">{/* {formatTradingData(tradingAmount, '원')} */}0</span>
+					<span className="extra-info-data">{formatTradingData(volume, '원')}</span>
 					<span className="extra-info-text">거래대금</span>
 				</div>
 			</div>

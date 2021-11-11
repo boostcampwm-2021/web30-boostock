@@ -1,6 +1,6 @@
 import atom from './atom';
-import type { IStockListItem } from './atom';
+import type { IStockChartItem, IStockListItem } from './atom';
 
-export { IStockListItem };
+export { IStockChartItem, IStockListItem };
 
 export default atom;
