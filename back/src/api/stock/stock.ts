@@ -4,10 +4,10 @@ import Emitter from '../../helper/eventEmitter';
 export default (): express.Router => {
 	const router = express.Router();
 	router.post('/conclusion', (req: Request, res: Response) => {
-		const { data } = req.body;
+		const msg = req.body;
+		const stockCode = msg.match.code;
+		Emitter.emit('broadcast', { stockCode, msg });
 
-		// 종목 코드 추출 과정 필요
-		Emitter.emit('broadcast', { stockCode: 'HNX', msg: data });
 		res.end();
 	});
 
