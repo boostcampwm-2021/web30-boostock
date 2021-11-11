@@ -189,6 +189,7 @@
 	border: 1px solid $borderColor;
 	border-radius: 4px;
 	padding: 8px;
+	text-align: right;
 
 	&.error:not(:focus) {
 		border: 1px solid $red;
