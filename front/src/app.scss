@@ -3,12 +3,12 @@
 @import '@common/reset.css';
 
 body {
-	&.dark-theme {
-		background-color: #000000;
-	}
-
 	min-width: 1336px;
 	background-color: #f0f4fa;
+}
+
+.theme-container.dark-theme {
+	background-color: #000000;
 }
 
 #app {
