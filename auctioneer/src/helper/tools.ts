@@ -45,4 +45,9 @@ export const transaction = async (req: Request, res: Response, callback: any): P
 	callback(queryRunner, thenTransaction, catchTransaction, finallyTransaction);
 };
 
+function sleep(ms) {
+	const wakeUpTime = Date.now() + ms;
+	while (Date.now() < wakeUpTime) {}
+}
+
 export { QueryRunner, EntityManager } from 'typeorm';

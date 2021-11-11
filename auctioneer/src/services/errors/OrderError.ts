@@ -8,6 +8,7 @@ export enum OrderErrorMessage {
 	LACK_OF_BALANCE = 'Lack of Balance',
 	NOT_EXIST_ORDER = 'Not Exist Order',
 	NOT_PENDING_ORDER = 'Not Pending Order',
+	NO_ORDERS_AVAILABLE = 'No orders available',
 }
 
 export default class OrderError extends CommonError {

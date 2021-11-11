@@ -15,3 +15,6 @@ export { default as Order } from './Order';
 
 export * from './Chart';
 export { default as Chart } from './Chart';
+
+export * from './Transaction';
+export { default as Transaction } from './Transaction';
