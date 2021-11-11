@@ -109,7 +109,7 @@
   },
   "include": [
     "src/**/*"
-, "../auctioneer/src/services/AuctioneerService.ts"  ],
+  ],
   "exclude": [
     "node_modules",
     "tests"
