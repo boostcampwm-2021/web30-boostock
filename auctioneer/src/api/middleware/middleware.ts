@@ -6,9 +6,15 @@ export async function code2StockId(req: Request, res: Response, next: NextFuncti
 	const { code } = req.query;
 	if (code === undefined) next('code가 빠졌어');
 	const stockRepository = getRepository(Stock);
-	const stockId = await stockRepository.findOne({ code: code as string });
-	if (stockId === undefined) next('code가 엉뚱한게 드렁왔엉');
-	res.locals.stockId = stockId;
+	try {
+		const stock = await stockRepository.findOne({ code: code as string });
+		if (stock === undefined) throw new Error('code가 엉뚱한게 드렁왔엉');
+		res.locals.stockId = stock.stockId;
+		res.locals.code = code;
+	} catch (error) {
+		console.error(error);
+		next(error);
+	}
 	next();
 }
 

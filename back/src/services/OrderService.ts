@@ -107,7 +107,11 @@ export default class OrderService {
 		let resultUpdate = false;
 		if (orderData.type === OrderType.SELL) {
 			const userStockService: UserStockService = new UserStockService();
-			resultUpdate = await userStockService.setAmount(entityManager, user.userId, holdStockAmount - orderData.amount);
+			resultUpdate = await userStockService.setAmount(
+				entityManager,
+				holdStock.userStockId,
+				holdStockAmount - orderData.amount,
+			);
 		} else if (orderData.type === OrderType.BUY) {
 			resultUpdate = await userService.setBalance(entityManager, user.userId, user.balance - totalPrice);
 		}
