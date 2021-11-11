@@ -151,6 +151,11 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
+            - name: Extract Branch Name
+              shell: bash
+              run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
+              id: extract_branch
+
             - name: Run Server
               uses: appleboy/ssh-action@master
               with:
