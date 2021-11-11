@@ -12,6 +12,6 @@ export default class UserFavorite {
 	@JoinColumn({ name: 'user_id' })
 	userId: number;
 
-	@Column()
+	@Column({ name: 'stock_id' })
 	stockId: number;
 }
