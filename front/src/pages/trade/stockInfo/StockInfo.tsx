@@ -27,7 +27,7 @@ function formatTradingData(data: number, postfix: string) {
 
 const StockInfo = ({ info }: IProps) => {
 	const { nameKorean, price, previousClose, charts } = info;
-	const { priceLow = 0, priceHigh = 0, volume = 0, amount = 0 } = charts[0] ?? [];
+	const { priceLow = 0, priceHigh = 0, volume = 0, amount = 0 } = charts.filter(({ type }) => type === 1440)[0] ?? [];
 
 	const percent = ((price - previousClose) / previousClose) * 100;
 
