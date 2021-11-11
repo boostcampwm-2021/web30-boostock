@@ -3,10 +3,7 @@ import path from 'path';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 const env = dotenv.config({
-	path: path.resolve(
-		process.cwd(),
-		process.env.NODE_ENV === 'production' ? '.env' : '.env.dev',
-	),
+	path: path.resolve(process.cwd(), process.env.NODE_ENV === 'production' ? '.env' : '.env.dev'),
 });
 
 if (env.error) {

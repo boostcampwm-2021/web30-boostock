@@ -9,8 +9,8 @@ import BidAskAction from './BidAskAction';
 import './bidask.scss';
 
 interface IOrderData {
-	user_id: number;
-	stock_id: number;
+	userId: number;
+	stockId: number;
 	type: number;
 	option: number;
 	amount: number;
@@ -39,8 +39,8 @@ const BidAsk = () => {
 		}
 
 		const orderData: IOrderData = {
-			user_id: 1,
-			stock_id: 1,
+			userId: 1,
+			stockId: 1,
 			type: bidAskType === '매도' ? 0 : 1,
 			option: bidAskOption === '지정가' ? 0 : 1,
 			amount: bidAskAmount,
@@ -56,10 +56,7 @@ const BidAsk = () => {
 		};
 
 		try {
-			const res = await fetch(
-				`${process.env.SERVER_URL}/api/order`,
-				config,
-			);
+			const res = await fetch(`${process.env.SERVER_URL}/api/order`, config);
 			const data = await res;
 
 			if (data.status !== 200) throw new Error();
@@ -88,10 +85,7 @@ const BidAsk = () => {
 	return (
 		<div className="bidask-container">
 			<Toaster />
-			<BidAskType
-				bidAskType={bidAskType}
-				handleSetBidAskType={handleSetBidAskType}
-			/>
+			<BidAskType bidAskType={bidAskType} handleSetBidAskType={handleSetBidAskType} />
 			<div className="bidask-info-container">
 				{bidAskType !== '정정/취소' && (
 					<BidAskInputs

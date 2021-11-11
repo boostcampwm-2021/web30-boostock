@@ -1,10 +1,4 @@
-import {
-	EntityRepository,
-	Repository,
-	InsertResult,
-	UpdateResult,
-	DeleteResult,
-} from 'typeorm';
+import { EntityRepository, Repository, InsertResult, UpdateResult, DeleteResult } from 'typeorm';
 import User from '@models/User';
 
 @EntityRepository(User)
@@ -22,7 +16,7 @@ export default class UserRepository extends Repository<User> {
 	}
 
 	async updateUser(user: User): Promise<boolean> {
-		const result: UpdateResult = await this.update(user.user_id, user);
+		const result: UpdateResult = await this.update(user.userId, user);
 		return result.affected != null && result.affected > 0;
 	}
 

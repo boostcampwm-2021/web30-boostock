@@ -1,10 +1,4 @@
-import {
-	EntityRepository,
-	Repository,
-	InsertResult,
-	UpdateResult,
-	DeleteResult,
-} from 'typeorm';
+import { EntityRepository, Repository, InsertResult, UpdateResult, DeleteResult } from 'typeorm';
 import Order from '@models/Order';
 
 @EntityRepository(Order)
@@ -20,10 +14,7 @@ export default class OrderRepository extends Repository<Order> {
 		});
 	}
 
-	public async readOrderByAsc(
-		stockId: number,
-		type: number,
-	): Promise<Order | undefined> {
+	public async readOrderByAsc(stockId: number, type: number): Promise<Order | undefined> {
 		return this.findOne({
 			where: {
 				stockId,
@@ -34,10 +25,7 @@ export default class OrderRepository extends Repository<Order> {
 		});
 	}
 
-	public async readOrderByDesc(
-		stockId: number,
-		type: number,
-	): Promise<Order | undefined> {
+	public async readOrderByDesc(stockId: number, type: number): Promise<Order | undefined> {
 		return this.findOne({
 			where: {
 				stockId,

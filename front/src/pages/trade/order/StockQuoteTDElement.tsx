@@ -36,11 +36,7 @@ function volumeWidth(volume: number, maxVolume: number): string {
 	return `${(volume / maxVolume) * 100}%`;
 }
 
-const StockQuoteTDElement = ({
-	quote,
-	totalAndMaxVolumes,
-	setBidAskPrice,
-}: IProps) => {
+const StockQuoteTDElement = ({ quote, totalAndMaxVolumes, setBidAskPrice }: IProps) => {
 	return (
 		<>
 			<td
@@ -53,26 +49,19 @@ const StockQuoteTDElement = ({
 					<>
 						<div
 							style={{
-								width: volumeWidth(
-									quote.volume,
-									totalAndMaxVolumes.maxVolume,
-								),
+								width: volumeWidth(quote.volume, totalAndMaxVolumes.maxVolume),
 							}}
 							className="sell-volume-bar"
 						>
 							&nbsp;
 						</div>
-						<p className="volume-sell-text">
-							{formatNumber(quote.volume)}
-						</p>
+						<p className="volume-sell-text">{formatNumber(quote.volume)}</p>
 					</>
 				)}
 			</td>
 			<td
 				role="button"
-				className={`order-row-price-data ${backgroundColorClass(
-					quote.type,
-				)}`}
+				className={`order-row-price-data ${backgroundColorClass(quote.type)}`}
 				onClick={() => setBidAskPrice(quote.price)}
 				onKeyDown={() => setBidAskPrice(quote.price)}
 				tabIndex={0}
@@ -89,18 +78,13 @@ const StockQuoteTDElement = ({
 					<>
 						<div
 							style={{
-								width: volumeWidth(
-									quote.volume,
-									totalAndMaxVolumes.maxVolume,
-								),
+								width: volumeWidth(quote.volume, totalAndMaxVolumes.maxVolume),
 							}}
 							className="buy-volume-bar"
 						>
 							&nbsp;
 						</div>
-						<p className="volume-buy-text">
-							{formatNumber(quote.volume)}
-						</p>
+						<p className="volume-buy-text">{formatNumber(quote.volume)}</p>
 					</>
 				)}
 			</td>

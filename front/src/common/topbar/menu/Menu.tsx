@@ -13,32 +13,16 @@ const Menu = ({ pages }: Props) => {
 		<nav className={style.container}>
 			<div>
 				{pages.map((page) => (
-					<NavLink
-						to={page.url}
-						key={page.id}
-						className={(isActive) =>
-							isActive ? `${style.active}` : ''
-						}
-					>
+					<NavLink to={page.url} key={page.id} className={(isActive) => (isActive ? `${style.active}` : '')}>
 						{page.title}
 					</NavLink>
 				))}
 			</div>
 			<div style={{ position: 'relative' }}>
-				<NavLink
-					to="/signin"
-					className={(isActive) =>
-						isActive ? `${style.active}` : ''
-					}
-				>
+				<NavLink to="/signin" className={(isActive) => (isActive ? `${style.active}` : '')}>
 					로그인
 				</NavLink>
-				<NavLink
-					to="/signup"
-					className={(isActive) =>
-						isActive ? `${style.active}` : ''
-					}
-				>
+				<NavLink to="/signup" className={(isActive) => (isActive ? `${style.active}` : '')}>
 					회원가입
 				</NavLink>
 			</div>

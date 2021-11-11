@@ -21,10 +21,7 @@ export default class User {
 	@Column()
 	balance: number;
 
-	@OneToMany(
-		() => UserFavorite,
-		(userFavorite: UserFavorite) => userFavorite.userId,
-	)
+	@OneToMany(() => UserFavorite, (userFavorite: UserFavorite) => userFavorite.userId)
 	favorites: UserFavorite[];
 
 	@OneToMany(() => UserStock, (userStock: UserStock) => userStock.userId)

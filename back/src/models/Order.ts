@@ -1,11 +1,5 @@
 import 'reflect-metadata';
-import {
-	Entity,
-	Column,
-	PrimaryGeneratedColumn,
-	ManyToOne,
-	JoinColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import User from './User';
 import Stock from './Stock';
 
@@ -23,15 +17,14 @@ export enum OrderStatus {
 
 @Entity()
 export default class Order {
-	@PrimaryGeneratedColumn()
-	order_id: number;
+	@PrimaryGeneratedColumn({ name: 'order_id' })
+	orderId: number;
 
-	@ManyToOne(() => User, (user: User) => user.user_id)
+	@ManyToOne(() => User, (user: User) => user.userId)
 	@JoinColumn({ name: 'user_id' })
-	user_id: number;
+	userId: number;
 
-
-	@ManyToOne(() => Stock, (stock: Stock) => stock.stock_id)
+	@ManyToOne(() => Stock, (stock: Stock) => stock.stockId)
 	@JoinColumn({ name: 'stock_id' })
 	stockId: number;
 
@@ -44,8 +37,8 @@ export default class Order {
 	@Column()
 	price: number;
 
-	@Column({ type: 'datetime' })
-	created_at: Date;
+	@Column({ name: 'created_at', type: 'datetime' })
+	createdAt: Date;
 
 	@Column({
 		type: 'enum',

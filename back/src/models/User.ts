@@ -6,8 +6,8 @@ import UserStock from './UserStock';
 
 @Entity({ name: 'user' })
 export default class User {
-	@PrimaryGeneratedColumn()
-	user_id: number;
+	@PrimaryGeneratedColumn({ name: 'user_id' })
+	userId: number;
 
 	@Column()
 	username: string;
@@ -15,18 +15,15 @@ export default class User {
 	@Column()
 	email: string;
 
-	@Column()
-	social_github: string;
+	@Column({ name: 'social_github' })
+	socialGithub: string;
 
 	@Column()
 	balance: number;
 
-	@OneToMany(
-		() => UserFavorite,
-		(userFavorite: UserFavorite) => userFavorite.user_id,
-	)
+	@OneToMany(() => UserFavorite, (userFavorite: UserFavorite) => userFavorite.userId)
 	favorites: UserFavorite[];
 
-	@OneToMany(() => UserStock, (userStock: UserStock) => userStock.user_id)
+	@OneToMany(() => UserStock, (userStock: UserStock) => userStock.userId)
 	stocks: UserStock[];
 }

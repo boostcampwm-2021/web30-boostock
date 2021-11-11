@@ -69,10 +69,7 @@ const BidAskInputs = ({
 						onChange={handleSetOrderOption}
 					/>
 					{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-					<label
-						className="bidask-option-label"
-						htmlFor="bidask-option-designated"
-					>
+					<label className="bidask-option-label" htmlFor="bidask-option-designated">
 						지정가
 					</label>
 					<input
@@ -85,30 +82,21 @@ const BidAskInputs = ({
 						onChange={handleSetOrderOption}
 					/>
 					{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-					<label
-						htmlFor="bidask-option-market"
-						className="bidask-option-label"
-					>
+					<label htmlFor="bidask-option-market" className="bidask-option-label">
 						시장가
 					</label>
 				</span>
 			</li>
 			<li className="bidask-info-list-item">
-				<span className="bidask-info-text">
-					{bidAskType === '매수' ? '매수가능' : '매도가능'}
-				</span>
+				<span className="bidask-info-text">{bidAskType === '매수' ? '매수가능' : '매도가능'}</span>
 				<span className="bidask-info-price-container">
 					<span className="bidask-info-price">123,456,789</span>
-					<span className="bidask-info-won-text">
-						{bidAskType === '매수' ? '원' : '주'}
-					</span>
+					<span className="bidask-info-won-text">{bidAskType === '매수' ? '원' : '주'}</span>
 				</span>
 			</li>
 			{bidAskOption === '지정가' && (
 				<li className="bidask-info-list-item">
-					<span className="bidask-info-text">
-						{bidAskType === '매수' ? '매수가격' : '매도가격'}
-					</span>
+					<span className="bidask-info-text">{bidAskType === '매수' ? '매수가격' : '매도가격'}</span>
 					<div>
 						<input
 							className="bidask-info-text-input"
@@ -147,12 +135,7 @@ const BidAskInputs = ({
 					<span className="bidask-info-text">주문총액</span>
 					<div className="bidask-total-price-container">
 						<span className="bidask-total-price">
-							{formatNumber(
-								calculateTotalOrderPrice(
-									bidAskPrice,
-									bidAskAmount,
-								),
-							)}
+							{formatNumber(calculateTotalOrderPrice(bidAskPrice, bidAskAmount))}
 						</span>
 						<span className="bidask-info-won-text">원</span>
 					</div>

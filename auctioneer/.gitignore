@@ -105,3 +105,4 @@ dist
 
 # etc
 ormconfig.json
+.DS_Store

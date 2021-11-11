@@ -9,12 +9,7 @@ export default (): express.Router => {
 
 	router.get('/', (req: Request, res: Response) => {
 		transaction(
-			(
-				queryRunner: QueryRunner,
-				then: () => void,
-				err: (err: CommonError) => void,
-				fin: () => void,
-			) => {
+			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
 				const loggedUserID = Number(req.cookies.id) || 0;
 				const userServiceInstance = new UserService();
 				userServiceInstance
@@ -33,18 +28,13 @@ export default (): express.Router => {
 
 	router.post('/', async (req: Request, res: Response) => {
 		transaction(
-			(
-				queryRunner: QueryRunner,
-				then: () => void,
-				err: (err: CommonError) => void,
-				fin: () => void,
-			) => {
+			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
 				const userServiceInstance = new UserService();
 				userServiceInstance
 					.signUp(queryRunner.manager, {
 						username: req.body.username,
 						email: req.body.email,
-						social_github: '0',
+						socialGithub: '0',
 					})
 					.then(() => {
 						res.status(200).end();
@@ -60,12 +50,7 @@ export default (): express.Router => {
 
 	router.delete('/', async (req: Request, res: Response) => {
 		transaction(
-			(
-				queryRunner: QueryRunner,
-				then: () => void,
-				err: (err: CommonError) => void,
-				fin: () => void,
-			) => {
+			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
 				const loggedUserID = Number(req.cookies.id) || 0;
 				const userServiceInstance = new UserService();
 				userServiceInstance

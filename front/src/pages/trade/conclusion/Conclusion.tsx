@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import StockExecution, {
-	IStockExecutionItem,
-} from '@recoil/stockExecution/index';
+import StockExecution, { IStockExecutionItem } from '@recoil/stockExecution/index';
 import './conclusion.scss';
 
 export enum TAB {
@@ -38,18 +36,14 @@ const Conclusion = ({ previousClose }: Props) => {
 			<div className="conclusion-title">
 				<button
 					type="button"
-					className={`conclusion-tab ${
-						tab === TAB.TICK ? 'conclusion-tab-clicked' : ''
-					}`}
+					className={`conclusion-tab ${tab === TAB.TICK ? 'conclusion-tab-clicked' : ''}`}
 					onClick={() => setTab(TAB.TICK)}
 				>
 					체결
 				</button>
 				<button
 					type="button"
-					className={`conclusion-tab ${
-						tab === TAB.DAY ? 'conclusion-tab-clicked' : ''
-					}`}
+					className={`conclusion-tab ${tab === TAB.DAY ? 'conclusion-tab-clicked' : ''}`}
 					onClick={() => setTab(TAB.DAY)}
 				>
 					일별
@@ -63,33 +57,20 @@ const Conclusion = ({ previousClose }: Props) => {
 			</header>
 			<div className="conclusion-content">
 				{stockExecutionState.map((log: IStockExecutionItem) => {
-					const [day, time] = translateTimestampFormat(
-						log.timestamp,
-					).split(' ');
+					const [day, time] = translateTimestampFormat(log.timestamp).split(' ');
 					return (
 						<div className="conclusion-row" key={log.id}>
 							<div className="conclusion-timestamp">
 								<span className="timestamp-day">{day}</span>
 								<span className="timestamp-time">{time}</span>
 							</div>
-							<div
-								className={`conclusion-single-price ${colorPicker(
-									previousClose,
-									log.price,
-								)}`}
-							>
+							<div className={`conclusion-single-price ${colorPicker(previousClose, log.price)}`}>
 								{log.price.toLocaleString('ko-kr')}
 							</div>
-							<div
-								className={`conclusion-volume ${
-									log.type === 'bid' ? 'up' : 'down'
-								}`}
-							>
+							<div className={`conclusion-volume ${log.type === 'bid' ? 'up' : 'down'}`}>
 								{log.volume.toLocaleString('ko-kr')}
 							</div>
-							<div className="conclusion-total-price">
-								{log.amount.toLocaleString('ko-kr')}
-							</div>
+							<div className="conclusion-total-price">{log.amount.toLocaleString('ko-kr')}</div>
 						</div>
 					);
 				})}

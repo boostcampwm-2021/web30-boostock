@@ -15,42 +15,26 @@ const socketClientMap = new Map();
 const translateRequestFormat = (data) => JSON.parse(data);
 const translateResponseFormat = (type, data) => JSON.stringify({ type, data });
 const connectNewUser = (client) => {
-	transaction(
-		(
-			queryRunner: QueryRunner,
-			commit: () => void,
-			rollback: (err: CommonError) => void,
-			release: () => void,
-		) => {
-			const stockService = new StockService();
-			stockService
-				.getStocksCurrent(queryRunner.manager)
-				.then((stockList) => {
-					client.send(
-						translateResponseFormat('stocks_info', stockList),
-					);
-					socketClientMap.set(client, '');
-					commit();
-				})
-				.catch((error) => {
-					client.send(
-						translateResponseFormat(
-							'error',
-							'종목 리스트를 받아올 수 없습니다.',
-						),
-					);
-					rollback(error);
-				})
-				.finally(release);
-		},
-	);
+	transaction((queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {
+		const stockService = new StockService();
+		stockService
+			.getStocksCurrent(queryRunner.manager)
+			.then((stockList) => {
+				client.send(translateResponseFormat('stocks_info', stockList));
+				socketClientMap.set(client, '');
+				commit();
+			})
+			.catch((error) => {
+				client.send(translateResponseFormat('error', '종목 리스트를 받아올 수 없습니다.'));
+				rollback(error);
+			})
+			.finally(release);
+	});
 };
 
 export default (app: express.Application) => {
 	const HTTPServer = app.listen(process.env.SOCKET_PORT || 3333, () => {
-		Logger.info(
-			`✌️ Socket loaded at port:${process.env.SOCKET_PORT || 3333}`,
-		);
+		Logger.info(`✌️ Socket loaded at port:${process.env.SOCKET_PORT || 3333}`);
 	});
 	const webSocketServer = new wsModule.Server({ server: HTTPServer });
 	const broadcast = ({ stockCode, msg }) => {
@@ -84,12 +68,7 @@ export default (app: express.Application) => {
 					// 모든 종목 기초 데이터 재전송
 					break;
 				default:
-					ws.send(
-						translateResponseFormat(
-							'error',
-							'알 수 없는 오류가 발생했습니다.',
-						),
-					);
+					ws.send(translateResponseFormat('error', '알 수 없는 오류가 발생했습니다.'));
 			}
 		});
 

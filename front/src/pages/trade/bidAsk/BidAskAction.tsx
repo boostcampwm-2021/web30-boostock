@@ -18,30 +18,16 @@ function orderActionClass(bidAskType: string): string {
 	return result;
 }
 
-const BidAskAction = ({
-	bidAskType,
-	isAmountError,
-	handleReset,
-	handleBidAsk,
-}: IProps) => {
+const BidAskAction = ({ bidAskType, isAmountError, handleReset, handleBidAsk }: IProps) => {
 	return (
 		<div className="bidask-action-container">
-			<button
-				onClick={handleReset}
-				className="bidask-reset-btn"
-				type="button"
-			>
+			<button onClick={handleReset} className="bidask-reset-btn" type="button">
 				<span className="bidask-action-reset-icon">
 					<GrPowerReset />
 				</span>
 				초기화
 			</button>
-			<button
-				className={orderActionClass(bidAskType)}
-				type="button"
-				onClick={handleBidAsk}
-				disabled={isAmountError}
-			>
+			<button className={orderActionClass(bidAskType)} type="button" onClick={handleBidAsk} disabled={isAmountError}>
 				{bidAskType}
 			</button>
 		</div>

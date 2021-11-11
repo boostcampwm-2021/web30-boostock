@@ -10,10 +10,7 @@ interface IProps {
 
 let reconnector: NodeJS.Timer;
 
-const startSocket = (
-	setSocket: SetterOrUpdater<WebSocket | null>,
-	setStockList: SetterOrUpdater<IStockListItem[]>,
-) => {
+const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList: SetterOrUpdater<IStockListItem[]>) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 
 	webSocket.onopen = () => {
@@ -31,25 +28,15 @@ const startSocket = (
 		switch (type) {
 			case 'stocks_info':
 				setStockList(
-					data.map(
-						({
-							stock_id,
-							code,
-							name_english,
-							name_korean,
-							price,
-							previous_close,
-							unit,
-						}: IIncomingStockList) => ({
-							stockId: stock_id,
-							code,
-							nameEnglish: name_english,
-							nameKorean: name_korean,
-							price,
-							previousClose: previous_close,
-							unit,
-						}),
-					),
+					data.map(({ stockId, code, nameEnglish, nameKorean, price, previousClose, unit }: IIncomingStockList) => ({
+						stockId,
+						code,
+						nameEnglish,
+						nameKorean,
+						price,
+						previousClose,
+						unit,
+					})),
 				);
 				break;
 			default:

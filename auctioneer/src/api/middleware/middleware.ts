@@ -2,11 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import Stock from '@models/Stock';
 import { getRepository } from 'typeorm';
 
-export async function code2StockId(
-	req: Request,
-	res: Response,
-	next: NextFunction,
-): Promise<void> {
+export async function code2StockId(req: Request, res: Response, next: NextFunction): Promise<void> {
 	const { code } = req.query;
 	if (code === undefined) next('code가 빠졌어');
 	const stockRepository = getRepository(Stock);

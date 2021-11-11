@@ -19,16 +19,8 @@ const ModeSwitch = () => {
 
 	return (
 		<div className={style['switch-container']}>
-			<input
-				id={style['mode-switch']}
-				role="switch"
-				type="checkbox"
-				onChange={toggleTheme}
-			/>
-			<label
-				htmlFor={style['mode-switch']}
-				className={style['switch-label']}
-			>
+			<input id={style['mode-switch']} role="switch" type="checkbox" onChange={toggleTheme} />
+			<label htmlFor={style['mode-switch']} className={style['switch-label']}>
 				<span className={style['mode-switch-day-icon']}>
 					<BsFillSunFill />
 				</span>

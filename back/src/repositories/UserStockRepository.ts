@@ -1,10 +1,4 @@
-import {
-	EntityRepository,
-	Repository,
-	InsertResult,
-	UpdateResult,
-	DeleteResult,
-} from 'typeorm';
+import { EntityRepository, Repository, InsertResult, UpdateResult, DeleteResult } from 'typeorm';
 import UserStock from '@models/UserStock';
 
 @EntityRepository(UserStock)
@@ -15,20 +9,14 @@ export default class UserStockRepository extends Repository<UserStock> {
 	}
 
 	async updateUserStock(userStock: UserStock): Promise<boolean> {
-		const result: UpdateResult = await this.update(
-			userStock.user_stock_id,
-			userStock,
-		);
+		const result: UpdateResult = await this.update(userStock.userStockId, userStock);
 		return result.affected != null && result.affected > 0;
 	}
 
-	public async deleteUserStock(
-		userId: number,
-		stockId: number,
-	): Promise<boolean> {
+	public async deleteUserStock(userId: number, stockId: number): Promise<boolean> {
 		const result: DeleteResult = await this.delete({
-			user_id: userId,
-			stock_id: stockId,
+			userId,
+			stockId,
 		});
 		return result.affected != null && result.affected > 0;
 	}

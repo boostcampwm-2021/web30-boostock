@@ -12,36 +12,24 @@ export default class UserStockService {
 		UserStockService.instance = this;
 	}
 
-	private getUserStockRepository(
-		entityManager: EntityManager,
-	): UserStockRepository {
-		const userStockRepository: UserStockRepository | null =
-			entityManager.getCustomRepository(UserStockRepository);
+	private getUserStockRepository(entityManager: EntityManager): UserStockRepository {
+		const userStockRepository: UserStockRepository | null = entityManager.getCustomRepository(UserStockRepository);
 
-		if (!entityManager || !userStockRepository)
-			throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+		if (!entityManager || !userStockRepository) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
 		return userStockRepository;
 	}
 
-	public async setAmount(
-		entityManager: EntityManager,
-		id: number,
-		amount: number,
-	): Promise<boolean> {
-		if (!Number.isInteger(id) || !Number.isInteger(amount))
-			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
+	public async setAmount(entityManager: EntityManager, id: number, amount: number): Promise<boolean> {
+		if (!Number.isInteger(id) || !Number.isInteger(amount)) throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
 
-		const userStockRepository: UserStockRepository =
-			this.getUserStockRepository(entityManager);
+		const userStockRepository: UserStockRepository = this.getUserStockRepository(entityManager);
 
 		const userStockEntity: UserStock = userStockRepository.create({
-			user_stock_id: id,
+			userStockId: id,
 			amount,
 		});
 
-		const result: boolean = await userStockRepository.updateUserStock(
-			userStockEntity,
-		);
+		const result: boolean = await userStockRepository.updateUserStock(userStockEntity);
 		if (!result) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
 		return result;
 	}

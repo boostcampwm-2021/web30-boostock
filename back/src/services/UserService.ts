@@ -2,12 +2,7 @@
 import { EntityManager } from 'typeorm';
 import { User } from '@models/index';
 import { UserRepository } from '@repositories/index';
-import {
-	CommonError,
-	CommonErrorMessage,
-	UserError,
-	UserErrorMessage,
-} from '@services/errors/index';
+import { CommonError, CommonErrorMessage, UserError, UserErrorMessage } from '@services/errors/index';
 
 export default class UserService {
 	static instance: UserService | null = null;
@@ -18,11 +13,9 @@ export default class UserService {
 	}
 
 	private getUserRepository(entityManager: EntityManager): UserRepository {
-		const userRepository: UserRepository | null =
-			entityManager.getCustomRepository(UserRepository);
+		const userRepository: UserRepository | null = entityManager.getCustomRepository(UserRepository);
 
-		if (!entityManager || !userRepository)
-			throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+		if (!entityManager || !userRepository) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
 		return userRepository;
 	}
 
@@ -31,18 +24,17 @@ export default class UserService {
 		userData: {
 			username: string;
 			email: string;
-			social_github: string;
+			socialGithub: string;
 		},
 	): Promise<boolean> {
 		if (
 			typeof userData.username !== 'string' ||
 			typeof userData.email !== 'string' ||
-			typeof userData.social_github !== 'string'
+			typeof userData.socialGithub !== 'string'
 		)
 			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
 
-		const userRepository: UserRepository =
-			this.getUserRepository(entityManager);
+		const userRepository: UserRepository = this.getUserRepository(entityManager);
 
 		const userEntity: User = userRepository.create({
 			...userData,
@@ -51,34 +43,23 @@ export default class UserService {
 		return userRepository.createUser(userEntity);
 	}
 
-	public async getUserById(
-		entityManager: EntityManager,
-		id: number,
-	): Promise<User> {
-		if (!Number.isInteger(id))
-			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
+	public async getUserById(entityManager: EntityManager, id: number): Promise<User> {
+		if (!Number.isInteger(id)) throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
 
-		const userRepository: UserRepository =
-			this.getUserRepository(entityManager);
+		const userRepository: UserRepository = this.getUserRepository(entityManager);
 
 		const userEntity = await userRepository.readUserById(id);
 		if (!userEntity) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
 		return userEntity;
 	}
 
-	public async setBalance(
-		entityManager: EntityManager,
-		id: number,
-		balance: number,
-	): Promise<boolean> {
-		if (!Number.isInteger(id) || !Number.isInteger(balance))
-			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
+	public async setBalance(entityManager: EntityManager, id: number, balance: number): Promise<boolean> {
+		if (!Number.isInteger(id) || !Number.isInteger(balance)) throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
 
-		const userRepository: UserRepository =
-			this.getUserRepository(entityManager);
+		const userRepository: UserRepository = this.getUserRepository(entityManager);
 
 		const userEntity: User = userRepository.create({
-			user_id: id,
+			userId: id,
 			balance,
 		});
 
@@ -87,15 +68,10 @@ export default class UserService {
 		return result;
 	}
 
-	public async deleteUser(
-		entityManager: EntityManager,
-		id: number,
-	): Promise<boolean> {
-		if (!Number.isInteger(id))
-			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
+	public async deleteUser(entityManager: EntityManager, id: number): Promise<boolean> {
+		if (!Number.isInteger(id)) throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
 
-		const userRepository: UserRepository =
-			this.getUserRepository(entityManager);
+		const userRepository: UserRepository = this.getUserRepository(entityManager);
 
 		const result: boolean = await userRepository.deleteUser(id);
 		if (!result) throw new UserError(UserErrorMessage.NOT_EXIST_USER);

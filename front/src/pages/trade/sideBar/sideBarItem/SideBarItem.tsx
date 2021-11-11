@@ -35,14 +35,10 @@ const SideBarItem = (props: Props) => {
 					{caretIcon(percent)}&nbsp;
 					{percent.toFixed(1)}%
 				</p>
-				<p className="sidebar__item-percent-bottom">
-					{formatNumber(price - previousClose)}
-				</p>
+				<p className="sidebar__item-percent-bottom">{formatNumber(price - previousClose)}</p>
 			</div>
 			<div className="sidebar__item-amount">
-				<p className="sidebar__item-amount-value">
-					{/* {formatNumber(tradingAmount)} */}0
-				</p>
+				<p className="sidebar__item-amount-value">{/* {formatNumber(tradingAmount)} */}0</p>
 				<p className="sidebar__item-amount-unit">원</p>
 			</div>
 		</Link>

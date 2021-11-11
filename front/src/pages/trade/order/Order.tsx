@@ -26,21 +26,15 @@ const Order = () => {
 	const orderContentRef = useRef<HTMLDivElement>(null);
 	const setBidAskPrice = useSetRecoilState(bidAskPriceAtom);
 	const stockQuotes = useRecoilValue<IStockQuoteItem[]>(stockQuoteAtom);
-	const [totalAndMaxVolumes, setTotalAndMaxVolumes] = useState(() =>
-		calculateTotalAndMaxVolumes(stockQuotes),
-	);
+	const [totalAndMaxVolumes, setTotalAndMaxVolumes] = useState(() => calculateTotalAndMaxVolumes(stockQuotes));
 
 	useEffect(() => {
 		if (!orderContentRef.current) return;
 
-		const tableElem = orderContentRef.current
-			.children[0] as HTMLTableElement;
+		const tableElem = orderContentRef.current.children[0] as HTMLTableElement;
 		const tableHeight = tableElem.offsetHeight;
 		const TABLE_MAX_HEIGHT = 470;
-		orderContentRef.current.scrollTo(
-			0,
-			(tableHeight - TABLE_MAX_HEIGHT) / 2,
-		);
+		orderContentRef.current.scrollTo(0, (tableHeight - TABLE_MAX_HEIGHT) / 2);
 	}, [orderContentRef]);
 
 	return (
@@ -62,13 +56,9 @@ const Order = () => {
 				</table>
 			</div>
 			<div className="total-volumes">
-				<div className="total-sell-volume">
-					{formatNumber(totalAndMaxVolumes.sellVolume)}&nbsp;주
-				</div>
+				<div className="total-sell-volume">{formatNumber(totalAndMaxVolumes.sellVolume)}&nbsp;주</div>
 				<div className="total-volumes-text">총잔량</div>
-				<div className="total-buy-volume">
-					{formatNumber(totalAndMaxVolumes.buyVolume)}&nbsp;주
-				</div>
+				<div className="total-buy-volume">{formatNumber(totalAndMaxVolumes.buyVolume)}&nbsp;주</div>
 			</div>
 		</div>
 	);

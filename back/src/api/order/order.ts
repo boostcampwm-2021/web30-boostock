@@ -9,12 +9,7 @@ export default (): express.Router => {
 
 	router.post('/', async (req: Request, res: Response) => {
 		transaction(
-			(
-				queryRunner: QueryRunner,
-				then: () => void,
-				err: (err: CommonError) => void,
-				fin: () => void,
-			) => {
+			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
 				const orderServiceInstance = new OrderService();
 				orderServiceInstance
 					.order(queryRunner.manager, {
@@ -38,17 +33,12 @@ export default (): express.Router => {
 
 	router.delete('/', async (req: Request, res: Response) => {
 		transaction(
-			(
-				queryRunner: QueryRunner,
-				then: () => void,
-				err: (err: CommonError) => void,
-				fin: () => void,
-			) => {
+			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
 				const orderServiceInstance = new OrderService();
 				orderServiceInstance
 					.cancel(queryRunner.manager, {
 						userId: Number(req.cookies.id) || 0,
-						orderId: Number(req.body.order_id) || 0,
+						orderId: Number(req.body.orderId) || 0,
 					})
 					.then(() => {
 						res.status(200).end();
@@ -64,17 +54,12 @@ export default (): express.Router => {
 
 	router.put('/', async (req: Request, res: Response) => {
 		transaction(
-			(
-				queryRunner: QueryRunner,
-				then: () => void,
-				err: (err: CommonError) => void,
-				fin: () => void,
-			) => {
+			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
 				const orderServiceInstance = new OrderService();
 				orderServiceInstance
 					.modify(queryRunner.manager, {
 						userId: Number(req.cookies.id) || 0,
-						orderId: Number(req.body.order_id) || 0,
+						orderId: Number(req.body.orderId) || 0,
 						amount: Number(req.body.amount) || 0,
 						price: Number(req.body.price) || 0,
 					})

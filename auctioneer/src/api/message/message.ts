@@ -10,9 +10,7 @@ export default (): express.Router => {
 	router.get('/bid', code2StockId, async (req: Request, res: Response) => {
 		const { stockId } = res.locals.stockId;
 		const autioneerServiceInstance = new AuctioneerService();
-		const result = await autioneerServiceInstance.bid(
-			parseInt(stockId, 10),
-		);
+		const result = await autioneerServiceInstance.bid(parseInt(stockId, 10));
 		res.status(200).json(result).end();
 	});
 

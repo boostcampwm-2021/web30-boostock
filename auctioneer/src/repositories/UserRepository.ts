@@ -1,10 +1,4 @@
-import {
-	EntityRepository,
-	Repository,
-	InsertResult,
-	UpdateResult,
-	DeleteResult,
-} from 'typeorm';
+import { EntityRepository, Repository, InsertResult, UpdateResult, DeleteResult } from 'typeorm';
 import User from '@models/User';
 
 @EntityRepository(User)

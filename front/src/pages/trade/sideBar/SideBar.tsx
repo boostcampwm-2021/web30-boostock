@@ -15,9 +15,7 @@ const SideBar = () => {
 	const [menu, setMenu] = useState(MENU.ALL);
 	const userState = useRecoilValue(User);
 	const stockListState = useRecoilValue(StockList);
-	const [filteredStockListState, setFilteredStockListState] = useState<
-		IStockListItem[]
-	>([]);
+	const [filteredStockListState, setFilteredStockListState] = useState<IStockListItem[]>([]);
 
 	const [regex, setRegex] = useState(/.*/);
 
@@ -31,13 +29,9 @@ const SideBar = () => {
 		setFilteredStockListState(() => {
 			switch (menu) {
 				case MENU.FAVORITE:
-					return stockListState.filter((stock: IStockListItem) =>
-						userState.favorite.includes(stock.stockId),
-					);
+					return stockListState.filter((stock: IStockListItem) => userState.favorite.includes(stock.stockId));
 				case MENU.HOLD:
-					return stockListState.filter((stock: IStockListItem) =>
-						userState.hold.includes(stock.stockId),
-					);
+					return stockListState.filter((stock: IStockListItem) => userState.hold.includes(stock.stockId));
 				default:
 					return stockListState;
 			}
@@ -51,11 +45,7 @@ const SideBar = () => {
 					<SideBarNav
 						setMenu={setMenu}
 						index={index}
-						className={`sidebar__menu-item ${
-							menu === MENU[key as keyof typeof MENU]
-								? 'selected'
-								: ''
-						}`}
+						className={`sidebar__menu-item ${menu === MENU[key as keyof typeof MENU] ? 'selected' : ''}`}
 					/>
 				))}
 			</div>
@@ -76,13 +66,7 @@ const SideBar = () => {
 							regex.test(stock.nameEnglish.toLowerCase()),
 					)
 					.map((stock: IStockListItem) => (
-						<SideBarItem
-							key={stock.stockId}
-							stock={stock}
-							isFavorite={userState.favorite.includes(
-								stock.stockId,
-							)}
-						/>
+						<SideBarItem key={stock.stockId} stock={stock} isFavorite={userState.favorite.includes(stock.stockId)} />
 					))}
 			</div>
 		</div>

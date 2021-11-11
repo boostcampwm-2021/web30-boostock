@@ -1,10 +1,4 @@
-import {
-	EntityRepository,
-	Repository,
-	InsertResult,
-	UpdateResult,
-	DeleteResult,
-} from 'typeorm';
+import { EntityRepository, Repository, InsertResult, UpdateResult, DeleteResult } from 'typeorm';
 import Order from '@models/Order';
 
 @EntityRepository(Order)
@@ -17,12 +11,12 @@ export default class OrderRepository extends Repository<Order> {
 	public async readOrderById(id: number): Promise<Order | undefined> {
 		return this.findOne(id, {
 			lock: { mode: 'pessimistic_write' },
-			relations: ['user_id', 'stock_id'],
+			relations: ['userId', 'stockId'],
 		});
 	}
 
 	public async updateOrder(order: Order): Promise<boolean> {
-		const result: UpdateResult = await this.update(order.order_id, order);
+		const result: UpdateResult = await this.update(order.orderId, order);
 		return result.affected != null && result.affected > 0;
 	}
 

@@ -15,9 +15,7 @@ export const camelToSnake = (str) => {
 	});
 };
 
-export const toJsonFromError = (
-	error: CommonError,
-): { status: number; json: { error: string; message: string } } => {
+export const toJsonFromError = (error: CommonError): { status: number; json: { error: string; message: string } } => {
 	return {
 		status: error.status || 500,
 		json: {
@@ -27,11 +25,7 @@ export const toJsonFromError = (
 	};
 };
 
-export const transaction = async (
-	callback: any,
-	req?: Request,
-	res?: Response,
-): Promise<void> => {
+export const transaction = async (callback: any, req?: Request, res?: Response): Promise<void> => {
 	const connection = getConnection();
 	const queryRunner = connection.createQueryRunner();
 	const thenTransaction = () => {
@@ -49,12 +43,7 @@ export const transaction = async (
 	await queryRunner.connect();
 	await queryRunner.startTransaction();
 
-	callback(
-		queryRunner,
-		thenTransaction,
-		catchTransaction,
-		finallyTransaction,
-	);
+	callback(queryRunner, thenTransaction, catchTransaction, finallyTransaction);
 };
 
 export { QueryRunner, EntityManager } from 'typeorm';

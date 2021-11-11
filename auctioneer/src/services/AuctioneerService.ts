@@ -1,11 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { EntityManager, getConnection } from 'typeorm';
-import {
-	UserRepository,
-	UserStockRepository,
-	OrderRepository,
-	ChartRepository,
-} from '@repositories/index';
+import { UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
 import { User, UserStock, Stock, Order, OrderType, Chart } from '@models/index';
 import { CommonError, CommonErrorMessage } from '@services/errors/index';
 import { transaction } from '@helper/tools';
@@ -25,28 +20,17 @@ export default class AuctioneerService {
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
 		try {
-			const OrderRepositoryRunner =
-				queryRunner.manager.getCustomRepository(OrderRepository);
-			const UserStockRepositoryRunner =
-				queryRunner.manager.getCustomRepository(UserStockRepository);
-			const UserRepositoryRunner =
-				queryRunner.manager.getCustomRepository(UserRepository);
-			const ChartRepositoryRunner =
-				queryRunner.manager.getCustomRepository(ChartRepository);
+			const OrderRepositoryRunner = queryRunner.manager.getCustomRepository(OrderRepository);
+			const UserStockRepositoryRunner = queryRunner.manager.getCustomRepository(UserStockRepository);
+			const UserRepositoryRunner = queryRunner.manager.getCustomRepository(UserRepository);
+			const ChartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
 
-			const orderBid = await OrderRepositoryRunner.readOrderByAsc(
-				stockId,
-				OrderType.SELL,
-			);
-			if (orderBid === undefined)
-				throw new Error('orderBid가 없는 말도안되는 에러');
+			const orderBid = await OrderRepositoryRunner.readOrderByAsc(stockId, OrderType.SELL);
+			if (orderBid === undefined) throw new Error('orderBid가 없는 말도안되는 에러');
 
-			const bidUser = await UserRepositoryRunner.readUserById(
-				orderBid.userId,
-			);
+			const bidUser = await UserRepositoryRunner.readUserById(orderBid.userId);
 
-			if (bidUser === undefined)
-				throw new Error('bidUser가 없는 말도안되는 에러');
+			if (bidUser === undefined) throw new Error('bidUser가 없는 말도안되는 에러');
 
 			const process = new BidTransaction(
 				OrderRepositoryRunner,
@@ -58,10 +42,7 @@ export default class AuctioneerService {
 			);
 			/* eslint-disable no-await-in-loop */
 			while (orderBid && orderBid.amount) {
-				const orderAsk = await OrderRepositoryRunner.readOrderByDesc(
-					stockId,
-					OrderType.BUY,
-				);
+				const orderAsk = await OrderRepositoryRunner.readOrderByDesc(stockId, OrderType.BUY);
 				if (!orderAsk || orderBid.price > orderAsk.price) {
 					console.log('맞는 주문이 없음 ');
 					break;
@@ -79,14 +60,10 @@ export default class AuctioneerService {
 				// 주문이 체결될 경우
 				// 매수주문자의 보유 수량을 반영한다. (보유수량+ 주문수량-)
 				// bid주문 = 30주, 가격 300원 , ask주문 = 가격 310원, 10주
-				const askUser = await UserRepositoryRunner.readUserById(
-					orderAsk.userId,
-				);
+				const askUser = await UserRepositoryRunner.readUserById(orderAsk.userId);
 
 				if (!askUser) break;
-				const askUserStock = askUser.stocks.find(
-					(stock: UserStock) => stock.stockId === stockId,
-				);
+				const askUserStock = askUser.stocks.find((stock: UserStock) => stock.stockId === stockId);
 
 				await process
 					.init(transactionLog)

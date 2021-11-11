@@ -25,9 +25,7 @@ function getPattern(ch: string) {
 			ㅃ: '빠'.charCodeAt(0),
 			ㅅ: '사'.charCodeAt(0),
 		};
-		const begin =
-			con2syl[ch as keyof typeof con2syl] ||
-			(ch.charCodeAt(0) - 'ㅅ'.charCodeAt(0)) * 588 + con2syl['ㅅ'];
+		const begin = con2syl[ch as keyof typeof con2syl] || (ch.charCodeAt(0) - 'ㅅ'.charCodeAt(0)) * 588 + con2syl['ㅅ'];
 		const end = begin + 587;
 		return `[${ch}\\u${begin.toString(16)}-\\u${end.toString(16)}]`;
 	}

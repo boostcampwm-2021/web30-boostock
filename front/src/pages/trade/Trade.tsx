@@ -19,15 +19,8 @@ interface IConnection {
 	stockCode?: string;
 }
 
-const getStockState = (
-	stockList: IStockListItem[],
-	queryData: QueryString.ParsedQs,
-) => {
-	return (
-		stockList.find(
-			(stock: IStockListItem) => stock.code === queryData.code,
-		) ?? stockList[0]
-	);
+const getStockState = (stockList: IStockListItem[], queryData: QueryString.ParsedQs) => {
+	return stockList.find((stock: IStockListItem) => stock.code === queryData.code) ?? stockList[0];
 };
 
 const Trade = () => {

@@ -12,14 +12,10 @@ export default class UserFavoriteService {
 		UserFavoriteService.instance = this;
 	}
 
-	private getUserFavoriteRepository(
-		entityManager: EntityManager,
-	): UserFavoriteRepository {
-		const userFavoriteRepository: UserFavoriteRepository | null =
-			entityManager.getCustomRepository(UserFavoriteRepository);
+	private getUserFavoriteRepository(entityManager: EntityManager): UserFavoriteRepository {
+		const userFavoriteRepository: UserFavoriteRepository | null = entityManager.getCustomRepository(UserFavoriteRepository);
 
-		if (!entityManager || !userFavoriteRepository)
-			throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+		if (!entityManager || !userFavoriteRepository) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
 		return userFavoriteRepository;
 	}
 }

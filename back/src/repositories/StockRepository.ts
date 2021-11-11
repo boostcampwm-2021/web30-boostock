@@ -1,9 +1,4 @@
-import {
-	EntityRepository,
-	Repository,
-	InsertResult,
-	DeleteResult,
-} from 'typeorm';
+import { EntityRepository, Repository, InsertResult, DeleteResult } from 'typeorm';
 import Stock from '@models/Stock';
 
 @EntityRepository(Stock)
