@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import * as ReactDOM from 'react-dom';
-import { RecoilRoot, useRecoilValue } from 'recoil';
+import { RecoilRoot } from 'recoil';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import TopBar from '@common/topbar/TopBar';
+import Theme from './Theme';
 import './app.scss';
 import HelloWorld from './HelloWorld';
 import SignIn from './pages/signIn/SignIn';
 import SignUp from './pages/signUp/SignUp';
 import Trade from './pages/trade/Trade';
-import userAtom from './recoil/user/atom';
 import Socket from './Socket';
 
 export interface Ipage {
@@ -19,14 +19,6 @@ export interface Ipage {
 }
 
 const App: React.FC = () => {
-	const { theme } = useRecoilValue(userAtom);
-
-	useEffect(() => {
-		const $body = document.body;
-		if (theme === 'light') $body.classList.remove('dark-theme');
-		else $body.classList.add('dark-theme');
-	}, [theme]);
-
 	const pages: Ipage[] = [
 		{
 			id: 1,
@@ -37,16 +29,16 @@ const App: React.FC = () => {
 
 	return (
 		<BrowserRouter>
-			<TopBar pages={pages} />
 			<Socket>
-				<main>
+				<Theme>
+					<TopBar pages={pages} />
 					<Switch>
 						<Route path="/signin" component={SignIn} />
 						<Route path="/signup" component={SignUp} />
 						<Route path="/trade" component={Trade} />
 						<Route component={HelloWorld} />
 					</Switch>
-				</main>
+				</Theme>
 			</Socket>
 		</BrowserRouter>
 	);
