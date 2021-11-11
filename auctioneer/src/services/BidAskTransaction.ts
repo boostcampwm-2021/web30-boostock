@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import fetch from 'node-fetch';
-import { User, UserStock, Order, OrderStatus, Transaction, Chart } from '@models/index';
-import { UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
+import { Stock, User, UserStock, Order, OrderStatus, Transaction, Chart } from '@models/index';
+import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
 
 export interface ITransactionLog {
 	code: string;
@@ -14,33 +14,38 @@ export interface ITransactionLog {
 }
 
 export interface IBidAskTransaction {
-	OrderRepositoryRunner: OrderRepository;
+	StockRepositoryRunner: StockRepository;
 	UserRepositoryRunner: UserRepository;
 	UserStockRepositoryRunner: UserStockRepository;
+	OrderRepositoryRunner: OrderRepository;
 	ChartRepositoryRunner: ChartRepository;
 	transactionLog: ITransactionLog;
 }
 
 export default class BidAskTransaction implements IBidAskTransaction {
-	OrderRepositoryRunner: OrderRepository;
+	StockRepositoryRunner: StockRepository;
 
 	UserRepositoryRunner: UserRepository;
 
 	UserStockRepositoryRunner: UserStockRepository;
+
+	OrderRepositoryRunner: OrderRepository;
 
 	ChartRepositoryRunner: ChartRepository;
 
 	transactionLog: ITransactionLog;
 
 	constructor(
-		OrderRepositoryRunner: OrderRepository,
+		StockRepositoryRunner: StockRepository,
 		UserRepositoryRunner: UserRepository,
 		UserStockRepositoryRunner: UserStockRepository,
+		OrderRepositoryRunner: OrderRepository,
 		ChartRepositoryRunner: ChartRepository,
 	) {
-		this.OrderRepositoryRunner = OrderRepositoryRunner;
+		this.StockRepositoryRunner = StockRepositoryRunner;
 		this.UserRepositoryRunner = UserRepositoryRunner;
 		this.UserStockRepositoryRunner = UserStockRepositoryRunner;
+		this.OrderRepositoryRunner = OrderRepositoryRunner;
 		this.ChartRepositoryRunner = ChartRepositoryRunner;
 	}
 
@@ -83,7 +88,10 @@ export default class BidAskTransaction implements IBidAskTransaction {
 		await this.OrderRepositoryRunner.save(bidOrder);
 	}
 
-	async noticeProcess(): Promise<void | Error> {
+	async noticeProcess(stock: Stock): Promise<void | Error> {
+		stock.price = this.transactionLog.price;
+		await this.StockRepositoryRunner.save(stock);
+
 		const charts = await this.ChartRepositoryRunner.find({
 			where: {
 				stockId: this.transactionLog.stockId,
@@ -123,6 +131,7 @@ export default class BidAskTransaction implements IBidAskTransaction {
 				currentChart: updatedCharts,
 			}),
 		});
+
 		const transaction = new Transaction({
 			bidUserId: this.transactionLog.bidUser,
 			askUserId: this.transactionLog.askUser,
