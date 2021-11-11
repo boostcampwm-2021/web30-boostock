@@ -151,6 +151,11 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
+            - name: Extract Branch Name
+              shell: bash
+              run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
+              id: extract_branch
+
             - name: Run Server
               uses: appleboy/ssh-action@master
               with:
@@ -161,8 +166,8 @@ jobs:
                   script: |
                       npm install -g pm2
                       npm install -g ts-node
-                      pm2 kill
                       export PM2_HOME=${{ secrets.REMOTE_PM2 }}
+                      pm2 kill
 
                       cd ${{ secrets.REMOTE_TARGET }}-${{ steps.extract_branch.outputs.branch }}/auctioneer
                       chown -R ${{ secrets.REMOTE_USER }}:${{ secrets.REMOTE_USER }} *

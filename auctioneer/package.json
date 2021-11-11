@@ -8,7 +8,7 @@
         "start": "node ./src/app.ts",
         "dev": "SET NODE_ENV=development && nodemon --delay 500ms -r tsconfig-paths/register ./src/app.ts",
         "dev:mac": "NODE_ENV=development nodemon --delay 500ms -r tsconfig-paths/register ./src/app.ts",
-        "service": "NODE_ENV=production pm2 start ts-node -- -r tsconfig-paths/register -r ./src/app.ts",
+        "service": "NODE_ENV=production pm2 start ts-node --name auctioneer -- -r tsconfig-paths/register -r ./src/app.ts",
         "format": "prettier --check ./src",
         "format:fix": "prettier --write ./src",
         "lint": "eslint ./src",
