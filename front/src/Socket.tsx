@@ -27,7 +27,6 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
 			case 'stocks_info':
-				console.log(data);
 				setStockList(data);
 				break;
 			default:

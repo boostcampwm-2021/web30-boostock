@@ -15,7 +15,9 @@ export interface Props {
 
 const SideBarItem = (props: Props) => {
 	const { stock, isFavorite } = props;
-	const { code, nameKorean, nameEnglish, price, previousClose, unit } = stock;
+	const { code, nameKorean, price, previousClose, charts } = stock;
+
+	const { volume = 0 } = charts[0] ?? [];
 
 	const percent = ((price - previousClose) / previousClose) * 100;
 	let status = '';
@@ -38,7 +40,7 @@ const SideBarItem = (props: Props) => {
 				<p className="sidebar__item-percent-bottom">{formatNumber(price - previousClose)}</p>
 			</div>
 			<div className="sidebar__item-amount">
-				<p className="sidebar__item-amount-value">{/* {formatNumber(tradingAmount)} */}0</p>
+				<p className="sidebar__item-amount-value">{formatNumber(volume)}</p>
 				<p className="sidebar__item-amount-unit">원</p>
 			</div>
 		</Link>
