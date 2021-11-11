@@ -25,7 +25,7 @@ export default (): express.Router => {
 					.then(() => {
 						res.status(200).end();
 						commit();
-						fetch(`${process.env.AUCTIOINEER_URL}/api/message/bid?code=${stockCode}`);
+						fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${stockCode}`);
 					})
 					.catch(rollback)
 					.finally(release);
