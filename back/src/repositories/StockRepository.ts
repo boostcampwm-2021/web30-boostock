@@ -10,7 +10,7 @@ export default class StockRepository extends Repository<Stock> {
 
 	public async readAllStocks(): Promise<Stock[] | undefined> {
 		return this.find({
-			lock: { mode: 'pessimistic_write' },
+			relations: ['charts'],
 		});
 	}
 

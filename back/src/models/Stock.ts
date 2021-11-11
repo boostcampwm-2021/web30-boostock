@@ -1,7 +1,9 @@
 import 'reflect-metadata';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn } from 'typeorm';
+// eslint-disable-next-line import/no-cycle
+import Chart from './Chart';
 
-@Entity()
+@Entity({ name: 'stock' })
 export default class Stock {
 	@PrimaryGeneratedColumn({ name: 'stock_id' })
 	stockId: number;
@@ -23,4 +25,8 @@ export default class Stock {
 
 	@Column()
 	unit: number;
+
+	@OneToMany(() => Chart, (chart: Chart) => chart.stockId)
+	@JoinColumn({ name: 'charts' })
+	charts: Chart[];
 }
