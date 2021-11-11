@@ -44,7 +44,7 @@ export default (app: express.Application) => {
 				client.send(translateResponseFormat('update_target', msg));
 			} else {
 				// msg 오브젝트의 데이터에서 aside 바에 필요한 데이터만 골라서 전송
-				client.send(translateResponseFormat('update_stock', msg.data));
+				client.send(translateResponseFormat('update_stock', msg.match));
 			}
 		});
 	};
