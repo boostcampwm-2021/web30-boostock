@@ -22,7 +22,7 @@ export default class OrderRepository extends Repository<Order> {
 				amount: MoreThan(0),
 				status: OrderStatus.PENDING,
 			},
-			order: { price: 'ASC', createdAt: 'DESC' },
+			order: { price: 'ASC', createdAt: 'ASC' },
 			lock: { mode: 'pessimistic_write' },
 		});
 	}
@@ -35,7 +35,7 @@ export default class OrderRepository extends Repository<Order> {
 				amount: MoreThan(0),
 				status: OrderStatus.PENDING,
 			},
-			order: { price: 'DESC', createdAt: 'DESC' },
+			order: { price: 'DESC', createdAt: 'ASC' },
 			lock: { mode: 'pessimistic_write' },
 		});
 	}
