@@ -101,7 +101,6 @@ const BidAskInputs = ({
 						<input
 							className="bidask-info-text-input"
 							type="text"
-							dir="rtl"
 							value={formatNumber(bidAskPrice)}
 							onChange={handleOrderPrice}
 						/>
@@ -115,7 +114,6 @@ const BidAskInputs = ({
 					<input
 						className={orderAmountClass(isAmountError)}
 						type="text"
-						dir="rtl"
 						value={formatNumber(bidAskAmount)}
 						onChange={handleOrderAmount}
 					/>

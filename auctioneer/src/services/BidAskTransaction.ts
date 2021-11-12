@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import fetch from 'node-fetch';
 import { Stock, User, UserStock, Order, OrderStatus, Transaction, Chart } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
@@ -98,7 +97,6 @@ export default class BidAskTransaction implements IBidAskTransaction {
 			},
 		});
 
-		/* eslint-disable no-param-reassign */
 		const updatedCharts = charts.map((chart: Chart) => {
 			if (chart.priceStart === 0) {
 				chart.priceStart = this.transactionLog.price;
@@ -112,8 +110,8 @@ export default class BidAskTransaction implements IBidAskTransaction {
 			return chart;
 		});
 
-		updatedCharts.forEach((chart: Chart) => {
-			this.ChartRepositoryRunner.update(chart.chartId, chart);
+		updatedCharts.forEach(async (chart: Chart) => {
+			await this.ChartRepositoryRunner.update(chart.chartId, chart);
 		});
 
 		fetch(`${process.env.API_SERVER_URL}/api/stock/conclusion`, {

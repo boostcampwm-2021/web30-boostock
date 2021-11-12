@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { getConnection } from 'typeorm';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
-import { UserStock, OrderType } from '@models/index';
+import { UserStock, OrderType, Stock, Order } from '@models/index';
 import BidAskTransaction, { ITransactionLog } from './BidAskTransaction';
 import { OrderError, OrderErrorMessage } from './errors';
 
@@ -28,16 +28,14 @@ export default class AuctioneerService {
 			const OrderRepositoryRunner = queryRunner.manager.getCustomRepository(OrderRepository);
 			const ChartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
 
-			const stock = await StockRepositoryRunner.readStockById(stockId);
-			if (stock === undefined) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
+			const [stock, orderAsk, orderBid]: [Stock | undefined, Order | undefined, Order | undefined] = await Promise.all([
+				StockRepositoryRunner.readStockById(stockId),
+				OrderRepositoryRunner.readOrderByDesc(stockId, OrderType.BUY),
+				OrderRepositoryRunner.readOrderByAsc(stockId, OrderType.SELL),
+			]);
 
-			const orderAsk = await OrderRepositoryRunner.readOrderByDesc(stockId, OrderType.BUY);
-			if (orderAsk === undefined || orderAsk.amount <= 0) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
-
-			const orderBid = await OrderRepositoryRunner.readOrderByAsc(stockId, OrderType.SELL);
-			if (orderBid === undefined || orderBid.amount <= 0) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
-
-			if (orderBid.price > orderAsk.price) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
+			if (stock === undefined || orderAsk === undefined || orderBid === undefined || orderBid.price > orderAsk.price)
+				throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
 
 			const task = new BidAskTransaction(
 				StockRepositoryRunner,
@@ -49,7 +47,7 @@ export default class AuctioneerService {
 
 			const transactionLog: ITransactionLog = {
 				code,
-				price: orderBid.price,
+				price: orderAsk.createdAt < orderBid.createdAt ? orderBid.price : orderAsk.price,
 				amount: Math.min(orderBid.amount, orderAsk.amount),
 				createdAt: new Date().getTime(),
 			};
