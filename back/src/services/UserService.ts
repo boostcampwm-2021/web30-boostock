@@ -26,55 +26,38 @@ export default class UserService {
 			email: string;
 			socialGithub: string;
 		},
-	): Promise<boolean> {
-		if (
-			typeof userData.username !== 'string' ||
-			typeof userData.email !== 'string' ||
-			typeof userData.socialGithub !== 'string'
-		)
-			throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
-
+	): Promise<void> {
 		const userRepository: UserRepository = this.getUserRepository(entityManager);
 
-		const userEntity: User = userRepository.create({
-			...userData,
-			balance: 0,
-		});
-		return userRepository.createUser(userEntity);
+		userRepository.createUser(
+			userRepository.create({
+				...userData,
+				balance: 0,
+			}),
+		);
 	}
 
 	public async getUserById(entityManager: EntityManager, id: number): Promise<User> {
-		if (!Number.isInteger(id)) throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
-
 		const userRepository: UserRepository = this.getUserRepository(entityManager);
 
-		const userEntity = await userRepository.readUserById(id);
-		if (!userEntity) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
-		return userEntity;
+		const user = await userRepository.readUserById(id);
+		if (!user) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
+		return user;
 	}
 
-	public async setBalance(entityManager: EntityManager, id: number, balance: number): Promise<boolean> {
-		if (!Number.isInteger(id) || !Number.isInteger(balance)) throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
-
+	public async setBalance(entityManager: EntityManager, id: number, balance: number): Promise<void> {
 		const userRepository: UserRepository = this.getUserRepository(entityManager);
 
-		const userEntity: User = userRepository.create({
-			userId: id,
-			balance,
-		});
-
-		const result: boolean = await userRepository.updateUser(userEntity);
-		if (!result) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
-		return result;
+		await userRepository.updateUser(
+			userRepository.create({
+				userId: id,
+				balance,
+			}),
+		);
 	}
 
-	public async deleteUser(entityManager: EntityManager, id: number): Promise<boolean> {
-		if (!Number.isInteger(id)) throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
-
+	public async deleteUser(entityManager: EntityManager, id: number): Promise<void> {
 		const userRepository: UserRepository = this.getUserRepository(entityManager);
-
-		const result: boolean = await userRepository.deleteUser(id);
-		if (!result) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
-		return result;
+		await userRepository.deleteUser(id);
 	}
 }
