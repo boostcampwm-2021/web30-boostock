@@ -1,7 +1,6 @@
-import { getConnection } from 'typeorm';
+import { getConnection, QueryRunner } from 'typeorm';
 import { Request, Response } from 'express';
 import { CommonError } from '@services/errors/index';
-import { resolve } from 'node:path';
 
 export const snakeToCamel = (str) => {
 	return str.toLowerCase().replace(/([-_][a-z])/g, (group) => {
@@ -25,25 +24,36 @@ export const toJsonFromError = (error: CommonError): { status: number; json: { e
 	};
 };
 
-export const transaction = async (callback: any, req?: Request, res?: Response): Promise<void> => {
+export const transaction = async (
+	callback: (queryRunner: QueryRunner, commit: () => void, rollaback: (err: CommonError) => void, release: () => void) => void,
+	req?: Request,
+	res?: Response,
+): Promise<void> => {
 	const connection = getConnection();
 	const queryRunner = connection.createQueryRunner();
-	const thenTransaction = () => {
+
+	const commit = () => {
 		queryRunner.commitTransaction();
 	};
-	const catchTransaction = (err: CommonError) => {
+	const rollback = (err: CommonError) => {
 		const errJson = toJsonFromError(err);
 		res?.status(errJson.status).json(errJson.json).end();
 		queryRunner.rollbackTransaction();
 	};
-	const finallyTransaction = () => {
+	const release = () => {
 		queryRunner.release();
 	};
 
 	await queryRunner.connect();
 	await queryRunner.startTransaction();
 
-	callback(queryRunner, thenTransaction, catchTransaction, finallyTransaction);
+	try {
+		callback(queryRunner, commit, rollback, release);
+	} catch (err: unknown) {
+		queryRunner.rollbackTransaction();
+		queryRunner.release();
+		res?.status(500).end();
+	}
 };
 
 export { QueryRunner, EntityManager } from 'typeorm';

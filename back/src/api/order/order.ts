@@ -1,31 +1,31 @@
 import express, { Request, Response } from 'express';
 import fetch from 'node-fetch';
 
-import { Order } from '@models/index';
+import { Order, OrderType } from '@models/index';
 import { OrderService } from '@services/index';
 import { CommonError } from '@services/errors/index';
-import { QueryRunner, transaction } from '@helper/tools';
+import { QueryRunner, transaction, Validator } from '@helper/index';
 
 export default (): express.Router => {
 	const router = express.Router();
 
 	router.post('/', async (req: Request, res: Response) => {
-		const { userId, stockCode, type, amount, price } = req.body;
 		transaction(
 			(queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {
 				const orderServiceInstance = new OrderService();
+				const validator = new Validator();
 				orderServiceInstance
 					.order(queryRunner.manager, {
-						userId: Number(1) || 0,
-						stockCode,
-						type: Number(type) || 0,
-						amount: Number(amount) || 0,
-						price: Number(price) || 0,
+						userId: validator.init(1).isInteger().toNumber(),
+						stockCode: validator.init(req.body.stockCode).isString().toString(),
+						type: validator.init(req.body.type).isInObject(OrderType).isInteger().toNumber(),
+						amount: validator.init(req.body.amount).isInteger().isPositive().toNumber(),
+						price: validator.init(req.body.price).isInteger().isPositive().toNumber(),
 					})
 					.then(() => {
 						res.status(200).end();
 						commit();
-						fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${stockCode}`);
+						fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
 					})
 					.catch(rollback)
 					.finally(release);
@@ -39,10 +39,11 @@ export default (): express.Router => {
 		transaction(
 			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
 				const orderServiceInstance = new OrderService();
+				const validator = new Validator();
 				orderServiceInstance
 					.cancel(queryRunner.manager, {
-						userId: Number(req.cookies.id) || 0,
-						orderId: Number(req.body.orderId) || 0,
+						userId: validator.init(1).isInteger().toNumber(),
+						orderId: validator.init(req.body.orderId).isInteger().toNumber(),
 					})
 					.then(() => {
 						res.status(200).end();
@@ -60,12 +61,13 @@ export default (): express.Router => {
 		transaction(
 			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
 				const orderServiceInstance = new OrderService();
+				const validator = new Validator();
 				orderServiceInstance
 					.modify(queryRunner.manager, {
-						userId: Number(req.cookies.id) || 0,
-						orderId: Number(req.body.orderId) || 0,
-						amount: Number(req.body.amount) || 0,
-						price: Number(req.body.price) || 0,
+						userId: validator.init(1).isInteger().toNumber(),
+						orderId: validator.init(req.body.orderId).isInteger().toNumber(),
+						amount: validator.init(req.body.amount).isInteger().isPositive().toNumber(),
+						price: validator.init(req.body.price).isInteger().isPositive().toNumber(),
 					})
 					.then(() => {
 						res.status(200).end();
