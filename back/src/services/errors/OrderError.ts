@@ -1,13 +1,10 @@
 import CommonError from './CommonError';
 
 export enum OrderErrorMessage {
-	INVALID_TYPE = 'Invalid Order Type',
-	INVALID_OPTION = 'Invalid Order Option',
-	INVALID_AMOUNT = 'Invalid Amount',
-	INVALID_PRICE = 'Invalid Price',
-	LACK_OF_BALANCE = 'Lack of Balance',
-	NOT_EXIST_ORDER = 'Not Exist Order',
-	NOT_PENDING_ORDER = 'Not Pending Order',
+	INVALID_ORDER = 'Invalid Order',
+	INVALID_DATA = 'Invalid Data',
+	NOT_ENOUGH_STOCK = 'Not Enough Stock',
+	NOT_ENOUGH_BALANCE = 'Not Enough Balance',
 }
 
 export default class OrderError extends CommonError {

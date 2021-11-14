@@ -11,7 +11,6 @@ export default class OrderRepository extends Repository<Order> {
 	public async readOrderById(id: number): Promise<Order | undefined> {
 		return this.findOne(id, {
 			lock: { mode: 'pessimistic_write' },
-			relations: ['userId', 'stockId'],
 		});
 	}
 
