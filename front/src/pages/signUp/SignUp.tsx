@@ -1,4 +1,4 @@
-import React, { MouseEvent, ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Redirect, useLocation } from 'react-router-dom';
 
 import './SignUp.scss';
@@ -17,6 +17,9 @@ const SignUp = () => {
 	const changeTerm = () => setTerm((prev) => !prev);
 
 	const submit = () => {
+		const emailValidator = new RegExp('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]+$');
+		if (!emailValidator.test(email)) return;
+
 		fetch(`${process.env.SERVER_URL}/api/auth/github/signup`, {
 			method: 'POST',
 			credentials: 'include',
@@ -25,12 +28,11 @@ const SignUp = () => {
 			},
 			body: JSON.stringify({ code: query.get('code'), username, email }),
 		}).then((res: Response) => {
-			if (res.ok) setResult(true);
-			else throw new Error('오류가 났어요');
+			if (res.ok) setResult(res.ok);
 		});
 	};
 
-	if (result) return <Redirect to="/trade" />;
+	if (result === true) return <Redirect to="/trade" />;
 
 	return (
 		<form className="signup" action="#">
@@ -66,14 +68,30 @@ const SignUp = () => {
 			<div className="signup-horizontal-group">
 				<label className="signup-label" htmlFor="username">
 					이름
-					<input className="signup-input" id="username" name="username" value={username} onChange={changeName} />
+					<input
+						className="signup-input"
+						type="text"
+						id="username"
+						name="username"
+						maxLength={48}
+						value={username}
+						onChange={changeName}
+					/>
 				</label>
 				<label className="signup-label" htmlFor="email">
 					이메일
-					<input className="signup-input" type="email" id="email" name="email" value={email} onChange={changeEmail} />
+					<input
+						className="signup-input"
+						type="email"
+						id="email"
+						name="email"
+						maxLength={48}
+						value={email}
+						onChange={changeEmail}
+					/>
 				</label>
 			</div>
-			<input className="signup-submit" type="submit" disabled={!term} onClick={submit} value="회원가입" />
+			<input className="signup-submit" type="button" disabled={!term} onClick={submit} value="회원가입" />
 		</form>
 	);
 };
