@@ -20,7 +20,4 @@ export default class Stock {
 
 	@Column({ name: 'previous_close' })
 	previousClose: number;
-
-	@Column()
-	unit: number;
 }

@@ -23,9 +23,6 @@ export default class Stock {
 	@Column({ name: 'previous_close' })
 	previousClose: number;
 
-	@Column()
-	unit: number;
-
 	@OneToMany(() => Chart, (chart: Chart) => chart.stockId)
 	@JoinColumn({ name: 'charts' })
 	charts: Chart[];

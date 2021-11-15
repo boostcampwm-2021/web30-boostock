@@ -1,7 +1,5 @@
 import 'reflect-metadata';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import User from './User';
-import Stock from './Stock';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum OrderType {
 	SELL = 1,
@@ -11,7 +9,6 @@ export enum OrderType {
 export enum OrderStatus {
 	PENDING = 'pending',
 	FINISHED = 'finished',
-	CANCELING = 'canceling',
 	CANCELED = 'canceled',
 }
 
@@ -20,12 +17,10 @@ export default class Order {
 	@PrimaryGeneratedColumn({ name: 'order_id' })
 	orderId: number;
 
-	@ManyToOne(() => User, (user: User) => user.userId)
-	@JoinColumn({ name: 'user_id' })
+	@Column({ name: 'user_id' })
 	userId: number;
 
-	@ManyToOne(() => Stock, (stock: Stock) => stock.stockId)
-	@JoinColumn({ name: 'stock_id' })
+	@Column({ name: 'stock_id' })
 	stockId: number;
 
 	@Column({ type: 'enum', enum: OrderType })
