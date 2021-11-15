@@ -38,6 +38,11 @@ const Order = () => {
 		const tableElem = orderContentRef.current.children[0] as HTMLTableElement;
 		const tableHeight = tableElem.offsetHeight;
 		const TABLE_MAX_HEIGHT = 470;
+		const isOrderContentOverflowed = orderContentRef.current.scrollHeight - TABLE_MAX_HEIGHT > 0;
+		let ORDER_CONTENT_LEFT_PADDING_SIZE = '6px';
+		if (!isOrderContentOverflowed) ORDER_CONTENT_LEFT_PADDING_SIZE = '0px';
+
+		orderContentRef.current.style.paddingLeft = ORDER_CONTENT_LEFT_PADDING_SIZE;
 
 		orderContentRef.current.scrollTo(0, (tableHeight - TABLE_MAX_HEIGHT) / 2);
 	}, [orderContentRef, stockQuotes]);

@@ -23,7 +23,6 @@
 .order-content {
 	max-height: 470px;
 	overflow-y: auto;
-	padding-left: 6px;
 	@include scrollBarStyle();
 
 	@media screen and (max-width: $responsiveSize2) {
