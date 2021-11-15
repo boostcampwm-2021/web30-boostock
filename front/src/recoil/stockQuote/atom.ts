@@ -1,8 +1,8 @@
 import { atom } from 'recoil';
 
 export enum IStockQuoteType {
-	SELL = 0,
-	BUY = 1,
+	SELL = 1,
+	BUY = 2,
 }
 export interface IStockQuoteItem {
 	type: IStockQuoteType;

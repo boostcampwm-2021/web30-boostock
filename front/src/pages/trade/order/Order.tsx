@@ -14,7 +14,7 @@ function calculateTotalAndMaxVolumes(data: IStockQuoteItem[]) {
 	let maxVolume = 0;
 
 	for (let i = 0; i < LENGTH; i += 1) {
-		if (data[i].type === 0) sellVolume += data[i].volume;
+		if (data[i].type === 1) sellVolume += data[i].volume;
 		else buyVolume += data[i].volume;
 		if (maxVolume < data[i].volume) maxVolume = data[i].volume;
 	}

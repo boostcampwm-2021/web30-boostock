@@ -16,20 +16,20 @@ interface IProps {
 
 function sellVolumeBarClass(quoteType: number) {
 	let result = 'order-row-volume sell-volume';
-	if (quoteType === 0) result += ' active';
+	if (quoteType === 1) result += ' active';
 
 	return result;
 }
 
 function buyVolumeBarClass(quoteType: number) {
 	let result = 'order-row-volume buy-volume';
-	if (quoteType === 1) result += ' active';
+	if (quoteType === 2) result += ' active';
 
 	return result;
 }
 
 function backgroundColorClass(orderType: number): string {
-	return orderType === 0 ? 'order-sell' : 'order-buy';
+	return orderType === 1 ? 'order-sell' : 'order-buy';
 }
 
 function volumeWidth(volume: number, maxVolume: number): string {
@@ -41,11 +41,11 @@ const StockQuoteTDElement = ({ quote, totalAndMaxVolumes, setBidAskPrice }: IPro
 		<>
 			<td
 				className={sellVolumeBarClass(quote.type)}
-				{...(quote.type === 0 && {
+				{...(quote.type === 1 && {
 					onClick: () => setBidAskPrice(quote.price),
 				})}
 			>
-				{quote.type === 0 && (
+				{quote.type === 1 && (
 					<>
 						<div
 							style={{
@@ -70,11 +70,11 @@ const StockQuoteTDElement = ({ quote, totalAndMaxVolumes, setBidAskPrice }: IPro
 			</td>
 			<td
 				className={buyVolumeBarClass(quote.type)}
-				{...(quote.type === 1 && {
+				{...(quote.type === 2 && {
 					onClick: () => setBidAskPrice(quote.price),
 				})}
 			>
-				{quote.type === 1 && (
+				{quote.type === 2 && (
 					<>
 						<div
 							style={{
