@@ -26,9 +26,9 @@ export default class GithubService {
 					code,
 				}),
 			});
-			if (result.status === 200) {
-				const accessToken = result.json();
-				return await accessToken;
+			if (result.ok) {
+				const accessToken = await result.json();
+				return accessToken['access_token'];
 			}
 			throw new AuthError(AuthErrorMessage.GITHUB_CANNOT_GET_ACCESS_TOKEN);
 		} catch (error) {
@@ -39,6 +39,7 @@ export default class GithubService {
 
 	static async getUserInfo(accessToken: string): Promise<IGithubUserInfo> {
 		try {
+			console.log(accessToken);
 			if (accessToken === undefined) throw new AuthError(AuthErrorMessage.INVALID_GITHUB_ACCESS_TOKEN);
 			const result = await fetch(userInfoUrl, {
 				method: 'GET',
