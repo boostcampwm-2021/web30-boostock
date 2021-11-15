@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, Redirect, useLocation } from 'react-router-dom';
 
 import './SignIn.scss';
@@ -6,6 +6,7 @@ import './SignIn.scss';
 const SignIn = () => {
 	const { pathname, search } = useLocation();
 	const query = new URLSearchParams(search);
+	const [result, setResult] = useState<boolean>(false);
 
 	const isSignUp = pathname === '/auth/signup';
 
@@ -14,13 +15,21 @@ const SignIn = () => {
 	const SWITCH_TEXT = isSignUp ? '기존 계정으로 로그인' : '새로운 계정으로 회원가입';
 
 	if (query.get('code')) {
-		fetch(`${process.env.SERVER_URL}/api/auth/github/singin`, {
+		console.log(JSON.stringify({ code: query.get('code') }));
+		fetch(`${process.env.SERVER_URL}/api/auth/github/signin`, {
 			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json;charset=utf-8',
+			},
 			body: JSON.stringify({ code: query.get('code') }),
 		}).then((res: Response) => {
-			if (res.ok) return <Redirect to="/trade" />;
+			setResult(res.ok);
 		});
 	}
+
+	console.log(result);
+	if (result === true) return <Redirect to="/trade" />;
 
 	return (
 		<div className="signin">

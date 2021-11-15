@@ -17,8 +17,12 @@ const SignUp = () => {
 	const changeTerm = () => setTerm((prev) => !prev);
 
 	const submit = () => {
-		fetch(`${process.env.SERVER_URL}/api/auth/github/singup`, {
+		fetch(`${process.env.SERVER_URL}/api/auth/github/signup`, {
 			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json;charset=utf-8',
+			},
 			body: JSON.stringify({ code: query.get('code'), username, email }),
 		}).then((res: Response) => {
 			if (res.ok) setResult(true);
