@@ -5,6 +5,8 @@ import morgan from 'morgan';
 
 import api from '@api/index';
 import config from '@config/index';
+import { CommonError } from '@services/errors';
+import session from './session';
 
 export default async ({ app }: { app: express.Application }): Promise<void> => {
 	app.get('/status', (req, res) => {
@@ -20,7 +22,7 @@ export default async ({ app }: { app: express.Application }): Promise<void> => {
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: false }));
 	app.use(cookieParser());
-
+	app.use(session());
 	app.use('/api', api());
 
 	/// catch 404 and forward to error handler
@@ -31,7 +33,7 @@ export default async ({ app }: { app: express.Application }): Promise<void> => {
 	});
 
 	/// error handlers
-	app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+	app.use((err: CommonError, req: express.Request, res: express.Response, next: express.NextFunction) => {
 		/**
 		 * Handle 401 thrown by express-jwt library
 		 */
