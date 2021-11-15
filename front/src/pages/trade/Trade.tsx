@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
 import { ImSpinner8 } from 'react-icons/im';
 import QueryString from 'qs';
@@ -8,6 +8,7 @@ import { IStockListItem } from '@recoil/stockList/index';
 import { translateRequestData } from '@common/utils/socketUtils';
 import webSocketAtom from '@src/recoil/websocket/atom';
 import stockListAtom from '@src/recoil/stockList/atom';
+import stockQuoteAtom, { IStockQuoteItem } from '@src/recoil/stockQuote/atom';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
 import BidAsk from './bidAsk/BidAsk';
@@ -26,6 +27,7 @@ const getStockState = (stockList: IStockListItem[], queryData: QueryString.Parse
 
 const Trade = () => {
 	const [stockList] = useRecoilState(stockListAtom);
+	const setStockQuote = useSetRecoilState(stockQuoteAtom);
 	const location = useLocation();
 	const queryData = QueryString.parse(location.search, {
 		ignoreQueryPrefix: true,
@@ -33,6 +35,22 @@ const Trade = () => {
 	const webSocket = useRecoilValue(webSocketAtom);
 	const stockState = getStockState(stockList, queryData);
 	const stockCode = stockState?.code;
+	const stockId = stockState?.stockId;
+
+	useEffect(() => {
+		if (!stockId) return;
+		(async () => {
+			try {
+				const bidAskOrdersRes = await fetch(`${process.env.SERVER_URL}/api/order/bid-ask?stockId=${stockId}`);
+				if (bidAskOrdersRes.status !== 200) throw new Error('서버 에러');
+				const bidAskOrdersData: IStockQuoteItem[] = await bidAskOrdersRes.json();
+
+				setStockQuote(bidAskOrdersData.map((quote) => ({ ...quote, volume: Number(quote.volume) })));
+			} catch (error) {
+				// error handling logic goes here
+			}
+		})();
+	}, [stockId]);
 
 	useEffect(() => {
 		const connection = setInterval(() => {
@@ -71,6 +89,7 @@ const Trade = () => {
 					<section className="trade-chart">&nbsp;</section>
 					<section className="trade-status">
 						<section className="trade-order">
+							<header className="order-header">호가정보</header>
 							<Order />
 						</section>
 						<section className="trade-bid-ask">

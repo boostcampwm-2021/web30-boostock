@@ -29,17 +29,25 @@ const Order = () => {
 	const [totalAndMaxVolumes, setTotalAndMaxVolumes] = useState(() => calculateTotalAndMaxVolumes(stockQuotes));
 
 	useEffect(() => {
+		setTotalAndMaxVolumes(calculateTotalAndMaxVolumes(stockQuotes));
+	}, [stockQuotes]);
+
+	useEffect(() => {
 		if (!orderContentRef.current) return;
 
 		const tableElem = orderContentRef.current.children[0] as HTMLTableElement;
 		const tableHeight = tableElem.offsetHeight;
 		const TABLE_MAX_HEIGHT = 470;
+
 		orderContentRef.current.scrollTo(0, (tableHeight - TABLE_MAX_HEIGHT) / 2);
-	}, [orderContentRef]);
+	}, [orderContentRef, stockQuotes]);
+
+	if (stockQuotes.length === 0) {
+		return <p className="no-quotes-notice">호가 정보가 없습니다.</p>;
+	}
 
 	return (
 		<div className="order-container">
-			<header className="order-header">호가정보</header>
 			<div className="order-content" ref={orderContentRef}>
 				<table className="order-table">
 					<tbody>
