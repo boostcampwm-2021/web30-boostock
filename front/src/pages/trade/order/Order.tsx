@@ -44,7 +44,7 @@ const Order = () => {
 				<table className="order-table">
 					<tbody>
 						{stockQuotes.map((quote) => (
-							<tr key={quote.id} className="order-row">
+							<tr key={quote.price} className="order-row">
 								<StockQuoteTDElement
 									quote={quote}
 									totalAndMaxVolumes={totalAndMaxVolumes}
