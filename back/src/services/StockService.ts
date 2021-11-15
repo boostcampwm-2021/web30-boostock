@@ -20,32 +20,25 @@ export default class StockService {
 	}
 
 	public async getStockById(entityManager: EntityManager, id: number): Promise<Stock> {
-		if (!Number.isInteger(id)) throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
-
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
 
-		const stockEntity = await stockRepository.readStockById(id);
-		if (!stockEntity) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-		return stockEntity;
+		const stock = await stockRepository.readStockById(id);
+		if (!stock) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+		return stock;
 	}
 
 	public async getStockByCode(entityManager: EntityManager, code: string): Promise<Stock> {
-		if (typeof code !== 'string') throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
-
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
 
-		const stockEntity = await stockRepository.readStockByCode(code);
-		if (!stockEntity) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-		return stockEntity;
+		const stock = await stockRepository.readStockByCode(code);
+		if (!stock) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+		return stock;
 	}
 
 	public async getStocksCurrent(entityManager: EntityManager): Promise<Stock[]> {
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
-		const allStocks = await stockRepository.readAllStocks();
-		if (!allStocks) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 
-		return allStocks.map((stock) => {
-			return { ...stock, charts: stock.charts.filter(({ type }) => type === 1440) };
-		});
+		const allStocks: Stock[] = await stockRepository.readAllStocks();
+		return allStocks.map((stock) => ({ ...stock, charts: stock.charts.filter(({ type }) => type === 1440) }));
 	}
 }

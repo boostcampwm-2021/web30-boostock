@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { User } from '@models/index';
 import { UserService } from '@services/index';
 import { CommonError } from '@services/errors/index';
-import { QueryRunner, transaction } from '@helper/tools';
+import { QueryRunner, transaction, Validator } from '@helper/index';
 
 export default (): express.Router => {
 	const router = express.Router();
@@ -10,10 +10,10 @@ export default (): express.Router => {
 	router.get('/', (req: Request, res: Response) => {
 		transaction(
 			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
-				const loggedUserID = Number(req.cookies.id) || 0;
 				const userServiceInstance = new UserService();
+				const validator = new Validator();
 				userServiceInstance
-					.getUserById(queryRunner.manager, loggedUserID)
+					.getUserById(queryRunner.manager, validator.init(1).isInteger().toNumber())
 					.then((users: User) => {
 						res.status(200).json(users).end();
 						then();
@@ -30,11 +30,12 @@ export default (): express.Router => {
 		transaction(
 			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
 				const userServiceInstance = new UserService();
+				const validator = new Validator();
 				userServiceInstance
 					.signUp(queryRunner.manager, {
-						username: req.body.username,
-						email: req.body.email,
-						socialGithub: '0',
+						username: validator.init(req.body.username).isString().toString(),
+						email: validator.init(req.body.email).isString().toString(),
+						socialGithub: validator.init(0).isString().toString(),
 					})
 					.then(() => {
 						res.status(200).end();
@@ -51,10 +52,10 @@ export default (): express.Router => {
 	router.delete('/', async (req: Request, res: Response) => {
 		transaction(
 			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
-				const loggedUserID = Number(req.cookies.id) || 0;
 				const userServiceInstance = new UserService();
+				const validator = new Validator();
 				userServiceInstance
-					.getUserById(queryRunner.manager, loggedUserID)
+					.getUserById(queryRunner.manager, validator.init(1).isInteger().toNumber())
 					.then((users: User) => {
 						res.status(200).json(users).end();
 						then();
@@ -65,25 +66,6 @@ export default (): express.Router => {
 			req,
 			res,
 		);
-	});
-
-	// 테스트용 임시 로그인 시스템
-	// 페이지 진입 시, 1~3번 중 1개의 ID 선택되어 쿠키에 설정됨
-	// req.cookie.id를 통해 접근
-	router.get('/login', async (req: Request, res: Response) => {
-		res.cookie('id', 1 + Math.floor(Math.random() * 3), {
-			expires: new Date(Date.now() + 999999),
-			httpOnly: true,
-		});
-
-		res.status(200).end();
-	});
-
-	// 테스트용 임시 로그아웃 시스템
-	// req.cookie.id 제거
-	router.get('/logout', async (req: Request, res: Response) => {
-		res.clearCookie('id');
-		res.status(200).end();
 	});
 
 	return router;

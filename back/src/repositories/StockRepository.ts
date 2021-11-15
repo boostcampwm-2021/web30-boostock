@@ -8,7 +8,7 @@ export default class StockRepository extends Repository<Stock> {
 		return result.identifiers.length > 0;
 	}
 
-	public async readAllStocks(): Promise<Stock[] | undefined> {
+	public async readAllStocks(): Promise<Stock[]> {
 		return this.find({
 			relations: ['charts'],
 		});
