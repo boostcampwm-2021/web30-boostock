@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { query, Request, Response } from 'express';
 import fetch from 'node-fetch';
 
 import { Order, OrderType } from '@models/index';
@@ -8,6 +8,28 @@ import { QueryRunner, transaction, Validator } from '@helper/index';
 
 export default (): express.Router => {
 	const router = express.Router();
+
+	router.get('/bid-ask', async (req: Request, res: Response) => {
+		const { stockId } = req.query;
+
+		transaction(
+			(queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {
+				const orderServiceInstance = new OrderService();
+				const validator = new Validator();
+
+				orderServiceInstance
+					.getBidAskOrders(queryRunner.manager, validator.init(stockId).isInteger().isPositive().toNumber())
+					.then((data) => {
+						res.json(data).end();
+						commit();
+					})
+					.catch(rollback)
+					.finally(release);
+			},
+			req,
+			res,
+		);
+	});
 
 	router.post('/', async (req: Request, res: Response) => {
 		transaction(

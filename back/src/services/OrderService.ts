@@ -4,6 +4,7 @@ import { Stock, User, UserStock, OrderType, OrderStatus } from '@models/index';
 import { OrderRepository } from '@repositories/index';
 import { UserService, UserStockService, StockService } from '@services/index';
 import { CommonError, CommonErrorMessage, OrderError, OrderErrorMessage } from '@services/errors/index';
+import { IBidAskOrder } from '@interfaces/bidAskOrder';
 
 export default class OrderService {
 	static instance: OrderService | null = null;
@@ -153,5 +154,16 @@ export default class OrderService {
 				amount: orderData.amount,
 			}),
 		);
+	}
+
+	public async getBidAskOrders(entityManager: EntityManager, stockId: number): Promise<IBidAskOrder[]> {
+		const stockService: StockService = new StockService();
+		const orderRepository: OrderRepository = this.getOrderRepository(entityManager);
+
+		const { price } = await stockService.getCurrentStockPrice(entityManager, stockId);
+		const askOrders = await orderRepository.getOrders(stockId, '1', price);
+		const bidOrders = await orderRepository.getOrders(stockId, '2', price);
+
+		return [...askOrders, ...bidOrders];
 	}
 }
