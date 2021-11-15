@@ -26,10 +26,10 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 	webSocket.onmessage = (event) => {
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
-			case 'stocks_info':
+			case 'stocksInfo':
 				setStockList(data);
 				break;
-			case 'update_stock':
+			case 'updateStock':
 				setStockList((prev) => {
 					return prev.map((stockItem) => {
 						if (stockItem.code !== data.code) return stockItem;
@@ -52,7 +52,7 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 					});
 				});
 				break;
-			case 'update_target':
+			case 'updateTarget':
 				setStockList((prev) => {
 					return prev.map((stockItem) => {
 						const matchData = data.match;
@@ -81,6 +81,8 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 						};
 					});
 				});
+				break;
+			case 'baseStock':
 				break;
 			default:
 		}

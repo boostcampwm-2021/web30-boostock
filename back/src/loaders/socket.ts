@@ -3,6 +3,7 @@ import express from 'express';
 import Emitter from '@helper/eventEmitter';
 import { QueryRunner, transaction } from '@helper/tools';
 import { CommonError } from '@services/errors/index';
+import Transaction from '@models/Transaction';
 import Logger from './logger';
 import moment from '../helper/moment';
 
@@ -20,7 +21,7 @@ const connectNewUser = (client) => {
 		stockService
 			.getStocksCurrent(queryRunner.manager)
 			.then((stockList) => {
-				client.send(translateResponseFormat('stocks_info', stockList));
+				client.send(translateResponseFormat('stocksInfo', stockList));
 				socketClientMap.set(client, '');
 				commit();
 			})
@@ -41,10 +42,10 @@ export default (app: express.Application) => {
 		socketClientMap.forEach((targetStockCode, client) => {
 			if (targetStockCode === stockCode) {
 				// 모든 데이터 전송, 현재가, 호가, 차트 등...
-				client.send(translateResponseFormat('update_target', msg));
+				client.send(translateResponseFormat('updateTarget', msg));
 			} else {
 				// msg 오브젝트의 데이터에서 aside 바에 필요한 데이터만 골라서 전송
-				client.send(translateResponseFormat('update_stock', msg.match));
+				client.send(translateResponseFormat('updateStock', msg.match));
 			}
 		});
 	};
@@ -53,17 +54,24 @@ export default (app: express.Application) => {
 	webSocketServer.on('connection', (ws, req) => {
 		connectNewUser(ws);
 
-		ws.on('message', (message: string) => {
+		ws.on('message', async (message: string) => {
 			const requestData: ISocketRequest = translateRequestFormat(message);
 
 			switch (requestData.type) {
-				case 'open':
+				case 'open': {
 					if (!socketClientMap.has(ws)) return;
-					socketClientMap.set(ws, requestData.stockCode);
+					const stockService = new StockService();
+					const stockCode = requestData.stockCode ?? '';
+					const conclusions = await stockService.getConclusionByCode(stockCode);
+
+					ws.send(translateResponseFormat('baseStock', { conclusions, charts: [] }));
+					socketClientMap.set(ws, stockCode);
 					break;
-				case 'close':
+				}
+				case 'close': {
 					socketClientMap.delete(ws);
 					break;
+				}
 				default:
 					ws.send(translateResponseFormat('error', '알 수 없는 오류가 발생했습니다.'));
 			}

@@ -3,6 +3,7 @@ import { EntityManager, createQueryBuilder } from 'typeorm';
 import { Stock } from '@models/index';
 import { StockRepository } from '@repositories/index';
 import { CommonError, CommonErrorMessage, StockError, StockErrorMessage } from '@services/errors/index';
+import Transaction from '@models/Transaction';
 
 export default class StockService {
 	static instance: StockService | null = null;
@@ -40,5 +41,13 @@ export default class StockService {
 
 		const allStocks: Stock[] = await stockRepository.readAllStocks();
 		return allStocks.map((stock) => ({ ...stock, charts: stock.charts.filter(({ type }) => type === 1440) }));
+	}
+
+	public async getConclusionByCode(code: string) {
+		const conclusionsData = await Transaction.find({ stockCode: code }, { amount: 1, price: 1, createdAt: 1, _id: 0 })
+			.sort({ createdAt: -1 })
+			.limit(50);
+
+		return conclusionsData;
 	}
 }
