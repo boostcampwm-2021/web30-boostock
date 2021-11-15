@@ -10,10 +10,12 @@ export default (): express.Router => {
 		try {
 			const accessToken = await GithubService.getAccessToken(code);
 			const userInfo = await GithubService.getUserInfo(accessToken);
-			Object.assign(req.session.data, userInfo);
+			req.session.data = {
+				login: userInfo.login,
+			};
 			req.session.save((err) => {
 				if (err) next(err);
-				return res.status(200);
+				return res.status(200).json({});
 			});
 		} catch (error) {
 			next(error);
@@ -25,7 +27,7 @@ export default (): express.Router => {
 		try {
 			const accessToken = await GithubService.getAccessToken(code);
 			const userInfo: IGithubUserInfo = await GithubService.getUserInfo(accessToken);
-			if (await UserService.signUp({ username, email, socialGithub: userInfo.username })) {
+			if (await UserService.signUp({ username, email, socialGithub: userInfo.login })) {
 				Object.assign(req.session.data, userInfo);
 				req.session.save((err) => {
 					if (err) next(err);
