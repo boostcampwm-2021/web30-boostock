@@ -14,8 +14,7 @@ const SignIn = () => {
 	const SWITCH_URL = isSignUp ? '/auth/signin' : '/auth/signup';
 	const SWITCH_TEXT = isSignUp ? '기존 계정으로 로그인' : '새로운 계정으로 회원가입';
 
-	if (query.get('code')) {
-		console.log(JSON.stringify({ code: query.get('code') }));
+	if (query.get('code') && result === false) {
 		fetch(`${process.env.SERVER_URL}/api/auth/github/signin`, {
 			method: 'POST',
 			credentials: 'include',
@@ -28,7 +27,6 @@ const SignIn = () => {
 		});
 	}
 
-	console.log(result);
 	if (result === true) return <Redirect to="/trade" />;
 
 	return (
