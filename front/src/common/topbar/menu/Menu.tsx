@@ -19,10 +19,10 @@ const Menu = ({ pages }: Props) => {
 				))}
 			</div>
 			<div style={{ position: 'relative' }}>
-				<NavLink to="/signin" className={(isActive) => (isActive ? `${style.active}` : '')}>
+				<NavLink to="/auth/signin" className={(isActive) => (isActive ? `${style.active}` : '')}>
 					로그인
 				</NavLink>
-				<NavLink to="/signup" className={(isActive) => (isActive ? `${style.active}` : '')}>
+				<NavLink to="/auth/signup" className={(isActive) => (isActive ? `${style.active}` : '')}>
 					회원가입
 				</NavLink>
 			</div>
