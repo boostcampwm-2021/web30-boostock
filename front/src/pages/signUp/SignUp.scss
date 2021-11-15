@@ -1,0 +1,86 @@
+@import '@common/global.scss';
+
+.signup {
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+	justify-content: center;
+
+    width: 100vw;
+    height: 100vh;
+}
+
+.signup-box {
+    width: 800px;
+    height: 200px;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+
+    border: 1px solid $primary;
+    overflow-y: scroll;
+
+    font-size: 12pt;
+
+    &:focus {
+        outline: none;
+        border: 1px solid $primary;
+    }
+}
+
+.signup-horizontal-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 800px;
+    height: 100px;
+}
+
+.signup-label {
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+.signup-input {
+    width: 340px;
+    height: 48px;
+    padding: 8px;
+    margin: 16px 0px 16px 16px;
+    box-sizing: border-box;
+
+    border: 1px solid #ccc;
+
+    &:focus {
+        outline: none;
+        border: 1px solid $primary;
+    }
+}
+
+.signup-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 800px;
+    height: 48px;
+    margin: 8px;
+    box-sizing: border-box;
+    border: none;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    color: #fff;
+    background-color: $primary2;
+
+    &:hover {
+        background-color: $primary;
+        transition: background-color 0.5s;
+    }
+
+    &:disabled {
+        background-color: #bbb;
+        cursor: default;
+    }
+}

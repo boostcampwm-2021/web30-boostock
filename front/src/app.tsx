@@ -33,8 +33,10 @@ const App: React.FC = () => {
 				<Theme>
 					<TopBar pages={pages} />
 					<Switch>
-						<Route path="/signin" component={SignIn} />
-						<Route path="/signup" component={SignUp} />
+						<Route exact path="/auth/signin" component={SignIn} />
+						<Route exact path="/auth/signin/callback" component={SignIn} />
+						<Route exact path="/auth/signup" component={SignIn} />
+						<Route exact path="/auth/signup/callback" component={SignUp} />
 						<Route path="/trade" component={Trade} />
 						<Route component={HelloWorld} />
 					</Switch>
