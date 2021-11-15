@@ -1,8 +1,15 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager } from 'typeorm';
+import { EntityManager, getCustomRepository } from 'typeorm';
 import { User } from '@models/index';
 import { UserRepository } from '@repositories/index';
 import { CommonError, CommonErrorMessage, UserError, UserErrorMessage } from '@services/errors/index';
+
+interface IUserInfo {
+	username: string;
+	email: string;
+	socialGithub: string;
+	balance?: number;
+}
 
 export default class UserService {
 	static instance: UserService | null = null;
@@ -19,20 +26,22 @@ export default class UserService {
 		return userRepository;
 	}
 
-	public async signUp(
-		entityManager: EntityManager,
-		userData: {
-			username: string;
-			email: string;
-			socialGithub: string;
-		},
-	): Promise<void> {
-		const userRepository: UserRepository = this.getUserRepository(entityManager);
+	static async findBySocialGithub(socialGithub: string): Promise<User | undefined> {
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+		const user = userRepository.findOne({ where: { socialGithub } });
+		if (user === undefined) throw new Error('없는 유저');
+		return user;
+	}
 
-		userRepository.createUser(
+	static async signUp({ username, email, socialGithub, balance = 0 }: IUserInfo): Promise<boolean> {
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+
+		return userRepository.createUser(
 			userRepository.create({
-				...userData,
-				balance: 0,
+				username,
+				email,
+				socialGithub,
+				balance,
 			}),
 		);
 	}

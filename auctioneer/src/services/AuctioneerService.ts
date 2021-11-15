@@ -2,10 +2,9 @@
 import { getConnection } from 'typeorm';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
 import { UserStock, OrderType, Stock, Order } from '@models/index';
+import { needToHandle } from '@helper/tools';
 import BidAskTransaction, { ITransactionLog } from './BidAskTransaction';
 import { OrderError, OrderErrorMessage } from './errors';
-
-function donothing() {}
 
 export default class AuctioneerService {
 	static instance: AuctioneerService | null = null;
@@ -70,7 +69,7 @@ export default class AuctioneerService {
 			queryRunner.commitTransaction();
 			result = true;
 		} catch (err) {
-			if (err instanceof OrderError) donothing();
+			if (err instanceof OrderError) needToHandle();
 			queryRunner.rollbackTransaction();
 			result = false;
 		} finally {

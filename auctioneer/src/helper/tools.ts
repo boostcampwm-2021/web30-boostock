@@ -50,4 +50,6 @@ function sleep(ms) {
 	while (Date.now() < wakeUpTime) {}
 }
 
+export function needToHandle() {}
+
 export { QueryRunner, EntityManager } from 'typeorm';

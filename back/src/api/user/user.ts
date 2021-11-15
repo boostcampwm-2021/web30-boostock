@@ -29,14 +29,12 @@ export default (): express.Router => {
 	router.post('/', async (req: Request, res: Response) => {
 		transaction(
 			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
-				const userServiceInstance = new UserService();
 				const validator = new Validator();
-				userServiceInstance
-					.signUp(queryRunner.manager, {
-						username: validator.init(req.body.username).isString().toString(),
-						email: validator.init(req.body.email).isString().toString(),
-						socialGithub: validator.init(0).isString().toString(),
-					})
+				UserService.signUp({
+					username: validator.init(req.body.username).isString().toString(),
+					email: validator.init(req.body.email).isString().toString(),
+					socialGithub: validator.init(0).isString().toString(),
+				})
 					.then(() => {
 						res.status(200).end();
 						then();

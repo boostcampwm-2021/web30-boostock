@@ -105,4 +105,5 @@ dist
 
 # etc
 ormconfig.json
+sessionStoreConfig.json
 .DS_Store
