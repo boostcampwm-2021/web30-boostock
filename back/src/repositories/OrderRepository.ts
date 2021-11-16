@@ -27,7 +27,7 @@ export default class OrderRepository extends Repository<Order> {
 
 	public async getOrders(stockId: number, type: '1' | '2', price: number): Promise<IBidAskOrder[]> {
 		const LIMIT = 10;
-		const predicate = type === '1' ? 'price > :price' : 'price <= :price';
+		const predicate = type === '1' ? 'price >= :price' : 'price <= :price';
 
 		return this.createQueryBuilder()
 			.select(['price', 'SUM(amount) AS volume', 'type'])
