@@ -25,6 +25,12 @@ const Menu = ({ pages }: Props) => {
 				<NavLink to="/auth/signup" className={(isActive) => (isActive ? `${style.active}` : '')}>
 					회원가입
 				</NavLink>
+				<NavLink to="/my" className={(isActive) => (isActive ? `${style.active}` : '')}>
+					마이페이지
+				</NavLink>
+				<NavLink to="/balance" className={(isActive) => (isActive ? `${style.active}` : '')}>
+					입출금
+				</NavLink>
 			</div>
 		</nav>
 	);

@@ -10,6 +10,8 @@ import HelloWorld from './HelloWorld';
 import SignIn from './pages/signIn/SignIn';
 import SignUp from './pages/signUp/SignUp';
 import Trade from './pages/trade/Trade';
+import My from './pages/my/My';
+import Balance from './pages/balance/Balance';
 import Socket from './Socket';
 
 export interface Ipage {
@@ -37,6 +39,8 @@ const App: React.FC = () => {
 						<Route exact path="/auth/signin/callback" component={SignIn} />
 						<Route exact path="/auth/signup" component={SignIn} />
 						<Route exact path="/auth/signup/callback" component={SignUp} />
+						<Route exact path="/my" component={My} />
+						<Route exact path="/balance" component={Balance} />
 						<Route path="/trade" component={Trade} />
 						<Route component={HelloWorld} />
 					</Switch>
