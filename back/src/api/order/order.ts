@@ -36,7 +36,6 @@ export default (): express.Router => {
 		transaction(
 			(queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {
 				const orderServiceInstance = new OrderService();
-				const stockServiceInstance = new StockService();
 				const validator = new Validator();
 
 				const userId = validator.init(1).isInteger().toNumber();

@@ -25,16 +25,14 @@ export default class OrderRepository extends Repository<Order> {
 		return result.affected != null && result.affected > 0;
 	}
 
-	public async getOrders(stockId: number, type: '1' | '2', price: number): Promise<IBidAskOrder[]> {
+	public async getOrders(stockId: number, type: '1' | '2'): Promise<IBidAskOrder[]> {
 		const LIMIT = 10;
-		const predicate = type === '1' ? 'price >= :price' : 'price <= :price';
 
 		return this.createQueryBuilder()
 			.select(['price', 'SUM(amount) AS amount', 'type'])
 			.where('stock_id = :stockId', { stockId })
 			.andWhere('status = :status', { status: 'pending' })
 			.andWhere('type = :type', { type })
-			.andWhere(predicate, { price })
 			.groupBy('price')
 			.orderBy({
 				price: 'DESC',

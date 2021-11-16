@@ -157,12 +157,10 @@ export default class OrderService {
 	}
 
 	public async getBidAskOrders(entityManager: EntityManager, stockId: number): Promise<IBidAskOrder[]> {
-		const stockService: StockService = new StockService();
 		const orderRepository: OrderRepository = this.getOrderRepository(entityManager);
 
-		const { price } = await stockService.getCurrentStockPrice(entityManager, stockId);
-		const askOrders = await orderRepository.getOrders(stockId, '1', price);
-		const bidOrders = await orderRepository.getOrders(stockId, '2', price);
+		const askOrders = await orderRepository.getOrders(stockId, '1');
+		const bidOrders = await orderRepository.getOrders(stockId, '2');
 
 		return [...askOrders, ...bidOrders];
 	}
