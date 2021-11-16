@@ -30,7 +30,7 @@ export default class OrderRepository extends Repository<Order> {
 		const predicate = type === '1' ? 'price >= :price' : 'price <= :price';
 
 		return this.createQueryBuilder()
-			.select(['price', 'SUM(amount) AS volume', 'type'])
+			.select(['price', 'SUM(amount) AS amount', 'type'])
 			.where('stock_id = :stockId', { stockId })
 			.andWhere('status = :status', { status: 'pending' })
 			.andWhere('type = :type', { type })
