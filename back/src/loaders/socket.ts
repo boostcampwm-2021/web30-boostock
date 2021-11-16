@@ -48,7 +48,9 @@ export default (app: express.Application) => {
 			}
 		});
 	};
+
 	Emitter.on('broadcast', broadcast);
+	Emitter.on('order accepted', broadcast);
 
 	webSocketServer.on('connection', (ws, req) => {
 		connectNewUser(ws);

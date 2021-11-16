@@ -52,14 +52,14 @@
 	}
 }
 
-.order-row-volume {
+.order-row-amount {
 	position: relative;
 	padding: 6px 0;
 	font-size: 12px;
 	width: 35%;
 }
 
-.sell-volume {
+.sell-amount {
 	text-align: right;
 
 	&.active {
@@ -77,7 +77,7 @@
 	}
 }
 
-.sell-volume-bar {
+.sell-amount-bar {
 	display: inline-block;
 	background-color: $lightBlue;
 	height: 100%;
@@ -88,7 +88,7 @@
 	}
 }
 
-.buy-volume {
+.buy-amount {
 	text-align: left;
 
 	&.active {
@@ -106,7 +106,7 @@
 	}
 }
 
-.buy-volume-bar {
+.buy-amount-bar {
 	display: inline-block;
 	background-color: $rose;
 	height: 100%;
@@ -137,14 +137,14 @@
 	}
 }
 
-.volume-sell-text {
+.amount-sell-text {
 	position: absolute;
 	margin: 0;
 	right: 1px;
 	top: 12px;
 }
 
-.volume-buy-text {
+.amount-buy-text {
 	position: absolute;
 	margin: 0;
 	left: 1px;
@@ -169,7 +169,7 @@
 	}
 }
 
-.total-volumes {
+.total-amount {
 	display: flex;
 	font-size: 14px;
 	height: 37px;
@@ -185,11 +185,11 @@
 		padding: 9px 5px;
 	}
 
-	& > .total-buy-volume {
+	& > .total-buy-amount {
 		padding-right: 11px;
 	}
 
-	& > .total-sell-volume {
+	& > .total-sell-amount {
 		padding-left: 11px;
 	}
 
@@ -200,11 +200,11 @@
 	}
 }
 
-.total-sell-volume {
+.total-sell-amount {
 	width: 35%;
 }
 
-.total-volumes-text {
+.total-amount-text {
 	width: 30%;
 	font-size: 16px;
 	border-left: 1px solid $cardBorderColor;
@@ -216,7 +216,7 @@
 	}
 }
 
-.total-buy-volume {
+.total-buy-amount {
 	width: 35%;
 }
 

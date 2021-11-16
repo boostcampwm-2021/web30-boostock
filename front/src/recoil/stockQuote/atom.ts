@@ -7,7 +7,7 @@ export enum IStockQuoteType {
 export interface IStockQuoteItem {
 	type: IStockQuoteType;
 	price: number;
-	volume: number;
+	amount: number;
 }
 
 const stockQuoteAtom = atom<IStockQuoteItem[]>({

@@ -2,6 +2,7 @@ import React from 'react';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
+import stockQuoteAtom, { IStockQuoteItem } from './recoil/stockQuote/atom';
 import { translateResponseData } from './common/utils/socketUtils';
 
 interface IProps {
@@ -10,7 +11,11 @@ interface IProps {
 
 let reconnector: NodeJS.Timer;
 
-const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList: SetterOrUpdater<IStockListItem[]>) => {
+const startSocket = (
+	setSocket: SetterOrUpdater<WebSocket | null>,
+	setStockList: SetterOrUpdater<IStockListItem[]>,
+	setStockQuote: SetterOrUpdater<IStockQuoteItem[]>,
+) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 
 	webSocket.onopen = () => {
@@ -20,7 +25,7 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket(setSocket, setStockList);
+			startSocket(setSocket, setStockList, setStockQuote);
 		}, 1000);
 	};
 	webSocket.onmessage = (event) => {
@@ -31,6 +36,7 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 				break;
 			}
 			case 'update_stock': {
+				if (!data) return;
 				const { code: stockCode, price, amount } = data;
 
 				setStockList((prev) => {
@@ -58,8 +64,9 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 			}
 			case 'update_target': {
 				const { match: matchData, currentChart } = data;
-				const { code: stockCode, price, amount } = matchData;
+				const { code: stockCode, price, amount } = matchData ?? {};
 
+				if (!matchData || !currentChart) return;
 				setStockList((prev) => {
 					return prev.map((stockItem) => {
 						const dailyChartData: IStockChartItem = currentChart.filter(
@@ -98,8 +105,9 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 const Socket = ({ children }: IProps) => {
 	const setSocket = useSetRecoilState(webSocketAtom);
 	const setStockList = useSetRecoilState(stockListAtom);
+	const setStockQuote = useSetRecoilState(stockQuoteAtom);
 
-	startSocket(setSocket, setStockList);
+	startSocket(setSocket, setStockList, setStockQuote);
 
 	return <>{children}</>;
 };

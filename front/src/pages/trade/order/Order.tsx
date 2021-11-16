@@ -7,29 +7,29 @@ import StockQuoteTDElement from './StockQuoteTDElement';
 
 import './order.scss';
 
-function calculateTotalAndMaxVolumes(data: IStockQuoteItem[]) {
+function calculateTotalAndMaxAmount(data: IStockQuoteItem[]) {
 	const LENGTH = data.length;
-	let buyVolume = 0;
-	let sellVolume = 0;
-	let maxVolume = 0;
+	let buyAmount = 0;
+	let sellAmount = 0;
+	let maxAmount = 0;
 
 	for (let i = 0; i < LENGTH; i += 1) {
-		if (data[i].type === 1) sellVolume += data[i].volume;
-		else buyVolume += data[i].volume;
-		if (maxVolume < data[i].volume) maxVolume = data[i].volume;
+		if (data[i].type === 1) sellAmount += data[i].amount;
+		else buyAmount += data[i].amount;
+		if (maxAmount < data[i].amount) maxAmount = data[i].amount;
 	}
 
-	return { buyVolume, sellVolume, maxVolume };
+	return { buyAmount, sellAmount, maxAmount };
 }
 
 const Order = () => {
 	const orderContentRef = useRef<HTMLDivElement>(null);
 	const setBidAskPrice = useSetRecoilState(bidAskPriceAtom);
 	const stockQuotes = useRecoilValue<IStockQuoteItem[]>(stockQuoteAtom);
-	const [totalAndMaxVolumes, setTotalAndMaxVolumes] = useState(() => calculateTotalAndMaxVolumes(stockQuotes));
+	const [totalAndMaxAmount, setTotalAndMaxVolumes] = useState(() => calculateTotalAndMaxAmount(stockQuotes));
 
 	useEffect(() => {
-		setTotalAndMaxVolumes(calculateTotalAndMaxVolumes(stockQuotes));
+		setTotalAndMaxVolumes(calculateTotalAndMaxAmount(stockQuotes));
 	}, [stockQuotes]);
 
 	useEffect(() => {
@@ -60,7 +60,7 @@ const Order = () => {
 							<tr key={quote.price} className="order-row">
 								<StockQuoteTDElement
 									quote={quote}
-									totalAndMaxVolumes={totalAndMaxVolumes}
+									totalAndMaxAmount={totalAndMaxAmount}
 									setBidAskPrice={setBidAskPrice}
 								/>
 							</tr>
@@ -68,10 +68,10 @@ const Order = () => {
 					</tbody>
 				</table>
 			</div>
-			<div className="total-volumes">
-				<div className="total-sell-volume">{formatNumber(totalAndMaxVolumes.sellVolume)}&nbsp;주</div>
-				<div className="total-volumes-text">총잔량</div>
-				<div className="total-buy-volume">{formatNumber(totalAndMaxVolumes.buyVolume)}&nbsp;주</div>
+			<div className="total-amount">
+				<div className="total-sell-amount">{formatNumber(totalAndMaxAmount.sellAmount)}&nbsp;주</div>
+				<div className="total-amount-text">총잔량</div>
+				<div className="total-buy-amount">{formatNumber(totalAndMaxAmount.buyAmount)}&nbsp;주</div>
 			</div>
 		</div>
 	);
