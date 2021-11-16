@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import fetch from 'node-fetch';
-
+import OrderValidator from '@api/middleware/orderValidator';
 import { Order, OrderType } from '@models/index';
 import { OrderService } from '@services/index';
 import { CommonError } from '@services/errors/index';
@@ -9,18 +9,17 @@ import { QueryRunner, transaction, Validator } from '@helper/index';
 export default (): express.Router => {
 	const router = express.Router();
 
-	router.post('/', async (req: Request, res: Response) => {
+	router.post('/', OrderValidator, async (req: Request, res: Response) => {
 		transaction(
 			(queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {
 				const orderServiceInstance = new OrderService();
-				const validator = new Validator();
 				orderServiceInstance
 					.order(queryRunner.manager, {
-						userId: validator.init(1).isInteger().toNumber(),
-						stockCode: validator.init(req.body.stockCode).isString().toString(),
-						type: validator.init(req.body.type).isInObject(OrderType).isInteger().toNumber(),
-						amount: validator.init(req.body.amount).isInteger().isPositive().toNumber(),
-						price: validator.init(req.body.price).isInteger().isPositive().toNumber(),
+						userId: 1,
+						stockCode: req.body.stockCode,
+						type: req.body.type,
+						amount: req.body.amount,
+						price: req.body.price,
 					})
 					.then(() => {
 						res.status(200).end();

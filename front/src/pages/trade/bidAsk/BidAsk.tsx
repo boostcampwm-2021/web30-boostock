@@ -17,7 +17,7 @@ interface IOrderData {
 	price: number;
 }
 
-const BidAsk = ({ stockCode }) => {
+const BidAsk = ({ stockCode }: { stockCode: string }) => {
 	const [bidAskType, setBidAskType] = useState<string>('매수');
 	const [bidAskOption, setBidAskOption] = useState<string>('지정가');
 	const [bidAskPrice, setBidAskPrice] = useRecoilState(bidAskPriceAtom);
@@ -57,19 +57,31 @@ const BidAsk = ({ stockCode }) => {
 
 		try {
 			const res = await fetch(`${process.env.SERVER_URL}/api/order`, config);
-			const data = await res;
+			const data = await res.json();
 
-			if (data.status !== 200) throw new Error();
+			if (res.status !== 200) {
+				const error = new Error();
+				error.message = data.message;
+				throw error;
+			}
 			handleReset();
 			toast.success('주문이 접수되었습니다.');
 		} catch (error) {
-			// 추후 상세 에러 처리 요망
-			toast.error('주문 접수에 실패했습니다. \n\n다시 시도해 주세요.', {
-				style: {
-					textAlign: 'center',
-					maxWidth: '236px',
-				},
-			});
+			if (error.message === 'Not Correct Quote Digit') {
+				toast.error('주문 접수에 실패했습니다. 호가 단위를 확인해주세요.', {
+					style: {
+						textAlign: 'center',
+						maxWidth: '220px',
+					},
+				});
+			} else {
+				toast.error('주문 접수에 실패했습니다. 다시 시도해 주세요.', {
+					style: {
+						textAlign: 'center',
+						maxWidth: '236px',
+					},
+				});
+			}
 		}
 	};
 
