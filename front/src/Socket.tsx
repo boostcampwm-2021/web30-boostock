@@ -12,6 +12,7 @@ let reconnector: NodeJS.Timer;
 
 const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList: SetterOrUpdater<IStockListItem[]>) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
+	webSocket.binaryType = 'arraybuffer';
 
 	webSocket.onopen = () => {
 		setSocket(webSocket);
@@ -27,6 +28,7 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
 			case 'stocksInfo':
+				console.log(new Date().getTime());
 				setStockList(data);
 				break;
 			case 'updateStock':

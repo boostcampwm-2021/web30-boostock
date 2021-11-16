@@ -1,7 +1,6 @@
 import { getConnection, QueryRunner } from 'typeorm';
 import { Request, Response } from 'express';
 import { CommonError } from '@services/errors/index';
-import { nextTick } from 'node:process';
 
 export const snakeToCamel = (str) => {
 	return str.toLowerCase().replace(/([-_][a-z])/g, (group) => {
@@ -14,6 +13,9 @@ export const camelToSnake = (str) => {
 		return `_${letter.toLowerCase()}`;
 	});
 };
+
+export const binArrayToJson = (binArray: ArrayBufferLike) => JSON.parse(new TextDecoder().decode(binArray));
+export const JsonToBinArray = (json: unknown): Uint8Array => new TextEncoder().encode(JSON.stringify(json, null, 0));
 
 export const toJsonFromError = (error: CommonError): { status: number; json: { error: string; message: string } } => {
 	return {
