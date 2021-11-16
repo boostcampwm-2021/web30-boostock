@@ -9,16 +9,16 @@ export default class User {
 	@PrimaryGeneratedColumn({ name: 'user_id' })
 	userId: number;
 
-	@Column()
+	@Column({ type: 'varchar', length: 50 })
 	username: string;
 
-	@Column()
+	@Column({ type: 'varchar', length: 100, unique: true })
 	email: string;
 
-	@Column({ name: 'social_github' })
+	@Column({ name: 'social_github', unique: true })
 	socialGithub: string;
 
-	@Column()
+	@Column({ type: 'int' })
 	balance: number;
 
 	@OneToMany(() => UserFavorite, (userFavorite: UserFavorite) => userFavorite.userId)
