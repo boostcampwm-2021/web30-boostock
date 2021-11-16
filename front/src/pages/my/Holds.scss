@@ -1,0 +1,8 @@
+@import '@common/mixins.scss';
+
+.my-holds {
+    width: 100%;
+    height: 60vh;
+
+    @include darkModeCardStyle();
+}
