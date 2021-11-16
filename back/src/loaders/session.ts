@@ -7,7 +7,7 @@ import sessionStoreConfig from '../../sessionStoreConfig.json';
 
 declare module 'express-session' {
 	interface SessionData {
-		data: { [key: string]: string };
+		data: { userId: number; email: string };
 	}
 }
 

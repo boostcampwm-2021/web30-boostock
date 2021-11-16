@@ -6,7 +6,7 @@ import UserStock from './UserStock';
 
 @Entity({ name: 'user' })
 export default class User {
-	@PrimaryGeneratedColumn({ name: 'user_id' })
+	@PrimaryGeneratedColumn({ name: 'user_id', type: 'number' })
 	userId: number;
 
 	@Column()

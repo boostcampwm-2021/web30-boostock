@@ -9,9 +9,11 @@ export default (): express.Router => {
 		const { code } = req.body;
 		try {
 			const accessToken = await GithubService.getAccessToken(code);
-			const userInfo = await GithubService.getUserInfo(accessToken);
+			const githubUserInfo = await GithubService.getUserInfo(accessToken);
+			const userInfo = await UserService.findBySocialGithub(githubUserInfo.login);
 			req.session.data = {
-				login: userInfo.login,
+				userId: userInfo.userId,
+				email: userInfo.email,
 			};
 			req.session.save((err) => {
 				if (err) next(err);
