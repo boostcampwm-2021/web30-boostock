@@ -44,7 +44,7 @@ export default class StockService {
 	}
 
 	public async getConclusionByCode(code: string): Promise<ITransaction[]> {
-		const conclusionsData = await Transaction.find({ stockCode: code }, { amount: 1, price: 1, createdAt: 1, _id: 0 })
+		const conclusionsData = await Transaction.find({ stockCode: code }, { amount: 1, price: 1, createdAt: 1, _id: 1 })
 			.sort({ createdAt: -1 })
 			.limit(50);
 

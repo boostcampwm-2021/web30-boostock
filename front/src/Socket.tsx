@@ -2,15 +2,39 @@ import React from 'react';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
+import stockExecutionAtom, { IStockExecutionItem } from './recoil/stockExecution/atom';
 import { translateResponseData } from './common/utils/socketUtils';
+import Conclusion from './pages/trade/conclusion/Conclusion';
 
 interface IProps {
 	children: React.ReactNode;
 }
+interface IStartSocket {
+	setSocket: SetterOrUpdater<WebSocket | null>;
+	setStockList: SetterOrUpdater<IStockListItem[]>;
+	setStockExecution: SetterOrUpdater<IStockExecutionItem[]>;
+}
+interface IResponseConclusions {
+	createdAt: number;
+	price: number;
+	amount: number;
+	_id: string;
+}
 
 let reconnector: NodeJS.Timer;
 
-const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList: SetterOrUpdater<IStockListItem[]>) => {
+const dataToExecutionForm = (conclusionList: IResponseConclusions[]): IStockExecutionItem[] =>
+	conclusionList.map(({ createdAt, price, amount, _id }: IResponseConclusions): IStockExecutionItem => {
+		return {
+			timestamp: new Date(createdAt),
+			price,
+			volume: price * amount,
+			amount,
+			id: _id,
+		};
+	});
+
+const startSocket = ({ setSocket, setStockList, setStockExecution }: IStartSocket) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.binaryType = 'arraybuffer';
 
@@ -21,14 +45,13 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket(setSocket, setStockList);
+			startSocket({ setSocket, setStockList, setStockExecution });
 		}, 1000);
 	};
 	webSocket.onmessage = (event) => {
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
 			case 'stocksInfo':
-				console.log(new Date().getTime());
 				setStockList(data);
 				break;
 			case 'updateStock':
@@ -85,6 +108,7 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 				});
 				break;
 			case 'baseStock':
+				setStockExecution(dataToExecutionForm(data.conclusions));
 				break;
 			default:
 		}
@@ -95,8 +119,9 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 const Socket = ({ children }: IProps) => {
 	const setSocket = useSetRecoilState(webSocketAtom);
 	const setStockList = useSetRecoilState(stockListAtom);
+	const setStockExecution = useSetRecoilState(stockExecutionAtom);
 
-	startSocket(setSocket, setStockList);
+	startSocket({ setSocket, setStockList, setStockExecution });
 
 	return <>{children}</>;
 };

@@ -20,7 +20,6 @@ const connectNewUser = (client) => {
 			.getStocksCurrent(queryRunner.manager)
 			.then((stockList) => {
 				client.send(translateResponseFormat('stocksInfo', stockList));
-				console.log(new Date().getTime());
 				socketClientMap.set(client, '');
 				commit();
 			})
