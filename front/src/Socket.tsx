@@ -58,14 +58,14 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 			}
 			case 'update_target': {
 				const { match: matchData, currentChart } = data;
-				const { price, amount } = matchData;
+				const { code: stockCode, price, amount } = matchData;
 
 				setStockList((prev) => {
 					return prev.map((stockItem) => {
 						const dailyChartData: IStockChartItem = currentChart.filter(
 							({ type: chartType }: IStockChartItem) => chartType === 1440,
 						)[0];
-						if (stockItem.code !== matchData.code) return stockItem;
+						if (stockItem.code !== stockCode) return stockItem;
 
 						const newChartsData = stockItem.charts.map((chartItem) => {
 							return chartItem.type === 1
