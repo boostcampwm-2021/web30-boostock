@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import fetch from 'node-fetch';
 import { Stock, User, UserStock, Order, OrderStatus, Transaction, Chart } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
@@ -19,6 +20,10 @@ export interface IBidAskTransaction {
 	OrderRepositoryRunner: OrderRepository;
 	ChartRepositoryRunner: ChartRepository;
 	transactionLog: ITransactionLog;
+}
+
+function getAveragePrice(holdAmount: number, holdAverage: number, newAmount: number, newPrice: number): number {
+	return (holdAmount * holdAverage + newAmount * newPrice) / (holdAmount + newAmount);
 }
 
 export default class BidAskTransaction implements IBidAskTransaction {
@@ -65,6 +70,12 @@ export default class BidAskTransaction implements IBidAskTransaction {
 			this.UserStockRepositoryRunner.insert(newUserStock);
 		} else {
 			askUserStock.amount += this.transactionLog.amount;
+			askUserStock.average = getAveragePrice(
+				askUserStock.amount,
+				askUserStock.average,
+				this.transactionLog.amount,
+				this.transactionLog.price,
+			);
 			await this.UserStockRepositoryRunner.save(askUserStock);
 		}
 		// 매수주문이랑 실제거래가가 차이있을 때 잔돈 반환하는 로직
