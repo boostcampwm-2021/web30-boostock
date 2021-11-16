@@ -39,7 +39,6 @@ export default class GithubService {
 
 	static async getUserInfo(accessToken: string): Promise<IGithubUserInfo> {
 		try {
-			console.log(accessToken);
 			if (accessToken === undefined) throw new AuthError(AuthErrorMessage.INVALID_GITHUB_ACCESS_TOKEN);
 			const result = await fetch(userInfoUrl, {
 				method: 'GET',

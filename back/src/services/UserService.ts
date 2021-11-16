@@ -11,6 +11,11 @@ interface IUserInfo {
 	balance?: number;
 }
 
+function checkEmail(email: string): boolean {
+	const regexp = /\S+@\S+\.\S+/;
+	return regexp.test(email);
+}
+
 export default class UserService {
 	static instance: UserService | null = null;
 
@@ -26,6 +31,19 @@ export default class UserService {
 		return userRepository;
 	}
 
+	static async signUp({ username, email, socialGithub, balance = 0 }: IUserInfo): Promise<User> {
+		if (!checkEmail(email)) throw new UserError(UserErrorMessage.INVALID_PARAM);
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+		const user = userRepository.create({
+			username,
+			email,
+			socialGithub,
+			balance,
+		});
+		if (!userRepository.createUser(user)) throw new UserError(UserErrorMessage.CANNOT_CREATE_USER);
+		return user;
+	}
+
 	static async findBySocialGithub(socialGithub: string): Promise<User> {
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
 		const user = await userRepository.findOne({ where: { socialGithub } });
@@ -33,36 +51,20 @@ export default class UserService {
 		return user;
 	}
 
-	static async signUp({ username, email, socialGithub, balance = 0 }: IUserInfo): Promise<boolean> {
+	static async getUserById(id: number): Promise<User> {
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
-
-		return userRepository.createUser(
-			userRepository.create({
-				username,
-				email,
-				socialGithub,
-				balance,
-			}),
-		);
-	}
-
-	public async getUserById(entityManager: EntityManager, id: number): Promise<User> {
-		const userRepository: UserRepository = this.getUserRepository(entityManager);
-
 		const user = await userRepository.readUserById(id);
 		if (!user) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
 		return user;
 	}
 
-	public async setBalance(entityManager: EntityManager, id: number, balance: number): Promise<void> {
-		const userRepository: UserRepository = this.getUserRepository(entityManager);
-
-		await userRepository.updateUser(
-			userRepository.create({
-				userId: id,
-				balance,
-			}),
-		);
+	static async updateBalance(id: number, balance: number): Promise<User> {
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+		const user = await userRepository.readUserById(id);
+		if (!user) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
+		user.balance += balance;
+		await userRepository.updateUser(user);
+		return user;
 	}
 
 	public async deleteUser(entityManager: EntityManager, id: number): Promise<void> {
