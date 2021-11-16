@@ -17,7 +17,7 @@ const SignUp = () => {
 	const changeTerm = () => setTerm((prev) => !prev);
 
 	const submit = () => {
-		const emailValidator = new RegExp('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]+$');
+		const emailValidator = new RegExp('\\S+@\\S+\\.\\S+');
 		if (!emailValidator.test(email)) return;
 
 		fetch(`${process.env.SERVER_URL}/api/auth/github/signup`, {
@@ -73,7 +73,7 @@ const SignUp = () => {
 						type="text"
 						id="username"
 						name="username"
-						maxLength={48}
+						maxLength={50}
 						value={username}
 						onChange={changeName}
 					/>
@@ -85,7 +85,7 @@ const SignUp = () => {
 						type="email"
 						id="email"
 						name="email"
-						maxLength={48}
+						maxLength={100}
 						value={email}
 						onChange={changeEmail}
 					/>
