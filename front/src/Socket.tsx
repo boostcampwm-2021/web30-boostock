@@ -26,37 +26,43 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 	webSocket.onmessage = (event) => {
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
-			case 'stocks_info':
+			case 'stocks_info': {
 				setStockList(data);
 				break;
-			case 'update_stock':
+			}
+			case 'update_stock': {
+				const { code: stockCode, price, amount } = data;
+
 				setStockList((prev) => {
 					return prev.map((stockItem) => {
-						if (stockItem.code !== data.code) return stockItem;
+						if (stockItem.code !== stockCode) return stockItem;
 
 						const newChartsData: IStockChartItem[] = stockItem.charts.map((chartItem) => {
 							return chartItem.type === 1
 								? chartItem
 								: {
 										...chartItem,
-										volume: chartItem.volume + data.price * data.amount,
+										volume: chartItem.volume + price * amount,
 								  };
 						});
 
 						return {
 							...stockItem,
-							price: data.price,
-							amount: data.amount,
+							price,
+							amount,
 							charts: newChartsData,
 						};
 					});
 				});
 				break;
-			case 'update_target':
+			}
+			case 'update_target': {
+				const { match: matchData, currentChart } = data;
+				const { price, amount } = matchData;
+
 				setStockList((prev) => {
 					return prev.map((stockItem) => {
-						const matchData = data.match;
-						const dailyChartData: IStockChartItem = data.currentChart.filter(
+						const dailyChartData: IStockChartItem = currentChart.filter(
 							({ type: chartType }: IStockChartItem) => chartType === 1440,
 						)[0];
 						if (stockItem.code !== matchData.code) return stockItem;
@@ -66,8 +72,8 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 								? chartItem
 								: {
 										...chartItem,
-										volume: chartItem.volume + matchData.price * matchData.amount,
-										amount: chartItem.amount + matchData.amount,
+										volume: chartItem.volume + price * amount,
+										amount: chartItem.amount + amount,
 										priceLow: dailyChartData.priceLow,
 										priceHigh: dailyChartData.priceHigh,
 								  };
@@ -75,13 +81,14 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 
 						return {
 							...stockItem,
-							price: matchData.price,
-							amount: matchData.amount,
+							price,
+							amount,
 							charts: newChartsData,
 						};
 					});
 				});
 				break;
+			}
 			default:
 		}
 	};
