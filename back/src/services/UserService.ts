@@ -26,10 +26,10 @@ export default class UserService {
 		return userRepository;
 	}
 
-	static async findBySocialGithub(socialGithub: string): Promise<User | undefined> {
+	static async findBySocialGithub(socialGithub: string): Promise<User> {
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
-		const user = userRepository.findOne({ where: { socialGithub } });
-		if (user === undefined) throw new Error('없는 유저');
+		const user = await userRepository.findOne({ where: { socialGithub } });
+		if (!user) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
 		return user;
 	}
 
