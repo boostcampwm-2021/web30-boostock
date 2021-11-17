@@ -8,13 +8,19 @@ export default class UserStock {
 	@PrimaryGeneratedColumn({ name: 'user_stock_id' })
 	userStockId: number;
 
-	@ManyToOne(() => User, (user: User) => user.userId)
-	@JoinColumn({ name: 'user_id' })
-	userId: User;
+	@Column({ name: 'user_id' })
+	userId: number;
 
-	@ManyToOne(() => Stock, (stock: Stock) => stock.stockId)
 	@Column({ name: 'stock_id' })
-	stockId: Stock;
+	stockId: number;
+
+	@ManyToOne(() => User, (user: User) => user.userId, { onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'user_id', referencedColumnName: 'userId' })
+	user: User;
+
+	@ManyToOne(() => Stock, (stock: Stock) => stock.stockId, { onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'stock_id', referencedColumnName: 'stockId' })
+	stock: Stock;
 
 	@Column()
 	amount: number;
