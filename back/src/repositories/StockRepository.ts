@@ -31,4 +31,14 @@ export default class StockRepository extends Repository<Stock> {
 		const result: DeleteResult = await this.delete(id);
 		return result.affected != null && result.affected > 0;
 	}
+
+	public async getCurrentStockPrice(stockId: number): Promise<{ price: number } | undefined> {
+		return this.createQueryBuilder().select('price').where('stock_id = :stockId', { stockId }).getRawOne();
+	}
+
+	public async readStockBaseInfo(): Promise<{ stock_id: number; code: string }[]> {
+		const baseInfo = await this.createQueryBuilder().select(['stock_id', 'code']).getRawMany();
+		return baseInfo;
+		// return this.createQueryBuilder().select('price').where('stock_id = :stockId', { stockId }).getRawOne();
+	}
 }

@@ -1,7 +1,8 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, createQueryBuilder, getCustomRepository } from 'typeorm';
+import { EntityManager, createQueryBuilder, getCustomRepository, getConnection, createConnection } from 'typeorm';
 import { Stock } from '@models/index';
 import { StockRepository } from '@repositories/index';
+import Transaction, { ITransaction } from '@models/Transaction';
 import {
 	CommonError,
 	CommonErrorMessage,
@@ -40,6 +41,14 @@ export default class StockService {
 		const stock = await stockRepository.findOne({ where: { code } });
 		if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 		return stock.stockId;
+  }
+
+	public async getCurrentStockPrice(entityManager: EntityManager, stockId: number): Promise<{ price: number }> {
+		const stockRepository: StockRepository = this.getStockRepository(entityManager);
+
+		const stockPrice = await stockRepository.getCurrentStockPrice(stockId);
+		if (!stockPrice) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+		return stockPrice;
 	}
 
 	public async getStockById(entityManager: EntityManager, id: number): Promise<Stock> {
@@ -63,5 +72,42 @@ export default class StockService {
 
 		const allStocks: Stock[] = await stockRepository.readAllStocks();
 		return allStocks.map((stock) => ({ ...stock, charts: stock.charts.filter(({ type }) => type === 1440) }));
+	}
+
+	public async getStocksBaseInfo(): Promise<{ stock_id: number; code: string }[]> {
+		const connection = await createConnection();
+		const stockRepository = connection.getCustomRepository(StockRepository);
+		const baseInfo = await stockRepository.readStockBaseInfo();
+
+		return baseInfo;
+	}
+
+	public async getConclusionByCode(code: string): Promise<ITransaction[]> {
+		const conclusionsData = await Transaction.find({ stockCode: code }, { amount: 1, price: 1, createdAt: 1, _id: 1 })
+			.sort({ createdAt: -1 })
+			.limit(50);
+
+		return conclusionsData;
+	}
+
+	public async getCurrentPriceByCode(code: string): Promise<number> {
+		const connection = getConnection();
+		const queryRunner = connection.createQueryRunner();
+		await queryRunner.connect();
+		await queryRunner.startTransaction();
+
+		try {
+			const stockRepository: StockRepository = this.getStockRepository(queryRunner.manager);
+			const stock = await stockRepository.readStockByCode(code);
+			if (!stock) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+			queryRunner.commitTransaction();
+
+			return stock.price;
+		} catch (error) {
+			queryRunner.rollbackTransaction();
+			throw new StockError(StockErrorMessage.CANNOT_READ_STOCK);
+		} finally {
+			queryRunner.release();
+		}
 	}
 }

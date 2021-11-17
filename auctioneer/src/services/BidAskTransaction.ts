@@ -22,6 +22,10 @@ export interface IBidAskTransaction {
 	transactionLog: ITransactionLog;
 }
 
+function getAveragePrice(holdAmount: number, holdAverage: number, newAmount: number, newPrice: number): number {
+	return (holdAmount * holdAverage + newAmount * newPrice) / (holdAmount + newAmount);
+}
+
 export default class BidAskTransaction implements IBidAskTransaction {
 	StockRepositoryRunner: StockRepository;
 
@@ -66,6 +70,12 @@ export default class BidAskTransaction implements IBidAskTransaction {
 			this.UserStockRepositoryRunner.insert(newUserStock);
 		} else {
 			askUserStock.amount += this.transactionLog.amount;
+			askUserStock.average = getAveragePrice(
+				askUserStock.amount,
+				askUserStock.average,
+				this.transactionLog.amount,
+				this.transactionLog.price,
+			);
 			await this.UserStockRepositoryRunner.save(askUserStock);
 		}
 		// 매수주문이랑 실제거래가가 차이있을 때 잔돈 반환하는 로직
@@ -107,28 +117,12 @@ export default class BidAskTransaction implements IBidAskTransaction {
 			chart.priceHigh = Math.max(chart.priceHigh, this.transactionLog.price);
 			chart.priceLow = Math.min(chart.priceHigh, this.transactionLog.price);
 			chart.amount += this.transactionLog.amount;
-			chart.amount += this.transactionLog.price * this.transactionLog.amount;
+			chart.volume += this.transactionLog.price * this.transactionLog.amount;
 			return chart;
 		});
 
 		updatedCharts.forEach(async (chart: Chart) => {
 			await this.ChartRepositoryRunner.update(chart.chartId, chart);
-		});
-
-		fetch(`${process.env.API_SERVER_URL}/api/stock/conclusion`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				match: {
-					code: this.transactionLog.code,
-					price: this.transactionLog.price,
-					amount: this.transactionLog.amount,
-					createdAt: new Date(),
-				},
-				currentChart: updatedCharts,
-			}),
 		});
 
 		const transaction = new Transaction({
@@ -139,8 +133,27 @@ export default class BidAskTransaction implements IBidAskTransaction {
 			price: this.transactionLog.price,
 			createdAt: new Date(),
 		});
-		transaction.save((err) => {
+
+		transaction.save((err, document) => {
 			if (err) throw new Error('오류났어요 롤백해주세요');
+
+			fetch(`${process.env.API_SERVER_URL}/api/stock/conclusion`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					match: {
+						id: document.id,
+						stockId: this.transactionLog.stockId,
+						code: this.transactionLog.code,
+						price: this.transactionLog.price,
+						amount: this.transactionLog.amount,
+						createdAt: new Date(),
+					},
+					currentChart: updatedCharts,
+				}),
+			});
 		});
 	}
 }

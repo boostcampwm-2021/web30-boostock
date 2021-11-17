@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+import ValidationError, { ValidationErrorMessage } from '@services/errors/ValidationError';
 
 export default class Validator {
 	private value: unknown;
@@ -9,27 +9,27 @@ export default class Validator {
 	}
 
 	isInteger(): this {
-		if (!Number.isSafeInteger(Number(this.value))) throw new Error('Validator Error: Not Integer Value');
+		if (!Number.isSafeInteger(Number(this.value))) throw new ValidationError(ValidationErrorMessage.NOT_INTEGER_VALUE);
 		return this;
 	}
 
 	isFloat(value: unknown): this {
-		if (Number(value) % 1 !== 0) throw new Error('Validator Error: Not Float Value');
+		if (Number(value) % 1 !== 0) throw new ValidationError(ValidationErrorMessage.NOT_FLOAT_VALUE);
 		return this;
 	}
 
 	isPositive(): this {
-		if (Number(this.value) <= 0) throw new Error('Validator Error: Not Positive Value');
+		if (Number(this.value) <= 0) throw new ValidationError(ValidationErrorMessage.NOT_POSITIVE_VALUE);
 		return this;
 	}
 
 	isNegative(): this {
-		if (Number(this.value) >= 0) throw new Error('Validator Error: Not Negative Value');
+		if (Number(this.value) >= 0) throw new ValidationError(ValidationErrorMessage.NOT_NEGATIVE_VALUE);
 		return this;
 	}
 
 	isString(): this {
-		if (typeof this.value !== 'string') throw new Error('Validator Error: Not String Value');
+		if (typeof this.value !== 'string') throw new ValidationError(ValidationErrorMessage.NOT_STRING_VALUE);
 		return this;
 	}
 
@@ -39,7 +39,7 @@ export default class Validator {
 				.map((value: unknown) => String(value))
 				.includes(String(this.value))
 		)
-			throw new Error('Validator Error: Not Included Value');
+			throw new ValidationError(ValidationErrorMessage.NOT_INCLUDED_VALUE);
 		return this;
 	}
 

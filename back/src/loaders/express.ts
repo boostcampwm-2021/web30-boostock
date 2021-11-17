@@ -5,7 +5,8 @@ import morgan from 'morgan';
 
 import api from '@api/index';
 import config from '@config/index';
-import { CommonError } from '@services/errors';
+import { CommonError, CommonErrorMessage, NotFoundError, NotFoundErrorMessage } from '@services/errors';
+import loggers from '@loaders/logger';
 import session from './session';
 
 export default async ({ app }: { app: express.Application }): Promise<void> => {
@@ -27,9 +28,7 @@ export default async ({ app }: { app: express.Application }): Promise<void> => {
 
 	/// catch 404 and forward to error handler
 	app.use((req, res, next) => {
-		const err = new Error('Not Found');
-		err['status'] = 404;
-		next(err);
+		next(new NotFoundError(NotFoundErrorMessage.NOT_FOUND));
 	});
 
 	/// error handlers
@@ -43,14 +42,15 @@ export default async ({ app }: { app: express.Application }): Promise<void> => {
 		if (err.name === 'UnauthorizedError') {
 			return res.status(err.status).send({ message: err.message }).end();
 		}
+		if (err instanceof CommonError) {
+			return res.status(err.status).send({ message: err.message }).end();
+    }
 		return next(err);
 	});
-	app.use((err: any, req: express.Request, res: express.Response) => {
-		res.status(err.status || 500);
-		res.json({
-			errors: {
-				message: err.message,
-			},
-		});
+
+	app.use((err: Error, req: express.Request, res: express.Response) => {
+		loggers.warn(err);
+		const commonError = new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+		return res.status(commonError.status).send({ message: err.message });
 	});
 };

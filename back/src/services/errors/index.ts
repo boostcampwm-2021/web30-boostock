@@ -15,3 +15,9 @@ export { default as ParamError } from './ParamError';
 
 export * from './AuthError';
 export { default as AuthError } from './AuthError';
+
+export * from './NotFoundError';
+export { default as NotFoundError } from './NotFoundError';
+
+export * from './ValidationError';
+export { default as ValidationError } from './ValidationError';
