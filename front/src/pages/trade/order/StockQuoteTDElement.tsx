@@ -1,61 +1,53 @@
 import React from 'react';
-import { IStockQuoteItem } from '@src/recoil/stockQuote/atom';
+import { IStockQuoteItem } from '@src/recoil/orderList/atom';
 import formatNumber from '@src/common/utils/formatNumber';
 
 import './order.scss';
 
 interface IProps {
 	quote: IStockQuoteItem;
-	totalAndMaxVolumes: {
-		buyVolume: number;
-		sellVolume: number;
-		maxVolume: number;
+	totalAndMaxAmount: {
+		buyAmount: number;
+		sellAmount: number;
+		maxAmount: number;
 	};
 	setBidAskPrice: (arg: number) => void;
 }
 
 function sellVolumeBarClass(quoteType: number) {
-	let result = 'order-row-volume sell-volume';
-	if (quoteType === 0) result += ' active';
-
-	return result;
-}
-
-function buyVolumeBarClass(quoteType: number) {
-	let result = 'order-row-volume buy-volume';
+	let result = 'order-row-amount sell-amount';
 	if (quoteType === 1) result += ' active';
 
 	return result;
 }
 
-function backgroundColorClass(orderType: number): string {
-	return orderType === 0 ? 'order-sell' : 'order-buy';
+function buyVolumeBarClass(quoteType: number) {
+	let result = 'order-row-amount buy-amount';
+	if (quoteType === 2) result += ' active';
+
+	return result;
 }
 
-function volumeWidth(volume: number, maxVolume: number): string {
-	return `${(volume / maxVolume) * 100}%`;
-}
-
-const StockQuoteTDElement = ({ quote, totalAndMaxVolumes, setBidAskPrice }: IProps) => {
+const StockQuoteTDElement = ({ quote, totalAndMaxAmount, setBidAskPrice }: IProps) => {
 	return (
 		<>
 			<td
 				className={sellVolumeBarClass(quote.type)}
-				{...(quote.type === 0 && {
+				{...(quote.type === 1 && {
 					onClick: () => setBidAskPrice(quote.price),
 				})}
 			>
-				{quote.type === 0 && (
+				{quote.type === 1 && (
 					<>
 						<div
 							style={{
-								width: volumeWidth(quote.volume, totalAndMaxVolumes.maxVolume),
+								width: volumeWidth(quote.amount, totalAndMaxAmount.maxAmount),
 							}}
-							className="sell-volume-bar"
+							className="sell-amount-bar"
 						>
 							&nbsp;
 						</div>
-						<p className="volume-sell-text">{formatNumber(quote.volume)}</p>
+						<p className="amount-sell-text">{formatNumber(quote.amount)}</p>
 					</>
 				)}
 			</td>
@@ -70,21 +62,21 @@ const StockQuoteTDElement = ({ quote, totalAndMaxVolumes, setBidAskPrice }: IPro
 			</td>
 			<td
 				className={buyVolumeBarClass(quote.type)}
-				{...(quote.type === 1 && {
+				{...(quote.type === 2 && {
 					onClick: () => setBidAskPrice(quote.price),
 				})}
 			>
-				{quote.type === 1 && (
+				{quote.type === 2 && (
 					<>
 						<div
 							style={{
-								width: volumeWidth(quote.volume, totalAndMaxVolumes.maxVolume),
+								width: volumeWidth(quote.amount, totalAndMaxAmount.maxAmount),
 							}}
-							className="buy-volume-bar"
+							className="buy-amount-bar"
 						>
 							&nbsp;
 						</div>
-						<p className="volume-buy-text">{formatNumber(quote.volume)}</p>
+						<p className="amount-buy-text">{formatNumber(quote.amount)}</p>
 					</>
 				)}
 			</td>

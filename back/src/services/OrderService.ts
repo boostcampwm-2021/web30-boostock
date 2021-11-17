@@ -4,6 +4,8 @@ import { Stock, User, UserStock, OrderType, OrderStatus } from '@models/index';
 import { OrderRepository } from '@repositories/index';
 import { UserService, UserStockService, StockService } from '@services/index';
 import { CommonError, CommonErrorMessage, OrderError, OrderErrorMessage } from '@services/errors/index';
+import { IAskOrder } from '@interfaces/askOrder';
+import { IBidOrder } from '@interfaces/bidOrder';
 
 export default class OrderService {
 	static instance: OrderService | null = null;
@@ -153,5 +155,17 @@ export default class OrderService {
 				amount: orderData.amount,
 			}),
 		);
+	}
+
+	public async getBidAskOrders(
+		entityManager: EntityManager,
+		stockId: number,
+	): Promise<{ askOrders: IAskOrder[]; bidOrders: IBidOrder[] }> {
+		const orderRepository: OrderRepository = this.getOrderRepository(entityManager);
+
+		const askOrders = (await orderRepository.getOrders(stockId, '1')) as IAskOrder[];
+		const bidOrders = (await orderRepository.getOrders(stockId, '2')) as IBidOrder[];
+
+		return { askOrders, bidOrders };
 	}
 }

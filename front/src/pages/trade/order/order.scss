@@ -2,8 +2,11 @@
 @import '@common/mixins.scss';
 
 .order-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
 	width: 100%;
-	height: 100%;
+	height: calc(100% - 42px);
 }
 
 .order-header {
@@ -20,7 +23,6 @@
 .order-content {
 	max-height: 470px;
 	overflow-y: auto;
-	padding-left: 6px;
 	@include scrollBarStyle();
 
 	@media screen and (max-width: $responsiveSize2) {
@@ -39,8 +41,15 @@
 	letter-spacing: 1px;
 }
 
+.order-row-price {
+	padding: 0;
+}
+
 .order-row-price-data {
-	width: 30%;
+	width: 100%;
+	height: 100%;
+	border: none;
+	outline: none;
 	text-align: center;
 	font-size: 14px;
 	font-weight: 700;
@@ -50,14 +59,34 @@
 	}
 }
 
-.order-row-volume {
+.order-row-amount {
 	position: relative;
-	padding: 6px 0;
 	font-size: 12px;
+	padding: 0;
 	width: 35%;
 }
 
-.sell-volume {
+.amount-button {
+	background: none;
+	border: none;
+	outline: none;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	padding: 5px 0;
+
+	.buy-amount & {
+		justify-content: flex-start;
+	}
+
+	.sell-amount & {
+		justify-content: flex-end;
+	}
+}
+
+.sell-amount {
 	text-align: right;
 
 	&.active {
@@ -75,18 +104,22 @@
 	}
 }
 
-.sell-volume-bar {
+.amount-bar {
 	display: inline-block;
-	background-color: $lightBlue;
 	height: 100%;
 	margin: 6px 0;
+	padding: 3px 0;
+}
+
+.sell-amount-bar {
+	background-color: $lightBlue;
 
 	.dark-theme & {
 		background-color: $darkModeLightBlue;
 	}
 }
 
-.buy-volume {
+.buy-amount {
 	text-align: left;
 
 	&.active {
@@ -104,11 +137,8 @@
 	}
 }
 
-.buy-volume-bar {
-	display: inline-block;
+.buy-amount-bar {
 	background-color: $rose;
-	height: 100%;
-	margin: 6px 0;
 
 	.dark-theme & {
 		background-color: $darkModeRose;
@@ -135,18 +165,18 @@
 	}
 }
 
-.volume-sell-text {
+.amount-sell-text {
 	position: absolute;
 	margin: 0;
 	right: 1px;
-	top: 12px;
+	top: 14px;
 }
 
-.volume-buy-text {
+.amount-buy-text {
 	position: absolute;
 	margin: 0;
 	left: 1px;
-	top: 12px;
+	top: 14px;
 }
 
 .order-buy {
@@ -167,9 +197,10 @@
 	}
 }
 
-.total-volumes {
+.total-amount {
 	display: flex;
 	font-size: 14px;
+	height: 37px;
 	letter-spacing: 1px;
 	background-color: $white2;
 	border-top: 1px solid $cardBorderColor;
@@ -182,11 +213,11 @@
 		padding: 9px 5px;
 	}
 
-	& > .total-buy-volume {
+	& > .total-buy-amount {
 		padding-right: 11px;
 	}
 
-	& > .total-sell-volume {
+	& > .total-sell-amount {
 		padding-left: 11px;
 	}
 
@@ -197,11 +228,11 @@
 	}
 }
 
-.total-sell-volume {
+.total-sell-amount {
 	width: 35%;
 }
 
-.total-volumes-text {
+.total-amount-text {
 	width: 30%;
 	font-size: 16px;
 	border-left: 1px solid $cardBorderColor;
@@ -213,6 +244,10 @@
 	}
 }
 
-.total-buy-volume {
+.total-buy-amount {
 	width: 35%;
+}
+
+.no-quotes-notice {
+	text-align: center;
 }

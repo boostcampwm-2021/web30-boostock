@@ -20,6 +20,14 @@ export default class StockService {
 		StockService.instance = this;
 	}
 
+	public async getCurrentStockPrice(entityManager: EntityManager, stockId: number): Promise<{ price: number }> {
+		const stockRepository: StockRepository = this.getStockRepository(entityManager);
+
+		const stockPrice = await stockRepository.getCurrentStockPrice(stockId);
+		if (!stockPrice) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+		return stockPrice;
+	}
+
 	public async getStockById(entityManager: EntityManager, id: number): Promise<Stock> {
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
 
