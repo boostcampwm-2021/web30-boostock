@@ -47,7 +47,7 @@ export default class AuctioneerService {
 
 			const transactionLog: ITransactionLog = {
 				code,
-				price: orderAsk.createdAt < orderBid.createdAt ? orderBid.price : orderAsk.price,
+				price: orderAsk.createdAt < orderBid.createdAt ? orderAsk.price : orderBid.price,
 				amount: Math.min(orderBid.amount, orderAsk.amount),
 				createdAt: new Date().getTime(),
 			};
