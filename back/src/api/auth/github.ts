@@ -17,7 +17,7 @@ export default (): express.Router => {
 			};
 			req.session.save((err) => {
 				if (err) next(err);
-				return res.status(200).json({});
+				return res.status(200).json({ username: userInfo.username, email: userInfo.email, balance: userInfo.email });
 			});
 		} catch (error) {
 			next(error);
@@ -36,7 +36,7 @@ export default (): express.Router => {
 			};
 			req.session.save((err) => {
 				if (err) next(err);
-				return res.status(200).json({});
+				return res.status(200).json({ username: userInfo.username, email: userInfo.email, balance: userInfo.email });
 			});
 		} catch (error) {
 			next(error);
