@@ -1,53 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import caretIcon from '@src/common/utils/caretIcon';
-
+import { IHold } from './IHold';
 import './Holds.scss';
 
-interface IHold {
-	stockCode: string;
-	stockName: string;
-
-	holdAmount: number;
-	averageAskPrice: number;
-	totalAskPrice: number;
-
-	totalValuationPrice: number;
-	totalValuationProfit: number;
+interface HoldsProps {
+	holds: IHold[];
 }
 
-const Holds = () => {
-	const [holds, setHolds] = useState<IHold[]>([
-		{
-			stockCode: 'HNX',
-			stockName: '호눅스',
-
-			holdAmount: 1234567,
-			averageAskPrice: 1234567,
-			totalAskPrice: 1234567,
-
-			totalValuationPrice: 1234567,
-			totalValuationProfit: 1234.567,
-		},
-	]);
-
-	useEffect(() => {
-		fetch(`${process.env.SERVER_URL}/api/user/hold`, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json; charset=utf-8',
-			},
-		}).then((res: Response) => {
-			console.log(res.ok);
-			// setHolds([]);
-		});
-	}, []);
+const Holds = (props: HoldsProps) => {
+	const { holds } = props;
 
 	const getHold = (hold: IHold) => {
 		let status = ' ';
 		if (hold.totalValuationProfit > 0) status = ' my__item--up';
 		else if (hold.totalValuationProfit < 0) status = ' my__item--down';
 
+		const profitRate = (hold.totalValuationPrice / hold.totalAskPrice) * 100;
 		return (
 			<div className="my__item" key={hold.stockCode}>
 				<div>
@@ -60,8 +28,7 @@ const Holds = () => {
 				<div className="my__item-number">{hold.totalAskPrice.toLocaleString()}</div>
 				<div className={`my__item-number${status}`}>{hold.totalValuationPrice.toLocaleString()}</div>
 				<div className={`my__item-number${status}`}>
-					{caretIcon(hold.totalValuationProfit)}{' '}
-					{hold.totalValuationProfit.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+					{caretIcon(profitRate)} {profitRate.toLocaleString(undefined, { maximumFractionDigits: 2 })}
 				</div>
 			</div>
 		);

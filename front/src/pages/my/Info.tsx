@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import { IHold } from './IHold';
 import './Info.scss';
 
 interface IInfo {
@@ -11,22 +11,37 @@ interface IInfo {
 	totalAssets: number;
 	totalRate: number;
 }
+interface InfoProps {
+	holds: IHold[];
+}
 
-const Holds = () => {
+const Info = (props: InfoProps) => {
+	const { holds } = props;
 	const [info, setInfo] = useState<IInfo | null>(null);
 
 	useEffect(() => {
-		fetch(`${process.env.SERVER_URL}/api/user/info`, {
+		fetch(`${process.env.SERVER_URL}/api/user/balance`, {
 			method: 'GET',
 			credentials: 'include',
 			headers: {
-				'Content-Type': 'application/json; charset=utf-8',
+				'Content-Type': 'application/json;charset=utf-8',
 			},
 		}).then((res: Response) => {
-			console.log(res.ok);
-			setInfo(null);
+			if (res.ok) {
+				res.json().then((data) => {
+					const { balance } = data;
+					const totalAskPrice = holds.reduce((prev, hold) => prev + hold.totalAskPrice, 0);
+					const totalValuationPrice = holds.reduce((prev, hold) => prev + hold.totalValuationPrice, 0);
+					const totalValuationProfit = totalValuationPrice - totalAskPrice;
+
+					const totalAssets = balance + totalValuationPrice;
+					const totalRate = (totalValuationPrice / totalAskPrice) * 100 || 0;
+
+					setInfo({ balance, totalAskPrice, totalValuationPrice, totalValuationProfit, totalAssets, totalRate });
+				});
+			}
 		});
-	}, []);
+	}, [holds]);
 
 	return (
 		<div className="my-info">
@@ -38,7 +53,7 @@ const Holds = () => {
 				<div className="my-info__group">
 					<div className="my-info__title--top my-info__data--up">수익률</div>
 					<div className="my-info__data--top my-info__data--up">
-						{info?.totalAssets.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '-'} %
+						{info?.totalRate.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '-'} %
 					</div>
 				</div>
 			</div>
@@ -64,4 +79,4 @@ const Holds = () => {
 	);
 };
 
-export default Holds;
+export default Info;

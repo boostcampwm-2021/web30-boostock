@@ -1,9 +1,14 @@
-import React, { ChangeEvent, useState, useEffect } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import formatNumber from '@src/common/utils/formatNumber';
 
-const Withdrawal = () => {
-	const [myBalance, setMyBalance] = useState<number>(0);
+interface WithdrawalProps {
+	myBalance: number;
+	refresh: () => void;
+}
+
+const Withdrawal = (props: WithdrawalProps) => {
+	const { myBalance, refresh } = props;
 	const [bank, setBank] = useState<string>('');
 	const [account, setAccount] = useState<string>('');
 	const [balance, setBalance] = useState<string>('');
@@ -37,7 +42,7 @@ const Withdrawal = () => {
 			headers: {
 				'Content-Type': 'application/json;charset=utf-8',
 			},
-			body: JSON.stringify({ bank, account, balance }),
+			body: JSON.stringify({ bank, bankAccount: account, changeValue: -balance }),
 		})
 			.then((res: Response) => {
 				if (res.ok) {
@@ -51,23 +56,9 @@ const Withdrawal = () => {
 			})
 			.finally(() => {
 				setLoading(false);
+				refresh();
 			});
 	};
-
-	useEffect(() => {
-		fetch(`${process.env.SERVER_URL}/api/user/balance`, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8',
-			},
-		}).then(async (res: Response) => {
-			if (res.ok) {
-				const data = await res.json();
-				setMyBalance(data.balance);
-			}
-		});
-	}, []);
 
 	return (
 		<div className="balance__wrapper">
@@ -101,7 +92,7 @@ const Withdrawal = () => {
 				/>
 			</label>
 			<label className="balance__label" htmlFor="balance">
-				입금금액
+				출금금액
 				<input
 					className="balance__input"
 					type="text"

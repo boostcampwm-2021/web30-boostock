@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
+import StockList, { IStockListItem } from '@recoil/stockList/index';
+import { IHold } from './IHold';
 
 import Info from './Info';
 import Holds from './Holds';
@@ -14,27 +17,64 @@ enum TAB {
 }
 
 const My = () => {
+	const stockListState = useRecoilValue(StockList);
 	const [tab, setTab] = useState<TAB>(TAB.HOLDS);
+	const [holds, setHolds] = useState<IHold[]>([]);
 
 	const switchTab = (index: number) => setTab(Object.values(TAB)[index]);
 
 	const getCurrentTab = () => {
 		switch (tab) {
 			case TAB.HOLDS:
-				return <Holds key={tab} />;
+				return <Holds key={tab} holds={holds} />;
 			case TAB.TRANSACTIONS:
 				return <Transactions key={tab} />;
 			case TAB.ORDERS:
 				return <Orders key={tab} />;
 			default:
-				return <Holds key={tab} />;
+				return <Holds key={tab} holds={holds} />;
 		}
 	};
+
+	useEffect(() => {
+		fetch(`${process.env.SERVER_URL}/api/user/hold`, {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json; charset=utf-8',
+			},
+		}).then((res: Response) => {
+			res.json().then((data) => {
+				setHolds(() => [
+					...data.holdStocks.map(
+						(stock: { amount: number; average: number; code: string; nameKorean: string; nameEnglish: string }) => {
+							const valuationPrice =
+								stockListState.find(
+									(stockListStateItem: IStockListItem) => stock.code === stockListStateItem.code,
+								)?.price || 0;
+
+							return {
+								stockCode: stock.code,
+								stockName: stock.nameKorean,
+
+								holdAmount: stock.amount,
+								averageAskPrice: stock.average,
+								totalAskPrice: stock.amount * stock.average,
+
+								totalValuationPrice: stock.amount * valuationPrice,
+								totalValuationProfit: stock.amount * valuationPrice - stock.amount * stock.average,
+							};
+						},
+					),
+				]);
+			});
+		});
+	}, [stockListState]);
 
 	return (
 		<div className="my">
 			<div className="my__container">
-				<Info />
+				<Info holds={holds} />
 			</div>
 			<div className="my__container">
 				<div className="my__tab">
