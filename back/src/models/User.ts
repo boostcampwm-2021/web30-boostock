@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import 'reflect-metadata';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { UserFavorite, UserStock } from './index';
