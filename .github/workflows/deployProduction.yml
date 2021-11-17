@@ -49,11 +49,18 @@ jobs:
               run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
               id: extract_branch
 
-            - name: Create JSON
+            - name: Create ORM Config
               uses: jsdaniell/create-json@1.1.2
               with:
                   name: 'ormconfig.json'
                   json: ${{ secrets.BACK_ORM_CONFIG }}
+                  dir: 'back/'
+
+            - name: Create Session Config
+              uses: jsdaniell/create-json@1.1.2
+              with:
+                  name: 'sessionStoreConfig.json'
+                  json: ${{ secrets.BACK_SESSION_CONFIG }}
                   dir: 'back/'
 
             - name: Deploy to Server
@@ -81,7 +88,7 @@ jobs:
               run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
               id: extract_branch
 
-            - name: Create JSON
+            - name: Create ORM Config
               uses: jsdaniell/create-json@1.1.2
               with:
                   name: 'ormconfig.json'
