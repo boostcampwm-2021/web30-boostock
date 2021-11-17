@@ -4,12 +4,11 @@ import Emitter from '@helper/eventEmitter';
 import { binArrayToJson, JsonToBinArray, QueryRunner, transaction } from '@helper/tools';
 import { CommonError } from '@services/errors/index';
 import Logger from './logger';
-
 import { ISocketRequest } from '../interfaces/socketRequest';
-
 import StockService from '../services/StockService';
 
 const socketClientMap = new Map();
+
 const translateRequestFormat = (data) => binArrayToJson(data);
 const translateResponseFormat = (type, data) => JsonToBinArray({ type, data });
 
@@ -31,12 +30,13 @@ const connectNewUser = (client) => {
 	});
 };
 
-export default (app: express.Application): void => {
+export default async (app: express.Application): Promise<void> => {
 	const HTTPServer = app.listen(process.env.SOCKET_PORT || 3333, () => {
 		Logger.info(`✌️ Socket loaded at port:${process.env.SOCKET_PORT || 3333}`);
 	});
 	const webSocketServer = new wsModule.Server({ server: HTTPServer });
 	webSocketServer.binaryType = 'arraybuffer';
+
 	const broadcast = ({ stockCode, msg }) => {
 		socketClientMap.forEach((targetStockCode, client) => {
 			if (targetStockCode === stockCode) {

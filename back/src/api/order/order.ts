@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
-import OrderValidator from '@api/middleware/orderValidator';
+import { orderValidator, stockIdValidator } from '@api/middleware/orderValidator';
 import Emitter from '@helper/eventEmitter';
 import { OrderService } from '@services/index';
 import { CommonError } from '@services/errors/index';
@@ -9,28 +9,15 @@ import { QueryRunner, transaction, Validator } from '@helper/index';
 export default (): express.Router => {
 	const router = express.Router();
 
-	router.get('/bid-ask', async (req: Request, res: Response) => {
+	router.get('/bid-ask', stockIdValidator, async (req: Request, res: Response) => {
 		const { stockId } = req.query;
+		const orderServiceInstance = new OrderService();
+		const { askOrders, bidOrders } = await orderServiceInstance.getBidAskOrders(Number(stockId));
 
-		transaction(
-			(queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {
-				const orderServiceInstance = new OrderService();
-				const validator = new Validator();
-				orderServiceInstance
-					.getBidAskOrders(queryRunner.manager, validator.init(stockId).isInteger().isPositive().toNumber())
-					.then((data) => {
-						res.json(data).end();
-						commit();
-					})
-					.catch(rollback)
-					.finally(release);
-			},
-			req,
-			res,
-		);
+		res.json({ askOrders, bidOrders });
 	});
 
-	router.post('/', OrderValidator, async (req: Request, res: Response, next: NextFunction) => {
+	router.post('/', orderValidator, async (req: Request, res: Response, next: NextFunction) => {
 		const { userId, stockCode, type, amount, price } = req.body;
 		transaction(
 			(queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {

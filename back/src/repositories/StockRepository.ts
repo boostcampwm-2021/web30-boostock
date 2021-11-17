@@ -35,4 +35,10 @@ export default class StockRepository extends Repository<Stock> {
 	public async getCurrentStockPrice(stockId: number): Promise<{ price: number } | undefined> {
 		return this.createQueryBuilder().select('price').where('stock_id = :stockId', { stockId }).getRawOne();
 	}
+
+	public async readStockBaseInfo(): Promise<{ stock_id: number; code: string }[]> {
+		const baseInfo = await this.createQueryBuilder().select(['stock_id', 'code']).getRawMany();
+		return baseInfo;
+		// return this.createQueryBuilder().select('price').where('stock_id = :stockId', { stockId }).getRawOne();
+	}
 }

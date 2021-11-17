@@ -13,7 +13,7 @@ const isCorrectQuote = (price) => {
 	if (price % quote !== MATCH_NUM) throw new ValidationError(ValidationErrorMessage.NOT_CORRECT_QUOTE);
 };
 
-const orderValidator = async (req, res, next) => {
+export const orderValidator = async (req, res, next) => {
 	const validator = new Validator();
 
 	try {
@@ -30,4 +30,12 @@ const orderValidator = async (req, res, next) => {
 	}
 };
 
-export default orderValidator;
+export const stockIdValidator = async (req, res, next) => {
+	const validator = new Validator();
+	try {
+		validator.init(req.query.stockId).isInteger().isPositive();
+		next();
+	} catch (err) {
+		next(err);
+	}
+};
