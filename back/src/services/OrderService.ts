@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, getConnection } from 'typeorm';
-import { Stock, User, UserStock, OrderType, OrderStatus } from '@models/index';
-import { OrderRepository } from '@repositories/index';
-import { UserService, UserStockService, StockService } from '@services/index';
+import { EntityManager, getConnection, getCustomRepository } from 'typeorm';
+import { OrderType, OrderStatus } from '@models/index';
+import { OrderRepository, StockRepository, UserRepository, UserStockRepository } from '@repositories/index';
+import { UserService } from '@services/index';
 import { CommonError, CommonErrorMessage, OrderError, OrderErrorMessage } from '@services/errors/index';
 import { IAskOrder } from '@interfaces/askOrder';
 import { IBidOrder } from '@interfaces/bidOrder';
@@ -22,139 +22,156 @@ export default class OrderService {
 		return orderRepository;
 	}
 
-	public async order(
-		entityManager: EntityManager,
-		orderData: {
-			userId: number;
-			stockCode: string;
-			type: OrderType;
-			amount: number;
-			price: number;
-		},
-	): Promise<void> {
-		const userService: UserService = new UserService();
-		const stockService: StockService = new StockService();
-		const orderRepository: OrderRepository = this.getOrderRepository(entityManager);
+	static async order(userId: number, stockCode: string, type: number, amount: number, price: number): Promise<void> {
+		const queryRunner = getConnection().createQueryRunner();
+		const orderRepository = getCustomRepository(OrderRepository);
+		const userRepository = getCustomRepository(UserRepository);
+		const stockRepository = getCustomRepository(StockRepository);
+		const userStockRepository = getCustomRepository(UserStockRepository);
 
-		const user: User = await UserService.getUserById(orderData.userId);
-		const stock: Stock = await stockService.getStockByCode(entityManager, orderData.stockCode);
-		if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
+		await queryRunner.connect();
+		await queryRunner.startTransaction();
+		try {
+			const [user, stock] = await Promise.all([
+				userRepository.readUserById(userId),
+				stockRepository.readStockByCode(stockCode),
+			]);
+			if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
 
-		if (orderData.type === OrderType.SELL) {
-			const holdStock: UserStock | undefined = user.stocks.filter((st) => st.stockId === stock.stockId)[0];
-			if (!holdStock || holdStock.amount < orderData.amount) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_STOCK);
+			if (type === OrderType.SELL) {
+				const holdStock = await userStockRepository.readUserStockLock(userId, stock.stockId);
+				// const holdStock = user.stocks.filter((st) => st.stockId === stock.stockId)[0];
+				if (holdStock === undefined || holdStock.amount < amount)
+					throw new OrderError(OrderErrorMessage.NOT_ENOUGH_STOCK);
 
-			const userStockService: UserStockService = new UserStockService();
-			await userStockService.setAmount(entityManager, holdStock.userStockId, holdStock.amount - orderData.amount);
-		}
+				holdStock.amount -= amount;
+				await userStockRepository.save(holdStock);
+			}
 
-		if (orderData.type === OrderType.BUY) {
-			const payout: number = orderData.price * orderData.amount;
-			if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
+			if (type === OrderType.BUY) {
+				const payout: number = price * amount;
+				if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
 
-			await UserService.updateBalance(user.userId, payout * -1);
-		}
-
-		await orderRepository.createOrder(
-			orderRepository.create({
-				userId: user.userId,
-				stockId: stock.stockId,
-				type: orderData.type,
-				amount: orderData.amount,
-				price: orderData.price,
-				createdAt: new Date(),
-				status: OrderStatus.PENDING,
-			}),
-		);
-	}
-
-	public async cancel(
-		entityManager: EntityManager,
-		orderData: {
-			userId: number;
-			orderId: number;
-		},
-	): Promise<void> {
-		const userService: UserService = new UserService();
-		const stockService: StockService = new StockService();
-		const orderRepository: OrderRepository = this.getOrderRepository(entityManager);
-
-		const order = await orderRepository.readOrderById(orderData.orderId);
-		if (!order || order.userId !== orderData.userId || order.status !== OrderStatus.PENDING)
-			throw new OrderError(OrderErrorMessage.INVALID_ORDER);
-
-		const user: User = await UserService.getUserById(orderData.userId);
-		const stock: Stock = await stockService.getStockById(entityManager, order.stockId);
-		if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
-
-		if (order.type === OrderType.SELL) {
-			const holdStock: UserStock | undefined = user.stocks.filter((st) => st.stockId === stock.stockId)[0];
-			if (!holdStock) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_STOCK);
-
-			const userStockService: UserStockService = new UserStockService();
-			await userStockService.setAmount(entityManager, holdStock.userStockId, holdStock.amount + order.amount);
-		}
-
-		if (order.type === OrderType.BUY) {
-			const payout: number = order.price * order.amount;
-			await UserService.updateBalance(user.userId, payout);
-		}
-
-		await orderRepository.updateOrder(
-			orderRepository.create({
-				orderId: order.orderId,
-				status: OrderStatus.CANCELED,
-			}),
-		);
-	}
-
-	public async modify(
-		entityManager: EntityManager,
-		orderData: {
-			userId: number;
-			orderId: number;
-			amount: number;
-			price: number;
-		},
-	): Promise<void> {
-		const userService: UserService = new UserService();
-		const stockService: StockService = new StockService();
-		const orderRepository: OrderRepository = this.getOrderRepository(entityManager);
-
-		const order = await orderRepository.readOrderById(orderData.orderId);
-		if (!order || order.userId !== orderData.userId || order.status !== OrderStatus.PENDING)
-			throw new OrderError(OrderErrorMessage.INVALID_ORDER);
-
-		const user: User = await UserService.getUserById(orderData.userId);
-		const stock: Stock = await stockService.getStockById(entityManager, order.stockId);
-		if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
-
-		if (order.type === OrderType.SELL) {
-			const holdStock: UserStock | undefined = user.stocks.filter((st) => st.stockId === stock.stockId)[0];
-			if (!holdStock) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_STOCK);
-
-			const userStockService: UserStockService = new UserStockService();
-			await userStockService.setAmount(
-				entityManager,
-				holdStock.userStockId,
-				holdStock.amount - orderData.amount + order.amount,
+				user.balance = payout * -1;
+				await userRepository.save(user);
+			}
+			await orderRepository.save(
+				orderRepository.create({
+					userId: user.userId,
+					stockId: stock.stockId,
+					type,
+					amount,
+					price,
+					createdAt: new Date(),
+					status: OrderStatus.PENDING,
+				}),
 			);
+		} catch (error) {
+			queryRunner.rollbackTransaction();
+			throw error;
+		} finally {
+			queryRunner.release();
 		}
+	}
 
-		if (order.type === OrderType.BUY) {
-			const payout: number = orderData.price * orderData.amount - order.price * order.amount;
-			if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
+	static async cancel(userId: number, orderId: number): Promise<void> {
+		const queryRunner = getConnection().createQueryRunner();
+		const orderRepository = getCustomRepository(OrderRepository);
+		const userRepository = getCustomRepository(UserRepository);
+		const stockRepository = getCustomRepository(StockRepository);
+		const userStockRepository = getCustomRepository(UserStockRepository);
 
-			await UserService.updateBalance(user.userId, payout * -1);
+		await queryRunner.connect();
+		await queryRunner.startTransaction();
+
+		try {
+			const order = await orderRepository.readOrderById(orderId);
+			if (!order || order.userId !== userId || order.status !== OrderStatus.PENDING)
+				throw new OrderError(OrderErrorMessage.INVALID_ORDER);
+
+			const user = await userRepository.readUserById(userId);
+			const stock = await stockRepository.readStockById(order.stockId);
+			if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
+			if (order.type === OrderType.SELL) {
+				const holdStock = await userStockRepository.readUserStockLock(userId, stock.stockId);
+				// const holdStock = user.stocks.filter((st) => st.stockId === stock.stockId)[0];
+				if (holdStock) {
+					holdStock.amount += order.amount;
+					await userStockRepository.save(holdStock);
+				} else {
+					await userStockRepository.save(
+						userStockRepository.create({
+							userId,
+							stockId: order.stockId,
+							amount: order.amount,
+							average: order.price,
+						}),
+					);
+				}
+			}
+			if (order.type === OrderType.BUY) {
+				const payout: number = order.price * order.amount;
+				user.balance = payout * -1;
+				await userRepository.save(user);
+			}
+			await orderRepository.save(
+				orderRepository.create({
+					orderId: order.orderId,
+					status: OrderStatus.CANCELED,
+				}),
+			);
+		} catch (error) {
+			queryRunner.rollbackTransaction();
+			throw error;
+		} finally {
+			queryRunner.release();
 		}
+	}
 
-		await orderRepository.updateOrder(
-			orderRepository.create({
-				orderId: order.orderId,
-				price: orderData.price,
-				amount: orderData.amount,
-			}),
-		);
+	static async modify(userId: number, orderId: number, amount: number, price: number): Promise<void> {
+		const queryRunner = getConnection().createQueryRunner();
+		const orderRepository = getCustomRepository(OrderRepository);
+		const userRepository = getCustomRepository(UserRepository);
+		const stockRepository = getCustomRepository(StockRepository);
+		const userStockRepository = getCustomRepository(UserStockRepository);
+
+		await queryRunner.connect();
+		await queryRunner.startTransaction();
+		try {
+			const order = await orderRepository.readOrderById(orderId);
+			if (!order || order.userId !== userId || order.status !== OrderStatus.PENDING)
+				throw new OrderError(OrderErrorMessage.INVALID_ORDER);
+			const user = await userRepository.readUserById(userId);
+			const stock = await stockRepository.readStockById(order.stockId);
+			if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
+
+			if (order.type === OrderType.SELL) {
+				const holdStock = await userStockRepository.readUserStockLock(userId, stock.stockId);
+				if (!holdStock) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_STOCK);
+
+				holdStock.amount -= amount + order.amount;
+				await userStockRepository.save(holdStock);
+			}
+			if (order.type === OrderType.BUY) {
+				const payout = price * amount - order.price * order.amount;
+				if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
+
+				await UserService.updateBalance(user.userId, payout * -1);
+			}
+
+			await orderRepository.updateOrder(
+				orderRepository.create({
+					orderId: order.orderId,
+					price,
+					amount,
+				}),
+			);
+		} catch (error) {
+			queryRunner.rollbackTransaction();
+			throw error;
+		} finally {
+			queryRunner.release();
+		}
 	}
 
 	// public async getBidAskOrders(
