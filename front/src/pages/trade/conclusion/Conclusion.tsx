@@ -21,9 +21,10 @@ const colorPicker = (prev: number, current: number): string => {
 const translateTimestampFormat = (timestamp: number): string => {
 	const stamp = new Date(timestamp);
 	const month = `00${stamp.getMonth() + 1}`.slice(-2);
-	const day = `00${stamp.getDay()}`.slice(-2);
+	const day = `00${stamp.getDate()}`.slice(-2);
 	const hour = `00${stamp.getHours()}`.slice(-2);
 	const minute = `00${stamp.getMinutes()}`.slice(-2);
+
 	return `${month}.${day} ${hour}:${minute}`;
 };
 
