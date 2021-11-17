@@ -11,8 +11,8 @@ const userAtom = atom<IUser>({
 	key: 'userAtom',
 	default: {
 		isLoggedIn: false,
-		favorite: [1],
-		hold: [2],
+		favorite: [],
+		hold: [],
 		theme: 'light',
 	},
 });
