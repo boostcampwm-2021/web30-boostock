@@ -68,7 +68,7 @@ const Transactions = () => {
 				<div>체결시간</div>
 				<div>주문종류</div>
 				<div>종목명</div>
-				<div className="my__legend-number">거래수량 (개)</div>
+				<div className="my__legend-number">거래수량 (주)</div>
 				<div className="my__legend-number">거래단가 (원)</div>
 				<div className="my__legend-number">거래금액 (원)</div>
 			</div>

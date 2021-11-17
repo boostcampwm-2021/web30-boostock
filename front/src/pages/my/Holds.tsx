@@ -71,7 +71,7 @@ const Holds = () => {
 		<div className="my-holds">
 			<div className="my__legend">
 				<div>종목명</div>
-				<div className="my__legend-number">보유수량 (개)</div>
+				<div className="my__legend-number">보유수량 (주)</div>
 				<div className="my__legend-number">평균매수가 (원)</div>
 				<div className="my__legend-number">매수금액 (원)</div>
 				<div className="my__legend-number">평가금액 (원)</div>
