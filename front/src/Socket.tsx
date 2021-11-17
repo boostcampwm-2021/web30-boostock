@@ -13,8 +13,8 @@ interface IStartSocket {
 	setSocket: SetterOrUpdater<WebSocket | null>;
 	setStockList: SetterOrUpdater<IStockListItem[]>;
 	setStockExecution: SetterOrUpdater<IStockExecutionItem[]>;
-  setAskOrders: SetterOrUpdater<IAskOrderItem[]>;
-  setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
+	setAskOrders: SetterOrUpdater<IAskOrderItem[]>;
+	setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
 }
 interface IResponseConclusions {
 	createdAt: number;
@@ -214,9 +214,8 @@ const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[
 	});
 };
 
-
 const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders }: IStartSocket) => {
-  const webSocket = new WebSocket(process.env.WEBSOCKET || '');
+	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.binaryType = 'arraybuffer';
 
 	webSocket.onopen = () => {
@@ -226,7 +225,7 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-		  startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders });
+			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders });
 		}, 1000);
 	};
 	webSocket.onmessage = (event) => {
@@ -260,10 +259,11 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 					}
 
 					setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
+					addNewExecution(setStockExecution, data.match);
 				}
-				addNewExecution(setStockExecution, data.match);
 				break;
-			case 'baseStock':
+			}
+			case 'baseStock': {
 				setStockExecution(dataToExecutionForm(data.conclusions));
 				break;
 			}
@@ -279,7 +279,7 @@ const Socket = ({ children }: IProps) => {
 	const setBidOrders = useSetRecoilState(bidOrdersAtom);
 	const setStockExecution = useSetRecoilState(stockExecutionAtom);
 
-	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders});
+	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders });
 
 	return <>{children}</>;
 };

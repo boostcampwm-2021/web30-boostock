@@ -54,8 +54,6 @@ const Trade = () => {
 
 				setAskOrders(askOrders.map((askOrder) => ({ ...askOrder, amount: Number(askOrder.amount) })));
 				setBidOrders(bidOrders.map((bidOrder) => ({ ...bidOrder, amount: Number(bidOrder.amount) })));
-
-				// setStockQuote(bidAskOrdersData.map((quote) => ({ ...quote, amount: Number(quote.amount) })));
 			} catch (error) {
 				// error handling logic goes here
 			}

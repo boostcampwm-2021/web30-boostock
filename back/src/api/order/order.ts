@@ -1,12 +1,10 @@
-import express, { query, NextFunction, Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import OrderValidator from '@api/middleware/orderValidator';
 import Emitter from '@helper/eventEmitter';
-import { Order, OrderType } from '@models/index';
-import { OrderService, StockService } from '@services/index';
+import { OrderService } from '@services/index';
 import { CommonError } from '@services/errors/index';
 import { QueryRunner, transaction, Validator } from '@helper/index';
-import AsyncHelper from '@helper/AsyncHelper';
 
 export default (): express.Router => {
 	const router = express.Router();
@@ -18,7 +16,6 @@ export default (): express.Router => {
 			(queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {
 				const orderServiceInstance = new OrderService();
 				const validator = new Validator();
-
 				orderServiceInstance
 					.getBidAskOrders(queryRunner.manager, validator.init(stockId).isInteger().isPositive().toNumber())
 					.then((data) => {
@@ -34,16 +31,17 @@ export default (): express.Router => {
 	});
 
 	router.post('/', OrderValidator, async (req: Request, res: Response, next: NextFunction) => {
+		const { userId, stockCode, type, amount, price } = req.body;
 		transaction(
 			(queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {
 				const orderServiceInstance = new OrderService();
 				orderServiceInstance
 					.order(queryRunner.manager, {
 						userId: 1,
-						stockCode: req.body.stockCode,
-						type: req.body.type,
-						amount: req.body.amount,
-						price: req.body.price,
+						stockCode,
+						type,
+						amount,
+						price,
 					})
 					.then(() => {
 						res.status(200).end();
