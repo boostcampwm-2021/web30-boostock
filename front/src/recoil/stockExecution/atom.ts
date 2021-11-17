@@ -1,7 +1,7 @@
 import { atom } from 'recoil';
 
 export interface IStockExecutionItem {
-	timestamp: Date;
+	timestamp: number;
 	price: number;
 	volume: number;
 	amount: number;

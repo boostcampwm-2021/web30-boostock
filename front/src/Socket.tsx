@@ -4,7 +4,6 @@ import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
 import stockExecutionAtom, { IStockExecutionItem } from './recoil/stockExecution/atom';
 import { translateResponseData } from './common/utils/socketUtils';
-import Conclusion from './pages/trade/conclusion/Conclusion';
 
 interface IProps {
 	children: React.ReactNode;
@@ -21,18 +20,28 @@ interface IResponseConclusions {
 	_id: string;
 }
 
+const MAX_EXECUTION_SIZE = 50;
 let reconnector: NodeJS.Timer;
 
 const dataToExecutionForm = (conclusionList: IResponseConclusions[]): IStockExecutionItem[] =>
 	conclusionList.map(({ createdAt, price, amount, _id }: IResponseConclusions): IStockExecutionItem => {
 		return {
-			timestamp: new Date(createdAt),
+			timestamp: createdAt,
 			price,
 			volume: price * amount,
 			amount,
 			id: _id,
 		};
 	});
+
+const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[]>, newExecution: IStockExecutionItem) => {
+	setStockExecution((prev) => {
+		const executionList = [newExecution, ...prev];
+		if (executionList.length > MAX_EXECUTION_SIZE) executionList.pop();
+
+		return executionList;
+	});
+};
 
 const startSocket = ({ setSocket, setStockList, setStockExecution }: IStartSocket) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
@@ -106,6 +115,7 @@ const startSocket = ({ setSocket, setStockList, setStockExecution }: IStartSocke
 						};
 					});
 				});
+				addNewExecution(setStockExecution, data.match);
 				break;
 			case 'baseStock':
 				setStockExecution(dataToExecutionForm(data.conclusions));
@@ -113,7 +123,6 @@ const startSocket = ({ setSocket, setStockList, setStockExecution }: IStartSocke
 			default:
 		}
 	};
-	webSocket.onerror = (event) => {};
 };
 
 const Socket = ({ children }: IProps) => {

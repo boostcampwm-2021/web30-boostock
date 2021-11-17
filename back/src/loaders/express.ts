@@ -32,6 +32,7 @@ export default async ({ app }: { app: express.Application }): Promise<void> => {
 
 	/// error handlers
 	app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+		console.log(err);
 		if (err instanceof CommonError) return res.status(err.status).send({ message: err.message });
 		return next(err);
 	});

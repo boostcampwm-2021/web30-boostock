@@ -5,11 +5,12 @@ import { Order, OrderType } from '@models/index';
 import { OrderService } from '@services/index';
 import { CommonError } from '@services/errors/index';
 import { QueryRunner, transaction, Validator } from '@helper/index';
+import AsyncHelper from '@helper/AsyncHelper';
 
 export default (): express.Router => {
 	const router = express.Router();
 
-	router.post('/', OrderValidator, async (req: Request, res: Response) => {
+	router.post('/', OrderValidator, async (req: Request, res: Response, next) => {
 		transaction(
 			(queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {
 				const orderServiceInstance = new OrderService();
@@ -31,6 +32,7 @@ export default (): express.Router => {
 			},
 			req,
 			res,
+			next,
 		);
 	});
 

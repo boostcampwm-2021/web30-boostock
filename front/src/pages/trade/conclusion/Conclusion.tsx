@@ -30,7 +30,6 @@ const translateTimestampFormat = (timestamp: number): string => {
 const Conclusion = ({ previousClose }: Props) => {
 	const [tab, setTab] = useState(TAB.TICK);
 	const stockExecutionState = useRecoilValue(StockExecution);
-
 	return (
 		<div className="conclusion-container">
 			<div className="conclusion-title">

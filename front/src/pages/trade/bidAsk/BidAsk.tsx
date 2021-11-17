@@ -74,6 +74,13 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 						maxWidth: '220px',
 					},
 				});
+			} else if (error.message === 'Not Enough Balance') {
+				toast.error('주문 접수에 실패했습니다. 잔액이 부족합니다.', {
+					style: {
+						textAlign: 'center',
+						maxWidth: '220px',
+					},
+				});
 			} else {
 				toast.error('주문 접수에 실패했습니다. 다시 시도해 주세요.', {
 					style: {
