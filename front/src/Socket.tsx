@@ -2,7 +2,7 @@ import React from 'react';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
-import stockQuoteAtom, { IStockQuoteItem } from './recoil/stockQuote/atom';
+import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
 import { translateResponseData } from './common/utils/socketUtils';
 
 interface IProps {
@@ -29,42 +29,35 @@ interface IOrder {
 }
 
 let reconnector: NodeJS.Timer;
-const MAX_NUM_OF_ORDER_BARS = 20;
+const MAX_NUM_OF_ORDER_BARS = 10;
 
 // 해당 가격의 호가 막대가 존재하는지 판별
-function isOrderBarExist(quotes: IStockQuoteItem[], orderPrice: number): boolean {
-	return !!quotes.find(({ price }) => price === orderPrice);
+function isOrderBarExist(orders: Array<IAskOrderItem | IBidOrderItem>, orderPrice: number): boolean {
+	return !!orders.find(({ price }) => price === orderPrice);
 }
 
-function findNewOrderInsertIdx(quotes: IStockQuoteItem[], price: number): number {
-	let left = 0;
-	let right = quotes.length;
+function createNewOrderBar(orders: Array<IAskOrderItem | IBidOrderItem>, order: IOrder): Array<IAskOrderItem | IBidOrderItem> {
+	const numOfOrders = orders.length;
+	const { type, price: orderPrice, amount } = order;
+	let insertIdx = orders.findIndex(({ price }) => price < orderPrice);
+	insertIdx = insertIdx === -1 ? numOfOrders : insertIdx;
 
-	while (left < right) {
-		const mid = Math.floor((left + right) / 2);
-		if (quotes[mid].price < price) right = mid;
-		else left = mid + 1;
-	}
-
-	return left;
-}
-
-function createNewOrderBar(quotes: IStockQuoteItem[], order: IStockQuoteItem): IStockQuoteItem[] {
-	const quotesLength = quotes.length;
-	if (quotesLength >= MAX_NUM_OF_ORDER_BARS) return quotes;
-
-	const { type, price, amount } = order;
-	const insertIdx = findNewOrderInsertIdx(quotes, price);
-
-	return [
-		...quotes.slice(0, insertIdx),
+	const result = [
+		...orders.slice(0, insertIdx),
 		{
 			type,
-			price,
+			price: orderPrice,
 			amount,
 		},
-		...quotes.slice(insertIdx, quotesLength),
+		...orders.slice(insertIdx, numOfOrders),
 	];
+
+	const resultLength = result.length;
+
+	if (resultLength <= MAX_NUM_OF_ORDER_BARS) return type === 1 ? (result as IAskOrderItem[]) : (result as IBidOrderItem[]);
+	return type === 1
+		? (result.slice(1, resultLength) as IAskOrderItem[])
+		: (result.slice(0, resultLength - 1) as IBidOrderItem[]);
 }
 
 function updateNonTargetStock(stockList: IStockListItem[], data: INonTargetStockData): IStockListItem[] {
@@ -125,20 +118,61 @@ function updateTargetStock(
 	});
 }
 
-function updateStockQuote(stockQuote: IStockQuoteItem[], order: IOrder): IStockQuoteItem[] {
+// 주문 접수 시 호가 정보 수정
+function updateOrdersAfterAcceptOrder(
+	orders: Array<IAskOrderItem | IBidOrderItem>,
+	order: IOrder,
+): Array<IAskOrderItem | IBidOrderItem> {
 	const { price: orderPrice, amount: orderAmount, type: orderType } = order;
 
-	if (!isOrderBarExist(stockQuote, orderPrice)) return createNewOrderBar(stockQuote, order);
+	if (!isOrderBarExist(orders, orderPrice)) {
+		const result = createNewOrderBar(orders, order);
+		return orderType === 1 ? (result as IAskOrderItem[]) : (result as IBidOrderItem[]);
+	}
 
-	return stockQuote.map((quote) =>
-		quote.price === orderPrice && quote.type === orderType ? { ...quote, amount: quote.amount + orderAmount } : quote,
+	const result = orders.map(({ type, price, amount }) =>
+		price === orderPrice && type === orderType ? { type, price, amount: amount + orderAmount } : { type, price, amount },
 	);
+
+	return orderType === 1 ? (result as IAskOrderItem[]) : (result as IBidOrderItem[]);
+}
+
+// 주문 체결 시 호가 정보 수정
+function updateOrdersAfterConcludeOrder(
+	orders: Array<IAskOrderItem | IBidOrderItem>,
+	order: IOrder,
+): Array<IAskOrderItem | IBidOrderItem> {
+	const { price: orderPrice, amount: orderAmount, type: orderType } = order;
+
+	const result = orders
+		.map(({ type, price, amount }) =>
+			price === orderPrice ? { type, price, amount: amount - orderAmount } : { type, price, amount },
+		)
+		.filter(({ amount }) => amount > 0);
+
+	return orderType === 1 ? (result as IAskOrderItem[]) : (result as IBidOrderItem[]);
+}
+
+// 주문 체결 시 동일한 가격의 반대 주문(매수 <-> 매도) 수량을 차감
+function removeOppositeOrderBar(
+	orders: Array<IAskOrderItem | IBidOrderItem>,
+	order: IOrder,
+): Array<IAskOrderItem | IBidOrderItem> {
+	const { type: orderType, price: orderPrice, amount: orderAmount } = order;
+	const result = orders
+		.map(({ type, price, amount }) =>
+			price === orderPrice ? { type, price, amount: amount - orderAmount } : { type, price, amount },
+		)
+		.filter(({ amount }) => amount > 0);
+
+	return orderType === 1 ? (result as IAskOrderItem[]) : (result as IBidOrderItem[]);
 }
 
 const startSocket = (
 	setSocket: SetterOrUpdater<WebSocket | null>,
 	setStockList: SetterOrUpdater<IStockListItem[]>,
-	setStockQuote: SetterOrUpdater<IStockQuoteItem[]>,
+	setAskOrders: SetterOrUpdater<IAskOrderItem[]>,
+	setBidOrders: SetterOrUpdater<IBidOrderItem[]>,
 ) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 
@@ -149,7 +183,7 @@ const startSocket = (
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket(setSocket, setStockList, setStockQuote);
+			startSocket(setSocket, setStockList, setAskOrders, setBidOrders);
 		}, 1000);
 	};
 	webSocket.onmessage = (event) => {
@@ -166,24 +200,25 @@ const startSocket = (
 			}
 			case 'update_target': {
 				const { match: matchData, currentChart, order } = data;
-				const { price, amount } = matchData ?? {};
 
 				// 주문 접수 케이스
 				if (order) {
-					setStockQuote((prev) => updateStockQuote(prev, order));
+					if (order.type === 1) setAskOrders((prev) => updateOrdersAfterAcceptOrder(prev, order) as IAskOrderItem[]);
+					else setBidOrders((prev) => updateOrdersAfterAcceptOrder(prev, order) as IBidOrderItem[]);
 				}
 
 				// 주문 체결 케이스
 				if (matchData && currentChart) {
-					setStockQuote((prev) => {
-						return prev
-							.map((quote) => (quote.price === price ? { ...quote, amount: quote.amount - amount } : quote))
-							.filter((quote) => quote.amount > 0);
-					});
+					if (type === 1) {
+						setAskOrders((prev) => updateOrdersAfterConcludeOrder(prev, matchData) as IAskOrderItem[]);
+						setBidOrders((prev) => removeOppositeOrderBar(prev, matchData) as IBidOrderItem[]);
+					} else {
+						setBidOrders((prev) => updateOrdersAfterConcludeOrder(prev, matchData) as IBidOrderItem[]);
+						setAskOrders((prev) => removeOppositeOrderBar(prev, matchData) as IAskOrderItem[]);
+					}
 
 					setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
 				}
-
 				break;
 			}
 			default:
@@ -195,9 +230,10 @@ const startSocket = (
 const Socket = ({ children }: IProps) => {
 	const setSocket = useSetRecoilState(webSocketAtom);
 	const setStockList = useSetRecoilState(stockListAtom);
-	const setStockQuote = useSetRecoilState(stockQuoteAtom);
+	const setAskOrders = useSetRecoilState(askOrdersAtom);
+	const setBidOrders = useSetRecoilState(bidOrdersAtom);
 
-	startSocket(setSocket, setStockList, setStockQuote);
+	startSocket(setSocket, setStockList, setAskOrders, setBidOrders);
 
 	return <>{children}</>;
 };

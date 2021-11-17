@@ -28,14 +28,6 @@ function buyVolumeBarClass(quoteType: number) {
 	return result;
 }
 
-function backgroundColorClass(orderType: number): string {
-	return orderType === 1 ? 'order-sell' : 'order-buy';
-}
-
-function volumeWidth(amount: number, maxAmount: number): string {
-	return `${(amount / maxAmount) * 100}%`;
-}
-
 const StockQuoteTDElement = ({ quote, totalAndMaxAmount, setBidAskPrice }: IProps) => {
 	return (
 		<>

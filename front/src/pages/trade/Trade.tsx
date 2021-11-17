@@ -8,7 +8,7 @@ import { IStockListItem } from '@recoil/stockList/index';
 import { translateRequestData } from '@common/utils/socketUtils';
 import webSocketAtom from '@src/recoil/websocket/atom';
 import stockListAtom from '@src/recoil/stockList/atom';
-import stockQuoteAtom, { IStockQuoteItem } from '@src/recoil/stockQuote/atom';
+import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
 import BidAsk from './bidAsk/BidAsk';
@@ -21,13 +21,19 @@ interface IConnection {
 	stockCode?: string;
 }
 
+interface IOrderApiRes {
+	askOrders: IAskOrderItem[];
+	bidOrders: IBidOrderItem[];
+}
+
 const getStockState = (stockList: IStockListItem[], queryData: QueryString.ParsedQs) => {
 	return stockList.find((stock: IStockListItem) => stock.code === queryData.code) ?? stockList[0];
 };
 
 const Trade = () => {
 	const [stockList] = useRecoilState(stockListAtom);
-	const setStockQuote = useSetRecoilState(stockQuoteAtom);
+	const setAskOrders = useSetRecoilState(askOrdersAtom);
+	const setBidOrders = useSetRecoilState(bidOrdersAtom);
 	const location = useLocation();
 	const queryData = QueryString.parse(location.search, {
 		ignoreQueryPrefix: true,
@@ -43,9 +49,13 @@ const Trade = () => {
 			try {
 				const bidAskOrdersRes = await fetch(`${process.env.SERVER_URL}/api/order/bid-ask?stockId=${stockId}`);
 				if (bidAskOrdersRes.status !== 200) throw new Error('서버 에러');
-				const bidAskOrdersData: IStockQuoteItem[] = await bidAskOrdersRes.json();
+				const bidAskOrdersData: IOrderApiRes = await bidAskOrdersRes.json();
+				const { askOrders, bidOrders } = bidAskOrdersData;
 
-				setStockQuote(bidAskOrdersData.map((quote) => ({ ...quote, amount: Number(quote.amount) })));
+				setAskOrders(askOrders.map((askOrder) => ({ ...askOrder, amount: Number(askOrder.amount) })));
+				setBidOrders(bidOrders.map((bidOrder) => ({ ...bidOrder, amount: Number(bidOrder.amount) })));
+
+				// setStockQuote(bidAskOrdersData.map((quote) => ({ ...quote, amount: Number(quote.amount) })));
 			} catch (error) {
 				// error handling logic goes here
 			}

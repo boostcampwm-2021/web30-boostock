@@ -1,36 +1,41 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
 import bidAskPriceAtom from '@src/recoil/bidAskPrice/atom';
-import stockQuoteAtom, { IStockQuoteItem } from '@src/recoil/stockQuote/atom';
 import formatNumber from '@src/common/utils/formatNumber';
-import StockQuoteTDElement from './StockQuoteTDElement';
+import AskOrderItem from './AskOrderItem';
+import BidOrderItem from './BidOrderItem';
+import ITotalAndMaxAmount from './ITotalAndMaxAmount';
 
 import './order.scss';
 
-function calculateTotalAndMaxAmount(data: IStockQuoteItem[]) {
-	const LENGTH = data.length;
-	let buyAmount = 0;
-	let sellAmount = 0;
-	let maxAmount = 0;
+function calculateTotalAndMaxAmount(askOrders: IAskOrderItem[], bidOrders: IBidOrderItem[]): ITotalAndMaxAmount {
+	const totalAskAmount = askOrders.reduce((acc, { price }) => acc + price, 0);
+	const totalBidAmount = bidOrders.reduce((acc, { price }) => acc + price, 0);
+	const maxAmount = Math.max(...[...askOrders, ...bidOrders].map(({ amount }) => amount));
 
-	for (let i = 0; i < LENGTH; i += 1) {
-		if (data[i].type === 1) sellAmount += data[i].amount;
-		else buyAmount += data[i].amount;
-		if (maxAmount < data[i].amount) maxAmount = data[i].amount;
-	}
+	return { totalAskAmount, totalBidAmount, maxAmount };
+}
 
-	return { buyAmount, sellAmount, maxAmount };
+function isOrdersExist(askOrders: IAskOrderItem[], bidOrders: IBidOrderItem[]): boolean {
+	return askOrders.length !== 0 || bidOrders.length !== 0;
+}
+
+function volumeWidth(amount: number, maxAmount: number): string {
+	return `${(amount / maxAmount) * 100}%`;
 }
 
 const Order = () => {
 	const orderContentRef = useRef<HTMLDivElement>(null);
+	const askOrders = useRecoilValue<IAskOrderItem[]>(askOrdersAtom);
+	const bidOrders = useRecoilValue<IBidOrderItem[]>(bidOrdersAtom);
+
 	const setBidAskPrice = useSetRecoilState(bidAskPriceAtom);
-	const stockQuotes = useRecoilValue<IStockQuoteItem[]>(stockQuoteAtom);
-	const [totalAndMaxAmount, setTotalAndMaxVolumes] = useState(() => calculateTotalAndMaxAmount(stockQuotes));
+	const [totalAndMaxAmount, setTotalAndMaxVolumes] = useState(() => calculateTotalAndMaxAmount(askOrders, bidOrders));
 
 	useEffect(() => {
-		setTotalAndMaxVolumes(calculateTotalAndMaxAmount(stockQuotes));
-	}, [stockQuotes]);
+		setTotalAndMaxVolumes(calculateTotalAndMaxAmount(askOrders, bidOrders));
+	}, [askOrders, bidOrders]);
 
 	useEffect(() => {
 		if (!orderContentRef.current) return;
@@ -45,9 +50,9 @@ const Order = () => {
 		orderContentRef.current.style.paddingLeft = ORDER_CONTENT_LEFT_PADDING_SIZE;
 
 		orderContentRef.current.scrollTo(0, (tableHeight - TABLE_MAX_HEIGHT) / 2);
-	}, [orderContentRef, stockQuotes]);
+	}, [orderContentRef, askOrders, bidOrders]);
 
-	if (stockQuotes.length === 0) {
+	if (!isOrdersExist(askOrders, bidOrders)) {
 		return <p className="no-quotes-notice">호가 정보가 없습니다.</p>;
 	}
 
@@ -56,22 +61,31 @@ const Order = () => {
 			<div className="order-content" ref={orderContentRef}>
 				<table className="order-table">
 					<tbody>
-						{stockQuotes.map((quote) => (
-							<tr key={quote.price} className="order-row">
-								<StockQuoteTDElement
-									quote={quote}
-									totalAndMaxAmount={totalAndMaxAmount}
-									setBidAskPrice={setBidAskPrice}
-								/>
-							</tr>
+						{askOrders.map((askOrder) => (
+							<AskOrderItem
+								key={askOrder.price}
+								askOrder={askOrder}
+								totalAndMaxAmount={totalAndMaxAmount}
+								volumeWidth={volumeWidth}
+								setBidAskPrice={setBidAskPrice}
+							/>
+						))}
+						{bidOrders.map((bidOrder) => (
+							<BidOrderItem
+								key={bidOrder.price}
+								bidOrder={bidOrder}
+								totalAndMaxAmount={totalAndMaxAmount}
+								volumeWidth={volumeWidth}
+								setBidAskPrice={setBidAskPrice}
+							/>
 						))}
 					</tbody>
 				</table>
 			</div>
 			<div className="total-amount">
-				<div className="total-sell-amount">{formatNumber(totalAndMaxAmount.sellAmount)}&nbsp;주</div>
+				<div className="total-sell-amount">{formatNumber(totalAndMaxAmount.totalAskAmount)}&nbsp;주</div>
 				<div className="total-amount-text">총잔량</div>
-				<div className="total-buy-amount">{formatNumber(totalAndMaxAmount.buyAmount)}&nbsp;주</div>
+				<div className="total-buy-amount">{formatNumber(totalAndMaxAmount.totalBidAmount)}&nbsp;주</div>
 			</div>
 		</div>
 	);
