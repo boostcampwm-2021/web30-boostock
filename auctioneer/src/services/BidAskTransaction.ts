@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import fetch from 'node-fetch';
 import { Stock, User, UserStock, Order, OrderStatus, Transaction, Chart } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
