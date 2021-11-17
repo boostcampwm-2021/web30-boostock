@@ -10,8 +10,8 @@ import ITotalAndMaxAmount from './ITotalAndMaxAmount';
 import './order.scss';
 
 function calculateTotalAndMaxAmount(askOrders: IAskOrderItem[], bidOrders: IBidOrderItem[]): ITotalAndMaxAmount {
-	const totalAskAmount = askOrders.reduce((acc, { price }) => acc + price, 0);
-	const totalBidAmount = bidOrders.reduce((acc, { price }) => acc + price, 0);
+	const totalAskAmount = askOrders.reduce((acc, { amount }) => acc + amount, 0);
+	const totalBidAmount = bidOrders.reduce((acc, { amount }) => acc + amount, 0);
 	const maxAmount = Math.max(...[...askOrders, ...bidOrders].map(({ amount }) => amount));
 
 	return { totalAskAmount, totalBidAmount, maxAmount };
