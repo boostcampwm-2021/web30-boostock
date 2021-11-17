@@ -156,35 +156,12 @@ function updateOrdersAfterAcceptOrder(
 	return orderType === 1 ? (result as IAskOrderItem[]) : (result as IBidOrderItem[]);
 }
 
-// 주문 체결 시 호가 정보 수정
-function updateOrdersAfterConcludeOrder(
-	orders: Array<IAskOrderItem | IBidOrderItem>,
-	order: IOrder,
-): Array<IAskOrderItem | IBidOrderItem> {
-	const { price: orderPrice, amount: orderAmount, type: orderType } = order;
-
-	const result = orders
-		.map(({ type, price, amount }) =>
-			price === orderPrice ? { type, price, amount: amount - orderAmount } : { type, price, amount },
-		)
-		.filter(({ amount }) => amount > 0);
-
-	return orderType === 1 ? (result as IAskOrderItem[]) : (result as IBidOrderItem[]);
+function updateAskOrders(orders: IAskOrderItem[]): IAskOrderItem[] {
+	return orders.map<IAskOrderItem>((order) => ({ ...order, amount: Number(order.amount) }));
 }
 
-// 주문 체결 시 동일한 가격의 반대 주문(매수 <-> 매도) 수량을 차감
-function removeOppositeOrderBar(
-	orders: Array<IAskOrderItem | IBidOrderItem>,
-	order: IOrder,
-): Array<IAskOrderItem | IBidOrderItem> {
-	const { type: orderType, price: orderPrice, amount: orderAmount } = order;
-	const result = orders
-		.map(({ type, price, amount }) =>
-			price === orderPrice ? { type, price, amount: amount - orderAmount } : { type, price, amount },
-		)
-		.filter(({ amount }) => amount > 0);
-
-	return orderType === 1 ? (result as IAskOrderItem[]) : (result as IBidOrderItem[]);
+function updateBidOrders(orders: IBidOrderItem[]): IBidOrderItem[] {
+	return orders.map<IBidOrderItem>((order) => ({ ...order, amount: Number(order.amount) }));
 }
 
 const dataToExecutionForm = (conclusionList: IResponseConclusions[]): IStockExecutionItem[] =>
@@ -251,13 +228,10 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 
 				// 주문 체결 케이스
 				if (matchData && currentChart) {
-					if (type === 1) {
-						setAskOrders((prev) => updateOrdersAfterConcludeOrder(prev, matchData) as IAskOrderItem[]);
-						setBidOrders((prev) => removeOppositeOrderBar(prev, matchData) as IBidOrderItem[]);
-					} else {
-						setBidOrders((prev) => updateOrdersAfterConcludeOrder(prev, matchData) as IBidOrderItem[]);
-						setAskOrders((prev) => removeOppositeOrderBar(prev, matchData) as IAskOrderItem[]);
-					}
+					const { askOrders, bidOrders }: { askOrders: IAskOrderItem[]; bidOrders: IBidOrderItem[] } = bidAsk;
+
+					setAskOrders(() => updateAskOrders(askOrders));
+					setBidOrders(() => updateBidOrders(bidOrders));
 
 					setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
 					addNewExecution(setStockExecution, data.match);
