@@ -2,7 +2,14 @@
 import { EntityManager, getCustomRepository } from 'typeorm';
 import { User } from '@models/index';
 import { UserRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage, UserError, UserErrorMessage } from '@services/errors/index';
+import {
+	CommonError,
+	CommonErrorMessage,
+	ParamError,
+	ParamErrorMessage,
+	UserError,
+	UserErrorMessage,
+} from '@services/errors/index';
 
 interface IUserInfo {
 	username: string;
@@ -32,7 +39,7 @@ export default class UserService {
 	}
 
 	static async signUp({ username, email, socialGithub, balance = 0 }: IUserInfo): Promise<User> {
-		if (!checkEmail(email)) throw new UserError(UserErrorMessage.INVALID_PARAM);
+		if (!checkEmail(email)) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
 		const user = userRepository.create({
 			username,
@@ -44,31 +51,40 @@ export default class UserService {
 		return user;
 	}
 
-	static async findBySocialGithub(socialGithub: string): Promise<User> {
+	static async getUserBySocialGithub(socialGithub: string): Promise<User> {
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
 		const user = await userRepository.findOne({ where: { socialGithub } });
 		if (!user) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
 		return user;
 	}
 
+	static async getUserByEmail(email: string): Promise<User> {
+		if (checkEmail(email)) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+		const user = await userRepository.findOne({ where: { email } });
+		if (user === undefined) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
+		return user;
+	}
+
 	static async getUserById(id: number): Promise<User> {
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
-		const user = await userRepository.readUserById(id);
+		const user = await userRepository.findOne({ where: { userId: id } });
 		if (!user) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
 		return user;
 	}
 
-	static async updateBalance(id: number, balance: number): Promise<User> {
+	static async updateBalance(userId: number, changeValue: number): Promise<User> {
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
-		const user = await userRepository.readUserById(id);
-		if (!user) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
-		user.balance += balance;
+		const user = await userRepository.findOne({ where: { userId } });
+		if (user === undefined) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
+		user.balance += changeValue;
 		await userRepository.updateUser(user);
 		return user;
 	}
 
-	public async deleteUser(entityManager: EntityManager, id: number): Promise<void> {
-		const userRepository: UserRepository = this.getUserRepository(entityManager);
-		await userRepository.deleteUser(id);
+	public async signOut(user: User): Promise<User> {
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+		await userRepository.remove(user);
+		return user;
 	}
 }
