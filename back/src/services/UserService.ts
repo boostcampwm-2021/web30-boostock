@@ -78,6 +78,7 @@ export default class UserService {
 		const user = await userRepository.findOne({ where: { userId } });
 		if (user === undefined) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
 		user.balance += changeValue;
+		if (user.balance < 0) throw new ParamError(ParamErrorMessage.BALANCE_CANNOT_BE_NEGATIVE);
 		await userRepository.updateUser(user);
 		return user;
 	}
