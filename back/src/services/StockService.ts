@@ -1,8 +1,15 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, createQueryBuilder } from 'typeorm';
+import { EntityManager, createQueryBuilder, getCustomRepository } from 'typeorm';
 import { Stock } from '@models/index';
 import { StockRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage, StockError, StockErrorMessage } from '@services/errors/index';
+import {
+	CommonError,
+	CommonErrorMessage,
+	ParamError,
+	ParamErrorMessage,
+	StockError,
+	StockErrorMessage,
+} from '@services/errors/index';
 
 export default class StockService {
 	static instance: StockService | null = null;
@@ -17,6 +24,22 @@ export default class StockService {
 	constructor() {
 		if (StockService.instance) return StockService.instance;
 		StockService.instance = this;
+	}
+
+	static async getStockCodeById(id: number): Promise<string> {
+		if (id === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+		const stockRepository: StockRepository = getCustomRepository(StockRepository);
+		const stock = await stockRepository.findOne(id);
+		if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+		return stock.code;
+	}
+
+	static async getStockIdByCode(code: string): Promise<number> {
+		if (code === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+		const stockRepository: StockRepository = getCustomRepository(StockRepository);
+		const stock = await stockRepository.findOne({ where: { code } });
+		if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+		return stock.stockId;
 	}
 
 	public async getStockById(entityManager: EntityManager, id: number): Promise<Stock> {
