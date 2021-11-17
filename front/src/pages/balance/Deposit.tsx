@@ -2,7 +2,12 @@ import React, { ChangeEvent, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import formatNumber from '@src/common/utils/formatNumber';
 
-const Deposit = () => {
+interface DepositProps {
+	refresh: () => void;
+}
+
+const Deposit = (props: DepositProps) => {
+	const { refresh } = props;
 	const [bank, setBank] = useState<string>('');
 	const [account, setAccount] = useState<string>('');
 	const [balance, setBalance] = useState<string>('');
@@ -36,7 +41,7 @@ const Deposit = () => {
 			headers: {
 				'Content-Type': 'application/json;charset=utf-8',
 			},
-			body: JSON.stringify({ bank, account, balance }),
+			body: JSON.stringify({ bank, bankAccount: account, changeValue: Number(balance.replace(/,/g, '')) }),
 		})
 			.then((res: Response) => {
 				if (res.ok) {
@@ -50,6 +55,7 @@ const Deposit = () => {
 			})
 			.finally(() => {
 				setLoading(false);
+				refresh();
 			});
 	};
 

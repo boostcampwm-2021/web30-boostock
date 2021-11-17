@@ -40,7 +40,15 @@ const App: React.FC = () => {
 			},
 		}).then((res: Response) => {
 			if (res.ok) {
-				setUserState({ ...userState, isLoggedIn: true });
+				res.json().then((data) => {
+					setUserState({
+						...userState,
+						username: data.user.username,
+						email: data.user.email,
+						balance: data.user.balance,
+						isLoggedIn: true,
+					});
+				});
 			}
 		});
 	}, []);

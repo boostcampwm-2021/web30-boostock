@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import toDateString from '@src/common/utils/toDateString';
 
 import Deposit from './Deposit';
 import Withdrawal from './Withdrawal';
@@ -10,65 +11,71 @@ enum TAB {
 	WITHDRAWAL = '출금',
 }
 
-interface IBalance {
-	balanceType: string;
+enum TYPE {
+	출금 = 0,
+	입금 = 1,
+}
 
+interface IHistory {
+	type: number;
 	bank: string;
 	bankAccount: string;
 	volume: number;
 	status: string;
+	createdAt: number;
 }
 
 const Balance = () => {
 	const [tab, setTab] = useState<TAB>(TAB.DEPOSIT);
-	const [balances, setBalances] = useState<IBalance[]>([
-		{
-			balanceType: '입금',
-
-			bank: '○○은행',
-			bankAccount: '000-0000-0000-00',
-			volume: 1234567,
-			status: 'PENDING',
-		},
-	]);
+	const [balance, setBalance] = useState<number>(0);
+	const [histories, setHistories] = useState<IHistory[]>([]);
 
 	const switchTab = (index: number) => setTab(Object.values(TAB)[index]);
 
-	const getCurrentTab = () => {
-		switch (tab) {
-			case TAB.DEPOSIT:
-				return <Deposit />;
-			case TAB.WITHDRAWAL:
-				return <Withdrawal />;
-			default:
-				return <Deposit />;
-		}
+	const getHistory = (history: IHistory) => {
+		return (
+			<div className="my__item" key={history.createdAt}>
+				<div>{TYPE[history.type]}</div>
+				<div>{history.bank}</div>
+				<div>{history.bankAccount}</div>
+				<div className="my__item-number">{history.volume.toLocaleString()}</div>
+				<div className="my__item-number">{history.status}</div>
+				<div className="my__item-number">{toDateString(history.createdAt)}</div>
+			</div>
+		);
 	};
 
-	useEffect(() => {
-		fetch(`${process.env.SERVER_URL}/api/user/balances`, {
+	const refresh = () => {
+		fetch(`${process.env.SERVER_URL}/api/user/balance`, {
 			method: 'GET',
 			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json; charset=utf-8',
 			},
 		}).then((res: Response) => {
-			console.log(res.ok);
-			// setBalances([]);
+			if (res.ok) {
+				res.json().then((data) => {
+					setBalance(data.balance || 0);
+					setHistories(data.history || []);
+				});
+			}
 		});
-	}, []);
-
-	const getBalance = (balance: IBalance) => {
-		return (
-			<div className="my__item" key={balance.bankAccount}>
-				<div>{balance.balanceType}</div>
-				<div>{balance.bank}</div>
-				<div>{balance.bankAccount}</div>
-				<div className="my__item-number">{balance.volume.toLocaleString()}</div>
-				<div className="my__item-number">{balance.status}</div>
-			</div>
-		);
 	};
+
+	const getCurrentTab = () => {
+		switch (tab) {
+			case TAB.DEPOSIT:
+				return <Deposit refresh={refresh} />;
+			case TAB.WITHDRAWAL:
+				return <Withdrawal myBalance={balance} refresh={refresh} />;
+			default:
+				return <Deposit refresh={refresh} />;
+		}
+	};
+
+	useEffect(() => {
+		refresh();
+	}, []);
 
 	return (
 		<div className="balance">
@@ -100,8 +107,9 @@ const Balance = () => {
 					<div>계좌번호</div>
 					<div className="my__legend-number">금액 (원)</div>
 					<div className="my__legend-number">상태</div>
+					<div className="my__legend-number">승인시간</div>
 				</div>
-				{balances.map((balance: IBalance) => getBalance(balance))}
+				{histories.map((history: IHistory) => getHistory(history))}
 			</div>
 		</div>
 	);

@@ -1,25 +1,21 @@
-import React, { useState } from 'react';
+import React, { MouseEvent, KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { AiFillStar } from 'react-icons/ai';
-import { useRecoilState } from 'recoil';
 
-import User from '@recoil/user/index';
 import caretIcon from '@src/common/utils/caretIcon';
 import formatNumber from '@src/common/utils/formatNumber';
 import { IStockListItem } from '@src/recoil/stockList/index';
-
 import './SideBarItem.scss';
 
 export interface Props {
 	stock: IStockListItem;
+	isFavorite: boolean;
+	refresh: () => void;
 }
 
 const SideBarItem = (props: Props) => {
-	const { stock } = props;
+	const { stock, isFavorite, refresh } = props;
 	const { code, nameKorean, price, previousClose, charts } = stock;
-
-	const [userState, setUserState] = useRecoilState(User);
-	const [isFavorite, setFavorite] = useState<boolean>(userState.favorite.includes(stock.stockId));
 
 	const { volume = 0 } = charts.filter(({ type }) => type === 1440)[0] ?? [];
 	const percent = ((price - previousClose) / previousClose) * 100;
@@ -39,15 +35,17 @@ const SideBarItem = (props: Props) => {
 			body: JSON.stringify({ stockCode: code }),
 		}).then((res: Response) => {
 			if (res.ok) {
-				if (isFavorite) {
-					setUserState({ ...userState, favorite: userState.favorite.filter((favorite) => favorite !== stock.stockId) });
-					setFavorite(false);
-				} else {
-					setUserState({ ...userState, favorite: [...userState.favorite, stock.stockId] });
-					setFavorite(true);
-				}
+				res.json().then((data) => {
+					console.log(isFavorite, data);
+				});
+				refresh();
 			}
 		});
+	};
+
+	const toggleFavoriteKey = (event: KeyboardEvent<HTMLDivElement>) => {
+		if (event.type === 'keydown' && event.keyCode !== 13) return;
+		toggleFavorite();
 	};
 
 	return (
@@ -57,7 +55,7 @@ const SideBarItem = (props: Props) => {
 				role="button"
 				tabIndex={0}
 				onClick={toggleFavorite}
-				onKeyDown={toggleFavorite}
+				onKeyDown={toggleFavoriteKey}
 			>
 				<AiFillStar color={isFavorite ? '#FFA800' : '#999'} />
 			</div>

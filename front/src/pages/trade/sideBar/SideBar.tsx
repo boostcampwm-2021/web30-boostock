@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import User from '@recoil/user/index';
+import { useRecoilValue } from 'recoil';
+
 import StockList, { IStockListItem } from '@recoil/stockList/index';
 import SideBarItem from './sideBarItem/SideBarItem';
 
-import './SideBar.scss';
+import SideBarNav, { MENU } from './sideBarNav/SideBarNav';
 import SearchBar from './searchbar/SearchBar';
 import getRegExp from './getRegExp';
-import SideBarNav, { MENU } from './sideBarNav/SideBarNav';
-
-// interface Props {}
+import './SideBar.scss';
 
 const SideBar = () => {
 	const [menu, setMenu] = useState(MENU.ALL);
 	const [regex, setRegex] = useState(/.*/);
 
-	const [userState] = useRecoilState(User);
 	const stockListState = useRecoilValue(StockList);
 	const [filteredStockListState, setFilteredStockListState] = useState<IStockListItem[]>([]);
+
+	const [favorite, setFavorite] = useState<string[]>([]);
+	const [hold, setHold] = useState<string[]>([]);
 
 	const searchEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setRegex(getRegExp(event?.target?.value));
 	};
 
-	useEffect(() => {
+	const refreshData = () => {
 		fetch(`${process.env.SERVER_URL}/api/user/favorite`, {
 			method: 'GET',
 			credentials: 'include',
@@ -32,7 +32,9 @@ const SideBar = () => {
 			},
 		}).then((res: Response) => {
 			if (res.ok) {
-				userState.favorite = [];
+				res.json().then((data) => {
+					setFavorite(() => data.favorite);
+				});
 			}
 		});
 
@@ -44,23 +46,29 @@ const SideBar = () => {
 			},
 		}).then((res: Response) => {
 			if (res.ok) {
-				userState.hold = [];
+				res.json().then((data) => {
+					setHold(() => data.holdStocks.map((stock: { code: string }) => stock.code));
+				});
 			}
 		});
-	}, [userState]);
+	};
+
+	useEffect(() => {
+		refreshData();
+	}, []);
 
 	useEffect(() => {
 		setFilteredStockListState(() => {
 			switch (menu) {
 				case MENU.FAVORITE:
-					return stockListState.filter((stock: IStockListItem) => userState.favorite.includes(stock.stockId));
+					return stockListState.filter((stock: IStockListItem) => favorite.includes(stock.code));
 				case MENU.HOLD:
-					return stockListState.filter((stock: IStockListItem) => userState.hold.includes(stock.stockId));
+					return stockListState.filter((stock: IStockListItem) => hold.includes(stock.code));
 				default:
 					return stockListState;
 			}
 		});
-	}, [menu, stockListState, userState.favorite, userState.hold]);
+	}, [menu, stockListState, favorite, hold]);
 
 	return (
 		<div className="sidebar">
@@ -91,7 +99,12 @@ const SideBar = () => {
 							regex.test(stock.nameEnglish.toLowerCase()),
 					)
 					.map((stock: IStockListItem) => (
-						<SideBarItem key={stock.stockId} stock={stock} />
+						<SideBarItem
+							key={stock.stockId}
+							stock={stock}
+							isFavorite={favorite.includes(stock.code)}
+							refresh={refreshData}
+						/>
 					))}
 			</div>
 		</div>

@@ -10,6 +10,13 @@
     height: 100vh;
 }
 
+.signup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+	justify-content: center;
+}
+
 .signup-box {
     width: 800px;
     height: 300px;
@@ -31,15 +38,19 @@
 .signup-horizontal-group {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
 
     width: 800px;
-    height: 100px;
 }
 
 .signup-label {
     font-size: 10pt;
     font-weight: bold;
+
+    span {
+        display: inline-block;
+        width: 50px;
+    }
 }
 
 .signup-input {
@@ -82,5 +93,11 @@
     &:disabled {
         background-color: #bbb;
         cursor: default;
+    }
+
+    &.signup-submit-validate {
+        width: 200px;
+        padding: 8px;
+        box-sizing: border-box;
     }
 }
