@@ -2,8 +2,8 @@ import fetch from 'node-fetch';
 
 import config from '@config/index';
 import { needToHandle } from '@helper/tools';
-import AuthError, { AuthErrorMessage } from './errors/AuthError';
 import { IGithubUserInfo } from '@interfaces/GithubUserInfo';
+import AuthError, { AuthErrorMessage } from './errors/AuthError';
 
 const clientId = config.githubClient;
 const clientSecret = config.githubSecret;

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import 'reflect-metadata';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import Stock from './Stock';
+import { Stock } from './index';
 
 @Entity({ name: 'chart' })
 export default class Chart {
