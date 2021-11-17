@@ -1,8 +1,27 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager } from 'typeorm';
+import { EntityManager, getCustomRepository } from 'typeorm';
 import { User } from '@models/index';
 import { UserRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage, UserError, UserErrorMessage } from '@services/errors/index';
+import {
+	CommonError,
+	CommonErrorMessage,
+	ParamError,
+	ParamErrorMessage,
+	UserError,
+	UserErrorMessage,
+} from '@services/errors/index';
+
+interface IUserInfo {
+	username: string;
+	email: string;
+	socialGithub: string;
+	balance?: number;
+}
+
+function checkEmail(email: string): boolean {
+	const regexp = /\S+@\S+\.\S+/;
+	return regexp.test(email);
+}
 
 export default class UserService {
 	static instance: UserService | null = null;
@@ -19,45 +38,53 @@ export default class UserService {
 		return userRepository;
 	}
 
-	public async signUp(
-		entityManager: EntityManager,
-		userData: {
-			username: string;
-			email: string;
-			socialGithub: string;
-		},
-	): Promise<void> {
-		const userRepository: UserRepository = this.getUserRepository(entityManager);
-
-		userRepository.createUser(
-			userRepository.create({
-				...userData,
-				balance: 0,
-			}),
-		);
+	static async signUp({ username, email, socialGithub, balance = 0 }: IUserInfo): Promise<User> {
+		if (!checkEmail(email)) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+		const user = userRepository.create({
+			username,
+			email,
+			socialGithub,
+			balance,
+		});
+		if (!userRepository.createUser(user)) throw new UserError(UserErrorMessage.CANNOT_CREATE_USER);
+		return user;
 	}
 
-	public async getUserById(entityManager: EntityManager, id: number): Promise<User> {
-		const userRepository: UserRepository = this.getUserRepository(entityManager);
-
-		const user = await userRepository.readUserById(id);
+	static async getUserBySocialGithub(socialGithub: string): Promise<User> {
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+		const user = await userRepository.findOne({ where: { socialGithub } });
 		if (!user) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
 		return user;
 	}
 
-	public async setBalance(entityManager: EntityManager, id: number, balance: number): Promise<void> {
-		const userRepository: UserRepository = this.getUserRepository(entityManager);
-
-		await userRepository.updateUser(
-			userRepository.create({
-				userId: id,
-				balance,
-			}),
-		);
+	static async getUserByEmail(email: string): Promise<User> {
+		if (!checkEmail(email)) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+		const user = await userRepository.findOne({ where: { email } });
+		if (user === undefined) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
+		return user;
 	}
 
-	public async deleteUser(entityManager: EntityManager, id: number): Promise<void> {
-		const userRepository: UserRepository = this.getUserRepository(entityManager);
-		await userRepository.deleteUser(id);
+	static async getUserById(id: number): Promise<User> {
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+		const user = await userRepository.findOne({ where: { userId: id } });
+		if (!user) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
+		return user;
+	}
+
+	static async updateBalance(userId: number, changeValue: number): Promise<User> {
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+		const user = await userRepository.findOne({ where: { userId } });
+		if (user === undefined) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
+		user.balance += changeValue;
+		await userRepository.updateUser(user);
+		return user;
+	}
+
+	public async signOut(user: User): Promise<User> {
+		const userRepository: UserRepository = getCustomRepository(UserRepository);
+		await userRepository.remove(user);
+		return user;
 	}
 }

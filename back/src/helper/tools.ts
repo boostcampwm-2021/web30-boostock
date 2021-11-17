@@ -59,4 +59,6 @@ export const transaction = async (
 	}
 };
 
+export function needToHandle() {}
+
 export { QueryRunner, EntityManager } from 'typeorm';

@@ -1,0 +1,74 @@
+@import '@common/global.scss';
+
+.signin {
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+	justify-content: center;
+
+    width: 100vw;
+    height: 100vh;
+}
+
+.signin-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 400px;
+    height: 48px;
+    margin: 8px;
+    box-sizing: border-box;
+
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &.signup-type {
+        border: 1px solid #ccc;
+        background-color: #fff;
+
+        &:hover {
+            background-color: #eee;
+            transition: background-color 0.1s;
+        }
+    }
+
+    &.github-type {
+        padding: 0px 24px 0px 48px;
+
+        color: #ffffff;
+        background-color: #373737;
+
+        background-image: url('@assets/icon-github.png');
+        background-position: 8px center;
+        background-repeat: no-repeat;
+
+        &:hover {
+            background-color: #171717;
+            transition: background-color 0.1s;
+        }
+    }
+}
+
+.signin-hr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 8px 0px 8px 0px;
+
+
+    .signin-hr-line {
+        width: 180px;
+        border-top: 1px solid #888;
+    }
+
+    span {
+        width: fit-content;
+        margin: 0px 8px 0px 8px;
+
+        color: #888;
+        font-size: 12px;
+    }
+}

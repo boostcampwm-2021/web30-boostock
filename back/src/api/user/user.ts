@@ -1,71 +1,31 @@
-import express, { Request, Response } from 'express';
-import { User } from '@models/index';
+import express, { NextFunction, Request, Response } from 'express';
+import { AuthError, AuthErrorMessage, ParamError, UserError } from '@services/errors/index';
 import { UserService } from '@services/index';
-import { CommonError } from '@services/errors/index';
-import { QueryRunner, transaction, Validator } from '@helper/index';
 
 export default (): express.Router => {
 	const router = express.Router();
 
-	router.get('/', (req: Request, res: Response) => {
-		transaction(
-			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
-				const userServiceInstance = new UserService();
-				const validator = new Validator();
-				userServiceInstance
-					.getUserById(queryRunner.manager, validator.init(1).isInteger().toNumber())
-					.then((users: User) => {
-						res.status(200).json(users).end();
-						then();
-					})
-					.catch(err)
-					.finally(fin);
-			},
-			req,
-			res,
-		);
+	router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const userId = req.session.data?.userId;
+			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
+			const user = await UserService.getUserById(userId);
+			res.status(200).json({ user });
+		} catch (error) {
+			next(error);
+		}
 	});
 
-	router.post('/', async (req: Request, res: Response) => {
-		transaction(
-			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
-				const userServiceInstance = new UserService();
-				const validator = new Validator();
-				userServiceInstance
-					.signUp(queryRunner.manager, {
-						username: validator.init(req.body.username).isString().toString(),
-						email: validator.init(req.body.email).isString().toString(),
-						socialGithub: validator.init(0).isString().toString(),
-					})
-					.then(() => {
-						res.status(200).end();
-						then();
-					})
-					.catch(err)
-					.finally(fin);
-			},
-			req,
-			res,
-		);
-	});
-
-	router.delete('/', async (req: Request, res: Response) => {
-		transaction(
-			(queryRunner: QueryRunner, then: () => void, err: (err: CommonError) => void, fin: () => void) => {
-				const userServiceInstance = new UserService();
-				const validator = new Validator();
-				userServiceInstance
-					.getUserById(queryRunner.manager, validator.init(1).isInteger().toNumber())
-					.then((users: User) => {
-						res.status(200).json(users).end();
-						then();
-					})
-					.catch(err)
-					.finally(fin);
-			},
-			req,
-			res,
-		);
+	router.get('/email', async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const { email } = req.query;
+			await UserService.getUserByEmail(String(email));
+			res.status(200).json({ result: false });
+		} catch (error) {
+			if (error instanceof UserError) return res.status(200).json({ result: true });
+			if (error instanceof ParamError) return res.status(200).json({ result: false });
+			next(error);
+		}
 	});
 
 	return router;

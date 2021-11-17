@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn } from 'typeorm';
-// eslint-disable-next-line import/no-cycle
-import Chart from './Chart';
+import { Chart } from './index';
 
 @Entity({ name: 'stock' })
 export default class Stock {
