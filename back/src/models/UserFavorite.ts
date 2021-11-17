@@ -1,17 +1,18 @@
 /* eslint-disable import/no-cycle */
 import 'reflect-metadata';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import User from './User';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Stock, User } from './index';
 
 @Entity({ name: 'user_favorite' })
 export default class UserFavorite {
 	@PrimaryGeneratedColumn({ name: 'user_favorite_id' })
 	userFavoriteId: number;
 
-	@ManyToOne(() => User, (user: User) => user.userId)
-	@JoinColumn({ name: 'user_id' })
-	userId: number;
+	@ManyToOne(() => User, (user: User) => user.favorites, { onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'user_id', referencedColumnName: 'userId' })
+	userId: User;
 
-	@Column({ name: 'stock_id' })
-	stockId: number;
+	@ManyToOne(() => Stock, (stock: Stock) => stock.stockId, { onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'stock_id', referencedColumnName: 'stockId' })
+	stockId: Stock;
 }
