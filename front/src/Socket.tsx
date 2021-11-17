@@ -19,12 +19,19 @@ interface IResponseConclusions {
 	amount: number;
 	_id: string;
 }
+interface IMatchData {
+	createdAt: number;
+	price: number;
+	amount: number;
+	code: string;
+	id: string;
+}
 
 const MAX_EXECUTION_SIZE = 50;
 let reconnector: NodeJS.Timer;
 
 const dataToExecutionForm = (conclusionList: IResponseConclusions[]): IStockExecutionItem[] =>
-	conclusionList.map(({ createdAt, price, amount, _id }: IResponseConclusions): IStockExecutionItem => {
+	conclusionList.map(({ createdAt, price, amount, _id }): IStockExecutionItem => {
 		return {
 			timestamp: createdAt,
 			price,
@@ -34,7 +41,14 @@ const dataToExecutionForm = (conclusionList: IResponseConclusions[]): IStockExec
 		};
 	});
 
-const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[]>, newExecution: IStockExecutionItem) => {
+const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[]>, match: IMatchData) => {
+	const newExecution = {
+		id: match.id,
+		price: match.price,
+		amount: match.amount,
+		timestamp: match.createdAt,
+		volume: match.price * match.amount,
+	};
 	setStockExecution((prev) => {
 		const executionList = [newExecution, ...prev];
 		if (executionList.length > MAX_EXECUTION_SIZE) executionList.pop();

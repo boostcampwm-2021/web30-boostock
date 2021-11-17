@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 import OrderValidator from '@api/middleware/orderValidator';
 import { Order, OrderType } from '@models/index';
@@ -10,7 +10,7 @@ import AsyncHelper from '@helper/AsyncHelper';
 export default (): express.Router => {
 	const router = express.Router();
 
-	router.post('/', OrderValidator, async (req: Request, res: Response, next) => {
+	router.post('/', OrderValidator, async (req: Request, res: Response, next: NextFunction) => {
 		transaction(
 			(queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {
 				const orderServiceInstance = new OrderService();

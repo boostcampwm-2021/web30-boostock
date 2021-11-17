@@ -57,9 +57,9 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 
 		try {
 			const res = await fetch(`${process.env.SERVER_URL}/api/order`, config);
-			const data = await res.json();
 
 			if (res.status !== 200) {
+				const data = await res.json();
 				const error = new Error();
 				error.message = data.message;
 				throw error;

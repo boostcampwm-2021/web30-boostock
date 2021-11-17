@@ -66,7 +66,7 @@ export default class StockService {
 			return stock.price;
 		} catch (error) {
 			queryRunner.rollbackTransaction();
-			throw new Error('해당 종목의 현재가를 조회할 수 없습니다.');
+			throw new StockError(StockErrorMessage.CANNOT_READ_STOCK);
 		} finally {
 			queryRunner.release();
 		}
