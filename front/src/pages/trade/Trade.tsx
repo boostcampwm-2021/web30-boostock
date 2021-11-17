@@ -5,7 +5,7 @@ import { ImSpinner8 } from 'react-icons/im';
 import QueryString from 'qs';
 
 import { IStockListItem } from '@recoil/stockList/index';
-import { translateRequestData, translateResponseData } from '@common/utils/socketUtils';
+import { translateRequestData } from '@common/utils/socketUtils';
 import webSocketAtom from '@src/recoil/websocket/atom';
 import stockListAtom from '@src/recoil/stockList/atom';
 import stockQuoteAtom, { IStockQuoteItem } from '@src/recoil/stockQuote/atom';
@@ -19,46 +19,6 @@ import './Trade.scss';
 interface IConnection {
 	type: string;
 	stockCode?: string;
-}
-
-const MAX_NUM_OF_ORDER_BARS = 20;
-
-// 해당 가격의 호가 막대가 존재하는지 판별
-function isOrderBarExist(quotes: IStockQuoteItem[], orderPrice: number): boolean {
-	return !!quotes.find(({ price }) => price === orderPrice);
-}
-
-function findNewOrderInsertIdx(quotes: IStockQuoteItem[], price: number): number {
-	let left = 0;
-	let right = quotes.length;
-
-	while (left < right) {
-		const mid = Math.floor((left + right) / 2);
-		if (quotes[mid].price < price) right = mid;
-		else left = mid + 1;
-	}
-
-	return left;
-}
-
-function createNewOrderBar(quotes: IStockQuoteItem[], order: IStockQuoteItem, currentPrice: number): IStockQuoteItem[] {
-	const quotesLength = quotes.length;
-	if (quotesLength >= MAX_NUM_OF_ORDER_BARS) return quotes;
-
-	const { type, price, amount } = order;
-	if ((type === 1 && price < currentPrice) || (type === 2 && price > currentPrice)) return quotes;
-
-	const insertIdx = findNewOrderInsertIdx(quotes, price);
-
-	return [
-		...quotes.slice(0, insertIdx),
-		{
-			type,
-			price,
-			amount,
-		},
-		...quotes.slice(insertIdx, quotesLength),
-	];
 }
 
 const getStockState = (stockList: IStockListItem[], queryData: QueryString.ParsedQs) => {
@@ -77,26 +37,6 @@ const Trade = () => {
 	const stockCode = stockState?.code;
 	const stockId = stockState?.stockId;
 
-	function updateQuotes(event: MessageEvent) {
-		if (!stockState) return;
-
-		const { type, data } = translateResponseData(event.data);
-		if (type !== 'update_target') return;
-
-		const { order } = data;
-		if (!order) return;
-
-		const { price: orderPrice, amount: orderAmount, type: orderType } = order;
-
-		setStockQuote((prev) => {
-			if (!isOrderBarExist(prev, orderPrice)) return createNewOrderBar(prev, order, stockState.price);
-
-			return prev.map((quote) =>
-				quote.price === orderPrice && quote.type === orderType ? { ...quote, amount: quote.amount + orderAmount } : quote,
-			);
-		});
-	}
-
 	useEffect(() => {
 		if (!stockId) return;
 		(async () => {
@@ -111,16 +51,6 @@ const Trade = () => {
 			}
 		})();
 	}, [stockId]);
-
-	useEffect(() => {
-		if (!webSocket) return undefined;
-
-		webSocket.addEventListener('message', updateQuotes);
-
-		return () => {
-			webSocket.removeEventListener('message', updateQuotes);
-		};
-	}, [webSocket, stockState]);
 
 	useEffect(() => {
 		const connection = setInterval(() => {

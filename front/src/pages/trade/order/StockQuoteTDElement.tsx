@@ -1,5 +1,5 @@
 import React from 'react';
-import { IStockQuoteItem } from '@src/recoil/stockQuote/atom';
+import { IStockQuoteItem } from '@src/recoil/orderList/atom';
 import formatNumber from '@src/common/utils/formatNumber';
 
 import './order.scss';
