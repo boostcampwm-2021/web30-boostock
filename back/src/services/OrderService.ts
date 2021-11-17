@@ -34,7 +34,7 @@ export default class OrderService {
 		const stockService: StockService = new StockService();
 		const orderRepository: OrderRepository = this.getOrderRepository(entityManager);
 
-		const user: User = await userService.getUserById(entityManager, orderData.userId);
+		const user: User = await UserService.getUserById(orderData.userId);
 		const stock: Stock = await stockService.getStockByCode(entityManager, orderData.stockCode);
 		if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
 
@@ -50,7 +50,7 @@ export default class OrderService {
 			const payout: number = orderData.price * orderData.amount;
 			if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
 
-			await userService.setBalance(entityManager, user.userId, user.balance - payout);
+			await UserService.updateBalance(user.userId, payout * -1);
 		}
 
 		await orderRepository.createOrder(
@@ -81,7 +81,7 @@ export default class OrderService {
 		if (!order || order.userId !== orderData.userId || order.status !== OrderStatus.PENDING)
 			throw new OrderError(OrderErrorMessage.INVALID_ORDER);
 
-		const user: User = await userService.getUserById(entityManager, orderData.userId);
+		const user: User = await UserService.getUserById(orderData.userId);
 		const stock: Stock = await stockService.getStockById(entityManager, order.stockId);
 		if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
 
@@ -95,7 +95,7 @@ export default class OrderService {
 
 		if (order.type === OrderType.BUY) {
 			const payout: number = order.price * order.amount;
-			await userService.setBalance(entityManager, user.userId, user.balance + payout);
+			await UserService.updateBalance(user.userId, payout);
 		}
 
 		await orderRepository.updateOrder(
@@ -123,7 +123,7 @@ export default class OrderService {
 		if (!order || order.userId !== orderData.userId || order.status !== OrderStatus.PENDING)
 			throw new OrderError(OrderErrorMessage.INVALID_ORDER);
 
-		const user: User = await userService.getUserById(entityManager, orderData.userId);
+		const user: User = await UserService.getUserById(orderData.userId);
 		const stock: Stock = await stockService.getStockById(entityManager, order.stockId);
 		if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
 
@@ -143,7 +143,7 @@ export default class OrderService {
 			const payout: number = orderData.price * orderData.amount - order.price * order.amount;
 			if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
 
-			await userService.setBalance(entityManager, user.userId, user.balance - payout);
+			await UserService.updateBalance(user.userId, payout * -1);
 		}
 
 		await orderRepository.updateOrder(
