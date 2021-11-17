@@ -3,33 +3,53 @@ import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
 import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
+import stockExecutionAtom, { IStockExecutionItem } from './recoil/stockExecution/atom';
 import { translateResponseData } from './common/utils/socketUtils';
 
 interface IProps {
 	children: React.ReactNode;
 }
-
+interface IStartSocket {
+	setSocket: SetterOrUpdater<WebSocket | null>;
+	setStockList: SetterOrUpdater<IStockListItem[]>;
+	setStockExecution: SetterOrUpdater<IStockExecutionItem[]>;
+  setAskOrders: SetterOrUpdater<IAskOrderItem[]>;
+  setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
+}
+interface IResponseConclusions {
+	createdAt: number;
+	price: number;
+	amount: number;
+	_id: string;
+}
+interface IMatchData {
+	createdAt: number;
+	price: number;
+	amount: number;
+	code: string;
+	id: string;
+}
 interface INonTargetStockData {
 	code: string;
 	price: number;
 	amount: number;
 }
-
 interface ITargetStockData {
 	code: string;
 	price: number;
 	amount: number;
 	createdAt: Date;
 }
-
 interface IOrder {
 	price: number;
 	type: number;
 	amount: number;
 }
 
-let reconnector: NodeJS.Timer;
 const MAX_NUM_OF_ORDER_BARS = 10;
+const MAX_EXECUTION_SIZE = 50;
+
+let reconnector: NodeJS.Timer;
 
 // 해당 가격의 호가 막대가 존재하는지 판별
 function isOrderBarExist(orders: Array<IAskOrderItem | IBidOrderItem>, orderPrice: number): boolean {
@@ -90,7 +110,6 @@ function updateTargetStock(
 	currentChart: IStockChartItem[],
 ): IStockListItem[] {
 	const { code: stockCode, price, amount } = data;
-
 	return stockList.map((stockItem) => {
 		const dailyChartData: IStockChartItem = currentChart.filter(
 			({ type: chartType }: IStockChartItem) => chartType === 1440,
@@ -168,13 +187,37 @@ function removeOppositeOrderBar(
 	return orderType === 1 ? (result as IAskOrderItem[]) : (result as IBidOrderItem[]);
 }
 
-const startSocket = (
-	setSocket: SetterOrUpdater<WebSocket | null>,
-	setStockList: SetterOrUpdater<IStockListItem[]>,
-	setAskOrders: SetterOrUpdater<IAskOrderItem[]>,
-	setBidOrders: SetterOrUpdater<IBidOrderItem[]>,
-) => {
-	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
+const dataToExecutionForm = (conclusionList: IResponseConclusions[]): IStockExecutionItem[] =>
+	conclusionList.map(({ createdAt, price, amount, _id }): IStockExecutionItem => {
+		return {
+			timestamp: createdAt,
+			price,
+			volume: price * amount,
+			amount,
+			id: _id,
+		};
+	});
+
+const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[]>, match: IMatchData) => {
+	const newExecution = {
+		id: match.id,
+		price: match.price,
+		amount: match.amount,
+		timestamp: match.createdAt,
+		volume: match.price * match.amount,
+	};
+	setStockExecution((prev) => {
+		const executionList = [newExecution, ...prev];
+		if (executionList.length > MAX_EXECUTION_SIZE) executionList.pop();
+
+		return executionList;
+	});
+};
+
+
+const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders }: IStartSocket) => {
+  const webSocket = new WebSocket(process.env.WEBSOCKET || '');
+	webSocket.binaryType = 'arraybuffer';
 
 	webSocket.onopen = () => {
 		setSocket(webSocket);
@@ -183,24 +226,23 @@ const startSocket = (
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket(setSocket, setStockList, setAskOrders, setBidOrders);
+		  startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders });
 		}, 1000);
 	};
 	webSocket.onmessage = (event) => {
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
-			case 'stocks_info': {
+			case 'stocksInfo': {
 				setStockList(data);
 				break;
 			}
-			case 'update_stock': {
+			case 'updateStock': {
 				if (!data) return;
 				setStockList((prev) => updateNonTargetStock(prev, data));
 				break;
 			}
-			case 'update_target': {
+			case 'updateTarget': {
 				const { match: matchData, currentChart, order } = data;
-
 				// 주문 접수 케이스
 				if (order) {
 					if (order.type === 1) setAskOrders((prev) => updateOrdersAfterAcceptOrder(prev, order) as IAskOrderItem[]);
@@ -219,12 +261,15 @@ const startSocket = (
 
 					setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
 				}
+				addNewExecution(setStockExecution, data.match);
+				break;
+			case 'baseStock':
+				setStockExecution(dataToExecutionForm(data.conclusions));
 				break;
 			}
 			default:
 		}
 	};
-	webSocket.onerror = (event) => {};
 };
 
 const Socket = ({ children }: IProps) => {
@@ -232,8 +277,9 @@ const Socket = ({ children }: IProps) => {
 	const setStockList = useSetRecoilState(stockListAtom);
 	const setAskOrders = useSetRecoilState(askOrdersAtom);
 	const setBidOrders = useSetRecoilState(bidOrdersAtom);
+	const setStockExecution = useSetRecoilState(stockExecutionAtom);
 
-	startSocket(setSocket, setStockList, setAskOrders, setBidOrders);
+	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders});
 
 	return <>{children}</>;
 };
