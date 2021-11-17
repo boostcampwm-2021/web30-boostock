@@ -18,12 +18,12 @@ export default (): express.Router => {
 
 	router.get('/email', async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const { email } = req.body;
-			await UserService.getUserByEmail(email);
+			const { email } = req.query;
+			await UserService.getUserByEmail(String(email));
 			res.status(200).json({ result: false });
 		} catch (error) {
-			if (error instanceof UserError) res.status(200).json({ result: true });
-			if (error instanceof ParamError) res.status(200).json({ result: false });
+			if (error instanceof UserError) return res.status(200).json({ result: true });
+			if (error instanceof ParamError) return res.status(200).json({ result: false });
 			next(error);
 		}
 	});
