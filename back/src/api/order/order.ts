@@ -14,6 +14,7 @@ export default (): express.Router => {
 			if (!stockCode || !type || !amount || !price) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.order(userId, stockCode, type, amount, price);
 			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
+			res.status(200).json({});
 		} catch (error) {
 			next(error);
 		}
@@ -26,6 +27,7 @@ export default (): express.Router => {
 			const { orderId } = req.body;
 			if (!orderId) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.cancel(userId, orderId);
+			res.status(200).json({});
 		} catch (error) {
 			next(error);
 		}
@@ -38,6 +40,7 @@ export default (): express.Router => {
 			const { orderId, amount, price } = req.body;
 			if (!orderId || !amount || !price) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.modify(userId, orderId, amount, price);
+			res.status(200).json({});
 		} catch (error) {
 			next(error);
 		}
