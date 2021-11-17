@@ -47,7 +47,7 @@ export default class UserService {
 			socialGithub,
 			balance,
 		});
-		if (!userRepository.createUser(user)) throw new UserError(UserErrorMessage.CANNOT_CREATE_USER);
+		if (!(await userRepository.createUser(user))) throw new UserError(UserErrorMessage.CANNOT_CREATE_USER);
 		return user;
 	}
 
