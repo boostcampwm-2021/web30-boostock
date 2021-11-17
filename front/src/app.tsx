@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as ReactDOM from 'react-dom';
-import { RecoilRoot } from 'recoil';
+import { RecoilRoot, useRecoilState } from 'recoil';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
+import User from '@recoil/user/index';
 import TopBar from '@common/topbar/TopBar';
 import Theme from './Theme';
 import './app.scss';
@@ -21,6 +22,7 @@ export interface Ipage {
 }
 
 const App: React.FC = () => {
+	const [userState, setUserState] = useRecoilState(User);
 	const pages: Ipage[] = [
 		{
 			id: 1,
@@ -28,6 +30,20 @@ const App: React.FC = () => {
 			title: 'Trade',
 		},
 	];
+
+	useEffect(() => {
+		fetch(`${process.env.SERVER_URL}/api/user`, {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json; charset=utf-8',
+			},
+		}).then((res: Response) => {
+			if (res.ok) {
+				setUserState({ ...userState, isLoggedIn: true });
+			}
+		});
+	}, []);
 
 	return (
 		<BrowserRouter>

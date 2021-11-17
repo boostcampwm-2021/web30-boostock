@@ -1,6 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+
 import { Ipage } from '@src/app';
+import User from '@recoil/user/index';
 
 import style from './menu.module.scss';
 
@@ -9,6 +12,34 @@ interface Props {
 }
 
 const Menu = ({ pages }: Props) => {
+	const userState = useRecoilValue(User);
+
+	const getMenu = () => {
+		if (userState.isLoggedIn === true) {
+			return (
+				<div style={{ position: 'relative' }}>
+					<NavLink to="/my" className={(isActive) => (isActive ? `${style.active}` : '')}>
+						마이페이지
+					</NavLink>
+					<NavLink to="/balance" className={(isActive) => (isActive ? `${style.active}` : '')}>
+						입출금
+					</NavLink>
+				</div>
+			);
+		}
+
+		return (
+			<div style={{ position: 'relative' }}>
+				<NavLink to="/auth/signin" className={(isActive) => (isActive ? `${style.active}` : '')}>
+					로그인
+				</NavLink>
+				<NavLink to="/auth/signup" className={(isActive) => (isActive ? `${style.active}` : '')}>
+					회원가입
+				</NavLink>
+			</div>
+		);
+	};
+
 	return (
 		<nav className={style.container}>
 			<div>
@@ -18,20 +49,7 @@ const Menu = ({ pages }: Props) => {
 					</NavLink>
 				))}
 			</div>
-			<div style={{ position: 'relative' }}>
-				<NavLink to="/auth/signin" className={(isActive) => (isActive ? `${style.active}` : '')}>
-					로그인
-				</NavLink>
-				<NavLink to="/auth/signup" className={(isActive) => (isActive ? `${style.active}` : '')}>
-					회원가입
-				</NavLink>
-				<NavLink to="/my" className={(isActive) => (isActive ? `${style.active}` : '')}>
-					마이페이지
-				</NavLink>
-				<NavLink to="/balance" className={(isActive) => (isActive ? `${style.active}` : '')}>
-					입출금
-				</NavLink>
-			</div>
+			{getMenu()}
 		</nav>
 	);
 };
