@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, getConnection, createQueryBuilder } from 'typeorm';
+import { EntityManager, getConnection, createConnection } from 'typeorm';
 import { Stock } from '@models/index';
 import { StockRepository } from '@repositories/index';
 import { CommonError, CommonErrorMessage, StockError, StockErrorMessage } from '@services/errors/index';
@@ -49,6 +49,14 @@ export default class StockService {
 
 		const allStocks: Stock[] = await stockRepository.readAllStocks();
 		return allStocks.map((stock) => ({ ...stock, charts: stock.charts.filter(({ type }) => type === 1440) }));
+	}
+
+	public async getStocksBaseInfo(): Promise<{ stock_id: number; code: string }[]> {
+		const connection = await createConnection();
+		const stockRepository = connection.getCustomRepository(StockRepository);
+		const baseInfo = await stockRepository.readStockBaseInfo();
+
+		return baseInfo;
 	}
 
 	public async getConclusionByCode(code: string): Promise<ITransaction[]> {

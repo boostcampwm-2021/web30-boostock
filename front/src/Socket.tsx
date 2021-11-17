@@ -241,7 +241,8 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 				break;
 			}
 			case 'updateTarget': {
-				const { match: matchData, currentChart, order } = data;
+				const { match: matchData, currentChart, order, bidAsk } = data;
+
 				// 주문 접수 케이스
 				if (order) {
 					if (order.type === 1) setAskOrders((prev) => updateOrdersAfterAcceptOrder(prev, order) as IAskOrderItem[]);

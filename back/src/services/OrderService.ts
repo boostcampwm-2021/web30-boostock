@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager } from 'typeorm';
+import { EntityManager, getConnection } from 'typeorm';
 import { Stock, User, UserStock, OrderType, OrderStatus } from '@models/index';
 import { OrderRepository } from '@repositories/index';
 import { UserService, UserStockService, StockService } from '@services/index';
@@ -157,15 +157,36 @@ export default class OrderService {
 		);
 	}
 
-	public async getBidAskOrders(
-		entityManager: EntityManager,
-		stockId: number,
-	): Promise<{ askOrders: IAskOrder[]; bidOrders: IBidOrder[] }> {
-		const orderRepository: OrderRepository = this.getOrderRepository(entityManager);
+	// public async getBidAskOrders(
+	// 	entityManager: EntityManager,
+	// 	stockId: number,
+	// ): Promise<{ askOrders: IAskOrder[]; bidOrders: IBidOrder[] }> {
+	// 	const orderRepository: OrderRepository = this.getOrderRepository(entityManager);
 
-		const askOrders = (await orderRepository.getOrders(stockId, '1')) as IAskOrder[];
-		const bidOrders = (await orderRepository.getOrders(stockId, '2')) as IBidOrder[];
+	// 	const askOrders = (await orderRepository.getOrders(stockId, '1')) as IAskOrder[];
+	// 	const bidOrders = (await orderRepository.getOrders(stockId, '2')) as IBidOrder[];
 
-		return { askOrders, bidOrders };
+	// 	return { askOrders, bidOrders };
+	// }
+	public async getBidAskOrders(stockId: number): Promise<{ askOrders: IAskOrder[]; bidOrders: IBidOrder[] }> {
+		const connection = getConnection();
+		const queryRunner = connection.createQueryRunner();
+		await queryRunner.connect();
+		await queryRunner.startTransaction();
+
+		try {
+			const orderRepository: OrderRepository = this.getOrderRepository(queryRunner.manager);
+
+			const askOrders = (await orderRepository.getOrders(stockId, '1')) as IAskOrder[];
+			const bidOrders = (await orderRepository.getOrders(stockId, '2')) as IBidOrder[];
+			queryRunner.commitTransaction();
+
+			return { askOrders, bidOrders };
+		} catch (error) {
+			queryRunner.rollbackTransaction();
+		} finally {
+			queryRunner.release();
+		}
+		return { askOrders: [], bidOrders: [] };
 	}
 }

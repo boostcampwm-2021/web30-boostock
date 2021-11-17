@@ -145,6 +145,7 @@ export default class BidAskTransaction implements IBidAskTransaction {
 				body: JSON.stringify({
 					match: {
 						id: document.id,
+						stockId: this.transactionLog.stockId,
 						code: this.transactionLog.code,
 						price: this.transactionLog.price,
 						amount: this.transactionLog.amount,
