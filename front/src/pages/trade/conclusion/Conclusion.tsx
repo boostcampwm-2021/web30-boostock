@@ -18,7 +18,7 @@ const colorPicker = (prev: number, current: number): string => {
 	return '';
 };
 
-const translateTimestampFormat = (timestamp: string): string => {
+const translateTimestampFormat = (timestamp: number): string => {
 	const stamp = new Date(timestamp);
 	const month = `00${stamp.getMonth() + 1}`.slice(-2);
 	const day = `00${stamp.getDay()}`.slice(-2);
@@ -30,7 +30,6 @@ const translateTimestampFormat = (timestamp: string): string => {
 const Conclusion = ({ previousClose }: Props) => {
 	const [tab, setTab] = useState(TAB.TICK);
 	const stockExecutionState = useRecoilValue(StockExecution);
-
 	return (
 		<div className="conclusion-container">
 			<div className="conclusion-title">
@@ -67,10 +66,8 @@ const Conclusion = ({ previousClose }: Props) => {
 							<div className={`conclusion-single-price ${colorPicker(previousClose, log.price)}`}>
 								{log.price.toLocaleString('ko-kr')}
 							</div>
-							<div className={`conclusion-volume ${log.type === 'bid' ? 'up' : 'down'}`}>
-								{log.volume.toLocaleString('ko-kr')}
-							</div>
-							<div className="conclusion-total-price">{log.amount.toLocaleString('ko-kr')}</div>
+							<div className="conclusion-volume">{log.amount.toLocaleString('ko-kr')}</div>
+							<div className="conclusion-total-price">{log.volume.toLocaleString('ko-kr')}</div>
 						</div>
 					);
 				})}

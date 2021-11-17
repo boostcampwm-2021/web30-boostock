@@ -125,22 +125,6 @@ export default class BidAskTransaction implements IBidAskTransaction {
 			await this.ChartRepositoryRunner.update(chart.chartId, chart);
 		});
 
-		fetch(`${process.env.API_SERVER_URL}/api/stock/conclusion`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				match: {
-					code: this.transactionLog.code,
-					price: this.transactionLog.price,
-					amount: this.transactionLog.amount,
-					createdAt: new Date(),
-				},
-				currentChart: updatedCharts,
-			}),
-		});
-
 		const transaction = new Transaction({
 			bidUserId: this.transactionLog.bidUser,
 			askUserId: this.transactionLog.askUser,
@@ -149,8 +133,26 @@ export default class BidAskTransaction implements IBidAskTransaction {
 			price: this.transactionLog.price,
 			createdAt: new Date(),
 		});
-		transaction.save((err) => {
+
+		transaction.save((err, document) => {
 			if (err) throw new Error('오류났어요 롤백해주세요');
+
+			fetch(`${process.env.API_SERVER_URL}/api/stock/conclusion`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					match: {
+						id: document.id,
+						code: this.transactionLog.code,
+						price: this.transactionLog.price,
+						amount: this.transactionLog.amount,
+						createdAt: new Date(),
+					},
+					currentChart: updatedCharts,
+				}),
+			});
 		});
 	}
 }

@@ -14,6 +14,9 @@ export const camelToSnake = (str) => {
 	});
 };
 
+export const binArrayToJson = (binArray: ArrayBufferLike) => JSON.parse(new TextDecoder().decode(binArray));
+export const JsonToBinArray = (json: unknown): Uint8Array => new TextEncoder().encode(JSON.stringify(json, null, 0));
+
 export const toJsonFromError = (error: CommonError): { status: number; json: { error: string; message: string } } => {
 	return {
 		status: error.status || 500,
@@ -28,6 +31,7 @@ export const transaction = async (
 	callback: (queryRunner: QueryRunner, commit: () => void, rollaback: (err: CommonError) => void, release: () => void) => void,
 	req?: Request,
 	res?: Response,
+	next?,
 ): Promise<void> => {
 	const connection = getConnection();
 	const queryRunner = connection.createQueryRunner();
@@ -35,9 +39,8 @@ export const transaction = async (
 	const commit = () => {
 		queryRunner.commitTransaction();
 	};
-	const rollback = (err: CommonError) => {
-		const errJson = toJsonFromError(err);
-		res?.status(errJson.status).json(errJson.json).end();
+	const rollback = (err) => {
+		next(err);
 		queryRunner.rollbackTransaction();
 	};
 	const release = () => {
@@ -52,7 +55,7 @@ export const transaction = async (
 	} catch (err: unknown) {
 		queryRunner.rollbackTransaction();
 		queryRunner.release();
-		res?.status(500).end();
+		// res?.status(500).end();
 	}
 };
 

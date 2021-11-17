@@ -2,16 +2,64 @@ import React from 'react';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
+import stockExecutionAtom, { IStockExecutionItem } from './recoil/stockExecution/atom';
 import { translateResponseData } from './common/utils/socketUtils';
 
 interface IProps {
 	children: React.ReactNode;
 }
+interface IStartSocket {
+	setSocket: SetterOrUpdater<WebSocket | null>;
+	setStockList: SetterOrUpdater<IStockListItem[]>;
+	setStockExecution: SetterOrUpdater<IStockExecutionItem[]>;
+}
+interface IResponseConclusions {
+	createdAt: number;
+	price: number;
+	amount: number;
+	_id: string;
+}
+interface IMatchData {
+	createdAt: number;
+	price: number;
+	amount: number;
+	code: string;
+	id: string;
+}
 
+const MAX_EXECUTION_SIZE = 50;
 let reconnector: NodeJS.Timer;
 
-const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList: SetterOrUpdater<IStockListItem[]>) => {
+const dataToExecutionForm = (conclusionList: IResponseConclusions[]): IStockExecutionItem[] =>
+	conclusionList.map(({ createdAt, price, amount, _id }): IStockExecutionItem => {
+		return {
+			timestamp: createdAt,
+			price,
+			volume: price * amount,
+			amount,
+			id: _id,
+		};
+	});
+
+const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[]>, match: IMatchData) => {
+	const newExecution = {
+		id: match.id,
+		price: match.price,
+		amount: match.amount,
+		timestamp: match.createdAt,
+		volume: match.price * match.amount,
+	};
+	setStockExecution((prev) => {
+		const executionList = [newExecution, ...prev];
+		if (executionList.length > MAX_EXECUTION_SIZE) executionList.pop();
+
+		return executionList;
+	});
+};
+
+const startSocket = ({ setSocket, setStockList, setStockExecution }: IStartSocket) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
+	webSocket.binaryType = 'arraybuffer';
 
 	webSocket.onopen = () => {
 		setSocket(webSocket);
@@ -20,16 +68,16 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket(setSocket, setStockList);
+			startSocket({ setSocket, setStockList, setStockExecution });
 		}, 1000);
 	};
 	webSocket.onmessage = (event) => {
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
-			case 'stocks_info':
+			case 'stocksInfo':
 				setStockList(data);
 				break;
-			case 'update_stock':
+			case 'updateStock':
 				setStockList((prev) => {
 					return prev.map((stockItem) => {
 						if (stockItem.code !== data.code) return stockItem;
@@ -52,7 +100,7 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 					});
 				});
 				break;
-			case 'update_target':
+			case 'updateTarget':
 				setStockList((prev) => {
 					return prev.map((stockItem) => {
 						const matchData = data.match;
@@ -81,18 +129,22 @@ const startSocket = (setSocket: SetterOrUpdater<WebSocket | null>, setStockList:
 						};
 					});
 				});
+				addNewExecution(setStockExecution, data.match);
+				break;
+			case 'baseStock':
+				setStockExecution(dataToExecutionForm(data.conclusions));
 				break;
 			default:
 		}
 	};
-	webSocket.onerror = (event) => {};
 };
 
 const Socket = ({ children }: IProps) => {
 	const setSocket = useSetRecoilState(webSocketAtom);
 	const setStockList = useSetRecoilState(stockListAtom);
+	const setStockExecution = useSetRecoilState(stockExecutionAtom);
 
-	startSocket(setSocket, setStockList);
+	startSocket({ setSocket, setStockList, setStockExecution });
 
 	return <>{children}</>;
 };
