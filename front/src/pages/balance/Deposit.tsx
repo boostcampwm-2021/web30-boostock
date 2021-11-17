@@ -30,7 +30,7 @@ const Deposit = () => {
 		if (!isValid()) return;
 		setLoading(true);
 
-		fetch(`${process.env.SERVER_URL}/api/???`, {
+		fetch(`${process.env.SERVER_URL}/api/user/balance/deposit`, {
 			method: 'POST',
 			credentials: 'include',
 			headers: {

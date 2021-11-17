@@ -31,7 +31,7 @@ const Withdrawal = () => {
 		if (!isValid()) return;
 		setLoading(true);
 
-		fetch(`${process.env.SERVER_URL}/api/???`, {
+		fetch(`${process.env.SERVER_URL}/api/user/balance/withdraw`, {
 			method: 'POST',
 			credentials: 'include',
 			headers: {

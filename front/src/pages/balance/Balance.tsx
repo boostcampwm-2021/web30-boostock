@@ -60,7 +60,7 @@ const Balance = () => {
 
 	const getBalance = (balance: IBalance) => {
 		return (
-			<div className="my__item">
+			<div className="my__item" key={balance.bankAccount}>
 				<div>{balance.balanceType}</div>
 				<div>{balance.bank}</div>
 				<div>{balance.bankAccount}</div>
