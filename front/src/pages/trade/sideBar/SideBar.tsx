@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import User from '@recoil/user/index';
 import StockList, { IStockListItem } from '@recoil/stockList/index';
 import SideBarItem from './sideBarItem/SideBarItem';
@@ -13,15 +13,41 @@ import SideBarNav, { MENU } from './sideBarNav/SideBarNav';
 
 const SideBar = () => {
 	const [menu, setMenu] = useState(MENU.ALL);
-	const userState = useRecoilValue(User);
+	const [regex, setRegex] = useState(/.*/);
+
+	const [userState] = useRecoilState(User);
 	const stockListState = useRecoilValue(StockList);
 	const [filteredStockListState, setFilteredStockListState] = useState<IStockListItem[]>([]);
-
-	const [regex, setRegex] = useState(/.*/);
 
 	const searchEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setRegex(getRegExp(event?.target?.value));
 	};
+
+	useEffect(() => {
+		fetch(`${process.env.SERVER_URL}/api/user/favorite`, {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json; charset=utf-8',
+			},
+		}).then((res: Response) => {
+			if (res.ok) {
+				userState.favorite = [];
+			}
+		});
+
+		fetch(`${process.env.SERVER_URL}/api/user/hold`, {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json; charset=utf-8',
+			},
+		}).then((res: Response) => {
+			if (res.ok) {
+				userState.hold = [];
+			}
+		});
+	}, [userState]);
 
 	useEffect(() => {
 		setFilteredStockListState(() => {
@@ -65,7 +91,7 @@ const SideBar = () => {
 							regex.test(stock.nameEnglish.toLowerCase()),
 					)
 					.map((stock: IStockListItem) => (
-						<SideBarItem key={stock.stockId} stock={stock} isFavorite={userState.favorite.includes(stock.stockId)} />
+						<SideBarItem key={stock.stockId} stock={stock} />
 					))}
 			</div>
 		</div>
