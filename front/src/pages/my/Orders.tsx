@@ -12,7 +12,6 @@ interface IOrder {
 
 	price: number;
 	orderAmount: number;
-	remainAmount: number;
 
 	status: string;
 }
@@ -28,7 +27,6 @@ const Orders = () => {
 
 			price: 1234567,
 			orderAmount: 1234567,
-			remainAmount: 1234567,
 
 			status: 'PENDING',
 		},
@@ -63,7 +61,6 @@ const Orders = () => {
 				</div>
 				<div className="my__item-number">{order.price.toLocaleString()}</div>
 				<div className="my__item-number">{order.orderAmount.toLocaleString()}</div>
-				<div className="my__item-number">{order.remainAmount.toLocaleString()}</div>
 				<div className="my__item-number">{order.status}</div>
 			</div>
 		);
@@ -76,8 +73,7 @@ const Orders = () => {
 				<div>주문종류</div>
 				<div>종목명</div>
 				<div className="my__legend-number">주문가격 (원)</div>
-				<div className="my__legend-number">주문수량 (개)</div>
-				<div className="my__legend-number">남은수량 (개)</div>
+				<div className="my__legend-number">주문수량 (주)</div>
 				<div className="my__legend-number">상태</div>
 			</div>
 			{orders.map((order: IOrder) => getOrder(order))}
