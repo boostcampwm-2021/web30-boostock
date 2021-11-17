@@ -5,11 +5,6 @@ import { IBidOrder } from '@interfaces/bidOrder';
 
 @EntityRepository(Order)
 export default class OrderRepository extends Repository<Order> {
-	public async createOrder(order: Order): Promise<boolean> {
-		const result: InsertResult = await this.insert(order);
-		return result.identifiers.length > 0;
-	}
-
 	public async readOrderById(id: number): Promise<Order | undefined> {
 		return this.findOne(id, {
 			lock: { mode: 'pessimistic_write' },
