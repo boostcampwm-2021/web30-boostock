@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import toast, { Toaster } from 'react-hot-toast';
 import { Link, Redirect, useLocation } from 'react-router-dom';
+
+import User from '@recoil/user/index';
 
 import './SignIn.scss';
 
 const SignIn = () => {
 	const { pathname, search } = useLocation();
 	const query = new URLSearchParams(search);
+	const [userState, setUserState] = useRecoilState(User);
 	const [result, setResult] = useState<boolean>(false);
 
 	const isSignUp = pathname === '/auth/signup';
@@ -23,7 +28,12 @@ const SignIn = () => {
 			},
 			body: JSON.stringify({ code: query.get('code') }),
 		}).then((res: Response) => {
-			setResult(res.ok);
+			if (res.ok) {
+				setUserState({ ...userState, isLoggedIn: true });
+				setResult(true);
+			} else {
+				toast.error('로그인에 실패했습니다. 잠시 후 재시도 해주세요.');
+			}
 		});
 	}
 
@@ -31,6 +41,7 @@ const SignIn = () => {
 
 	return (
 		<div className="signin">
+			<Toaster />
 			<h1>{TEXT}</h1>
 			<a
 				className="signin-button github-type"
