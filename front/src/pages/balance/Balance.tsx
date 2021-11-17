@@ -16,12 +16,17 @@ enum TYPE {
 	입금 = 1,
 }
 
+enum STATUS {
+	진행중 = 0,
+	완료 = 1,
+}
+
 interface IHistory {
 	type: number;
 	bank: string;
 	bankAccount: string;
 	volume: number;
-	status: string;
+	status: number;
 	createdAt: number;
 }
 
@@ -39,7 +44,7 @@ const Balance = () => {
 				<div>{history.bank}</div>
 				<div>{history.bankAccount}</div>
 				<div className="my__item-number">{history.volume.toLocaleString()}</div>
-				<div className="my__item-number">{history.status}</div>
+				<div className="my__item-number">{STATUS[history.status]}</div>
 				<div className="my__item-number">{toDateString(history.createdAt)}</div>
 			</div>
 		);
