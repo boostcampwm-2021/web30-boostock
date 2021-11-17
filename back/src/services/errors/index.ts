@@ -12,3 +12,6 @@ export { default as OrderError } from './OrderError';
 
 export * from './ParamError';
 export { default as ParamError } from './ParamError';
+
+export * from './AuthError';
+export { default as AuthError } from './AuthError';

@@ -24,4 +24,12 @@ export default class UserRepository extends Repository<User> {
 		const result: DeleteResult = await this.delete(id);
 		return result.affected != null && result.affected > 0;
 	}
+
+	public async readUserByIdWithStocks(id: number): Promise<User | undefined> {
+		return this.findOne(id, { relations: ['stocks'] });
+	}
+
+	public async readUserByIdWithFavorites(id: number): Promise<User | undefined> {
+		return this.findOne(id, { relations: ['favorites'] });
+	}
 }
