@@ -1,6 +1,7 @@
 import { EntityRepository, Repository, InsertResult, UpdateResult, DeleteResult } from 'typeorm';
 import Order from '@models/Order';
-import { IBidAskOrder } from '@interfaces/bidAskOrder';
+import { IAskOrder } from '@interfaces/askOrder';
+import { IBidOrder } from '@interfaces/bidOrder';
 
 @EntityRepository(Order)
 export default class OrderRepository extends Repository<Order> {
@@ -25,7 +26,7 @@ export default class OrderRepository extends Repository<Order> {
 		return result.affected != null && result.affected > 0;
 	}
 
-	public async getOrders(stockId: number, type: '1' | '2'): Promise<IBidAskOrder[]> {
+	public async getOrders(stockId: number, type: '1' | '2'): Promise<Array<IAskOrder | IBidOrder>> {
 		const LIMIT = 10;
 
 		return this.createQueryBuilder()
@@ -34,11 +35,8 @@ export default class OrderRepository extends Repository<Order> {
 			.andWhere('status = :status', { status: 'pending' })
 			.andWhere('type = :type', { type })
 			.groupBy('price')
-			.orderBy({
-				price: 'DESC',
-				type: 'ASC',
-			})
+			.orderBy({ price: 'DESC' })
 			.limit(LIMIT)
-			.getRawMany<IBidAskOrder>();
+			.getRawMany<IAskOrder | IBidOrder>();
 	}
 }
