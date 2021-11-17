@@ -8,7 +8,6 @@ import { ISocketRequest } from '../interfaces/socketRequest';
 import StockService from '../services/StockService';
 
 const socketClientMap = new Map();
-
 const translateRequestFormat = (data) => binArrayToJson(data);
 const translateResponseFormat = (type, data) => JsonToBinArray({ type, data });
 

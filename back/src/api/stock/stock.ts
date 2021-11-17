@@ -6,7 +6,7 @@ export default (): express.Router => {
 	const router = express.Router();
 	router.post('/conclusion', async (req: Request, res: Response) => {
 		const msg = req.body;
-		const { code: stockCode, id: stockId } = msg.match;
+		const { code: stockCode, stockId } = msg.match;
 		const orderServiceInstance = new OrderService();
 
 		msg.bidAsk = await orderServiceInstance.getBidAskOrders(stockId);
