@@ -1,6 +1,7 @@
 import React from 'react';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import webSocketAtom from '@recoil/websocket/atom';
+import { askAvailableAtom, bidAvailableAtom, getUserAskAvailable, getUserBidAvailable } from '@recoil/orderAvailable/index';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
 import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
 import stockExecutionAtom, { IStockExecutionItem } from './recoil/stockExecution/atom';
@@ -15,6 +16,8 @@ interface IStartSocket {
 	setStockExecution: SetterOrUpdater<IStockExecutionItem[]>;
 	setAskOrders: SetterOrUpdater<IAskOrderItem[]>;
 	setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
+	handleSetAskAvailable: (code: string) => Promise<void>;
+	handleSetBidAvailable: () => Promise<void>;
 }
 interface IResponseConclusions {
 	createdAt: number;
@@ -191,7 +194,15 @@ const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[
 	});
 };
 
-const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders }: IStartSocket) => {
+const startSocket = ({
+	setSocket,
+	setStockList,
+	setStockExecution,
+	setAskOrders,
+	setBidOrders,
+	handleSetAskAvailable,
+	handleSetBidAvailable,
+}: IStartSocket) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.binaryType = 'arraybuffer';
 
@@ -202,7 +213,15 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders });
+			startSocket({
+				setSocket,
+				setStockList,
+				setStockExecution,
+				setAskOrders,
+				setBidOrders,
+				handleSetAskAvailable,
+				handleSetBidAvailable,
+			});
 		}, 1000);
 	};
 	webSocket.onmessage = (event) => {
@@ -235,6 +254,9 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 
 					setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
 					addNewExecution(setStockExecution, data.match);
+
+					handleSetAskAvailable(matchData.code);
+					handleSetBidAvailable();
 				}
 				break;
 			}
@@ -253,8 +275,28 @@ const Socket = ({ children }: IProps) => {
 	const setAskOrders = useSetRecoilState(askOrdersAtom);
 	const setBidOrders = useSetRecoilState(bidOrdersAtom);
 	const setStockExecution = useSetRecoilState(stockExecutionAtom);
+	const setAskAvailable = useSetRecoilState(askAvailableAtom);
+	const setBidAvailable = useSetRecoilState(bidAvailableAtom);
 
-	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders });
+	const handleSetAskAvailable = async (code: string) => {
+		const availableAmount = await getUserAskAvailable(code);
+		setAskAvailable(availableAmount);
+	};
+
+	const handleSetBidAvailable = async () => {
+		const availableAmount = await getUserBidAvailable();
+		setBidAvailable(availableAmount);
+	};
+
+	startSocket({
+		setSocket,
+		setStockList,
+		setStockExecution,
+		setAskOrders,
+		setBidOrders,
+		handleSetAskAvailable,
+		handleSetBidAvailable,
+	});
 
 	return <>{children}</>;
 };
