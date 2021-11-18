@@ -178,17 +178,6 @@ export default class OrderService {
 		}
 	}
 
-	// public async getBidAskOrders(
-	// 	entityManager: EntityManager,
-	// 	stockId: number,
-	// ): Promise<{ askOrders: IAskOrder[]; bidOrders: IBidOrder[] }> {
-	// 	const orderRepository: OrderRepository = this.getOrderRepository(entityManager);
-
-	// 	const askOrders = (await orderRepository.getOrders(stockId, '1')) as IAskOrder[];
-	// 	const bidOrders = (await orderRepository.getOrders(stockId, '2')) as IBidOrder[];
-
-	// 	return { askOrders, bidOrders };
-	// }
 	public async getBidAskOrders(stockId: number): Promise<{ askOrders: IAskOrder[]; bidOrders: IBidOrder[] }> {
 		const connection = getConnection();
 		const queryRunner = connection.createQueryRunner();
@@ -204,10 +193,10 @@ export default class OrderService {
 
 			return { askOrders, bidOrders };
 		} catch (error) {
-			queryRunner.rollbackTransaction();
+			await queryRunner.rollbackTransaction();
+			throw error;
 		} finally {
-			queryRunner.release();
+			await queryRunner.release();
 		}
-		return { askOrders: [], bidOrders: [] };
 	}
 }
