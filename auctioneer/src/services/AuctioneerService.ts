@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { getConnection } from 'typeorm';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
-import { UserStock, Stock, Order } from '@models/index';
+import { Stock, Order, ORDERTYPE } from '@models/index';
 import { needToHandle } from '@helper/tools';
 import BidAskTransaction, { ITransactionLog } from './BidAskTransaction';
 import { OrderError, OrderErrorMessage } from './errors';
