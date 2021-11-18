@@ -24,10 +24,10 @@ export default class OrderService {
 
 	static async order(userId: number, stockCode: string, type: number, amount: number, price: number): Promise<void> {
 		const queryRunner = getConnection().createQueryRunner();
-		const orderRepository = getCustomRepository(OrderRepository);
-		const userRepository = getCustomRepository(UserRepository);
-		const stockRepository = getCustomRepository(StockRepository);
-		const userStockRepository = getCustomRepository(UserStockRepository);
+		const orderRepository = queryRunner.manager.getCustomRepository(OrderRepository);
+		const userRepository = queryRunner.manager.getCustomRepository(UserRepository);
+		const stockRepository = queryRunner.manager.getCustomRepository(StockRepository);
+		const userStockRepository = queryRunner.manager.getCustomRepository(UserStockRepository);
 
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
@@ -52,7 +52,7 @@ export default class OrderService {
 				const payout: number = price * amount;
 				if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
 
-				user.balance = payout * -1;
+				user.balance -= payout;
 				await userRepository.save(user);
 			}
 			await orderRepository.save(
@@ -66,20 +66,21 @@ export default class OrderService {
 					status: OrderStatus.PENDING,
 				}),
 			);
+			await queryRunner.commitTransaction();
 		} catch (error) {
-			queryRunner.rollbackTransaction();
+			await queryRunner.rollbackTransaction();
 			throw error;
 		} finally {
-			queryRunner.release();
+			await queryRunner.release();
 		}
 	}
 
 	static async cancel(userId: number, orderId: number): Promise<void> {
 		const queryRunner = getConnection().createQueryRunner();
-		const orderRepository = getCustomRepository(OrderRepository);
-		const userRepository = getCustomRepository(UserRepository);
-		const stockRepository = getCustomRepository(StockRepository);
-		const userStockRepository = getCustomRepository(UserStockRepository);
+		const orderRepository = queryRunner.manager.getCustomRepository(OrderRepository);
+		const userRepository = queryRunner.manager.getCustomRepository(UserRepository);
+		const stockRepository = queryRunner.manager.getCustomRepository(StockRepository);
+		const userStockRepository = queryRunner.manager.getCustomRepository(UserStockRepository);
 
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
@@ -111,7 +112,7 @@ export default class OrderService {
 			}
 			if (order.type === OrderType.BUY) {
 				const payout: number = order.price * order.amount;
-				user.balance = payout * -1;
+				user.balance -= payout;
 				await userRepository.save(user);
 			}
 			await orderRepository.save(
@@ -120,20 +121,21 @@ export default class OrderService {
 					status: OrderStatus.CANCELED,
 				}),
 			);
+			await queryRunner.commitTransaction();
 		} catch (error) {
-			queryRunner.rollbackTransaction();
+			await queryRunner.rollbackTransaction();
 			throw error;
 		} finally {
-			queryRunner.release();
+			await queryRunner.release();
 		}
 	}
 
 	static async modify(userId: number, orderId: number, amount: number, price: number): Promise<void> {
 		const queryRunner = getConnection().createQueryRunner();
-		const orderRepository = getCustomRepository(OrderRepository);
-		const userRepository = getCustomRepository(UserRepository);
-		const stockRepository = getCustomRepository(StockRepository);
-		const userStockRepository = getCustomRepository(UserStockRepository);
+		const orderRepository = queryRunner.manager.getCustomRepository(OrderRepository);
+		const userRepository = queryRunner.manager.getCustomRepository(UserRepository);
+		const stockRepository = queryRunner.manager.getCustomRepository(StockRepository);
+		const userStockRepository = queryRunner.manager.getCustomRepository(UserStockRepository);
 
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
@@ -156,7 +158,8 @@ export default class OrderService {
 				const payout = price * amount - order.price * order.amount;
 				if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
 
-				await UserService.updateBalance(user.userId, payout * -1);
+				user.balance -= payout;
+				await userRepository.save(user);
 			}
 
 			await orderRepository.updateOrder(
@@ -166,25 +169,15 @@ export default class OrderService {
 					amount,
 				}),
 			);
+			await queryRunner.commitTransaction();
 		} catch (error) {
-			queryRunner.rollbackTransaction();
+			await queryRunner.rollbackTransaction();
 			throw error;
 		} finally {
-			queryRunner.release();
+			await queryRunner.release();
 		}
 	}
 
-	// public async getBidAskOrders(
-	// 	entityManager: EntityManager,
-	// 	stockId: number,
-	// ): Promise<{ askOrders: IAskOrder[]; bidOrders: IBidOrder[] }> {
-	// 	const orderRepository: OrderRepository = this.getOrderRepository(entityManager);
-
-	// 	const askOrders = (await orderRepository.getOrders(stockId, '1')) as IAskOrder[];
-	// 	const bidOrders = (await orderRepository.getOrders(stockId, '2')) as IBidOrder[];
-
-	// 	return { askOrders, bidOrders };
-	// }
 	public async getBidAskOrders(stockId: number): Promise<{ askOrders: IAskOrder[]; bidOrders: IBidOrder[] }> {
 		const connection = getConnection();
 		const queryRunner = connection.createQueryRunner();
@@ -200,10 +193,10 @@ export default class OrderService {
 
 			return { askOrders, bidOrders };
 		} catch (error) {
-			queryRunner.rollbackTransaction();
+			await queryRunner.rollbackTransaction();
+			throw error;
 		} finally {
-			queryRunner.release();
+			await queryRunner.release();
 		}
-		return { askOrders: [], bidOrders: [] };
 	}
 }

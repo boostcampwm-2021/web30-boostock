@@ -47,8 +47,9 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 			price: bidAskPrice,
 		};
 
-		const config = {
+		const config: RequestInit = {
 			method: 'POST',
+			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json',
 			},
