@@ -322,3 +322,15 @@
 		background-color: $darkModeLightGreen;
 	}
 }
+
+.signup-action {
+	
+}
+
+.signin-action {
+	background-color: $primary;
+
+	.dark-theme & {
+		background-color: $primary2;
+	}
+}
