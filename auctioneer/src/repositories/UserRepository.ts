@@ -11,7 +11,6 @@ export default class UserRepository extends Repository<User> {
 	async readUserById(id: number): Promise<User | undefined> {
 		return this.findOne(id, {
 			lock: { mode: 'pessimistic_write' },
-			relations: ['favorites', 'stocks'],
 		});
 	}
 
