@@ -23,7 +23,7 @@ const AskOrderItem = ({ askOrder, totalAndMaxAmount, volumeWidth, setBidAskPrice
 					>
 						&nbsp;
 					</div>
-					<p className="amount-sell-text">{formatNumber(askOrder.amount)}</p>
+					<p className="amount-text sell">{formatNumber(askOrder.amount)}</p>
 				</button>
 			</td>
 			<td className="order-row-price">

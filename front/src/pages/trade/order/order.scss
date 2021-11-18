@@ -165,18 +165,22 @@
 	}
 }
 
-.amount-sell-text {
+.amount-text {
 	position: absolute;
 	margin: 0;
-	right: 1px;
 	top: 14px;
-}
 
-.amount-buy-text {
-	position: absolute;
-	margin: 0;
-	left: 1px;
-	top: 14px;
+	&.buy {
+		left: 1px;
+	}
+
+	&.sell {
+		right: 1px;
+	}
+
+	.dark-theme & {
+		color: $white2;
+	}
 }
 
 .order-buy {

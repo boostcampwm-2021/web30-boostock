@@ -29,7 +29,7 @@ const BidOrderItem = ({ bidOrder, totalAndMaxAmount, volumeWidth, setBidAskPrice
 					>
 						&nbsp;
 					</div>
-					<p className="amount-buy-text">{formatNumber(bidOrder.amount)}</p>
+					<p className="amount-text buy">{formatNumber(bidOrder.amount)}</p>
 				</button>
 			</td>
 		</tr>
