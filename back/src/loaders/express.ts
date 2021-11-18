@@ -44,7 +44,7 @@ export default async ({ app }: { app: express.Application }): Promise<void> => {
 		}
 		if (err instanceof CommonError) {
 			return res.status(err.status).send({ message: err.message }).end();
-    }
+		}
 		return next(err);
 	});
 

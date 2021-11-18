@@ -1,6 +1,8 @@
 import React, { ChangeEvent, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { Redirect, useLocation } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import User from '@recoil/user';
 
 import './SignUp.scss';
 
@@ -13,6 +15,7 @@ const SignUp = () => {
 	const [isEmailValidate, setEmailValidate] = useState<boolean>(false);
 	const [term, setTerm] = useState<boolean>(false);
 	const [result, setResult] = useState<boolean>(false);
+	const [userState, setUserState] = useRecoilState(User);
 
 	const emailValidator = new RegExp('\\S+@\\S+\\.\\S+');
 
@@ -53,7 +56,12 @@ const SignUp = () => {
 			},
 			body: JSON.stringify({ code: query.get('code'), username, email }),
 		}).then((res: Response) => {
-			if (res.ok) setResult(res.ok);
+			if (res.ok) {
+				setUserState({ ...userState, isLoggedIn: true });
+				setResult(true);
+			} else {
+				toast.error('로그인에 실패했습니다. 잠시 후 재시도 해주세요.');
+			}
 		});
 	};
 

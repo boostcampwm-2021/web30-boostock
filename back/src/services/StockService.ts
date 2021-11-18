@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, createQueryBuilder, getCustomRepository, getConnection, createConnection } from 'typeorm';
+import { EntityManager, createQueryBuilder, getCustomRepository, getConnection, createConnection, getRepository } from 'typeorm';
 import { Stock } from '@models/index';
 import { StockRepository } from '@repositories/index';
 import Transaction, { ITransaction } from '@models/Transaction';
@@ -41,7 +41,7 @@ export default class StockService {
 		const stock = await stockRepository.findOne({ where: { code } });
 		if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 		return stock.stockId;
-  }
+	}
 
 	public async getCurrentStockPrice(entityManager: EntityManager, stockId: number): Promise<{ price: number }> {
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
@@ -67,8 +67,8 @@ export default class StockService {
 		return stock;
 	}
 
-	public async getStocksCurrent(entityManager: EntityManager): Promise<Stock[]> {
-		const stockRepository: StockRepository = this.getStockRepository(entityManager);
+	public async getStocksCurrent(): Promise<Stock[]> {
+		const stockRepository = getCustomRepository(StockRepository);
 
 		const allStocks: Stock[] = await stockRepository.readAllStocks();
 		return allStocks.map((stock) => ({ ...stock, charts: stock.charts.filter(({ type }) => type === 1440) }));

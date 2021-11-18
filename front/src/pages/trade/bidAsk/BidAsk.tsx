@@ -9,7 +9,6 @@ import BidAskAction from './BidAskAction';
 import './bidask.scss';
 
 interface IOrderData {
-	userId: number;
 	stockCode: string;
 	type: number;
 	option: number;
@@ -39,7 +38,6 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 		}
 
 		const orderData: IOrderData = {
-			userId: 1,
 			stockCode,
 			type: bidAskType === '매도' ? 1 : 2,
 			option: bidAskOption === '지정가' ? 1 : 2,
