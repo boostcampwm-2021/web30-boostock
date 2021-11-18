@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import * as ReactDOM from 'react-dom';
 import { RecoilRoot, useRecoilState } from 'recoil';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-
 import User from '@recoil/user/index';
 import TopBar from '@common/topbar/TopBar';
 import Theme from './Theme';
@@ -45,7 +44,6 @@ const App: React.FC = () => {
 						...userState,
 						username: data.user.username,
 						email: data.user.email,
-						balance: data.user.balance,
 						isLoggedIn: true,
 					});
 				});
