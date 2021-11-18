@@ -43,7 +43,7 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 
 	const getUserBidAvailable = async () => {
 		try {
-			const res = await fetch(`${process.env.SERVER_URL}/api/user/balance`, { credentials: 'include' });
+			const res = await fetch(`${process.env.SERVER_URL}/api/user/balance?start=0&end=0`, { credentials: 'include' });
 			if (res.status !== 200) throw new Error();
 			const { balance }: { balance: number } = await res.json();
 			setBidAvailable(balance);

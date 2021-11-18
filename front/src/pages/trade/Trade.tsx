@@ -98,7 +98,7 @@ const Trade = () => {
 					<section className="trade-status">
 						<section className="trade-order">
 							<header className="order-header">호가정보</header>
-							<Order currentPrice={stockState.price ?? 0} />
+							<Order previousClose={stockState.previousClose ?? 0} />
 						</section>
 						<section className="trade-bid-ask">
 							<BidAsk stockCode={stockCode} />
