@@ -2,73 +2,94 @@
 
 .signin {
 	display: flex;
-    flex-direction: column;
-    align-items: center;
+	flex-direction: column;
+	align-items: center;
 	justify-content: center;
 
-    width: 100vw;
-    height: 100vh;
+	width: 100vw;
+	height: 100vh;
 }
 
 .signin-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
-    width: 400px;
-    height: 48px;
-    margin: 8px;
-    box-sizing: border-box;
+	width: 400px;
+	height: 48px;
+	margin: 8px;
+	box-sizing: border-box;
 
-    text-decoration: none;
-    border-radius: 4px;
-    cursor: pointer;
+	text-decoration: none;
+	border-radius: 4px;
+	cursor: pointer;
 
-    &.signup-type {
-        border: 1px solid #ccc;
-        background-color: #fff;
+	&.signup-type {
+		border: 1px solid #ccc;
+		background-color: #fff;
 
-        &:hover {
-            background-color: #eee;
-            transition: background-color 0.1s;
-        }
-    }
+		&:hover {
+			background-color: #eee;
+			transition: background-color 0.1s;
+		}
+	}
 
-    &.github-type {
-        padding: 0px 24px 0px 48px;
+	&.github-type {
+		padding: 0px 24px 0px 48px;
 
-        color: #ffffff;
-        background-color: #373737;
+		color: #ffffff;
+		background-color: #373737;
 
-        background-image: url('@assets/icon-github.png');
-        background-position: 8px center;
-        background-repeat: no-repeat;
+		background-image: url('@assets/icon-github.png');
+		background-position: 8px center;
+		background-repeat: no-repeat;
 
-        &:hover {
-            background-color: #171717;
-            transition: background-color 0.1s;
-        }
-    }
+		&:hover {
+			background-color: #171717;
+			transition: background-color 0.1s;
+		}
+	}
+
+	.dark-theme & {
+		&.signup-type {
+			border: 1px solid $darkModeBorderColor;
+		}
+	}
 }
 
 .signin-hr {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
-    margin: 8px 0px 8px 0px;
+	margin: 8px 0px 8px 0px;
 
+	.signin-hr-line {
+		width: 180px;
+		border-top: 1px solid #888;
+	}
 
-    .signin-hr-line {
-        width: 180px;
-        border-top: 1px solid #888;
-    }
+	span {
+		width: fit-content;
+		margin: 0px 8px 0px 8px;
 
-    span {
-        width: fit-content;
-        margin: 0px 8px 0px 8px;
+		color: #888;
+		font-size: 12px;
+	}
 
-        color: #888;
-        font-size: 12px;
-    }
+	.dark-theme & {
+		.signin-hr-line {
+			border-top: 1px solid $white2;
+		}
+
+		span {
+			color: $white2;
+		}
+	}
+}
+
+.sign-page-header {
+	.dark-theme & {
+		color: $white2;
+	}
 }

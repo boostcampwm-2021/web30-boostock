@@ -1,103 +1,117 @@
 @import '@common/global.scss';
+@import '@common/mixins.scss';
 
 .signup {
 	display: flex;
-    flex-direction: column;
-    align-items: center;
+	flex-direction: column;
+	align-items: center;
 	justify-content: center;
 
-    width: 100vw;
-    height: 100vh;
+	width: 100vw;
+	height: 100vh;
 }
 
 .signup-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 	justify-content: center;
+
+	.dark-theme & {
+		color: $white2;
+	}
 }
 
 .signup-box {
-    width: 800px;
-    height: 300px;
-    padding: 8px;
-    margin-bottom: 16px;
-    box-sizing: border-box;
+	@include scrollBarStyle();
+	width: 800px;
+	height: 300px;
+	padding: 8px;
+	margin-bottom: 16px;
+	box-sizing: border-box;
 
-    border: 1px solid $primary;
-    overflow-y: scroll;
+	border: 1px solid $primary;
+	overflow-y: scroll;
 
-    font-size: 12pt;
+	font-size: 12pt;
 
-    &:focus {
-        outline: none;
-        border: 1px solid $primary;
-    }
+	&:focus {
+		outline: none;
+		border: 1px solid $primary;
+	}
+
+	.dark-theme & {
+		border: 1px solid $primary2;
+
+		&:focus {
+			border: 1px solid $primary2;
+		}
+	}
 }
 
 .signup-horizontal-group {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
 
-    width: 800px;
+	width: 800px;
 }
 
 .signup-label {
-    font-size: 10pt;
-    font-weight: bold;
+	font-size: 10pt;
+	font-weight: bold;
 
-    span {
-        display: inline-block;
-        width: 50px;
-    }
+	span {
+		display: inline-block;
+		width: 50px;
+	}
 }
 
 .signup-input {
-    width: 340px;
-    height: 48px;
-    padding: 8px;
-    margin: 16px 0px 16px 16px;
-    box-sizing: border-box;
+	width: 340px;
+	height: 48px;
+	padding: 8px;
+	margin: 16px 0px 16px 16px;
+	box-sizing: border-box;
 
-    border: 1px solid #ccc;
+	border: 1px solid #ccc;
 
-    &:focus {
-        outline: none;
-        border: 1px solid $primary;
-    }
+	&:focus {
+		outline: none;
+		border: 1px solid $primary;
+	}
 }
 
 .signup-submit {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
-    width: 800px;
-    height: 48px;
-    margin: 8px;
-    box-sizing: border-box;
-    border: none;
+	width: 800px;
+	height: 48px;
+	margin: 8px;
+	box-sizing: border-box;
+	border: none;
 
-    text-decoration: none;
-    cursor: pointer;
+	text-decoration: none;
+	cursor: pointer;
 
-    color: #fff;
-    background-color: $primary2;
+	color: #fff;
+	background-color: $primary2;
 
-    &:hover {
-        background-color: $primary;
-        transition: background-color 0.5s;
-    }
+	&:hover {
+		background-color: $primary;
+		transition: background-color 0.5s;
+	}
 
-    &:disabled {
-        background-color: #bbb;
-        cursor: default;
-    }
+	&:disabled {
+		background-color: #bbb;
+		cursor: default;
+	}
 
-    &.signup-submit-validate {
-        width: 200px;
-        padding: 8px;
-        box-sizing: border-box;
-    }
+	&.signup-submit-validate {
+		width: 200px;
+		padding: 8px;
+		box-sizing: border-box;
+	}
 }
