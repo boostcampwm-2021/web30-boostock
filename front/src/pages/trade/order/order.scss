@@ -55,6 +55,28 @@
 	font-weight: 700;
 	cursor: pointer;
 
+	&.high {
+		color: $red;
+
+		.dark-theme & {
+			color: $darkModeRed;
+		}
+	}
+
+	&.neutral {
+		.dark-theme & {
+			color: $gray;
+		}
+	}
+
+	&.low {
+		color: $blue;
+
+		.dark-theme & {
+			color: $darkModeLightBlue;
+		}
+	}
+
 	@media screen and (max-width: $responsiveSize2) {
 	}
 }
@@ -115,7 +137,7 @@
 	background-color: $lightBlue;
 
 	.dark-theme & {
-		background-color: $darkModeLightBlue;
+		background-color: $darkModeBlue;
 	}
 }
 
@@ -150,17 +172,17 @@
 	background-color: $lightBlue;
 
 	.dark-theme & {
-		border-top: 1px solid #3170a1;
-		background-color: $darkModeLightBlue;
+		border-top: 1px solid #28618d;
+		background-color: $darkModeBlue;
 	}
 
 	&:hover {
-		background-color: darken($lightBlue, 10%);
+		background-color: darken($darkModeBlue, 10%);
 	}
 
 	.dark-theme & {
 		&:hover {
-			background-color: darken($darkModeLightBlue, 10%);
+			background-color: darken($darkModeBlue, 10%);
 		}
 	}
 }
@@ -188,7 +210,7 @@
 	background-color: $rose;
 
 	.dark-theme & {
-		border-top: 1px solid #af5040;
+		border-top: 1px solid #834439;
 		background-color: $darkModeRose;
 
 		&:hover {
