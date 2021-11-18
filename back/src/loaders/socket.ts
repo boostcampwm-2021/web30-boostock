@@ -1,8 +1,8 @@
 import wsModule from 'ws';
 import express from 'express';
 import Emitter from '@helper/eventEmitter';
-import { binArrayToJson, JsonToBinArray, QueryRunner, transaction } from '@helper/tools';
-import { CommonError } from '@services/errors/index';
+import { binArrayToJson, JsonToBinArray } from '@helper/tools';
+import { StockError, StockErrorMessage } from '@services/errors/index';
 import Logger from './logger';
 import { ISocketRequest } from '../interfaces/socketRequest';
 import StockService from '../services/StockService';
@@ -11,22 +11,16 @@ const socketClientMap = new Map();
 const translateRequestFormat = (data) => binArrayToJson(data);
 const translateResponseFormat = (type, data) => JsonToBinArray({ type, data });
 
-const connectNewUser = (client) => {
-	transaction((queryRunner: QueryRunner, commit: () => void, rollback: (err: CommonError) => void, release: () => void) => {
+const connectNewUser = async (client) => {
+	try {
 		const stockService = new StockService();
-		stockService
-			.getStocksCurrent(queryRunner.manager)
-			.then((stockList) => {
-				client.send(translateResponseFormat('stocksInfo', stockList));
-				socketClientMap.set(client, '');
-				commit();
-			})
-			.catch((error) => {
-				client.send(translateResponseFormat('error', '종목 리스트를 받아올 수 없습니다.'));
-				rollback(error);
-			})
-			.finally(release);
-	});
+		const stockList = await stockService.getStocksCurrent();
+
+		client.send(translateResponseFormat('stocksInfo', stockList));
+		socketClientMap.set(client, '');
+	} catch (error) {
+		throw new StockError(StockErrorMessage.CANNOT_READ_STOCK_LIST);
+	}
 };
 
 export default async (app: express.Application): Promise<void> => {
@@ -51,8 +45,8 @@ export default async (app: express.Application): Promise<void> => {
 	Emitter.on('broadcast', broadcast);
 	Emitter.on('order accepted', broadcast);
 
-	webSocketServer.on('connection', (ws, req) => {
-		connectNewUser(ws);
+	webSocketServer.on('connection', async (ws, req) => {
+		await connectNewUser(ws);
 
 		ws.on('message', async (message: string) => {
 			const requestData: ISocketRequest = translateRequestFormat(message);
@@ -68,15 +62,13 @@ export default async (app: express.Application): Promise<void> => {
 					socketClientMap.set(ws, stockCode);
 					break;
 				}
-				case 'close': {
-					socketClientMap.delete(ws);
-					break;
-				}
 				default:
 					ws.send(translateResponseFormat('error', '알 수 없는 오류가 발생했습니다.'));
 			}
 		});
 
-		ws.on('close', () => {});
+		ws.on('close', () => {
+			socketClientMap.delete(ws);
+		});
 	});
 };
