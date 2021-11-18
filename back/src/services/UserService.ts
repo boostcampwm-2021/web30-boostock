@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
 import { EntityManager, getCustomRepository } from 'typeorm';
-import { User } from '@models/index';
 import { SessionRepository, UserRepository } from '@repositories/index';
 import {
 	CommonError,
@@ -10,7 +9,7 @@ import {
 	UserError,
 	UserErrorMessage,
 } from '@services/errors/index';
-import UserBalance, { IBalanceHistory } from '@models/UserBalance';
+import { User, UserBalance, IBalanceHistory, Transaction, ITransaction } from '@models/index';
 
 interface IUserInfo {
 	username: string;
@@ -96,13 +95,27 @@ export default class UserService {
 		sessions.map((elem) => sessionRepository.delete(elem));
 	}
 
+	static async readTransactionHistory(userId: number, startTime: number, endTime: number, type = 0): Promise<ITransaction[]> {
+		if (type) {
+			const document = await Transaction.find({
+				$or: [{ bidUserId: userId }, { askUserId: userId }],
+				createdAt: { $gte: startTime, $lte: endTime },
+				type,
+			});
+			return document || [];
+		}
+		const document = await Transaction.find({
+			$or: [{ bidUserId: userId }, { askUserId: userId }],
+			createdAt: { $gte: startTime, $lte: endTime },
+		});
+		return document || [];
+	}
+
 	static async readBalanceHistory(userId: number, startTime: number, endTime: number, type = 0): Promise<IBalanceHistory[]> {
-		const time = new Date();
-		type = 1;
 		if (type) {
 			const document = await UserBalance.findOne({
 				userId,
-				'balanceHistory.createdAt': { $gte: 0, $lte: time },
+				'balanceHistory.createdAt': { $gte: startTime, $lte: endTime },
 				'balanceHistory.type': { $eq: type },
 			});
 			return document?.balanceHistory || [];

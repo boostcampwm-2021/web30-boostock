@@ -4,6 +4,7 @@ import { OrderRepository, StockRepository, UserRepository, UserStockRepository }
 import { CommonError, CommonErrorMessage, OrderError, OrderErrorMessage } from '@services/errors/index';
 import { IAskOrder } from '@interfaces/askOrder';
 import { IBidOrder } from '@interfaces/bidOrder';
+import { ORDERTYPE, STATUSTYPE } from '@models/Order';
 
 export default class OrderService {
 	static instance: OrderService | null = null;

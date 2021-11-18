@@ -1,5 +1,5 @@
 import { EntityRepository, Repository, InsertResult, UpdateResult, DeleteResult, MoreThan } from 'typeorm';
-import Order, { OrderStatus } from '@models/Order';
+import { Order } from '@models/index';
 
 @EntityRepository(Order)
 export default class OrderRepository extends Repository<Order> {
@@ -20,7 +20,7 @@ export default class OrderRepository extends Repository<Order> {
 				stockId,
 				type,
 				amount: MoreThan(0),
-				status: OrderStatus.PENDING,
+				status: STATUSTYPE.PENDING,
 			},
 			order: { price: 'ASC', createdAt: 'ASC' },
 			lock: { mode: 'pessimistic_write' },
@@ -33,7 +33,7 @@ export default class OrderRepository extends Repository<Order> {
 				stockId,
 				type,
 				amount: MoreThan(0),
-				status: OrderStatus.PENDING,
+				status: STATUSTYPE.PENDING,
 			},
 			order: { price: 'DESC', createdAt: 'ASC' },
 			lock: { mode: 'pessimistic_write' },

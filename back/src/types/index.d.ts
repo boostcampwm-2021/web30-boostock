@@ -1,14 +1,14 @@
-declare const enum ORDERTYPE {
+declare enum ORDERTYPE {
 	ASK = 1,
 	BID = 2,
 }
 
-declare const enum BALANCETYPE {
+declare enum BALANCETYPE {
 	DEPOSIT = 1,
 	WITHDRAW = 2,
 }
 
-declare const enum STATUSTYPE {
+declare enum STATUSTYPE {
 	PENDING = 1,
 	PROCEEDING = 2,
 	FINISHED = 3,

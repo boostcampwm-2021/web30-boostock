@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
 
+export enum BALANCETYPE {
+	DEPOSIT = 1,
+	WITHDRAW = 2,
+}
+
 const { Schema } = mongoose;
 export interface IBalanceHistory {
 	type: number;

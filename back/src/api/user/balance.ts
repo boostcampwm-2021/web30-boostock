@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { AuthError, AuthErrorMessage, ParamError, ParamErrorMessage } from '@services/errors/index';
 import { UserService } from '@services/index';
-import { IBalanceHistory } from '@models/index';
+import { IBalanceHistory, STATUSTYPE } from '@models/index';
 
 export default (): express.Router => {
 	const router = express.Router();

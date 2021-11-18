@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import fetch from 'node-fetch';
-import { Stock, User, UserStock, Order, OrderStatus, Transaction, Chart } from '@models/index';
+import { Stock, User, UserStock, Order, STATUSTYPE, Transaction, Chart } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
 
 export interface ITransactionLog {
@@ -83,7 +83,7 @@ export default class BidAskTransaction implements IBidAskTransaction {
 		await this.UserRepositoryRunner.save(askUser);
 
 		askOrder.amount -= this.transactionLog.amount;
-		if (askOrder.amount === 0) askOrder.status = OrderStatus.FINISHED;
+		if (askOrder.amount === 0) askOrder.status = STATUSTYPE.FINISHED;
 		await this.OrderRepositoryRunner.save(askOrder);
 	}
 
@@ -94,7 +94,7 @@ export default class BidAskTransaction implements IBidAskTransaction {
 		await this.UserRepositoryRunner.save(bidUser);
 
 		bidOrder.amount -= this.transactionLog.amount;
-		if (bidOrder.amount === 0) bidOrder.status = OrderStatus.FINISHED;
+		if (bidOrder.amount === 0) bidOrder.status = STATUSTYPE.FINISHED;
 		await this.OrderRepositoryRunner.save(bidOrder);
 	}
 
