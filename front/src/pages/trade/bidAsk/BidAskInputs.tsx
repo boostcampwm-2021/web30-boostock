@@ -8,6 +8,8 @@ interface IProps {
 	bidAskPrice: number;
 	bidAskAmount: number;
 	isAmountError: boolean;
+	askAvailable: number;
+	bidAvailable: number;
 	setBidAskOption: (arg: string) => void;
 	setBidAskPrice: (arg: number) => void;
 	setBidAskAmount: (arg: number) => void;
@@ -25,6 +27,8 @@ const BidAskInputs = ({
 	bidAskPrice,
 	bidAskAmount,
 	isAmountError,
+	bidAvailable,
+	askAvailable,
 	setBidAskOption,
 	setBidAskPrice,
 	setBidAskAmount,
@@ -90,7 +94,9 @@ const BidAskInputs = ({
 			<li className="bidask-info-list-item">
 				<span className="bidask-info-text">{bidAskType === '매수' ? '매수가능' : '매도가능'}</span>
 				<span className="bidask-info-price-container">
-					<span className="bidask-info-price">123,456,789</span>
+					<span className="bidask-info-price">
+						{bidAskType === '매수' ? formatNumber(bidAvailable) : formatNumber(askAvailable)}
+					</span>
 					<span className="bidask-info-won-text">{bidAskType === '매수' ? '원' : '주'}</span>
 				</span>
 			</li>
