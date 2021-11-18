@@ -18,5 +18,5 @@ export default {
 	githubClient: process.env.GITHUB_CLIENT,
 	githubSecret: process.env.GITHUB_SECRET,
 	sessionSecret: process.env.SESSION_SECRET,
-	maxAge: parseInt(process.env.MAX_AGE || '3600', 10),
+	maxAge: 10800000,
 };

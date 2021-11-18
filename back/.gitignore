@@ -107,3 +107,4 @@ dist
 ormconfig.json
 sessionStoreConfig.json
 .DS_Store
+build

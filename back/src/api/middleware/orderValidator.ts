@@ -1,5 +1,5 @@
 import Validator from '@helper/Validator';
-import { OrderType } from '@models/Order';
+import { ORDERTYPE } from '@models/Order';
 import { ValidationError, ValidationErrorMessage } from '@services/errors';
 
 const QUOTE_DIGIT = 1000;
@@ -19,7 +19,7 @@ export const orderValidator = async (req, res, next) => {
 	try {
 		validator.init(1).isInteger();
 		validator.init(req.body.stockCode).isString();
-		validator.init(req.body.type).isInObject(OrderType).isInteger();
+		validator.init(req.body.type).isInObject(ORDERTYPE).isInteger();
 		validator.init(req.body.amount).isInteger().isPositive();
 		validator.init(req.body.price).isInteger().isPositive();
 		isCorrectQuote(req.body.price);

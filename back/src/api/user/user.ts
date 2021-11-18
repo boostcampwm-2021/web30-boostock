@@ -20,11 +20,11 @@ export default (): express.Router => {
 		try {
 			const { email } = req.query;
 			await UserService.getUserByEmail(String(email));
-			res.status(200).json({ result: false });
+			return res.status(200).json({ result: false });
 		} catch (error) {
 			if (error instanceof UserError) return res.status(200).json({ result: true });
 			if (error instanceof ParamError) return res.status(200).json({ result: false });
-			next(error);
+			return next(error);
 		}
 	});
 

@@ -1,12 +1,25 @@
 import fetch from 'node-fetch';
 import express, { NextFunction, Request, Response } from 'express';
+
+import { OrderService, UserService } from '@services/index';
 import Emitter from '@helper/eventEmitter';
-import { OrderService } from '@services/index';
 import { AuthError, AuthErrorMessage, ParamError, ParamErrorMessage } from '@services/errors/index';
 import { orderValidator, stockIdValidator } from '@api/middleware/orderValidator';
 
 export default (): express.Router => {
 	const router = express.Router();
+
+	router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const userId = req.session.data?.userId;
+			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
+			const { stockCode } = req.body;
+			const pendingOrder = await UserService.readPendingOrder(userId, stockCode);
+			res.status(200).json({ pendingOrder });
+		} catch (error) {
+			next(error);
+		}
+	});
 
 	router.post('/', orderValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
