@@ -42,7 +42,7 @@ const SignIn = () => {
 	return (
 		<div className="signin">
 			<Toaster />
-			<h1>{TEXT}</h1>
+			<h1 className="sign-page-header">{TEXT}</h1>
 			<a
 				className="signin-button github-type"
 				href={`https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT}&redirect_uri=${window.location.href}/callback`}
