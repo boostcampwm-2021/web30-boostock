@@ -82,10 +82,10 @@
 
 	.dark-theme & {
 		&.on {
-			border-bottom: 4px solid $darkModeBlue;
+			border-bottom: 4px solid $darkModeLightBlue;
 
 			& .bidask-type-select-list-btn {
-				color: $darkModeBlue;
+				color: $darkModeLightBlue;
 			}
 		}
 	}
@@ -189,7 +189,7 @@
 	border: 1px solid $borderColor;
 	border-radius: 4px;
 	padding: 8px;
-	text-align: right;
+	text-align: left;
 
 	&.error:not(:focus) {
 		border: 1px solid $red;
@@ -311,7 +311,7 @@
 	background-color: $blue;
 
 	.dark-theme & {
-		background-color: $darkModeBlue;
+		background-color: $darkModeLightBlue;
 	}
 }
 
@@ -321,10 +321,6 @@
 	.dark-theme & {
 		background-color: $darkModeLightGreen;
 	}
-}
-
-.signup-action {
-	
 }
 
 .signin-action {

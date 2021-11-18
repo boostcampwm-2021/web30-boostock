@@ -9,6 +9,16 @@ import ITotalAndMaxAmount from './ITotalAndMaxAmount';
 
 import './order.scss';
 
+interface IProps {
+	currentPrice: number;
+}
+
+function getPriceColorClass(price: number, currentPrice: number): string {
+	if (price > currentPrice) return 'high';
+	if (price < currentPrice) return 'low';
+	return 'neutral';
+}
+
 function calculateTotalAndMaxAmount(askOrders: IAskOrderItem[], bidOrders: IBidOrderItem[]): ITotalAndMaxAmount {
 	const totalAskAmount = askOrders.reduce((acc, { amount }) => acc + amount, 0);
 	const totalBidAmount = bidOrders.reduce((acc, { amount }) => acc + amount, 0);
@@ -25,7 +35,7 @@ function volumeWidth(amount: number, maxAmount: number): string {
 	return `${(amount / maxAmount) * 100}%`;
 }
 
-const Order = () => {
+const Order = ({ currentPrice }: IProps) => {
 	const orderContentRef = useRef<HTMLDivElement>(null);
 	const askOrders = useRecoilValue<IAskOrderItem[]>(askOrdersAtom);
 	const bidOrders = useRecoilValue<IBidOrderItem[]>(bidOrdersAtom);
@@ -68,6 +78,8 @@ const Order = () => {
 								totalAndMaxAmount={totalAndMaxAmount}
 								volumeWidth={volumeWidth}
 								setBidAskPrice={setBidAskPrice}
+								getPriceColorClass={getPriceColorClass}
+								currentPrice={currentPrice}
 							/>
 						))}
 						{bidOrders.map((bidOrder) => (
@@ -77,6 +89,8 @@ const Order = () => {
 								totalAndMaxAmount={totalAndMaxAmount}
 								volumeWidth={volumeWidth}
 								setBidAskPrice={setBidAskPrice}
+								getPriceColorClass={getPriceColorClass}
+								currentPrice={currentPrice}
 							/>
 						))}
 					</tbody>
