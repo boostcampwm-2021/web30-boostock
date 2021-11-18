@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { EntityManager, getCustomRepository } from 'typeorm';
 import { User } from '@models/index';
-import { UserRepository } from '@repositories/index';
+import { SessionRepository, UserRepository } from '@repositories/index';
 import {
 	CommonError,
 	CommonErrorMessage,
@@ -10,6 +10,7 @@ import {
 	UserError,
 	UserErrorMessage,
 } from '@services/errors/index';
+import UserBalance, { IBalanceHistory } from '@models/UserBalance';
 
 interface IUserInfo {
 	username: string;
@@ -83,9 +84,49 @@ export default class UserService {
 		return user;
 	}
 
-	public async signOut(user: User): Promise<User> {
+	static async unregister(user: User): Promise<User> {
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
 		await userRepository.remove(user);
 		return user;
+	}
+
+	static async destroyAllSession(userId: number): Promise<void> {
+		const sessionRepository = getCustomRepository(SessionRepository);
+		const sessions = await sessionRepository.findById(userId);
+		sessions.map((elem) => sessionRepository.delete(elem));
+	}
+
+	static async readBalanceHistory(userId: number, startTime: number, endTime: number, type = 0): Promise<IBalanceHistory[]> {
+		const time = new Date();
+		type = 1;
+		if (type) {
+			const document = await UserBalance.findOne({
+				userId,
+				'balanceHistory.createdAt': { $gte: 0, $lte: time },
+				'balanceHistory.type': { $eq: type },
+			});
+			return document?.balanceHistory || [];
+		}
+		const document = await UserBalance.findOne({
+			userId,
+			'balanceHistory.createdAt': { $gte: startTime, $lte: endTime },
+		});
+		return document?.balanceHistory || [];
+	}
+
+	static async pushBalanceHistory(userId: number, newBalanceHistory: IBalanceHistory): Promise<void> {
+		const document = await UserBalance.findOne({ userId });
+		if (document) {
+			document.balanceHistory.push(newBalanceHistory);
+			document.save((err) => {
+				if (err) throw err;
+			});
+		} else {
+			const newDocument = new UserBalance({
+				userId,
+			});
+			newDocument.balanceHistory.push(newBalanceHistory);
+			newDocument.save();
+		}
 	}
 }

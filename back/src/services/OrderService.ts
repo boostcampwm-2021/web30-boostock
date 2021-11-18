@@ -1,8 +1,6 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, getConnection, getCustomRepository } from 'typeorm';
-import { OrderType, OrderStatus } from '@models/index';
+import { EntityManager, getConnection } from 'typeorm';
 import { OrderRepository, StockRepository, UserRepository, UserStockRepository } from '@repositories/index';
-import { UserService } from '@services/index';
 import { CommonError, CommonErrorMessage, OrderError, OrderErrorMessage } from '@services/errors/index';
 import { IAskOrder } from '@interfaces/askOrder';
 import { IBidOrder } from '@interfaces/bidOrder';
@@ -38,7 +36,7 @@ export default class OrderService {
 			]);
 			if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
 
-			if (type === OrderType.SELL) {
+			if (type === ORDERTYPE.ASK) {
 				const holdStock = await userStockRepository.readUserStockLock(userId, stock.stockId);
 				// const holdStock = user.stocks.filter((st) => st.stockId === stock.stockId)[0];
 				if (holdStock === undefined || holdStock.amount < amount)
@@ -48,7 +46,7 @@ export default class OrderService {
 				await userStockRepository.save(holdStock);
 			}
 
-			if (type === OrderType.BUY) {
+			if (type === ORDERTYPE.BID) {
 				const payout: number = price * amount;
 				if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
 
@@ -63,7 +61,7 @@ export default class OrderService {
 					amount,
 					price,
 					createdAt: new Date(),
-					status: OrderStatus.PENDING,
+					status: STATUSTYPE.PENDING,
 				}),
 			);
 			await queryRunner.commitTransaction();
@@ -87,13 +85,13 @@ export default class OrderService {
 
 		try {
 			const order = await orderRepository.readOrderById(orderId);
-			if (!order || order.userId !== userId || order.status !== OrderStatus.PENDING)
+			if (!order || order.userId !== userId || order.status !== STATUSTYPE.PENDING)
 				throw new OrderError(OrderErrorMessage.INVALID_ORDER);
 
 			const user = await userRepository.readUserById(userId);
 			const stock = await stockRepository.readStockById(order.stockId);
 			if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
-			if (order.type === OrderType.SELL) {
+			if (order.type === ORDERTYPE.ASK) {
 				const holdStock = await userStockRepository.readUserStockLock(userId, stock.stockId);
 				// const holdStock = user.stocks.filter((st) => st.stockId === stock.stockId)[0];
 				if (holdStock) {
@@ -110,7 +108,7 @@ export default class OrderService {
 					);
 				}
 			}
-			if (order.type === OrderType.BUY) {
+			if (order.type === ORDERTYPE.BID) {
 				const payout: number = order.price * order.amount;
 				user.balance -= payout;
 				await userRepository.save(user);
@@ -118,7 +116,7 @@ export default class OrderService {
 			await orderRepository.save(
 				orderRepository.create({
 					orderId: order.orderId,
-					status: OrderStatus.CANCELED,
+					status: STATUSTYPE.CANCELED,
 				}),
 			);
 			await queryRunner.commitTransaction();
@@ -141,20 +139,20 @@ export default class OrderService {
 		await queryRunner.startTransaction();
 		try {
 			const order = await orderRepository.readOrderById(orderId);
-			if (!order || order.userId !== userId || order.status !== OrderStatus.PENDING)
+			if (!order || order.userId !== userId || order.status !== STATUSTYPE.PENDING)
 				throw new OrderError(OrderErrorMessage.INVALID_ORDER);
 			const user = await userRepository.readUserById(userId);
 			const stock = await stockRepository.readStockById(order.stockId);
 			if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
 
-			if (order.type === OrderType.SELL) {
+			if (order.type === ORDERTYPE.ASK) {
 				const holdStock = await userStockRepository.readUserStockLock(userId, stock.stockId);
 				if (!holdStock) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_STOCK);
 
 				holdStock.amount -= amount + order.amount;
 				await userStockRepository.save(holdStock);
 			}
-			if (order.type === OrderType.BUY) {
+			if (order.type === ORDERTYPE.BID) {
 				const payout = price * amount - order.price * order.amount;
 				if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
 

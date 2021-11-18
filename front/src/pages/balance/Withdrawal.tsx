@@ -42,7 +42,7 @@ const Withdrawal = (props: WithdrawalProps) => {
 			headers: {
 				'Content-Type': 'application/json;charset=utf-8',
 			},
-			body: JSON.stringify({ bank, bankAccount: account, changeValue: -balance }),
+			body: JSON.stringify({ bank, bankAccount: account, changeValue: Number(balance.replace(/,/g, '')) }),
 		})
 			.then((res: Response) => {
 				if (res.ok) {

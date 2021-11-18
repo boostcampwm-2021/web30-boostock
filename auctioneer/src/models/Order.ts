@@ -1,17 +1,6 @@
 import 'reflect-metadata';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-export enum OrderType {
-	SELL = 1,
-	BUY = 2,
-}
-
-export enum OrderStatus {
-	PENDING = 'pending',
-	FINISHED = 'finished',
-	CANCELED = 'canceled',
-}
-
 @Entity()
 export default class Order {
 	@PrimaryGeneratedColumn({ name: 'order_id' })
@@ -23,7 +12,7 @@ export default class Order {
 	@Column({ name: 'stock_id' })
 	stockId: number;
 
-	@Column({ type: 'enum', enum: OrderType })
+	@Column({ type: 'enum', enum: ORDERTYPE })
 	type: number;
 
 	@Column()
@@ -37,8 +26,8 @@ export default class Order {
 
 	@Column({
 		type: 'enum',
-		enum: OrderStatus,
-		default: OrderStatus.PENDING,
+		enum: STATUSTYPE,
+		default: STATUSTYPE.PENDING,
 	})
-	status: OrderStatus;
+	status: STATUSTYPE;
 }

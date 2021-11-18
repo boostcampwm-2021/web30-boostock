@@ -16,3 +16,9 @@ export { default as Order } from './Order';
 
 export * from './Chart';
 export { default as Chart } from './Chart';
+
+export * from './Session';
+export { default as Session } from './Session';
+
+export * from './UserBalance';
+export { default as UserBalance } from './UserBalance';

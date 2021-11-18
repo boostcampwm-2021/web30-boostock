@@ -7,7 +7,7 @@ export interface IBalanceHistory {
 	status: number;
 	bank: string;
 	bankAccount: string;
-	createdAt: number;
+	createdAt: Date;
 }
 
 export interface IUserBalance {
@@ -21,7 +21,7 @@ export const BalanceHistorySchema = new Schema<IBalanceHistory>({
 	status: { type: Number, required: true },
 	bank: { type: String, required: true },
 	bankAccount: { type: String, required: true },
-	createdAt: { type: Number, required: true },
+	createdAt: { type: Date, required: true },
 });
 
 export const UserBalanceSchema = new Schema<IUserBalance>(
