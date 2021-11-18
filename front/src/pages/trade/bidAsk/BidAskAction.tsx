@@ -1,4 +1,7 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import userAtom, { IUser } from '@src/recoil/user/atom';
 import { GrPowerReset } from 'react-icons/gr';
 
 interface IProps {
@@ -19,8 +22,30 @@ function orderActionClass(bidAskType: string): string {
 }
 
 const BidAskAction = ({ bidAskType, isAmountError, handleReset, handleBidAsk }: IProps) => {
-	return (
-		<div className="bidask-action-container">
+	const history = useHistory();
+	const { isLoggedIn } = useRecoilValue<IUser>(userAtom);
+
+	const handleRedirectToSignUpPage = () => {
+		history.push('/auth/signup');
+	};
+
+	const handleRedirectToSignInPage = () => {
+		history.push('/auth/signin');
+	};
+
+	const guestContent = (
+		<>
+			<button type="button" className="bidask-reset-btn signup-action" onClick={handleRedirectToSignUpPage}>
+				회원가입
+			</button>
+			<button type="button" className="bidask-action-btn signin-action" onClick={handleRedirectToSignInPage}>
+				로그인
+			</button>
+		</>
+	);
+
+	const authContent = (
+		<>
 			<button onClick={handleReset} className="bidask-reset-btn" type="button">
 				<span className="bidask-action-reset-icon">
 					<GrPowerReset />
@@ -30,8 +55,10 @@ const BidAskAction = ({ bidAskType, isAmountError, handleReset, handleBidAsk }: 
 			<button className={orderActionClass(bidAskType)} type="button" onClick={handleBidAsk} disabled={isAmountError}>
 				{bidAskType}
 			</button>
-		</div>
+		</>
 	);
+
+	return <div className="bidask-action-container">{isLoggedIn ? authContent : guestContent}</div>;
 };
 
 export default BidAskAction;
