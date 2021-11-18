@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import express, { NextFunction, Request, Response } from 'express';
+import Emitter from '@helper/eventEmitter';
 import { OrderService } from '@services/index';
 import { AuthError, AuthErrorMessage, ParamError, ParamErrorMessage } from '@services/errors/index';
 import { stockIdValidator } from '@api/middleware/orderValidator';
@@ -15,6 +16,18 @@ export default (): express.Router => {
 			if (!stockCode || !type || !amount || !price) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.order(userId, stockCode, type, amount, price);
 			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
+
+			const acceptedOrderInfo = {
+				stockCode,
+				msg: {
+					order: {
+						type,
+						amount,
+						price,
+					},
+				},
+			};
+			Emitter.emit('order accepted', acceptedOrderInfo);
 			res.status(200).json({});
 		} catch (error) {
 			next(error);
