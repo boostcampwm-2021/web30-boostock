@@ -103,6 +103,7 @@ const BidAskInputs = ({
 							type="text"
 							value={formatNumber(bidAskPrice)}
 							onChange={handleOrderPrice}
+							maxLength={13}
 						/>
 						<span className="bidask-info-won-text">원</span>
 					</div>
@@ -116,6 +117,7 @@ const BidAskInputs = ({
 						type="text"
 						value={formatNumber(bidAskAmount)}
 						onChange={handleOrderAmount}
+						maxLength={5}
 					/>
 					<span className="bidask-info-won-text">주</span>
 					{isAmountError && (

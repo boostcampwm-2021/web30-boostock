@@ -98,7 +98,7 @@ const Withdrawal = (props: WithdrawalProps) => {
 					type="text"
 					id="balance"
 					name="balance"
-					maxLength={50}
+					maxLength={13}
 					value={balance}
 					onChange={changeBalance}
 				/>

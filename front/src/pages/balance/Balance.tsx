@@ -51,7 +51,9 @@ const Balance = () => {
 	};
 
 	const refresh = () => {
-		fetch(`${process.env.SERVER_URL}/api/user/balance`, {
+		const currentTime = new Date().getTime();
+		const beforeTime = currentTime - 1000 * 60 * 60 * 24 * 30;
+		fetch(`${process.env.SERVER_URL}/api/user/balance?start=${beforeTime}&end=${currentTime}`, {
 			method: 'GET',
 			credentials: 'include',
 			headers: {
