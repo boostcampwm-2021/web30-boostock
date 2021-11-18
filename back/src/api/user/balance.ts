@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { AuthError, AuthErrorMessage, ParamError, ParamErrorMessage } from '@services/errors/index';
 import { UserService } from '@services/index';
-import { IBalanceHistory, STATUSTYPE } from '@models/index';
+import { IBalanceHistory, BALANCETYPE, STATUSTYPE } from '@models/index';
 
 export default (): express.Router => {
 	const router = express.Router();
@@ -9,7 +9,9 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const { start, end, type } = req.body;
+			const type = Number(req.query.type);
+			const start = Number(req.query.start);
+			const end = Number(req.query.end);
 			const result = await UserService.getUserById(userId);
 			const { balance } = result;
 			const history = await UserService.readBalanceHistory(userId, start, end, type);
@@ -24,10 +26,15 @@ export default (): express.Router => {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
 			const { bank, bankAccount } = req.body;
-
-			const { changeValue } = req.body;
-      changeValue = Number(changeValue);
-			if (!changeValue || Number.isNaN(changeValue) || !bank || !bankAccount || changeValue <= 0 || changeValue >= 10000000000)
+			const changeValue = Number(req.body.changeValue);
+			if (
+				!changeValue ||
+				Number.isNaN(changeValue) ||
+				!bank ||
+				!bankAccount ||
+				changeValue <= 0 ||
+				changeValue >= 10000000000
+			)
 				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			const result = await UserService.updateBalance(userId, changeValue);
 			const { balance } = result;
@@ -51,9 +58,16 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const { changeValue, bank, bankAccount } = req.body;
-      changeValue = Number(changeValue);
-			if (!changeValue || Number.isNaN(changeValue) || !bank || !bankAccount || changeValue <= 0 || changeValue >= 10000000000)
+			const { bank, bankAccount } = req.body;
+			const changeValue = Number(req.body.changeValue);
+			if (
+				!changeValue ||
+				Number.isNaN(changeValue) ||
+				!bank ||
+				!bankAccount ||
+				changeValue <= 0 ||
+				changeValue >= 10000000000
+			)
 				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			const result = await UserService.updateBalance(userId, changeValue * -1);
 			const { balance } = result;

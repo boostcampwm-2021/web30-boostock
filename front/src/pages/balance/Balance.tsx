@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BALANCETYPE, STATUSTYPE } from '@src/global';
 import toDateString from '@src/common/utils/toDateString';
 
 import Deposit from './Deposit';
@@ -9,16 +10,6 @@ import './Balance.scss';
 enum TAB {
 	DEPOSIT = '입금',
 	WITHDRAWAL = '출금',
-}
-
-enum TYPE {
-	출금 = 0,
-	입금 = 1,
-}
-
-enum STATUS {
-	진행중 = 0,
-	완료 = 1,
 }
 
 interface IHistory {
@@ -40,11 +31,11 @@ const Balance = () => {
 	const getHistory = (history: IHistory) => {
 		return (
 			<div className="my__item" key={history.createdAt}>
-				<div>{TYPE[history.type]}</div>
+				<div>{BALANCETYPE[history.type]}</div>
 				<div>{history.bank}</div>
 				<div>{history.bankAccount}</div>
 				<div className="my__item-number">{history.volume.toLocaleString()}</div>
-				<div className="my__item-number">{STATUS[history.status]}</div>
+				<div className="my__item-number">{STATUSTYPE[history.status]}</div>
 				<div className="my__item-number">{toDateString(history.createdAt)}</div>
 			</div>
 		);

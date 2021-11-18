@@ -33,7 +33,7 @@ const Orders = () => {
 	]);
 
 	useEffect(() => {
-		fetch(`${process.env.SERVER_URL}/api/user/orders`, {
+		fetch(`${process.env.SERVER_URL}/api/order`, {
 			method: 'GET',
 			credentials: 'include',
 			headers: {

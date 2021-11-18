@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { getConnection } from 'typeorm';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
-import { UserStock, Stock, Order } from '@models/index';
+import { Stock, Order, ORDERTYPE } from '@models/index';
 import { needToHandle } from '@helper/tools';
 import BidAskTransaction, { ITransactionLog } from './BidAskTransaction';
 import { OrderError, OrderErrorMessage } from './errors';
@@ -29,8 +29,8 @@ export default class AuctioneerService {
 
 			const [stock, orderAsk, orderBid]: [Stock | undefined, Order | undefined, Order | undefined] = await Promise.all([
 				StockRepositoryRunner.readStockById(stockId),
-				OrderRepositoryRunner.readOrderByDesc(stockId, ORDERTYPE.ASK),
-				OrderRepositoryRunner.readOrderByAsc(stockId, ORDERTYPE.BID),
+				OrderRepositoryRunner.readOrderByDesc(stockId, ORDERTYPE.BID),
+				OrderRepositoryRunner.readOrderByAsc(stockId, ORDERTYPE.ASK),
 			]);
 
 			if (stock === undefined || orderAsk === undefined || orderBid === undefined || orderBid.price > orderAsk.price)
