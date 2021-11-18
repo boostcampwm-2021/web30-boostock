@@ -53,28 +53,28 @@ const App: React.FC = () => {
 
 	return (
 		<BrowserRouter>
-			<Socket>
-				<Theme>
-					<TopBar pages={pages} />
-					<Switch>
-						<Route exact path="/auth/signin" component={SignIn} />
-						<Route exact path="/auth/signin/callback" component={SignIn} />
-						<Route exact path="/auth/signup" component={SignIn} />
-						<Route exact path="/auth/signup/callback" component={SignUp} />
-						<Route exact path="/my" component={My} />
-						<Route exact path="/balance" component={Balance} />
-						<Route path="/trade" component={Trade} />
-						<Route component={HelloWorld} />
-					</Switch>
-				</Theme>
-			</Socket>
+			<Theme>
+				<TopBar pages={pages} />
+				<Switch>
+					<Route exact path="/auth/signin" component={SignIn} />
+					<Route exact path="/auth/signin/callback" component={SignIn} />
+					<Route exact path="/auth/signup" component={SignIn} />
+					<Route exact path="/auth/signup/callback" component={SignUp} />
+					<Route exact path="/my" component={My} />
+					<Route exact path="/balance" component={Balance} />
+					<Route path="/trade" component={Trade} />
+					<Route component={HelloWorld} />
+				</Switch>
+			</Theme>
 		</BrowserRouter>
 	);
 };
 
 ReactDOM.render(
 	<RecoilRoot>
-		<App />
+		<Socket>
+			<App />
+		</Socket>
 	</RecoilRoot>,
 	document.getElementById('app'),
 );
