@@ -29,8 +29,8 @@ export default class AuctioneerService {
 
 			const [stock, orderAsk, orderBid]: [Stock | undefined, Order | undefined, Order | undefined] = await Promise.all([
 				StockRepositoryRunner.readStockById(stockId),
-				OrderRepositoryRunner.readOrderByDesc(stockId, ORDERTYPE.ASK),
-				OrderRepositoryRunner.readOrderByAsc(stockId, ORDERTYPE.BID),
+				OrderRepositoryRunner.readOrderByDesc(stockId, ORDERTYPE.BID),
+				OrderRepositoryRunner.readOrderByAsc(stockId, ORDERTYPE.ASK),
 			]);
 
 			if (stock === undefined || orderAsk === undefined || orderBid === undefined || orderBid.price > orderAsk.price)
