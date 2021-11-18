@@ -45,7 +45,8 @@ export default class OrderService {
 					throw new OrderError(OrderErrorMessage.NOT_ENOUGH_STOCK);
 
 				holdStock.amount -= amount;
-				await userStockRepository.save(holdStock);
+				if (holdStock.amount > 0) await userStockRepository.save(holdStock);
+				else await userStockRepository.delete(holdStock.userStockId);
 			}
 
 			if (type === OrderType.BUY) {
@@ -152,7 +153,8 @@ export default class OrderService {
 				if (!holdStock) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_STOCK);
 
 				holdStock.amount -= amount + order.amount;
-				await userStockRepository.save(holdStock);
+				if (holdStock.amount > 0) await userStockRepository.save(holdStock);
+				else await userStockRepository.delete(holdStock.userStockId);
 			}
 			if (order.type === OrderType.BUY) {
 				const payout = price * amount - order.price * order.amount;
