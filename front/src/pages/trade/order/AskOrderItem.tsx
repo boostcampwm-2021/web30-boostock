@@ -6,13 +6,20 @@ import ITotalAndMaxAmount from './ITotalAndMaxAmount';
 interface IProps {
 	askOrder: IAskOrderItem;
 	totalAndMaxAmount: ITotalAndMaxAmount;
-	currentPrice: number;
+	previousClose: number;
 	volumeWidth: (amount: number, maxAmount: number) => string;
 	setBidAskPrice: (price: number) => void;
-	getPriceColorClass: (price: number, currentPrice: number) => string;
+	getPriceColorClass: (price: number, previousClose: number) => string;
 }
 
-const AskOrderItem = ({ askOrder, totalAndMaxAmount, currentPrice, volumeWidth, setBidAskPrice, getPriceColorClass }: IProps) => {
+const AskOrderItem = ({
+	askOrder,
+	totalAndMaxAmount,
+	previousClose,
+	volumeWidth,
+	setBidAskPrice,
+	getPriceColorClass,
+}: IProps) => {
 	return (
 		<tr>
 			<td className="order-row-amount sell-amount active">
@@ -31,7 +38,7 @@ const AskOrderItem = ({ askOrder, totalAndMaxAmount, currentPrice, volumeWidth, 
 			<td className="order-row-price">
 				<button
 					type="button"
-					className={`order-row-price-data order-sell ${getPriceColorClass(askOrder.price, currentPrice)}`}
+					className={`order-row-price-data order-sell ${getPriceColorClass(askOrder.price, previousClose)}`}
 					onClick={() => setBidAskPrice(askOrder.price)}
 				>
 					{formatNumber(askOrder.price)}

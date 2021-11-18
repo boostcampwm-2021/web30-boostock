@@ -6,20 +6,27 @@ import ITotalAndMaxAmount from './ITotalAndMaxAmount';
 interface IProps {
 	bidOrder: IBidOrderItem;
 	totalAndMaxAmount: ITotalAndMaxAmount;
-	currentPrice: number;
+	previousClose: number;
 	volumeWidth: (amount: number, maxAmount: number) => string;
 	setBidAskPrice: (price: number) => void;
-	getPriceColorClass: (price: number, currentPrice: number) => string;
+	getPriceColorClass: (price: number, previousClose: number) => string;
 }
 
-const BidOrderItem = ({ bidOrder, totalAndMaxAmount, currentPrice, volumeWidth, setBidAskPrice, getPriceColorClass }: IProps) => {
+const BidOrderItem = ({
+	bidOrder,
+	totalAndMaxAmount,
+	previousClose,
+	volumeWidth,
+	setBidAskPrice,
+	getPriceColorClass,
+}: IProps) => {
 	return (
 		<tr>
 			<td className="order-row-amount sell-amount" />
 			<td className="order-row-price">
 				<button
 					type="button"
-					className={`order-row-price-data order-buy ${getPriceColorClass(bidOrder.price, currentPrice)}`}
+					className={`order-row-price-data order-buy ${getPriceColorClass(bidOrder.price, previousClose)}`}
 					onClick={() => setBidAskPrice(bidOrder.price)}
 				>
 					{formatNumber(bidOrder.price)}

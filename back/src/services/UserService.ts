@@ -146,7 +146,6 @@ export default class UserService {
 	}
 
 	static async readBalanceHistory(userId: number, start: number, end: number, type = 0): Promise<IBalanceHistory[]> {
-		console.log(start, end);
 		if (type) {
 			const document = await UserBalance.findOne({
 				userId,

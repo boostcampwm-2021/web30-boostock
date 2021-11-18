@@ -16,12 +16,22 @@ interface IOrderData {
 	price: number;
 }
 
+interface IHoldStock {
+	amount: number;
+	average: number;
+	code: string;
+	nameEnglish: string;
+	nameKorean: string;
+}
+
 const BidAsk = ({ stockCode }: { stockCode: string }) => {
 	const [bidAskType, setBidAskType] = useState<string>('매수');
 	const [bidAskOption, setBidAskOption] = useState<string>('지정가');
 	const [bidAskPrice, setBidAskPrice] = useRecoilState(bidAskPriceAtom);
 	const [bidAskAmount, setBidAskAmount] = useState<number>(0);
 	const [isAmountError, setIsAmountError] = useState<boolean>(false);
+	const [bidAvailable, setBidAvailable] = useState<number>(0);
+	const [askAvailable, setAskAvailable] = useState<number>(0);
 
 	const handleSetBidAskType = (newType: string) => setBidAskType(newType);
 
@@ -29,6 +39,30 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 		setBidAskPrice(0);
 		setBidAskAmount(0);
 		setIsAmountError(false);
+	};
+
+	const getUserBidAvailable = async () => {
+		try {
+			const res = await fetch(`${process.env.SERVER_URL}/api/user/balance?start=0&end=0`, { credentials: 'include' });
+			if (res.status !== 200) throw new Error();
+			const { balance }: { balance: number } = await res.json();
+			setBidAvailable(balance);
+		} catch (error) {}
+	};
+
+	const getUserAskAvailable = async () => {
+		try {
+			const res = await fetch(`${process.env.SERVER_URL}/api/user/hold`, { credentials: 'include' });
+			if (res.status !== 200) throw new Error();
+			const { holdStocks }: { holdStocks: IHoldStock[] } = await res.json();
+			const [holdStock] = holdStocks.filter(({ code }) => code === stockCode);
+
+			if (!holdStock) {
+				setAskAvailable(0);
+				return;
+			}
+			setAskAvailable(holdStock.amount);
+		} catch (error) {}
 	};
 
 	const handleBidAsk = async () => {
@@ -64,6 +98,8 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 				throw error;
 			}
 			handleReset();
+			getUserAskAvailable();
+			getUserBidAvailable();
 			toast.success('주문이 접수되었습니다.');
 		} catch (error) {
 			if (error.message === 'Not Correct Quote Digit') {
@@ -100,6 +136,12 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 		if (bidAskAmount > 0) setIsAmountError(false);
 	}, [bidAskAmount, isAmountError]);
 
+	useEffect(() => {
+		if (!stockCode) return;
+		getUserBidAvailable();
+		getUserAskAvailable();
+	}, [stockCode]);
+
 	return (
 		<div className="bidask-container">
 			<Toaster />
@@ -112,6 +154,8 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 						bidAskPrice={bidAskPrice}
 						bidAskAmount={bidAskAmount}
 						isAmountError={isAmountError}
+						askAvailable={askAvailable}
+						bidAvailable={bidAvailable}
 						setBidAskOption={setBidAskOption}
 						setBidAskPrice={setBidAskPrice}
 						setBidAskAmount={setBidAskAmount}

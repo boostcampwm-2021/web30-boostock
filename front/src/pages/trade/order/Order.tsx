@@ -10,7 +10,7 @@ import ITotalAndMaxAmount from './ITotalAndMaxAmount';
 import './order.scss';
 
 interface IProps {
-	currentPrice: number;
+	previousClose: number;
 }
 
 function getPriceColorClass(price: number, currentPrice: number): string {
@@ -35,7 +35,7 @@ function volumeWidth(amount: number, maxAmount: number): string {
 	return `${(amount / maxAmount) * 100}%`;
 }
 
-const Order = ({ currentPrice }: IProps) => {
+const Order = ({ previousClose }: IProps) => {
 	const orderContentRef = useRef<HTMLDivElement>(null);
 	const askOrders = useRecoilValue<IAskOrderItem[]>(askOrdersAtom);
 	const bidOrders = useRecoilValue<IBidOrderItem[]>(bidOrdersAtom);
@@ -79,7 +79,7 @@ const Order = ({ currentPrice }: IProps) => {
 								volumeWidth={volumeWidth}
 								setBidAskPrice={setBidAskPrice}
 								getPriceColorClass={getPriceColorClass}
-								currentPrice={currentPrice}
+								previousClose={previousClose}
 							/>
 						))}
 						{bidOrders.map((bidOrder) => (
@@ -90,7 +90,7 @@ const Order = ({ currentPrice }: IProps) => {
 								volumeWidth={volumeWidth}
 								setBidAskPrice={setBidAskPrice}
 								getPriceColorClass={getPriceColorClass}
-								currentPrice={currentPrice}
+								previousClose={previousClose}
 							/>
 						))}
 					</tbody>
