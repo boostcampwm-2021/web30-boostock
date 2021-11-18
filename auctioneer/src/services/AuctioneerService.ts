@@ -55,11 +55,11 @@ export default class AuctioneerService {
 
 			const askUser = await UserRepositoryRunner.readUserById(orderAsk.userId);
 			if (askUser === undefined) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
-			const askUserStock = askUser.stocks.find((userStock: UserStock) => userStock.stockId === stockId);
+			const askUserStock = await UserStockRepositoryRunner.readUserStockById(askUser.userId, stockId);
 
 			const bidUser = await UserRepositoryRunner.readUserById(orderBid.userId);
 			if (bidUser === undefined) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
-			const bidUserStock = bidUser.stocks.find((userStock: UserStock) => userStock.stockId === stockId);
+			const bidUserStock = await UserStockRepositoryRunner.readUserStockById(bidUser.userId, stockId);
 
 			await Promise.all([
 				task.bidOrderProcess(bidUser, bidUserStock, orderBid),

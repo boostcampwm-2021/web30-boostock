@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import formatInteger from '@src/common/utils/formatInteger';
 import { IHold } from './IHold';
 import './Info.scss';
 
@@ -10,7 +11,9 @@ interface IInfo {
 
 	totalAssets: number;
 	totalRate: number;
+	status: string;
 }
+
 interface InfoProps {
 	holds: IHold[];
 }
@@ -35,9 +38,22 @@ const Info = (props: InfoProps) => {
 					const totalValuationProfit = totalValuationPrice - totalAskPrice;
 
 					const totalAssets = balance + totalValuationPrice;
-					const totalRate = (totalValuationPrice / totalAskPrice) * 100 || 0;
+					const totalRate = (totalValuationPrice / totalAskPrice) * 100 - 100 || 0;
 
-					setInfo({ balance, totalAskPrice, totalValuationPrice, totalValuationProfit, totalAssets, totalRate });
+					let status = '';
+					if (totalRate === 0) status = '';
+					else if (totalRate > 0) status = ' my-info__data--up';
+					else if (totalRate < 0) status = ' my-info__data--down';
+
+					setInfo({
+						balance,
+						totalAskPrice,
+						totalValuationPrice,
+						totalValuationProfit,
+						totalAssets,
+						totalRate,
+						status,
+					});
 				});
 			}
 		});
@@ -51,8 +67,8 @@ const Info = (props: InfoProps) => {
 					<div className="my-info__data--top">₩ {info?.totalAssets.toLocaleString() || '-'}</div>
 				</div>
 				<div className="my-info__group">
-					<div className="my-info__title--top my-info__data--up">수익률</div>
-					<div className="my-info__data--top my-info__data--up">
+					<div className={`my-info__title--top${info?.status || ''}`}>수익률</div>
+					<div className={`my-info__data--top${info?.status || ''}`}>
 						{info?.totalRate.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '-'} %
 					</div>
 				</div>
@@ -60,19 +76,21 @@ const Info = (props: InfoProps) => {
 			<div className="my-info__bottom">
 				<div className="my-info__group">
 					<div className="my-info__title--bottom">현금자산</div>
-					<div className="my-info__data--bottom">₩ {info?.balance || '-'}</div>
+					<div className="my-info__data--bottom">₩ {formatInteger(info?.balance || 0)}</div>
 				</div>
 				<div className="my-info__group">
 					<div className="my-info__title--bottom">총매수금액</div>
-					<div className="my-info__data--bottom">₩ {info?.totalAskPrice || '-'}</div>
+					<div className="my-info__data--bottom">₩ {formatInteger(info?.totalAskPrice || 0)}</div>
 				</div>
 				<div className="my-info__group">
 					<div className="my-info__title--bottom">총평가금액</div>
-					<div className="my-info__data--bottom">₩ {info?.totalValuationPrice || '-'}</div>
+					<div className="my-info__data--bottom">₩ {formatInteger(info?.totalValuationPrice || 0)}</div>
 				</div>
 				<div className="my-info__group">
 					<div className="my-info__title--bottom ">총평가손익</div>
-					<div className="my-info__data--bottom my-info__data--up">₩ {info?.totalValuationProfit || '-'}</div>
+					<div className={`my-info__data--bottom ${info?.status || ''}`}>
+						₩ {formatInteger(info?.totalValuationProfit || 0)}
+					</div>
 				</div>
 			</div>
 		</div>
