@@ -189,7 +189,7 @@
 	border: 1px solid $borderColor;
 	border-radius: 4px;
 	padding: 8px;
-	text-align: right;
+	text-align: left;
 
 	&.error:not(:focus) {
 		border: 1px solid $red;
@@ -324,7 +324,6 @@
 }
 
 .signup-action {
-	
 }
 
 .signin-action {
