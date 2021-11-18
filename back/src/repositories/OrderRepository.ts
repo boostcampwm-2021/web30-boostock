@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, InsertResult, UpdateResult, DeleteResult } from 'typeorm';
+import { EntityRepository, Repository, UpdateResult, DeleteResult } from 'typeorm';
 import Order from '@models/Order';
 import { IAskOrder } from '@interfaces/askOrder';
 import { IBidOrder } from '@interfaces/bidOrder';
@@ -27,7 +27,6 @@ export default class OrderRepository extends Repository<Order> {
 		return this.createQueryBuilder()
 			.select(['price', 'SUM(amount) AS amount', 'type'])
 			.where('stock_id = :stockId', { stockId })
-			.andWhere('status = :status', { status: 'pending' })
 			.andWhere('type = :type', { type })
 			.groupBy('price')
 			.orderBy({ price: 'DESC' })

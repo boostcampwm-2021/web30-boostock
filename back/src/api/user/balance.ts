@@ -9,10 +9,10 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const { startTime, endTime } = req.body;
+			const { start, end, type } = req.body;
 			const result = await UserService.getUserById(userId);
 			const { balance } = result;
-			const history = await UserService.readBalanceHistory(userId, startTime, endTime);
+			const history = await UserService.readBalanceHistory(userId, start, end, type);
 			res.status(200).json({ balance, history });
 		} catch (error) {
 			next(error);

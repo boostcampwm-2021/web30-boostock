@@ -1,15 +1,17 @@
 /* eslint-disable class-methods-use-this */
 import { EntityManager, getCustomRepository } from 'typeorm';
-import { SessionRepository, UserRepository } from '@repositories/index';
+import { OrderRepository, SessionRepository, StockRepository, UserRepository } from '@repositories/index';
 import {
 	CommonError,
 	CommonErrorMessage,
 	ParamError,
 	ParamErrorMessage,
+	StockError,
+	StockErrorMessage,
 	UserError,
 	UserErrorMessage,
 } from '@services/errors/index';
-import { User, UserBalance, IBalanceHistory, Transaction, ITransaction } from '@models/index';
+import { User, UserBalance, IBalanceHistory, Transaction, ITransaction, Order, STATUSTYPE } from '@models/index';
 
 interface IUserInfo {
 	username: string;
@@ -95,34 +97,66 @@ export default class UserService {
 		sessions.map((elem) => sessionRepository.delete(elem));
 	}
 
-	static async readTransactionHistory(userId: number, startTime: number, endTime: number, type = 0): Promise<ITransaction[]> {
+	static async readPendingOrder(userId: number, stockCode: string): Promise<unknown> {
+		const orderRepository = getCustomRepository(OrderRepository);
+		const stockRepository = getCustomRepository(StockRepository);
+		if (stockCode) {
+			const stock = await stockRepository.findOne({ where: { stockCode } });
+			if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+			const orders = await orderRepository.find({
+				select: ['type', 'amount', 'price'],
+				where: { userId, stockId: stock.stockId },
+			});
+			const result = orders.map((elem) => {
+				return { stockCode, type: elem.type, amount: elem.amount, price: elem.price };
+			});
+
+			return result || [];
+		}
+		const orders = await orderRepository.find({ select: ['stockId', 'type', 'amount', 'price'], where: { userId } });
+		const result = await Promise.all(
+			orders.map(async (elem) => {
+				const stock = await stockRepository.findOne({ where: { stockId: elem.stockId } });
+				if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+				return {
+					stockCode: stock.code,
+					type: elem.type,
+					amount: elem.amount,
+					price: elem.price,
+				};
+			}),
+		);
+		return result || [];
+	}
+
+	static async readTransactionHistory(userId: number, start: number, end: number, type = 0): Promise<ITransaction[]> {
 		if (type) {
 			const document = await Transaction.find({
 				$or: [{ bidUserId: userId }, { askUserId: userId }],
-				createdAt: { $gte: startTime, $lte: endTime },
+				createdAt: { $gte: start, $lte: end },
 				type,
 			});
 			return document || [];
 		}
 		const document = await Transaction.find({
 			$or: [{ bidUserId: userId }, { askUserId: userId }],
-			createdAt: { $gte: startTime, $lte: endTime },
+			createdAt: { $gte: start, $lte: end },
 		});
 		return document || [];
 	}
 
-	static async readBalanceHistory(userId: number, startTime: number, endTime: number, type = 0): Promise<IBalanceHistory[]> {
+	static async readBalanceHistory(userId: number, start: number, end: number, type = 0): Promise<IBalanceHistory[]> {
 		if (type) {
 			const document = await UserBalance.findOne({
 				userId,
-				'balanceHistory.createdAt': { $gte: startTime, $lte: endTime },
+				'balanceHistory.createdAt': { $gte: start, $lte: end },
 				'balanceHistory.type': { $eq: type },
 			});
 			return document?.balanceHistory || [];
 		}
 		const document = await UserBalance.findOne({
 			userId,
-			'balanceHistory.createdAt': { $gte: startTime, $lte: endTime },
+			'balanceHistory.createdAt': { $gte: start, $lte: end },
 		});
 		return document?.balanceHistory || [];
 	}

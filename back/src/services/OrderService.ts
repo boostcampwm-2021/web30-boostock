@@ -4,7 +4,7 @@ import { OrderRepository, StockRepository, UserRepository, UserStockRepository }
 import { CommonError, CommonErrorMessage, OrderError, OrderErrorMessage } from '@services/errors/index';
 import { IAskOrder } from '@interfaces/askOrder';
 import { IBidOrder } from '@interfaces/bidOrder';
-import { ORDERTYPE, STATUSTYPE } from '@models/Order';
+import { ORDERTYPE } from '@models/Order';
 
 export default class OrderService {
 	static instance: OrderService | null = null;
@@ -62,7 +62,6 @@ export default class OrderService {
 					amount,
 					price,
 					createdAt: new Date(),
-					status: STATUSTYPE.PENDING,
 				}),
 			);
 			await queryRunner.commitTransaction();
@@ -86,8 +85,7 @@ export default class OrderService {
 
 		try {
 			const order = await orderRepository.readOrderById(orderId);
-			if (!order || order.userId !== userId || order.status !== STATUSTYPE.PENDING)
-				throw new OrderError(OrderErrorMessage.INVALID_ORDER);
+			if (!order || order.userId !== userId) throw new OrderError(OrderErrorMessage.INVALID_ORDER);
 
 			const user = await userRepository.readUserById(userId);
 			const stock = await stockRepository.readStockById(order.stockId);
@@ -114,12 +112,7 @@ export default class OrderService {
 				user.balance -= payout;
 				await userRepository.save(user);
 			}
-			await orderRepository.save(
-				orderRepository.create({
-					orderId: order.orderId,
-					status: STATUSTYPE.CANCELED,
-				}),
-			);
+			await orderRepository.remove(order);
 			await queryRunner.commitTransaction();
 		} catch (error) {
 			await queryRunner.rollbackTransaction();
@@ -140,8 +133,7 @@ export default class OrderService {
 		await queryRunner.startTransaction();
 		try {
 			const order = await orderRepository.readOrderById(orderId);
-			if (!order || order.userId !== userId || order.status !== STATUSTYPE.PENDING)
-				throw new OrderError(OrderErrorMessage.INVALID_ORDER);
+			if (!order || order.userId !== userId) throw new OrderError(OrderErrorMessage.INVALID_ORDER);
 			const user = await userRepository.readUserById(userId);
 			const stock = await stockRepository.readStockById(order.stockId);
 			if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);

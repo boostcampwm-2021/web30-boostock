@@ -83,8 +83,8 @@ export default class BidAskTransaction implements IBidAskTransaction {
 		await this.UserRepositoryRunner.save(askUser);
 
 		askOrder.amount -= this.transactionLog.amount;
-		if (askOrder.amount === 0) askOrder.status = STATUSTYPE.FINISHED;
-		await this.OrderRepositoryRunner.save(askOrder);
+		if (askOrder.amount === 0) await this.OrderRepositoryRunner.remove(askOrder);
+		else await this.OrderRepositoryRunner.save(askOrder);
 	}
 
 	async bidOrderProcess(bidUser: User, bidUserStock: UserStock | undefined, bidOrder: Order): Promise<void | Error> {
@@ -94,8 +94,8 @@ export default class BidAskTransaction implements IBidAskTransaction {
 		await this.UserRepositoryRunner.save(bidUser);
 
 		bidOrder.amount -= this.transactionLog.amount;
-		if (bidOrder.amount === 0) bidOrder.status = STATUSTYPE.FINISHED;
-		await this.OrderRepositoryRunner.save(bidOrder);
+		if (bidOrder.amount === 0) await this.OrderRepositoryRunner.remove(bidOrder);
+		else await this.OrderRepositoryRunner.save(bidOrder);
 	}
 
 	async noticeProcess(stock: Stock): Promise<void | Error> {

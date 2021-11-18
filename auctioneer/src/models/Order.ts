@@ -35,11 +35,4 @@ export default class Order {
 
 	@Column({ name: 'created_at', type: 'datetime' })
 	createdAt: Date;
-
-	@Column({
-		type: 'enum',
-		enum: STATUSTYPE,
-		default: STATUSTYPE.PENDING,
-	})
-	status: STATUSTYPE;
 }
