@@ -5,7 +5,7 @@ import User from '@models/User';
 export default class UserRepository extends Repository<User> {
 	async createUser(user: User): Promise<boolean> {
 		const result: InsertResult = await this.insert(user);
-		return result.raw.length > 0;
+		return result.raw.affectedRows > 0;
 	}
 
 	async readUserById(id: number): Promise<User | undefined> {

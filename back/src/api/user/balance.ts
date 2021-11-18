@@ -24,8 +24,10 @@ export default (): express.Router => {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
 			const { bank, bankAccount } = req.body;
+
 			const { changeValue } = req.body;
-			if (!changeValue || changeValue < 0 || Number.isNaN(changeValue) || !bank || !bankAccount)
+      changeValue = Number(changeValue);
+			if (!changeValue || Number.isNaN(changeValue) || !bank || !bankAccount || changeValue <= 0 || changeValue >= 10000000000)
 				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			const result = await UserService.updateBalance(userId, changeValue);
 			const { balance } = result;
@@ -50,7 +52,8 @@ export default (): express.Router => {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
 			const { changeValue, bank, bankAccount } = req.body;
-			if (!changeValue || changeValue < 0 || Number.isNaN(changeValue) || !bank || !bankAccount)
+      changeValue = Number(changeValue);
+			if (!changeValue || Number.isNaN(changeValue) || !bank || !bankAccount || changeValue <= 0 || changeValue >= 10000000000)
 				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			const result = await UserService.updateBalance(userId, changeValue * -1);
 			const { balance } = result;

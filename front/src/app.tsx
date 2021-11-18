@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import * as ReactDOM from 'react-dom';
 import { RecoilRoot, useRecoilState } from 'recoil';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-
 import User from '@recoil/user/index';
 import TopBar from '@common/topbar/TopBar';
 import Theme from './Theme';
@@ -45,7 +44,6 @@ const App: React.FC = () => {
 						...userState,
 						username: data.user.username,
 						email: data.user.email,
-						balance: data.user.balance,
 						isLoggedIn: true,
 					});
 				});
@@ -55,28 +53,28 @@ const App: React.FC = () => {
 
 	return (
 		<BrowserRouter>
-			<Socket>
-				<Theme>
-					<TopBar pages={pages} />
-					<Switch>
-						<Route exact path="/auth/signin" component={SignIn} />
-						<Route exact path="/auth/signin/callback" component={SignIn} />
-						<Route exact path="/auth/signup" component={SignIn} />
-						<Route exact path="/auth/signup/callback" component={SignUp} />
-						<Route exact path="/my" component={My} />
-						<Route exact path="/balance" component={Balance} />
-						<Route path="/trade" component={Trade} />
-						<Route component={HelloWorld} />
-					</Switch>
-				</Theme>
-			</Socket>
+			<Theme>
+				<TopBar pages={pages} />
+				<Switch>
+					<Route exact path="/auth/signin" component={SignIn} />
+					<Route exact path="/auth/signin/callback" component={SignIn} />
+					<Route exact path="/auth/signup" component={SignIn} />
+					<Route exact path="/auth/signup/callback" component={SignUp} />
+					<Route exact path="/my" component={My} />
+					<Route exact path="/balance" component={Balance} />
+					<Route path="/trade" component={Trade} />
+					<Route component={HelloWorld} />
+				</Switch>
+			</Theme>
 		</BrowserRouter>
 	);
 };
 
 ReactDOM.render(
 	<RecoilRoot>
-		<App />
+		<Socket>
+			<App />
+		</Socket>
 	</RecoilRoot>,
 	document.getElementById('app'),
 );

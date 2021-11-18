@@ -1,15 +1,13 @@
 /* eslint-disable import/no-cycle */
 import 'reflect-metadata';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import User from './User';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'user_favorite' })
 export default class UserFavorite {
 	@PrimaryGeneratedColumn({ name: 'user_favorite_id' })
 	userFavoriteId: number;
 
-	@ManyToOne(() => User, (user: User) => user.userId)
-	@JoinColumn({ name: 'user_id' })
+	@Column({ name: 'user_id' })
 	userId: number;
 
 	@Column({ name: 'stock_id' })

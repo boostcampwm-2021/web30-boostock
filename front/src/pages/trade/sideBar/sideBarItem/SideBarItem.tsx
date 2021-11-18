@@ -35,9 +35,6 @@ const SideBarItem = (props: Props) => {
 			body: JSON.stringify({ stockCode: code }),
 		}).then((res: Response) => {
 			if (res.ok) {
-				res.json().then((data) => {
-					console.log(isFavorite, data);
-				});
 				refresh();
 			}
 		});
