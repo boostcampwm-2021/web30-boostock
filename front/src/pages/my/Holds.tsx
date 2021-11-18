@@ -1,5 +1,6 @@
 import React from 'react';
 import caretIcon from '@src/common/utils/caretIcon';
+import formatInteger from '@src/common/utils/formatInteger';
 import { IHold } from './IHold';
 import './Holds.scss';
 
@@ -15,7 +16,7 @@ const Holds = (props: HoldsProps) => {
 		if (hold.totalValuationProfit > 0) status = ' my__item--up';
 		else if (hold.totalValuationProfit < 0) status = ' my__item--down';
 
-		const profitRate = (hold.totalValuationPrice / hold.totalAskPrice) * 100;
+		const profitRate = (hold.totalValuationPrice / hold.totalAskPrice) * 100 - 100;
 		return (
 			<div className="my__item" key={hold.stockCode}>
 				<div>
@@ -24,11 +25,11 @@ const Holds = (props: HoldsProps) => {
 					<span className="my__item-title">{hold.stockName}</span>
 				</div>
 				<div className="my__item-number">{hold.holdAmount.toLocaleString()}</div>
-				<div className="my__item-number">{hold.averageAskPrice.toLocaleString()}</div>
-				<div className="my__item-number">{hold.totalAskPrice.toLocaleString()}</div>
-				<div className={`my__item-number${status}`}>{hold.totalValuationPrice.toLocaleString()}</div>
+				<div className="my__item-number">{formatInteger(hold.averageAskPrice)}</div>
+				<div className="my__item-number">{formatInteger(hold.totalAskPrice)}</div>
+				<div className={`my__item-number${status}`}>{formatInteger(hold.totalValuationPrice)}</div>
 				<div className={`my__item-number${status}`}>
-					{caretIcon(profitRate)} {profitRate.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+					{caretIcon(profitRate)} {profitRate.toLocaleString(undefined, { maximumFractionDigits: 2 })} %
 				</div>
 			</div>
 		);
@@ -42,7 +43,7 @@ const Holds = (props: HoldsProps) => {
 				<div className="my__legend-number">평균매수가 (원)</div>
 				<div className="my__legend-number">매수금액 (원)</div>
 				<div className="my__legend-number">평가금액 (원)</div>
-				<div className="my__legend-number">평가손익 (%)</div>
+				<div className="my__legend-number">평가손익</div>
 			</div>
 			{holds.map((hold: IHold) => getHold(hold))}
 		</div>
