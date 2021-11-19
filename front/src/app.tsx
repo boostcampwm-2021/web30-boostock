@@ -6,7 +6,6 @@ import User from '@recoil/user/index';
 import TopBar from '@common/topbar/TopBar';
 import Theme from './Theme';
 import './app.scss';
-import HelloWorld from './HelloWorld';
 import SignIn from './pages/signIn/SignIn';
 import SignUp from './pages/signUp/SignUp';
 import Trade from './pages/trade/Trade';
@@ -22,13 +21,7 @@ export interface Ipage {
 
 const App: React.FC = () => {
 	const [userState, setUserState] = useRecoilState(User);
-	const pages: Ipage[] = [
-		{
-			id: 1,
-			url: '/trade',
-			title: 'Trade',
-		},
-	];
+	const pages: Ipage[] = [];
 
 	useEffect(() => {
 		fetch(`${process.env.SERVER_URL}/api/user`, {
@@ -62,8 +55,7 @@ const App: React.FC = () => {
 					<Route exact path="/auth/signup/callback" component={SignUp} />
 					<Route exact path="/my" component={My} />
 					<Route exact path="/balance" component={Balance} />
-					<Route path="/trade" component={Trade} />
-					<Route component={HelloWorld} />
+					<Route path="/" component={Trade} />
 				</Switch>
 			</Theme>
 		</BrowserRouter>

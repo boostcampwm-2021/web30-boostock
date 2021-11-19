@@ -46,7 +46,7 @@ const SideBarItem = (props: Props) => {
 	};
 
 	return (
-		<Link className={`sidebar__item ${status}`} to={`/trade/?code=${code}`}>
+		<Link className={`sidebar__item ${status}`} to={`?code=${code}`}>
 			<div
 				className="sidebar__item-favorite"
 				role="button"
