@@ -62,12 +62,11 @@ $aside-width: 400px;
 .trade-status {
 	display: flex;
 	flex-direction: row;
-	height: fit-content;
+	height: 490px;
 	gap: 0px $gap;
 }
 .trade-order {
 	flex: 1;
-	height: 500px;
 	box-shadow: 2px 2px 4px #dee1e7;
 
 	background-color: $white;

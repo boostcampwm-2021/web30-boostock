@@ -54,12 +54,16 @@ const Order = ({ previousClose }: IProps) => {
 		const tableHeight = tableElem.offsetHeight;
 		const TABLE_MAX_HEIGHT = 470;
 		const isOrderContentOverflowed = orderContentRef.current.scrollHeight - TABLE_MAX_HEIGHT > 0;
-		let ORDER_CONTENT_LEFT_PADDING_SIZE = '6px';
-		if (!isOrderContentOverflowed) ORDER_CONTENT_LEFT_PADDING_SIZE = '0px';
-
-		orderContentRef.current.style.paddingLeft = ORDER_CONTENT_LEFT_PADDING_SIZE;
+		const ORDER_CONTENT_PADDING_SIZE = 6;
+		const orderContentStyle = orderContentRef.current.style;
 
 		orderContentRef.current.scrollTo(0, (tableHeight - TABLE_MAX_HEIGHT) / 2);
+
+		if (!isOrderContentOverflowed) {
+			orderContentStyle.padding = `0px ${ORDER_CONTENT_PADDING_SIZE}px`;
+			return;
+		}
+		orderContentStyle.padding = `0px 0px 0px ${ORDER_CONTENT_PADDING_SIZE}px`;
 	}, [orderContentRef, askOrders, bidOrders]);
 
 	if (!isOrdersExist(askOrders, bidOrders)) {
