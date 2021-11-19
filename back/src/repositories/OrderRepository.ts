@@ -23,14 +23,17 @@ export default class OrderRepository extends Repository<Order> {
 
 	public async getOrders(stockId: number, type: '1' | '2'): Promise<Array<IAskOrder | IBidOrder>> {
 		const LIMIT = 10;
+		const orderPredicate = type === '1' ? 'ASC' : 'DESC';
 
-		return this.createQueryBuilder()
+		const result = await this.createQueryBuilder()
 			.select(['price', 'SUM(amount) AS amount', 'type'])
 			.where('stock_id = :stockId', { stockId })
 			.andWhere('type = :type', { type })
 			.groupBy('price')
-			.orderBy({ price: 'DESC' })
+			.orderBy({ price: orderPredicate })
 			.limit(LIMIT)
 			.getRawMany<IAskOrder | IBidOrder>();
+
+		return type === '1' ? result.reverse() : result;
 	}
 }
