@@ -19,12 +19,14 @@
 }
 
 .stock-info__right {
-	display: flex;
-	justify-content: space-between;
-	padding: 12px;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	row-gap: 10px;
+	padding: 12px 18px;
 	border-radius: $cardBorderRadius;
 	box-shadow: 2px 2px 4px $boxShadowColor;
 	width: 60%;
+	box-sizing: border-box;
 	background-color: $white;
 
 	@include darkModeCardStyle();
@@ -120,7 +122,7 @@
 			font-size: 14px;
 		}
 
-		margin-bottom: 8px;
+		margin-bottom: 2px;
 		font-weight: 700;
 		font-size: 16px;
 	}

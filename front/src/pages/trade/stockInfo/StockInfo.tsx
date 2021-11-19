@@ -47,16 +47,16 @@ const StockInfo = ({ info }: IProps) => {
 					<span className="extra-info-data">{formatNumber(priceHigh)}원</span>
 					<span className="extra-info-text">고가</span>
 				</div>
-				<div className="extra-info low-price">
-					<span className="extra-info-data">{formatNumber(priceLow)}원</span>
-					<span className="extra-info-text">저가</span>
-				</div>
 				<div className="extra-info trading-volume">
 					<span className="extra-info-data">
 						{formatNumber(truncateNumber(amount))}
 						{truncateUnit(amount, '주')}
 					</span>
 					<span className="extra-info-text">거래량</span>
+				</div>
+				<div className="extra-info low-price">
+					<span className="extra-info-data">{formatNumber(priceLow)}원</span>
+					<span className="extra-info-text">저가</span>
 				</div>
 				<div className="extra-info trading-amount">
 					<span className="extra-info-data">
