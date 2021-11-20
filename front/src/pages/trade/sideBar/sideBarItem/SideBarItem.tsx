@@ -4,6 +4,7 @@ import { AiFillStar } from 'react-icons/ai';
 
 import caretIcon from '@src/common/utils/caretIcon';
 import formatNumber from '@src/common/utils/formatNumber';
+import { truncateNumber, truncateUnit } from '@src/common/utils/truncateNumber';
 import { IStockListItem } from '@src/recoil/stockList/index';
 import './SideBarItem.scss';
 
@@ -46,7 +47,7 @@ const SideBarItem = (props: Props) => {
 	};
 
 	return (
-		<Link className={`sidebar__item ${status}`} to={`/trade/?code=${code}`}>
+		<Link className={`sidebar__item ${status}`} to={`?code=${code}`}>
 			<div
 				className="sidebar__item-favorite"
 				role="button"
@@ -66,8 +67,8 @@ const SideBarItem = (props: Props) => {
 				<p className="sidebar__item-percent-bottom">{formatNumber(price - previousClose)}</p>
 			</div>
 			<div className="sidebar__item-amount">
-				<p className="sidebar__item-amount-value">{formatNumber(volume)}</p>
-				<p className="sidebar__item-amount-unit">원</p>
+				<p className="sidebar__item-amount-value">{formatNumber(truncateNumber(volume))}</p>
+				<p className="sidebar__item-amount-unit">{truncateUnit(volume, '원')}</p>
 			</div>
 		</Link>
 	);

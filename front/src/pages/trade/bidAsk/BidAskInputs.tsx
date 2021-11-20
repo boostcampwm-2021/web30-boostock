@@ -76,19 +76,6 @@ const BidAskInputs = ({
 					<label className="bidask-option-label" htmlFor="bidask-option-designated">
 						지정가
 					</label>
-					<input
-						id="bidask-option-market"
-						className="bidask-option-radio-input"
-						type="radio"
-						name="bidask-option"
-						value="시장가"
-						checked={bidAskOption === '시장가'}
-						onChange={handleSetOrderOption}
-					/>
-					{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-					<label htmlFor="bidask-option-market" className="bidask-option-label">
-						시장가
-					</label>
 				</span>
 			</li>
 			<li className="bidask-info-list-item">
