@@ -8,8 +8,8 @@ export interface IStockChartItem {
 	priceEnd: number;
 	priceLow: number;
 	priceHigh: number;
-	volume: number;
-	amount: number;
+	volume: string;
+	amount: string;
 }
 
 export interface IStockListItem {
