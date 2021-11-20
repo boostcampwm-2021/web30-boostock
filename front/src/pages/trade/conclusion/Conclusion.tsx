@@ -56,22 +56,26 @@ const Conclusion = ({ previousClose }: Props) => {
 				<div className="conclusion-total-price">체결금액(원)</div>
 			</header>
 			<div className="conclusion-content">
-				{stockExecutionState.map((log: IStockExecutionItem) => {
-					const [day, time] = translateTimestampFormat(log.timestamp).split(' ');
-					return (
-						<div className="conclusion-row" key={log.id}>
-							<div className="conclusion-timestamp">
-								<span className="timestamp-day">{day}</span>
-								<span className="timestamp-time">{time}</span>
+				{stockExecutionState.length === 0 ? (
+					<p className="conclusion-notice-no-data">체결 정보가 없습니다.</p>
+				) : (
+					stockExecutionState.map((log: IStockExecutionItem) => {
+						const [day, time] = translateTimestampFormat(log.timestamp).split(' ');
+						return (
+							<div className="conclusion-row" key={log.id}>
+								<div className="conclusion-timestamp">
+									<span className="timestamp-day">{day}</span>
+									<span className="timestamp-time">{time}</span>
+								</div>
+								<div className={`conclusion-single-price ${colorPicker(previousClose, log.price)}`}>
+									{log.price.toLocaleString('ko-kr')}
+								</div>
+								<div className="conclusion-volume">{log.amount.toLocaleString('ko-kr')}</div>
+								<div className="conclusion-total-price">{log.volume.toLocaleString('ko-kr')}</div>
 							</div>
-							<div className={`conclusion-single-price ${colorPicker(previousClose, log.price)}`}>
-								{log.price.toLocaleString('ko-kr')}
-							</div>
-							<div className="conclusion-volume">{log.amount.toLocaleString('ko-kr')}</div>
-							<div className="conclusion-total-price">{log.volume.toLocaleString('ko-kr')}</div>
-						</div>
-					);
-				})}
+						);
+					})
+				)}
 			</div>
 		</div>
 	);
