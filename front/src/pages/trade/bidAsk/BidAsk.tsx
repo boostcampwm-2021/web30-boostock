@@ -154,6 +154,7 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 						isAmountError={isAmountError}
 						askAvailable={askAvailable}
 						bidAvailable={bidAvailable}
+						stockCode={stockCode}
 						setBidAskPrice={setBidAskPrice}
 						setBidAskAmount={setBidAskAmount}
 					/>

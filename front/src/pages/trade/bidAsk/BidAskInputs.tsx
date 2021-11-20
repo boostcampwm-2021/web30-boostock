@@ -9,7 +9,7 @@ interface IProps {
 	isAmountError: boolean;
 	askAvailable: number;
 	bidAvailable: number;
-	setBidAskOption: (arg: string) => void;
+	stockCode: string;
 	setBidAskPrice: (arg: number) => void;
 	setBidAskAmount: (arg: number) => void;
 }
@@ -27,15 +27,10 @@ const BidAskInputs = ({
 	isAmountError,
 	bidAvailable,
 	askAvailable,
-	setBidAskOption,
+	stockCode,
 	setBidAskPrice,
 	setBidAskAmount,
 }: IProps) => {
-	const handleSetOrderOption = (e: SyntheticEvent) => {
-		const target = e.target as HTMLInputElement;
-		setBidAskOption(target.value);
-	};
-
 	const handleOrderPrice = (e: SyntheticEvent) => {
 		const target = e.target as HTMLInputElement;
 		const price = Number(target.value.replace(/,/g, ''));
@@ -58,6 +53,10 @@ const BidAskInputs = ({
 
 	return (
 		<ul className="bidask-info-list">
+			<li className="bidask-info-list-item">
+				<span className="bidask-info-text">종목코드</span>
+				<span className="bidask-stock-code">{stockCode}</span>
+			</li>
 			<li className="bidask-info-list-item">
 				<span className="bidask-info-text">{bidAskType === '매수' ? '매수가능' : '매도가능'}</span>
 				<span className="bidask-info-price-container">
