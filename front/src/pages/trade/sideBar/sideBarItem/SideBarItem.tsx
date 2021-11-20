@@ -1,4 +1,4 @@
-import React, { MouseEvent, KeyboardEvent } from 'react';
+import React, { KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { AiFillStar } from 'react-icons/ai';
 
@@ -42,7 +42,7 @@ const SideBarItem = (props: Props) => {
 	};
 
 	const toggleFavoriteKey = (event: KeyboardEvent<HTMLDivElement>) => {
-		if (event.type === 'keydown' && event.keyCode !== 13) return;
+		if (event.type === 'keydown' && event.key !== 'Enter') return;
 		toggleFavorite();
 	};
 
