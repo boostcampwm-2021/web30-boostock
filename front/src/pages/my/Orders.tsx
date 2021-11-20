@@ -39,10 +39,7 @@ const Orders = () => {
 			headers: {
 				'Content-Type': 'application/json; charset=utf-8',
 			},
-		}).then((res: Response) => {
-			console.log(res.ok);
-			// setOrders([]);
-		});
+		}).then(() => {});
 	}, []);
 
 	const getOrder = (order: IOrder) => {
