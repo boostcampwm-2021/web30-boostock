@@ -27,9 +27,9 @@ export default class Chart {
 	@Column({ name: 'price_low' })
 	priceLow: number;
 
-	@Column()
-	amount: number;
+	@Column({ type: 'bigint' })
+	amount: string;
 
-	@Column()
-	volume: number;
+	@Column({ type: 'bigint' })
+	volume: string;
 }

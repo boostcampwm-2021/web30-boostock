@@ -91,7 +91,7 @@ function updateNonTargetStock(stockList: IStockListItem[], data: INonTargetStock
 				? chartItem
 				: {
 						...chartItem,
-						volume: chartItem.volume + price * amount,
+						volume: (BigInt(chartItem.volume) + BigInt(price * amount)).toString(),
 				  };
 		});
 
@@ -121,8 +121,8 @@ function updateTargetStock(
 				? chartItem
 				: {
 						...chartItem,
-						volume: chartItem.volume + price * amount,
-						amount: chartItem.amount + amount,
+						volume: (BigInt(chartItem.volume) + BigInt(price * amount)).toString(),
+						amount: (BigInt(chartItem.amount) + BigInt(amount)).toString(),
 						priceLow: dailyChartData.priceLow,
 						priceHigh: dailyChartData.priceHigh,
 				  };
