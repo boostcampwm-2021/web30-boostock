@@ -107,7 +107,7 @@ const Balance = () => {
 					<div className="my__legend-number">상태</div>
 					<div className="my__legend-number">승인시간</div>
 				</div>
-				{histories.map((history: IHistory) => getHistory(history))}
+				<div className="balance-items">{histories.map((history: IHistory) => getHistory(history))}</div>
 			</div>
 		</div>
 	);

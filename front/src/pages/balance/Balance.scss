@@ -38,6 +38,13 @@
 	box-sizing: border-box;
 }
 
+.balance-items {
+	max-height: 600px;
+	overflow-y: auto;
+
+	@include scrollBarStyle();
+}
+
 .balance__button {
 	display: flex;
 	align-items: center;

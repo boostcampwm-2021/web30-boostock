@@ -69,7 +69,7 @@ const Info = (props: InfoProps) => {
 					<div className="my-info__data--top">₩ {info?.totalAssets.toLocaleString() || '-'}</div>
 				</div>
 				<div className="my-info__group">
-					<div className={`my-info__title--top${info?.status || ''}`}>수익률</div>
+					<div className="my-info__title--top">수익률</div>
 					<div className={`my-info__data--top${info?.status || ''}`}>
 						{info?.totalRate.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '-'} %
 					</div>
