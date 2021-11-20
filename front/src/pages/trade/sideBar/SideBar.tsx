@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
-
+import userAtom, { IUser } from '@src/recoil/user/atom';
 import StockList, { IStockListItem } from '@recoil/stockList/index';
 import SideBarItem from './sideBarItem/SideBarItem';
 
@@ -10,6 +10,7 @@ import getRegExp from './getRegExp';
 import './SideBar.scss';
 
 const SideBar = () => {
+	const { isLoggedIn } = useRecoilValue<IUser>(userAtom);
 	const [menu, setMenu] = useState(MENU.ALL);
 	const [regex, setRegex] = useState(/.*/);
 
@@ -56,6 +57,14 @@ const SideBar = () => {
 	useEffect(() => {
 		refreshData();
 	}, []);
+
+	useEffect(() => {
+		if (!isLoggedIn) {
+			console.log(1);
+			setFavorite([]);
+			setHold([]);
+		}
+	}, [isLoggedIn]);
 
 	useEffect(() => {
 		setFilteredStockListState(() => {
