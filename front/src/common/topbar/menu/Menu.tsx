@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
+import toast, { Toaster } from 'react-hot-toast';
 
 import { Ipage } from '@src/app';
 import User from '@recoil/user/index';
@@ -18,11 +19,27 @@ function userIconClass(isDropdownOpen: boolean): string {
 }
 
 const Menu = ({ pages }: Props) => {
-	const userState = useRecoilValue(User);
+	const [userState, setUserState] = useRecoilState(User);
 	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
 	const handleToggleDropdownOpen = () => {
 		setIsDropdownOpen(!isDropdownOpen);
+	};
+
+	const handleLogout = async () => {
+		const config: RequestInit = {
+			method: 'POST',
+			credentials: 'include',
+		};
+
+		try {
+			const res = await fetch(`${process.env.SERVER_URL}/api/auth/signout`, config);
+			if (res.status !== 200) throw new Error();
+			setUserState({ username: '', email: '', isLoggedIn: false, theme: 'light' });
+			toast.success('성공적으로 로그아웃 되었습니다.');
+		} catch (error) {
+			toast.error('로그아웃에 실패했습니다. 다시 시도해 주세요');
+		}
 	};
 
 	useEffect(() => {
@@ -55,7 +72,7 @@ const Menu = ({ pages }: Props) => {
 								<Link to="/balance">입출금</Link>
 							</li>
 							<li className="navbar__user-dropdown-item">
-								<button type="button" className="logout-btn">
+								<button type="button" className="logout-btn" onClick={handleLogout}>
 									로그아웃
 								</button>
 							</li>
@@ -67,6 +84,7 @@ const Menu = ({ pages }: Props) => {
 
 		return (
 			<div className="auth-actions">
+				<Toaster />
 				<NavLink to="/auth/signin" className="navbar__signin">
 					로그인
 				</NavLink>
