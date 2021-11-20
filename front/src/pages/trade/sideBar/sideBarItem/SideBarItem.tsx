@@ -18,7 +18,7 @@ const SideBarItem = (props: Props) => {
 	const { stock, isFavorite, refresh } = props;
 	const { code, nameKorean, price, previousClose, charts } = stock;
 
-	const { volume = 0 } = charts.filter(({ type }) => type === 1440)[0] ?? [];
+	const { volume = '0' } = charts.filter(({ type }) => type === 1440)[0] ?? [];
 	const percent = ((price - previousClose) / previousClose) * 100;
 
 	let status = '';
