@@ -26,7 +26,6 @@ interface IHoldStock {
 
 const BidAsk = ({ stockCode }: { stockCode: string }) => {
 	const [bidAskType, setBidAskType] = useState<string>('매수');
-	const [bidAskOption, setBidAskOption] = useState<string>('지정가');
 	const [bidAskPrice, setBidAskPrice] = useRecoilState(bidAskPriceAtom);
 	const [bidAskAmount, setBidAskAmount] = useState<number>(0);
 	const [isAmountError, setIsAmountError] = useState<boolean>(false);
@@ -74,7 +73,7 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 		const orderData: IOrderData = {
 			stockCode,
 			type: bidAskType === '매도' ? 1 : 2,
-			option: bidAskOption === '지정가' ? 1 : 2,
+			option: 1,
 			amount: bidAskAmount,
 			price: bidAskPrice,
 		};
@@ -129,7 +128,7 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 
 	useEffect(() => {
 		handleReset();
-	}, [bidAskType, bidAskOption]);
+	}, [bidAskType]);
 
 	useEffect(() => {
 		if (!isAmountError) return;
@@ -150,13 +149,11 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 				{bidAskType !== '정정/취소' && (
 					<BidAskInputs
 						bidAskType={bidAskType}
-						bidAskOption={bidAskOption}
 						bidAskPrice={bidAskPrice}
 						bidAskAmount={bidAskAmount}
 						isAmountError={isAmountError}
 						askAvailable={askAvailable}
 						bidAvailable={bidAvailable}
-						setBidAskOption={setBidAskOption}
 						setBidAskPrice={setBidAskPrice}
 						setBidAskAmount={setBidAskAmount}
 					/>

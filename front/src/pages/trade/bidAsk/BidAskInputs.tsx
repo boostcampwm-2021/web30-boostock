@@ -4,7 +4,6 @@ import formatNumber from '@src/common/utils/formatNumber';
 
 interface IProps {
 	bidAskType: string;
-	bidAskOption: string;
 	bidAskPrice: number;
 	bidAskAmount: number;
 	isAmountError: boolean;
@@ -23,7 +22,6 @@ function orderAmountClass(isAmountError: boolean): string {
 
 const BidAskInputs = ({
 	bidAskType,
-	bidAskOption,
 	bidAskPrice,
 	bidAskAmount,
 	isAmountError,
@@ -61,24 +59,6 @@ const BidAskInputs = ({
 	return (
 		<ul className="bidask-info-list">
 			<li className="bidask-info-list-item">
-				<span className="bidask-info-text">주문구분</span>
-				<span>
-					<input
-						id="bidask-option-designated"
-						className="bidask-option-radio-input"
-						type="radio"
-						name="bidask-option"
-						value="지정가"
-						checked={bidAskOption === '지정가'}
-						onChange={handleSetOrderOption}
-					/>
-					{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-					<label className="bidask-option-label" htmlFor="bidask-option-designated">
-						지정가
-					</label>
-				</span>
-			</li>
-			<li className="bidask-info-list-item">
 				<span className="bidask-info-text">{bidAskType === '매수' ? '매수가능' : '매도가능'}</span>
 				<span className="bidask-info-price-container">
 					<span className="bidask-info-price">
@@ -87,21 +67,19 @@ const BidAskInputs = ({
 					<span className="bidask-info-won-text">{bidAskType === '매수' ? '원' : '주'}</span>
 				</span>
 			</li>
-			{bidAskOption === '지정가' && (
-				<li className="bidask-info-list-item">
-					<span className="bidask-info-text">{bidAskType === '매수' ? '매수가격' : '매도가격'}</span>
-					<div>
-						<input
-							className="bidask-info-text-input"
-							type="text"
-							value={formatNumber(bidAskPrice)}
-							onChange={handleOrderPrice}
-							maxLength={13}
-						/>
-						<span className="bidask-info-won-text">원</span>
-					</div>
-				</li>
-			)}
+			<li className="bidask-info-list-item">
+				<span className="bidask-info-text">{bidAskType === '매수' ? '매수가격' : '매도가격'}</span>
+				<div>
+					<input
+						className="bidask-info-text-input"
+						type="text"
+						value={formatNumber(bidAskPrice)}
+						onChange={handleOrderPrice}
+						maxLength={13}
+					/>
+					<span className="bidask-info-won-text">원</span>
+				</div>
+			</li>
 			<li className="bidask-info-list-item">
 				<span className="bidask-info-text">주문수량</span>
 				<div className="bidask-amount-container">
@@ -123,17 +101,15 @@ const BidAskInputs = ({
 					)}
 				</div>
 			</li>
-			{bidAskOption === '지정가' && (
-				<li className="bidask-info-list-item">
-					<span className="bidask-info-text">주문총액</span>
-					<div className="bidask-total-price-container">
-						<span className="bidask-total-price">
-							{formatNumber(calculateTotalOrderPrice(bidAskPrice, bidAskAmount))}
-						</span>
-						<span className="bidask-info-won-text">원</span>
-					</div>
-				</li>
-			)}
+			<li className="bidask-info-list-item">
+				<span className="bidask-info-text">주문총액</span>
+				<div className="bidask-total-price-container">
+					<span className="bidask-total-price">
+						{formatNumber(calculateTotalOrderPrice(bidAskPrice, bidAskAmount))}
+					</span>
+					<span className="bidask-info-won-text">원</span>
+				</div>
+			</li>
 		</ul>
 	);
 };
