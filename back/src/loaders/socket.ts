@@ -17,10 +17,7 @@ const getNemClientForm = () => {
 };
 
 const sendAlarmMessage = (userId, msg) => {
-	console.log('send', userId, msg);
 	const client = socketAlarmMap.get(userId);
-	console.log(client);
-	console.log(socketAlarmMap);
 	client?.send(translateResponseFormat('notice', msg));
 };
 
@@ -66,10 +63,7 @@ export default async (app: express.Application): Promise<void> => {
 	const registerAlarmToken = (ws, alarmToken) => {
 		socketClientMap.set(ws, { ...socketClientMap.get(ws), alarmToken });
 		const userId = loginUserMap.get(alarmToken);
-
-		if (userId) {
-			socketAlarmMap.set(userId, ws);
-		}
+		if (userId) socketAlarmMap.set(userId, ws);
 	};
 
 	Emitter.on('broadcast', broadcast);

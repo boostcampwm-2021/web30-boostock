@@ -1,6 +1,6 @@
 import React from 'react';
 import toast from 'react-hot-toast';
-import { SetterOrUpdater, useSetRecoilState } from 'recoil';
+import { SetterOrUpdater, useRecoilValue, useSetRecoilState } from 'recoil';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
 import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
@@ -9,6 +9,7 @@ import { translateRequestData, translateResponseData } from './common/utils/sock
 import Emitter from './common/utils/eventEmitter';
 import HoldStockListAtom, { IHoldStockItem } from './recoil/holdStockList/atom';
 import { getHoldStocks } from './pages/trade/sideBar/refreshStockData';
+import userAtom from './recoil/user/atom';
 
 interface IProps {
 	children: React.ReactNode;
@@ -212,7 +213,6 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 	};
 	webSocket.onmessage = async (event) => {
 		const { type, data } = translateResponseData(event.data);
-		console.log(type, data);
 		switch (type) {
 			case 'stocksInfo': {
 				setStockList(data);
@@ -269,7 +269,7 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 			default:
 		}
 	};
-	Emitter.on('registerAlarm', (alarmToken) => {
+	Emitter.on('registerAlarm', (alarmToken: string) => {
 		const alarmData = {
 			type: 'alarm',
 			alarmToken,
