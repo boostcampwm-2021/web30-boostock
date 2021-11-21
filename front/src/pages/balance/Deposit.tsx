@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import formatNumber from '@src/common/utils/formatNumber';
 
 interface DepositProps {
@@ -61,7 +61,6 @@ const Deposit = (props: DepositProps) => {
 
 	return (
 		<div className="balance__wrapper">
-			<Toaster />
 			<div className="balance__box balance__box--border">
 				<b>입금 계좌</b>
 				<br />

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import User from '@recoil/user';
@@ -71,7 +71,6 @@ const SignUp = () => {
 
 	return (
 		<form className="signup" action="#">
-			<Toaster />
 			<div className="signup-container">
 				<h1>회원가입</h1>
 				<div className="signup-box">

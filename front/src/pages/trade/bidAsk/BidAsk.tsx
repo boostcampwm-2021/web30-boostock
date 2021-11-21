@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import bidAskPriceAtom from '@src/recoil/bidAskPrice/atom';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { getUserAskAvailable, getUserBidAvailable } from '@common/utils/getAvailableAmount';
 import userAtom, { IUser } from '@recoil/user/atom';
 import BidAskType from './BidAskType';
@@ -116,7 +116,6 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 
 	return (
 		<div className="bidask-container">
-			<Toaster />
 			<BidAskType bidAskType={bidAskType} handleSetBidAskType={handleSetBidAskType} />
 			<div className="bidask-info-container">
 				{bidAskType !== '정정/취소' && (

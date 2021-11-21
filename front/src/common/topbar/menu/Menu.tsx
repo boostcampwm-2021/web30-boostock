@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import { Ipage } from '@src/app';
 import User from '@recoil/user/index';
@@ -84,7 +84,6 @@ const Menu = ({ pages }: Props) => {
 
 		return (
 			<div className="auth-actions">
-				<Toaster />
 				<NavLink to="/auth/signin" className="navbar__signin">
 					로그인
 				</NavLink>

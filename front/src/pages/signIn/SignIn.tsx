@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { Link, Redirect, useLocation, useHistory } from 'react-router-dom';
 
 import User from '@recoil/user/index';
@@ -43,7 +43,6 @@ const SignIn = () => {
 
 	return (
 		<div className="signin">
-			<Toaster />
 			<h1 className="sign-page-header">{TEXT}</h1>
 			<a
 				className="signin-button github-type"
