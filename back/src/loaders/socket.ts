@@ -16,6 +16,11 @@ const getNemClientForm = () => {
 	return { target: '', alarmToken: '' };
 };
 
+const sendAlarmMessage = (userId, msg) => {
+	const client = socketAlarmMap.get(userId);
+	client?.send(translateResponseFormat('notice', msg));
+};
+
 const connectNewUser = async (client) => {
 	try {
 		const stockService = new StockService();
@@ -58,7 +63,9 @@ export default async (app: express.Application): Promise<void> => {
 	const registerAlarmToken = (ws, alarmToken) => {
 		socketClientMap.set(ws, { ...socketClientMap.get(ws), alarmToken });
 		const userId = loginUserMap.get(alarmToken);
+
 		if (userId) socketAlarmMap.set(userId, ws);
+		sendAlarmMessage(userId, '토큰이 등록되었습니다.');
 	};
 
 	Emitter.on('broadcast', broadcast);

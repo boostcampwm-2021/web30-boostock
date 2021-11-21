@@ -1,4 +1,5 @@
 import React from 'react';
+import toast from 'react-hot-toast';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
@@ -192,14 +193,6 @@ const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[
 	});
 };
 
-const registerAlarm = function (this: { webSocket: WebSocket }, alarmToken: string) {
-	const alarmData = {
-		type: 'alarm',
-		alarmToken,
-	};
-	this.webSocket.send(translateRequestData(alarmData));
-};
-
 const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders }: IStartSocket) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.binaryType = 'arraybuffer';
@@ -249,6 +242,10 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 			}
 			case 'baseStock': {
 				setStockExecution(dataToExecutionForm(data.conclusions));
+				break;
+			}
+			case 'notice': {
+				toast.success(`알림이 도착했습니다. ${data}`);
 				break;
 			}
 			default:
