@@ -27,6 +27,14 @@ export const toJsonFromError = (error: CommonError): { status: number; json: { e
 	};
 };
 
+export const generateUUID = (): string => {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+		const r = (Math.random() * 16) | 0;
+		const v = c === 'x' ? r : (r & 0x3) | 0x8;
+		return v.toString(16);
+	});
+};
+
 export const transaction = async (
 	callback: (queryRunner: QueryRunner, commit: () => void, rollaback: (err: CommonError) => void, release: () => void) => void,
 	req?: Request,
@@ -55,7 +63,6 @@ export const transaction = async (
 	} catch (err: unknown) {
 		queryRunner.rollbackTransaction();
 		queryRunner.release();
-		// res?.status(500).end();
 	}
 };
 
