@@ -27,6 +27,12 @@ const connectNewUser = async (client) => {
 		throw new StockError(StockErrorMessage.CANNOT_READ_STOCK_LIST);
 	}
 };
+const disconnectUser = (client) => {
+	const { alarmToken } = socketClientMap.get(client);
+	const userId = loginUserMap.get(alarmToken);
+	socketAlarmMap.delete(userId);
+	socketClientMap.delete(client);
+};
 
 export default async (app: express.Application): Promise<void> => {
 	const HTTPServer = app.listen(process.env.SOCKET_PORT || 3333, () => {
@@ -87,7 +93,7 @@ export default async (app: express.Application): Promise<void> => {
 		});
 
 		ws.on('close', () => {
-			socketClientMap.delete(ws);
+			disconnectUser(ws);
 		});
 	});
 };
