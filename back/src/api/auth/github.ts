@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { GithubService, UserService } from '@services/index';
+import { generateUUID } from '@helper/tools';
 
 export default (): express.Router => {
 	const router = express.Router();
@@ -15,10 +16,10 @@ export default (): express.Router => {
 				userId: userInfo.userId,
 				email: userInfo.email,
 			};
-			req.session.save((err) => {
-				if (err) next(err);
-				return res.status(200).json({ username: userInfo.username, email: userInfo.email, balance: userInfo.email });
-			});
+			const error = await req.session.save();
+			if (error) throw error;
+
+			res.status(200).json({ alarm: generateUUID() });
 		} catch (error) {
 			next(error);
 		}
@@ -34,10 +35,11 @@ export default (): express.Router => {
 				userId: userInfo.userId,
 				email: userInfo.email,
 			};
-			req.session.save((err) => {
-				if (err) next(err);
-				return res.status(200).json({ username: userInfo.username, email: userInfo.email, balance: userInfo.email });
-			});
+
+			const error = await req.session.save();
+			if (error) throw error;
+
+			res.status(200).json({ alarm: generateUUID() });
 		} catch (error) {
 			next(error);
 		}
