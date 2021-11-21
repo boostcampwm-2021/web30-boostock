@@ -7,6 +7,7 @@ import SideBarItem from './sideBarItem/SideBarItem';
 import SideBarNav, { MENU } from './sideBarNav/SideBarNav';
 import SearchBar from './searchbar/SearchBar';
 import getRegExp from './getRegExp';
+import { getFavoriteStocks, getHoldStocks } from './refreshStockData';
 import './SideBar.scss';
 
 const SideBar = () => {
@@ -23,34 +24,9 @@ const SideBar = () => {
 		setRegex(getRegExp(event?.target?.value));
 	};
 
-	const refreshData = () => {
-		fetch(`${process.env.SERVER_URL}/api/user/favorite`, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json; charset=utf-8',
-			},
-		}).then((res: Response) => {
-			if (res.ok) {
-				res.json().then((data) => {
-					setFavorite(() => data.favorite);
-				});
-			}
-		});
-
-		fetch(`${process.env.SERVER_URL}/api/user/hold`, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json; charset=utf-8',
-			},
-		}).then((res: Response) => {
-			if (res.ok) {
-				res.json().then((data) => {
-					setHold(() => data.holdStocks.map((stock: { code: string }) => stock.code));
-				});
-			}
-		});
+	const refreshData = async () => {
+		setFavorite(await getFavoriteStocks());
+		setHold(await getHoldStocks());
 	};
 
 	useEffect(() => {
