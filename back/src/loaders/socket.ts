@@ -62,6 +62,9 @@ export default async (app: express.Application): Promise<void> => {
 					socketClientMap.set(ws, stockCode);
 					break;
 				}
+				case 'alarm': {
+					break;
+				}
 				default:
 					ws.send(translateResponseFormat('error', '알 수 없는 오류가 발생했습니다.'));
 			}

@@ -4,6 +4,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { Link, Redirect, useLocation } from 'react-router-dom';
 
 import User from '@recoil/user/index';
+import eventEmitter from '@common/utils/eventEmitter';
 
 import './SignIn.scss';
 
@@ -27,8 +28,11 @@ const SignIn = () => {
 				'Content-Type': 'application/json;charset=utf-8',
 			},
 			body: JSON.stringify({ code: query.get('code') }),
-		}).then(async (res: Response) => {
+		}).then((res: Response) => {
 			if (res.ok) {
+				res.json().then(({ alarmToken }) => {
+					eventEmitter.emit('registerAlarm', alarmToken);
+				});
 				setUserState({ ...userState, isLoggedIn: true });
 				setResult(true);
 			} else {

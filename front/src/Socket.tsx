@@ -4,7 +4,8 @@ import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
 import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
 import stockExecutionAtom, { IStockExecutionItem } from './recoil/stockExecution/atom';
-import { translateResponseData } from './common/utils/socketUtils';
+import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
+import Emitter from './common/utils/eventEmitter';
 
 interface IProps {
 	children: React.ReactNode;
@@ -191,6 +192,14 @@ const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[
 	});
 };
 
+const registerAlarm = function (this: { webSocket: WebSocket }, alarmToken: string) {
+	const alarmData = {
+		type: 'alarm',
+		alarmToken,
+	};
+	this.webSocket.send(translateRequestData(alarmData));
+};
+
 const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders }: IStartSocket) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.binaryType = 'arraybuffer';
@@ -245,6 +254,13 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 			default:
 		}
 	};
+	Emitter.on('registerAlarm', (alarmToken) => {
+		const alarmData = {
+			type: 'alarm',
+			alarmToken,
+		};
+		webSocket.send(translateRequestData(alarmData));
+	});
 };
 
 const Socket = ({ children }: IProps) => {
