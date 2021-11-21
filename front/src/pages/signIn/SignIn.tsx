@@ -29,7 +29,6 @@ const SignIn = () => {
 			body: JSON.stringify({ code: query.get('code') }),
 		}).then(async (res: Response) => {
 			if (res.ok) {
-				console.log(await res.json());
 				setUserState({ ...userState, isLoggedIn: true });
 				setResult(true);
 			} else {

@@ -19,7 +19,7 @@ export default (): express.Router => {
 			const error = await req.session.save();
 			if (error) throw error;
 
-			res.status(200).json({ alarm: generateUUID() });
+			res.status(200).cookie('alarmToken', generateUUID()).end();
 		} catch (error) {
 			next(error);
 		}
@@ -39,7 +39,7 @@ export default (): express.Router => {
 			const error = await req.session.save();
 			if (error) throw error;
 
-			res.status(200).json({ alarm: generateUUID() });
+			res.status(200).cookie('alarmToken', generateUUID()).end();
 		} catch (error) {
 			next(error);
 		}
