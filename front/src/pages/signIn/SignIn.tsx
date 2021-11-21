@@ -5,6 +5,7 @@ import { Link, Redirect, useLocation } from 'react-router-dom';
 
 import User from '@recoil/user/index';
 import eventEmitter from '@common/utils/eventEmitter';
+import { getCookie } from '@src/common/utils/cookie';
 
 import './SignIn.scss';
 
@@ -30,9 +31,11 @@ const SignIn = () => {
 			body: JSON.stringify({ code: query.get('code') }),
 		}).then((res: Response) => {
 			if (res.ok) {
-				res.json().then(({ alarmToken }) => {
-					eventEmitter.emit('registerAlarm', alarmToken);
-				});
+				eventEmitter.emit('registerAlarm', getCookie('alarmToken'));
+
+				// res.json().then(({ alarmToken }) => {
+
+				// });
 				setUserState({ ...userState, isLoggedIn: true });
 				setResult(true);
 			} else {

@@ -3,9 +3,9 @@ import toast, { Toaster } from 'react-hot-toast';
 import { Redirect, useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import User from '@recoil/user';
-
-import './SignUp.scss';
 import eventEmitter from '@common/utils/eventEmitter';
+import { getCookie } from '@src/common/utils/cookie';
+import './SignUp.scss';
 
 const SignUp = () => {
 	const { search } = useLocation();
@@ -58,9 +58,11 @@ const SignUp = () => {
 			body: JSON.stringify({ code: query.get('code'), username, email }),
 		}).then((res: Response) => {
 			if (res.ok) {
-				res.json().then(({ alarmToken }) => {
-					eventEmitter.emit('registerAlarm', alarmToken);
-				});
+				eventEmitter.emit('registerAlarm', getCookie('alarmToken'));
+
+				// res.json().then(({ alarmToken }) => {
+				// 	eventEmitter.emit('registerAlarm', alarmToken);
+				// });
 				setUserState({ ...userState, isLoggedIn: true });
 				setResult(true);
 			} else {
