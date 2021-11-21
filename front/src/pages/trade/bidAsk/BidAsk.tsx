@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import bidAskPriceAtom from '@src/recoil/bidAskPrice/atom';
 import toast, { Toaster } from 'react-hot-toast';
+import { getUserAskAvailable, getUserBidAvailable } from '@common/utils/getAvailableAmount';
+import userAtom, { IUser } from '@recoil/user/atom';
 import BidAskType from './BidAskType';
 import BidAskInputs from './BidAskInputs';
 import BidAskAction from './BidAskAction';
@@ -16,14 +18,6 @@ interface IOrderData {
 	price: number;
 }
 
-interface IHoldStock {
-	amount: number;
-	average: number;
-	code: string;
-	nameEnglish: string;
-	nameKorean: string;
-}
-
 const BidAsk = ({ stockCode }: { stockCode: string }) => {
 	const [bidAskType, setBidAskType] = useState<string>('매수');
 	const [bidAskPrice, setBidAskPrice] = useRecoilState(bidAskPriceAtom);
@@ -31,6 +25,7 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 	const [isAmountError, setIsAmountError] = useState<boolean>(false);
 	const [bidAvailable, setBidAvailable] = useState<number>(0);
 	const [askAvailable, setAskAvailable] = useState<number>(0);
+	const { isLoggedIn } = useRecoilValue<IUser>(userAtom);
 
 	const handleSetBidAskType = (newType: string) => setBidAskType(newType);
 
@@ -38,30 +33,6 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 		setBidAskPrice(0);
 		setBidAskAmount(0);
 		setIsAmountError(false);
-	};
-
-	const getUserBidAvailable = async () => {
-		try {
-			const res = await fetch(`${process.env.SERVER_URL}/api/user/balance?start=0&end=0`, { credentials: 'include' });
-			if (res.status !== 200) throw new Error();
-			const { balance }: { balance: number } = await res.json();
-			setBidAvailable(balance);
-		} catch (error) {}
-	};
-
-	const getUserAskAvailable = async () => {
-		try {
-			const res = await fetch(`${process.env.SERVER_URL}/api/user/hold`, { credentials: 'include' });
-			if (res.status !== 200) throw new Error();
-			const { holdStocks }: { holdStocks: IHoldStock[] } = await res.json();
-			const [holdStock] = holdStocks.filter(({ code }) => code === stockCode);
-
-			if (!holdStock) {
-				setAskAvailable(0);
-				return;
-			}
-			setAskAvailable(holdStock.amount);
-		} catch (error) {}
 	};
 
 	const handleBidAsk = async () => {
@@ -97,8 +68,8 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 				throw error;
 			}
 			handleReset();
-			getUserAskAvailable();
-			getUserBidAvailable();
+			setAskAvailable(await getUserAskAvailable(stockCode, isLoggedIn));
+			setBidAvailable(await getUserBidAvailable(isLoggedIn));
 			toast.success('주문이 접수되었습니다.');
 		} catch (error) {
 			if (error.message === 'Not Correct Quote Digit') {
@@ -137,9 +108,11 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 
 	useEffect(() => {
 		if (!stockCode) return;
-		getUserBidAvailable();
-		getUserAskAvailable();
-	}, [stockCode]);
+		(async () => {
+			setAskAvailable(await getUserAskAvailable(stockCode, isLoggedIn));
+			setBidAvailable(await getUserBidAvailable(isLoggedIn));
+		})();
+	}, [stockCode, isLoggedIn]);
 
 	return (
 		<div className="bidask-container">
