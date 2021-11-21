@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import userAtom, { IUser } from '@src/recoil/user/atom';
 import { BALANCETYPE, STATUSTYPE } from '@src/global';
 import toDateString from '@src/common/utils/toDateString';
 
@@ -22,6 +25,7 @@ interface IHistory {
 }
 
 const Balance = () => {
+	const { isLoggedIn } = useRecoilValue<IUser>(userAtom);
 	const [tab, setTab] = useState<TAB>(TAB.DEPOSIT);
 	const [balance, setBalance] = useState<number>(0);
 	const [histories, setHistories] = useState<IHistory[]>([]);
@@ -74,6 +78,10 @@ const Balance = () => {
 	useEffect(() => {
 		refresh();
 	}, []);
+
+	if (!isLoggedIn) {
+		return <Redirect to="/" />;
+	}
 
 	return (
 		<div className="balance">

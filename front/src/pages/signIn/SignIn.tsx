@@ -35,6 +35,7 @@ const SignIn = () => {
 			if (res.ok) {
 				setUserState({ ...userState, isLoggedIn: true });
 				history.push('/');
+				toast.success('성공적으로 로그인 되었습니다.');
 			} else {
 				toast.error('로그인에 실패했습니다. 잠시 후 재시도 해주세요.');
 			}

@@ -62,9 +62,10 @@ const SignUp = () => {
 		}).then((res: Response) => {
 			if (res.ok) {
 				setUserState({ ...userState, isLoggedIn: true });
+				toast.success('성공적으로 회원가입 되었습니다.');
 				history.push('/');
 			} else {
-				toast.error('로그인에 실패했습니다. 잠시 후 재시도 해주세요.');
+				toast.error('회원가입에 실패했습니다. 잠시 후 재시도 해주세요.');
 			}
 		});
 	};
