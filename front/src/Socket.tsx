@@ -7,6 +7,8 @@ import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@rec
 import stockExecutionAtom, { IStockExecutionItem } from './recoil/stockExecution/atom';
 import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
 import Emitter from './common/utils/eventEmitter';
+import HoldStockListAtom, { IHoldStockItem } from './recoil/holdStockList/atom';
+import { getHoldStocks } from './pages/trade/sideBar/refreshStockData';
 
 interface IProps {
 	children: React.ReactNode;
@@ -17,6 +19,7 @@ interface IStartSocket {
 	setStockExecution: SetterOrUpdater<IStockExecutionItem[]>;
 	setAskOrders: SetterOrUpdater<IAskOrderItem[]>;
 	setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
+	setHold: SetterOrUpdater<IHoldStockItem[]>;
 }
 interface IResponseConclusions {
 	createdAt: number;
@@ -193,7 +196,7 @@ const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[
 	});
 };
 
-const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders }: IStartSocket) => {
+const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold }: IStartSocket) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.binaryType = 'arraybuffer';
 
@@ -204,10 +207,10 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders });
+			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold });
 		}, 1000);
 	};
-	webSocket.onmessage = (event) => {
+	webSocket.onmessage = async (event) => {
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
 			case 'stocksInfo': {
@@ -238,6 +241,7 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 					setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
 					addNewExecution(setStockExecution, data.match);
 				}
+				setHold(await getHoldStocks());
 				break;
 			}
 			case 'baseStock': {
@@ -266,8 +270,9 @@ const Socket = ({ children }: IProps) => {
 	const setAskOrders = useSetRecoilState(askOrdersAtom);
 	const setBidOrders = useSetRecoilState(bidOrdersAtom);
 	const setStockExecution = useSetRecoilState(stockExecutionAtom);
+	const setHold = useSetRecoilState(HoldStockListAtom);
 
-	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders });
+	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold });
 
 	return <>{children}</>;
 };

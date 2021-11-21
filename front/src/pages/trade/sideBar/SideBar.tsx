@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import StockList, { IStockListItem } from '@recoil/stockList/index';
+import HoldStockListAtom from '@recoil/holdStockList/atom';
 import SideBarItem from './sideBarItem/SideBarItem';
 
 import SideBarNav, { MENU } from './sideBarNav/SideBarNav';
 import SearchBar from './searchbar/SearchBar';
 import getRegExp from './getRegExp';
 import { getFavoriteStocks, getHoldStocks } from './refreshStockData';
+
 import './SideBar.scss';
 
 const SideBar = () => {
@@ -18,7 +20,7 @@ const SideBar = () => {
 	const [filteredStockListState, setFilteredStockListState] = useState<IStockListItem[]>([]);
 
 	const [favorite, setFavorite] = useState<string[]>([]);
-	const [hold, setHold] = useState<string[]>([]);
+	const [hold, setHold] = useRecoilState(HoldStockListAtom);
 
 	const searchEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setRegex(getRegExp(event?.target?.value));
