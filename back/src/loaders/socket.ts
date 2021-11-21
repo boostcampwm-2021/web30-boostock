@@ -7,9 +7,14 @@ import Logger from './logger';
 import { ISocketRequest } from '../interfaces/socketRequest';
 import StockService from '../services/StockService';
 
+const loginUserMap = new Map();
 const socketClientMap = new Map();
+const socketAlarmMap = new Map();
 const translateRequestFormat = (data) => binArrayToJson(data);
 const translateResponseFormat = (type, data) => JsonToBinArray({ type, data });
+const getNemClientForm = () => {
+	return { target: '', alarmToken: '' };
+};
 
 const connectNewUser = async (client) => {
 	try {
@@ -17,7 +22,7 @@ const connectNewUser = async (client) => {
 		const stockList = await stockService.getStocksCurrent();
 
 		client.send(translateResponseFormat('stocksInfo', stockList));
-		socketClientMap.set(client, '');
+		socketClientMap.set(client, getNemClientForm());
 	} catch (error) {
 		throw new StockError(StockErrorMessage.CANNOT_READ_STOCK_LIST);
 	}
@@ -31,7 +36,7 @@ export default async (app: express.Application): Promise<void> => {
 	webSocketServer.binaryType = 'arraybuffer';
 
 	const broadcast = ({ stockCode, msg }) => {
-		socketClientMap.forEach((targetStockCode, client) => {
+		socketClientMap.forEach(({ target: targetStockCode }, client) => {
 			if (targetStockCode === stockCode) {
 				// 모든 데이터 전송, 현재가, 호가, 차트 등...
 				client.send(translateResponseFormat('updateTarget', msg));
@@ -41,8 +46,17 @@ export default async (app: express.Application): Promise<void> => {
 			}
 		});
 	};
+	const loginUser = (userId, alarmToken) => {
+		loginUserMap.set(alarmToken, userId);
+	};
+	const registerAlarmToken = (ws, alarmToken) => {
+		socketClientMap.set(ws, { ...socketClientMap.get(ws), alarmToken });
+		const userId = loginUserMap.get(alarmToken);
+		if (userId) socketAlarmMap.set(userId, ws);
+	};
 
 	Emitter.on('broadcast', broadcast);
+	Emitter.on('loginUser', loginUser);
 	Emitter.on('order accepted', broadcast);
 
 	webSocketServer.on('connection', async (ws, req) => {
@@ -59,10 +73,12 @@ export default async (app: express.Application): Promise<void> => {
 					const conclusions = await stockService.getConclusionByCode(stockCode);
 
 					ws.send(translateResponseFormat('baseStock', { conclusions, charts: [] }));
-					socketClientMap.set(ws, stockCode);
+					socketClientMap.set(ws, { ...socketClientMap.get(ws), target: stockCode });
 					break;
 				}
 				case 'alarm': {
+					const { alarmToken } = requestData;
+					registerAlarmToken(ws, alarmToken);
 					break;
 				}
 				default:

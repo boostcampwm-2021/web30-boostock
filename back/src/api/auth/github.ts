@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { GithubService, UserService } from '@services/index';
 import { generateUUID } from '@helper/tools';
+import eventEmitter from '@helper/eventEmitter';
 
 export default (): express.Router => {
 	const router = express.Router();
@@ -11,15 +12,19 @@ export default (): express.Router => {
 			const accessToken = await GithubService.getAccessToken(code);
 			const githubUserInfo = await GithubService.getUserInfo(accessToken);
 			const userInfo = await UserService.getUserBySocialGithub(githubUserInfo.login);
+			const alarmToken = generateUUID();
+
 			if (userInfo.userId === undefined) return;
 			req.session.data = {
 				userId: userInfo.userId,
 				email: userInfo.email,
 			};
+
 			const error = await req.session.save();
 			if (error) throw error;
 
-			res.status(200).json({ alarmToken: generateUUID() });
+			res.status(200).json({ alarmToken });
+			eventEmitter.emit('loginUser', userInfo.userId, alarmToken);
 		} catch (error) {
 			next(error);
 		}
@@ -31,6 +36,8 @@ export default (): express.Router => {
 			const accessToken = await GithubService.getAccessToken(code);
 			const githubUserInfo = await GithubService.getUserInfo(accessToken);
 			const userInfo = await UserService.signUp({ username, email, socialGithub: githubUserInfo.login });
+			const alarmToken = generateUUID();
+
 			req.session.data = {
 				userId: userInfo.userId,
 				email: userInfo.email,
@@ -39,7 +46,8 @@ export default (): express.Router => {
 			const error = await req.session.save();
 			if (error) throw error;
 
-			res.status(200).json({ alarmToken: generateUUID() });
+			res.status(200).json({ alarmToken });
+			eventEmitter.emit('loginUser', userInfo.userId, alarmToken);
 		} catch (error) {
 			next(error);
 		}
