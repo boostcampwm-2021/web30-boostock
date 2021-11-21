@@ -212,6 +212,7 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 	};
 	webSocket.onmessage = async (event) => {
 		const { type, data } = translateResponseData(event.data);
+		console.log(type, data);
 		switch (type) {
 			case 'stocksInfo': {
 				setStockList(data);
@@ -224,7 +225,6 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 			}
 			case 'updateTarget': {
 				const { match: matchData, currentChart, order, bidAsk } = data;
-
 				// 주문 접수 케이스
 				if (order) {
 					if (order.type === 1) setAskOrders((prev) => updateOrdersAfterAcceptOrder(prev, order) as IAskOrderItem[]);
@@ -249,7 +249,21 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 				break;
 			}
 			case 'notice': {
-				toast.success(`알림이 도착했습니다. ${data}`);
+				if (data.userType === 'bid')
+					toast.success(`매수 체결되었습니다. ${data.stockCode}`, {
+						style: {
+							textAlign: 'center',
+							maxWidth: '180px',
+						},
+					});
+				if (data.userType === 'ask')
+					toast.success(`매도 체결되었습니다. ${data.stockCode}`, {
+						style: {
+							textAlign: 'center',
+							maxWidth: '180px',
+						},
+					});
+
 				break;
 			}
 			default:
