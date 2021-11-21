@@ -3,6 +3,8 @@ import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@src/recoil/user/atom';
 import StockList, { IStockListItem } from '@recoil/stockList/index';
 import SideBarItem from './sideBarItem/SideBarItem';
+import fetchFavoriteStocks from '@src/common/utils/fetchFavoriteStocks';
+import fetchHoldStocks from '@src/common/utils/fetchHoldStocks';
 
 import SideBarNav, { MENU } from './sideBarNav/SideBarNav';
 import SearchBar from './searchbar/SearchBar';
@@ -24,45 +26,19 @@ const SideBar = () => {
 		setRegex(getRegExp(event?.target?.value));
 	};
 
-	const refreshData = () => {
-		fetch(`${process.env.SERVER_URL}/api/user/favorite`, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json; charset=utf-8',
-			},
-		}).then((res: Response) => {
-			if (res.ok) {
-				res.json().then((data) => {
-					setFavorite(() => data.favorite);
-				});
-			}
-		});
-
-		fetch(`${process.env.SERVER_URL}/api/user/hold`, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json; charset=utf-8',
-			},
-		}).then((res: Response) => {
-			if (res.ok) {
-				res.json().then((data) => {
-					setHold(() => data.holdStocks.map((stock: { code: string }) => stock.code));
-				});
-			}
-		});
+	const refreshUserStockData = async (isSignedIn: boolean) => {
+		setFavorite(await fetchFavoriteStocks(isSignedIn));
+		setHold(await fetchHoldStocks(isSignedIn));
 	};
-
-	useEffect(() => {
-		refreshData();
-	}, []);
 
 	useEffect(() => {
 		if (!isLoggedIn) {
 			setFavorite([]);
 			setHold([]);
+			return;
 		}
+
+		refreshUserStockData(isLoggedIn);
 	}, [isLoggedIn]);
 
 	useEffect(() => {
@@ -113,8 +89,9 @@ const SideBar = () => {
 							<SideBarItem
 								key={stock.stockId}
 								stock={stock}
+								isLoggedIn={isLoggedIn}
 								isFavorite={favorite.includes(stock.code)}
-								refresh={refreshData}
+								onRefresh={refreshUserStockData}
 							/>
 						))
 				)}
