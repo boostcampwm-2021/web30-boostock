@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { StockService, UserFavoriteService } from '@services/index';
-import { AuthError, AuthErrorMessage } from '@services/errors/index';
+import { AuthError, AuthErrorMessage } from 'errors/index';
 
 export default (): express.Router => {
 	const router = express.Router();

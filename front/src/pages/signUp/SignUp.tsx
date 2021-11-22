@@ -3,7 +3,8 @@ import toast from 'react-hot-toast';
 import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import User from '@recoil/user';
-
+import eventEmitter from '@common/utils/eventEmitter';
+import { getCookie } from '@src/common/utils/cookie';
 import './SignUp.scss';
 
 const SignUp = () => {
@@ -61,6 +62,11 @@ const SignUp = () => {
 			body: JSON.stringify({ code: query.get('code'), username, email }),
 		}).then((res: Response) => {
 			if (res.ok) {
+				eventEmitter.emit('registerAlarm', getCookie('alarmToken'));
+
+				// res.json().then(({ alarmToken }) => {
+				// 	eventEmitter.emit('registerAlarm', alarmToken);
+				// });
 				setUserState({ ...userState, isLoggedIn: true });
 				toast.success('성공적으로 회원가입 되었습니다.');
 				history.push('/');

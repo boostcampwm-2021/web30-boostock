@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { AuthError, AuthErrorMessage, ParamError, UserError } from '@services/errors/index';
+import { AuthError, AuthErrorMessage, ParamError, UserError } from '@errors/index';
 import { UserService } from '@services/index';
 
 export default (): express.Router => {

@@ -1,4 +1,4 @@
-import ValidationError, { ValidationErrorMessage } from '@services/errors/ValidationError';
+import ValidationError, { ValidationErrorMessage } from 'errors/ValidationError';
 
 export default class Validator {
 	private value: unknown;

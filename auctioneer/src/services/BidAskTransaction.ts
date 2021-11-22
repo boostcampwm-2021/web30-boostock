@@ -148,6 +148,8 @@ export default class BidAskTransaction implements IBidAskTransaction {
 					match: {
 						id: document.id,
 						stockId: this.transactionLog.stockId,
+						bidUser: this.transactionLog.bidUser,
+						askUser: this.transactionLog.askUser,
 						code: this.transactionLog.code,
 						price: this.transactionLog.price,
 						amount: this.transactionLog.amount,

@@ -5,7 +5,7 @@ import morgan from 'morgan';
 
 import api from '@api/index';
 import config from '@config/index';
-import { CommonError, CommonErrorMessage, NotFoundError, NotFoundErrorMessage } from '@services/errors';
+import { CommonError, CommonErrorMessage, NotFoundError, NotFoundErrorMessage } from 'errors';
 import loggers from '@loaders/logger';
 import session from './session';
 
@@ -33,9 +33,6 @@ export default async ({ app }: { app: express.Application }): Promise<void> => {
 
 	/// error handlers
 	app.use((err: CommonError, req: express.Request, res: express.Response, next: express.NextFunction) => {
-		/**
-		 * Handle 401 thrown by express-jwt library
-		 */
 		if (err.name === 'AuthError') {
 			return res.status(err.status).send({ code: 5000, message: err.message }).end();
 		}

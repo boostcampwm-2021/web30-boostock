@@ -2,7 +2,7 @@
 import { EntityManager, getCustomRepository } from 'typeorm';
 import { UserStock } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage } from '@services/errors/index';
+import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage } from 'errors/index';
 
 export default class UserStockService {
 	static instance: UserStockService | null = null;
@@ -18,21 +18,6 @@ export default class UserStockService {
 		if (!entityManager || !userStockRepository) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
 		return userStockRepository;
 	}
-
-	// public async setAmount(entityManager: EntityManager, id: number, amount: number): Promise<boolean> {
-	// 	if (!Number.isInteger(id) || !Number.isInteger(amount)) throw new CommonError(CommonErrorMessage.INVALID_REQUEST);
-
-	// 	const userStockRepository: UserStockRepository = this.getUserStockRepository(entityManager);
-
-	// 	const userStockEntity: UserStock = userStockRepository.create({
-	// 		userStockId: id,
-	// 		amount,
-	// 	});
-
-	// 	const result: boolean = await userStockRepository.updateUserStock(userStockEntity);
-	// 	if (!result) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
-	// 	return result;
-	// }
 
 	static async createOrUpdate(
 		userId: number,

@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from 'express';
 
 import { OrderService, UserService } from '@services/index';
 import Emitter from '@helper/eventEmitter';
-import { AuthError, AuthErrorMessage, ParamError, ParamErrorMessage } from '@services/errors/index';
+import { AuthError, AuthErrorMessage, ParamError, ParamErrorMessage } from 'errors/index';
 import { orderValidator, stockIdValidator } from '@api/middleware/orderValidator';
 
 export default (): express.Router => {

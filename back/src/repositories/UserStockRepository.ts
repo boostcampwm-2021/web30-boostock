@@ -1,6 +1,6 @@
 import { EntityRepository, Repository, InsertResult, UpdateResult, getCustomRepository } from 'typeorm';
 import UserStock from '@models/UserStock';
-import { CommonError, CommonErrorMessage, StockError, StockErrorMessage } from '@services/errors';
+import { CommonError, CommonErrorMessage, StockError, StockErrorMessage } from 'errors';
 
 @EntityRepository(UserStock)
 export default class UserStockRepository extends Repository<UserStock> {

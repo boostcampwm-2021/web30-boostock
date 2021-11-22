@@ -1,6 +1,7 @@
 import { getConnection, QueryRunner } from 'typeorm';
 import { Request, Response } from 'express';
-import { CommonError } from '@services/errors/index';
+import { CommonError } from '@errors/index';
+import Crypto from 'crypto';
 
 export const snakeToCamel = (str) => {
 	return str.toLowerCase().replace(/([-_][a-z])/g, (group) => {
@@ -25,6 +26,10 @@ export const toJsonFromError = (error: CommonError): { status: number; json: { e
 			message: error.message,
 		},
 	};
+};
+
+export const generateUUID = (): string => {
+	return Crypto.randomUUID();
 };
 
 export const transaction = async (
@@ -55,10 +60,7 @@ export const transaction = async (
 	} catch (err: unknown) {
 		queryRunner.rollbackTransaction();
 		queryRunner.release();
-		// res?.status(500).end();
 	}
 };
-
-export function needToHandle() {}
 
 export { QueryRunner, EntityManager } from 'typeorm';

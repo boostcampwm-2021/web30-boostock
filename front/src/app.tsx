@@ -13,6 +13,8 @@ import Trade from './pages/trade/Trade';
 import My from './pages/my/My';
 import Balance from './pages/balance/Balance';
 import Socket from './Socket';
+import eventEmitter from './common/utils/eventEmitter';
+import { getCookie } from './common/utils/cookie';
 
 export interface Ipage {
 	id: number;
@@ -40,6 +42,7 @@ const App: React.FC = () => {
 						email: data.user.email,
 						isLoggedIn: true,
 					});
+					eventEmitter.emit('registerAlarm', getCookie('alarmToken'));
 				});
 			}
 		});

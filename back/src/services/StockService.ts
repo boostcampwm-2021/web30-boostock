@@ -1,16 +1,9 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, createQueryBuilder, getCustomRepository, getConnection, createConnection, getRepository } from 'typeorm';
+import { EntityManager, getCustomRepository, getConnection, createConnection, getRepository } from 'typeorm';
 import { Stock } from '@models/index';
 import { StockRepository } from '@repositories/index';
 import Transaction, { ITransaction } from '@models/Transaction';
-import {
-	CommonError,
-	CommonErrorMessage,
-	ParamError,
-	ParamErrorMessage,
-	StockError,
-	StockErrorMessage,
-} from '@services/errors/index';
+import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage, StockError, StockErrorMessage } from 'errors/index';
 
 export default class StockService {
 	static instance: StockService | null = null;

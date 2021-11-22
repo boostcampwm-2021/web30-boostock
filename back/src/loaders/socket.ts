@@ -2,14 +2,24 @@ import wsModule from 'ws';
 import express from 'express';
 import Emitter from '@helper/eventEmitter';
 import { binArrayToJson, JsonToBinArray } from '@helper/tools';
-import { StockError, StockErrorMessage } from '@services/errors/index';
+import { StockError, StockErrorMessage } from '@errors/index';
 import Logger from './logger';
 import { ISocketRequest } from '../interfaces/socketRequest';
 import StockService from '../services/StockService';
 
+const loginUserMap = new Map();
 const socketClientMap = new Map();
+const socketAlarmMap = new Map();
 const translateRequestFormat = (data) => binArrayToJson(data);
 const translateResponseFormat = (type, data) => JsonToBinArray({ type, data });
+const getNemClientForm = () => {
+	return { target: '', alarmToken: '' };
+};
+
+const sendAlarmMessage = (userId, msg) => {
+	const client = socketAlarmMap.get(userId);
+	client?.send(translateResponseFormat('notice', msg));
+};
 
 const connectNewUser = async (client) => {
 	try {
@@ -17,10 +27,16 @@ const connectNewUser = async (client) => {
 		const stockList = await stockService.getStocksCurrent();
 
 		client.send(translateResponseFormat('stocksInfo', stockList));
-		socketClientMap.set(client, '');
+		socketClientMap.set(client, getNemClientForm());
 	} catch (error) {
 		throw new StockError(StockErrorMessage.CANNOT_READ_STOCK_LIST);
 	}
+};
+const disconnectUser = (client) => {
+	const { alarmToken } = socketClientMap.get(client);
+	const userId = loginUserMap.get(alarmToken);
+	socketAlarmMap.delete(userId);
+	socketClientMap.delete(client);
 };
 
 export default async (app: express.Application): Promise<void> => {
@@ -31,7 +47,7 @@ export default async (app: express.Application): Promise<void> => {
 	webSocketServer.binaryType = 'arraybuffer';
 
 	const broadcast = ({ stockCode, msg }) => {
-		socketClientMap.forEach((targetStockCode, client) => {
+		socketClientMap.forEach(({ target: targetStockCode }, client) => {
 			if (targetStockCode === stockCode) {
 				// 모든 데이터 전송, 현재가, 호가, 차트 등...
 				client.send(translateResponseFormat('updateTarget', msg));
@@ -41,9 +57,19 @@ export default async (app: express.Application): Promise<void> => {
 			}
 		});
 	};
+	const loginUser = (userId, alarmToken) => {
+		loginUserMap.set(alarmToken, userId);
+	};
+	const registerAlarmToken = (ws, alarmToken) => {
+		socketClientMap.set(ws, { ...socketClientMap.get(ws), alarmToken });
+		const userId = loginUserMap.get(alarmToken);
+		if (userId) socketAlarmMap.set(userId, ws);
+	};
 
 	Emitter.on('broadcast', broadcast);
+	Emitter.on('loginUser', loginUser);
 	Emitter.on('order accepted', broadcast);
+	Emitter.on('notice', sendAlarmMessage);
 
 	webSocketServer.on('connection', async (ws, req) => {
 		await connectNewUser(ws);
@@ -59,7 +85,12 @@ export default async (app: express.Application): Promise<void> => {
 					const conclusions = await stockService.getConclusionByCode(stockCode);
 
 					ws.send(translateResponseFormat('baseStock', { conclusions, charts: [] }));
-					socketClientMap.set(ws, stockCode);
+					socketClientMap.set(ws, { ...socketClientMap.get(ws), target: stockCode });
+					break;
+				}
+				case 'alarm': {
+					const { alarmToken } = requestData;
+					registerAlarmToken(ws, alarmToken);
 					break;
 				}
 				default:
@@ -68,7 +99,7 @@ export default async (app: express.Application): Promise<void> => {
 		});
 
 		ws.on('close', () => {
-			socketClientMap.delete(ws);
+			disconnectUser(ws);
 		});
 	});
 };

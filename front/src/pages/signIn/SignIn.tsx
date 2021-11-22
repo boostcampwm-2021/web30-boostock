@@ -4,6 +4,8 @@ import toast from 'react-hot-toast';
 import { Link, Redirect, useLocation, useHistory } from 'react-router-dom';
 
 import User from '@recoil/user/index';
+import eventEmitter from '@common/utils/eventEmitter';
+import { getCookie } from '@src/common/utils/cookie';
 
 import './SignIn.scss';
 
@@ -31,8 +33,10 @@ const SignIn = () => {
 				'Content-Type': 'application/json;charset=utf-8',
 			},
 			body: JSON.stringify({ code: query.get('code') }),
-		}).then((res: Response) => {
+		}).then(async (res: Response) => {
 			if (res.ok) {
+				await res.json();
+				eventEmitter.emit('registerAlarm', getCookie('alarmToken'));
 				setUserState({ ...userState, isLoggedIn: true });
 				history.push('/');
 				toast.success('성공적으로 로그인 되었습니다.');

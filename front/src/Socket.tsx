@@ -1,10 +1,15 @@
 import React from 'react';
-import { SetterOrUpdater, useSetRecoilState } from 'recoil';
+import toast from 'react-hot-toast';
+import { SetterOrUpdater, useRecoilValue, useSetRecoilState } from 'recoil';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
 import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
 import stockExecutionAtom, { IStockExecutionItem } from './recoil/stockExecution/atom';
-import { translateResponseData } from './common/utils/socketUtils';
+import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
+import Emitter from './common/utils/eventEmitter';
+import HoldStockListAtom, { IHoldStockItem } from './recoil/holdStockList/atom';
+import { getHoldStocks } from './pages/trade/sideBar/refreshStockData';
+import userAtom from './recoil/user/atom';
 
 interface IProps {
 	children: React.ReactNode;
@@ -15,6 +20,7 @@ interface IStartSocket {
 	setStockExecution: SetterOrUpdater<IStockExecutionItem[]>;
 	setAskOrders: SetterOrUpdater<IAskOrderItem[]>;
 	setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
+	setHold: SetterOrUpdater<IHoldStockItem[]>;
 }
 interface IResponseConclusions {
 	createdAt: number;
@@ -191,7 +197,7 @@ const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[
 	});
 };
 
-const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders }: IStartSocket) => {
+const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold }: IStartSocket) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.binaryType = 'arraybuffer';
 
@@ -202,10 +208,10 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders });
+			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold });
 		}, 1000);
 	};
-	webSocket.onmessage = (event) => {
+	webSocket.onmessage = async (event) => {
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
 			case 'stocksInfo': {
@@ -219,7 +225,6 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 			}
 			case 'updateTarget': {
 				const { match: matchData, currentChart, order, bidAsk } = data;
-
 				// 주문 접수 케이스
 				if (order) {
 					if (order.type === 1) setAskOrders((prev) => updateOrdersAfterAcceptOrder(prev, order) as IAskOrderItem[]);
@@ -236,15 +241,41 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 					setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
 					addNewExecution(setStockExecution, data.match);
 				}
+				setHold(await getHoldStocks());
 				break;
 			}
 			case 'baseStock': {
 				setStockExecution(dataToExecutionForm(data.conclusions));
 				break;
 			}
+			case 'notice': {
+				if (data.userType === 'bid')
+					toast.success(`매수 체결되었습니다. ${data.stockCode}`, {
+						style: {
+							textAlign: 'center',
+							maxWidth: '180px',
+						},
+					});
+				if (data.userType === 'ask')
+					toast.success(`매도 체결되었습니다. ${data.stockCode}`, {
+						style: {
+							textAlign: 'center',
+							maxWidth: '180px',
+						},
+					});
+
+				break;
+			}
 			default:
 		}
 	};
+	Emitter.on('registerAlarm', (alarmToken: string) => {
+		const alarmData = {
+			type: 'alarm',
+			alarmToken,
+		};
+		webSocket.send(translateRequestData(alarmData));
+	});
 };
 
 const Socket = ({ children }: IProps) => {
@@ -253,8 +284,9 @@ const Socket = ({ children }: IProps) => {
 	const setAskOrders = useSetRecoilState(askOrdersAtom);
 	const setBidOrders = useSetRecoilState(bidOrdersAtom);
 	const setStockExecution = useSetRecoilState(stockExecutionAtom);
+	const setHold = useSetRecoilState(HoldStockListAtom);
 
-	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders });
+	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold });
 
 	return <>{children}</>;
 };
