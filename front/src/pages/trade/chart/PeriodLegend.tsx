@@ -1,55 +1,44 @@
 import React, { useEffect, useRef } from 'react';
-import { IChartItem } from '@recoil/chart';
+import { OFFSET, NUM_OF_CANDLES, COLOR_BORDER, COLOR_LEGEND, IProps, IDrawProps, initializeCanvasSize } from './common';
 
 import './Chart.scss';
 
-interface IDrawPeriodLegendProps {
-	canvas: HTMLCanvasElement | null;
-	chart: IChartItem[];
-	numOfCandles: number;
-}
-
-interface IProps {
-	chartData: IChartItem[];
-	numOfCandles: number;
-}
-
-const drawPeriodLegend = ({ canvas, chart, numOfCandles }: IDrawPeriodLegendProps): void => {
+const drawPeriodLegend = ({ canvas }: IDrawProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
-	console.log(window.getComputedStyle(canvas).getPropertyValue('width').replace('px', ''));
-	const CONTAINER_WIDTH = Math.floor(window.getComputedStyle(canvas).getPropertyValue('width').replace('px', ''));
-	const CONTAINER_HEIGHT = Math.floor(window.getComputedStyle(canvas).getPropertyValue('height').replace('px', ''));
-	console.log(CONTAINER_WIDTH);
-	canvas.setAttribute('width', String(CONTAINER_WIDTH));
-	canvas.setAttribute('height', String(CONTAINER_HEIGHT));
 
-	const PERIOD_TOP = Math.floor(CONTAINER_HEIGHT * 0.9);
+	const [CONTAINER_WIDTH, CONTAINER_HEIGHT] = initializeCanvasSize(canvas);
 	context.clearRect(0, 0, CONTAINER_WIDTH, CONTAINER_HEIGHT);
-	context.beginPath();
-	context.moveTo(0, PERIOD_TOP);
-	context.lineTo(CONTAINER_WIDTH, PERIOD_TOP);
-	context.stroke();
 
-	// TEMP
-	for (let i = 0; i < 1; i++) {
-		const x = Math.floor((CONTAINER_WIDTH * i) / numOfCandles);
+	const CHART_TOP = Math.floor(CONTAINER_HEIGHT * 0.1);
+	const LEGEND_TOP = Math.floor(CONTAINER_HEIGHT * 0.9);
+
+	context.strokeStyle = COLOR_LEGEND;
+	Array.from(Array(NUM_OF_CANDLES).keys()).forEach((index) => {
+		if (index % 5 !== 0) return;
+
+		const width = CONTAINER_WIDTH / NUM_OF_CANDLES;
+		const x = Math.round(width * index - width / 2) + OFFSET;
+
 		context.beginPath();
-		context.lineWidth = 0.5;
-		context.moveTo(1, 0);
-		context.lineTo(1, 10);
+		context.moveTo(x, CHART_TOP);
+		context.lineTo(x, LEGEND_TOP);
 		context.stroke();
-	}
+
+		context.font = '11px dotum';
+		context.textAlign = 'center';
+		context.fillStyle = COLOR_BORDER;
+		context.fillText('1,234', x, LEGEND_TOP + 20);
+	});
 };
 
-const periodLegend = ({ chartData, numOfCandles }: IProps) => {
+const periodLegend = ({ chartData }: IProps) => {
 	const periodLegendRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
 		drawPeriodLegend({
 			canvas: periodLegendRef.current,
 			chartData,
-			numOfCandles,
 		});
 	});
 
