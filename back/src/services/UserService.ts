@@ -101,7 +101,7 @@ export default class UserService {
 		const orderRepository = getCustomRepository(OrderRepository);
 		const stockRepository = getCustomRepository(StockRepository);
 		if (stockCode) {
-			const stock = await stockRepository.findOne({ where: { stockCode } });
+			const stock = await stockRepository.findOne({ where: { code: stockCode } });
 			if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 			const orders = await orderRepository.find({
 				select: ['type', 'amount', 'price'],
@@ -113,19 +113,20 @@ export default class UserService {
 
 			return result || [];
 		}
-		const orders = await orderRepository.find({ select: ['stockId', 'type', 'amount', 'price'], where: { userId } });
-		const result = await Promise.all(
-			orders.map(async (elem) => {
-				const stock = await stockRepository.findOne({ where: { stockId: elem.stockId } });
-				if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-				return {
-					stockCode: stock.code,
-					type: elem.type,
-					amount: elem.amount,
-					price: elem.price,
-				};
-			}),
-		);
+		const orders = await orderRepository.find({
+			select: ['stockId', 'type', 'amount', 'price'],
+			where: { userId },
+			relations: ['stock'],
+		});
+		const result = orders.map((elem) => {
+			return {
+				stockCode: elem.stock.code,
+				type: elem.type,
+				amount: elem.amount,
+				price: elem.price,
+			};
+		});
+
 		return result || [];
 	}
 

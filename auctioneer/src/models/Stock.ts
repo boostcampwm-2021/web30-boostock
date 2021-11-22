@@ -1,9 +1,8 @@
 /* eslint-disable import/no-cycle */
 import 'reflect-metadata';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn } from 'typeorm';
-import { Order } from './index';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'stock' })
 export default class Stock {
 	@PrimaryGeneratedColumn({ name: 'stock_id' })
 	stockId: number;
@@ -22,8 +21,4 @@ export default class Stock {
 
 	@Column({ name: 'previous_close' })
 	previousClose: number;
-
-	@OneToMany(() => Order, (order: Order) => order.orderId)
-	@JoinColumn({ name: 'stock_id', referencedColumnName: 'stock_id' })
-	orders: Order[];
 }

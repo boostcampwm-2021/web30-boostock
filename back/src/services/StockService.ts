@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, getCustomRepository, getConnection, createConnection, getRepository } from 'typeorm';
+import { EntityManager, getCustomRepository, getConnection, createConnection } from 'typeorm';
 import { Stock } from '@models/index';
 import { StockRepository } from '@repositories/index';
 import Transaction, { ITransaction } from '@models/Transaction';
@@ -93,14 +93,14 @@ export default class StockService {
 			const stockRepository: StockRepository = this.getStockRepository(queryRunner.manager);
 			const stock = await stockRepository.readStockByCode(code);
 			if (!stock) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-			queryRunner.commitTransaction();
+			await queryRunner.commitTransaction();
 
 			return stock.price;
 		} catch (error) {
-			queryRunner.rollbackTransaction();
+			await queryRunner.rollbackTransaction();
 			throw new StockError(StockErrorMessage.CANNOT_READ_STOCK);
 		} finally {
-			queryRunner.release();
+			await queryRunner.release();
 		}
 	}
 }

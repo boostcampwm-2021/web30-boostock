@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import 'reflect-metadata';
 import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm';
 import Stock from './Stock';

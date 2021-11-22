@@ -39,7 +39,6 @@ export default class OrderService {
 
 			if (type === ORDERTYPE.ASK) {
 				const holdStock = await userStockRepository.readUserStockLock(userId, stock.stockId);
-				// const holdStock = user.stocks.filter((st) => st.stockId === stock.stockId)[0];
 				if (holdStock === undefined || holdStock.amount < amount)
 					throw new OrderError(OrderErrorMessage.NOT_ENOUGH_STOCK);
 
@@ -93,7 +92,6 @@ export default class OrderService {
 			if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
 			if (order.type === ORDERTYPE.ASK) {
 				const holdStock = await userStockRepository.readUserStockLock(userId, stock.stockId);
-				// const holdStock = user.stocks.filter((st) => st.stockId === stock.stockId)[0];
 				if (holdStock) {
 					holdStock.amount += order.amount;
 					await userStockRepository.save(holdStock);
