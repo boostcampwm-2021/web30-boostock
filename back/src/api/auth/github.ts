@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import { GithubService, UserService } from '@services/index';
 import { generateUUID } from '@helper/tools';
 import eventEmitter from '@helper/eventEmitter';
+import { UserError, UserErrorMessage } from 'errors';
 
 export default (): express.Router => {
 	const router = express.Router();
@@ -14,16 +15,13 @@ export default (): express.Router => {
 			const userInfo = await UserService.getUserBySocialGithub(githubUserInfo.login);
 			const alarmToken = generateUUID();
 
-			if (userInfo.userId === undefined) return;
+			if (userInfo.userId === undefined) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
 			req.session.data = {
 				userId: userInfo.userId,
 				email: userInfo.email,
 			};
 
-			const error = await req.session.save();
-			if (error) throw error;
-
-			res.status(200).cookie('alarmToken', alarmToken).end();
+			res.status(200).cookie('alarmToken', alarmToken).json({});
 			eventEmitter.emit('loginUser', userInfo.userId, alarmToken);
 		} catch (error) {
 			next(error);
@@ -43,10 +41,7 @@ export default (): express.Router => {
 				email: userInfo.email,
 			};
 
-			const error = await req.session.save();
-			if (error) throw error;
-
-			res.status(200).cookie('alarmToken', alarmToken).end();
+			res.status(200).cookie('alarmToken', alarmToken).json({});
 			eventEmitter.emit('loginUser', userInfo.userId, alarmToken);
 		} catch (error) {
 			next(error);

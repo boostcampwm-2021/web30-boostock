@@ -1,6 +1,6 @@
 import Validator from '@helper/Validator';
 import { ORDERTYPE } from '@models/Order';
-import { ValidationError, ValidationErrorMessage } from '@services/errors';
+import { ValidationError, ValidationErrorMessage } from 'errors';
 
 const QUOTE_DIGIT = 1000;
 const QUOTE_RATE = 1;

@@ -29,13 +29,10 @@ const SignIn = () => {
 				'Content-Type': 'application/json;charset=utf-8',
 			},
 			body: JSON.stringify({ code: query.get('code') }),
-		}).then((res: Response) => {
+		}).then(async (res: Response) => {
 			if (res.ok) {
+				await res.json();
 				eventEmitter.emit('registerAlarm', getCookie('alarmToken'));
-
-				// res.json().then(({ alarmToken }) => {
-
-				// });
 				setUserState({ ...userState, isLoggedIn: true });
 				setResult(true);
 			} else {

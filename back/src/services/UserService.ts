@@ -10,7 +10,7 @@ import {
 	StockErrorMessage,
 	UserError,
 	UserErrorMessage,
-} from '@services/errors/index';
+} from '@errors/index';
 import { User, UserBalance, IBalanceHistory, Transaction, ITransaction, Order, STATUSTYPE } from '@models/index';
 
 interface IUserInfo {

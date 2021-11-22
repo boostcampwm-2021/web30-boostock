@@ -2,7 +2,7 @@ import wsModule from 'ws';
 import express from 'express';
 import Emitter from '@helper/eventEmitter';
 import { binArrayToJson, JsonToBinArray } from '@helper/tools';
-import { StockError, StockErrorMessage } from '@services/errors/index';
+import { StockError, StockErrorMessage } from '@errors/index';
 import Logger from './logger';
 import { ISocketRequest } from '../interfaces/socketRequest';
 import StockService from '../services/StockService';
