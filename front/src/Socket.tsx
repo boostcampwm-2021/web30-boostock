@@ -239,6 +239,8 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 
 					setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
 					addNewExecution(setStockExecution, data.match);
+
+					Emitter.emit('order concluded', matchData.code);
 				}
 				setHold(await getHoldStocks());
 				break;
