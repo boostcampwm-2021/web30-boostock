@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import { AuthError, AuthErrorMessage, ParamError, ParamErrorMessage } from 'errors/index';
 import { UserService } from '@services/index';
 import { IBalanceHistory, BALANCETYPE, STATUSTYPE } from '@models/index';
+import config from '@config/index';
 
 export default (): express.Router => {
 	const router = express.Router();
@@ -25,15 +26,14 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const { bank, bankAccount } = req.body;
-			const changeValue = Number(req.body.changeValue);
+			const { bank, bankAccount, changeValue } = req.body;
 			if (
 				!changeValue ||
 				Number.isNaN(changeValue) ||
 				!bank ||
 				!bankAccount ||
 				changeValue <= 0 ||
-				changeValue >= 10000000000
+				changeValue >= config.maxTransperMoney
 			)
 				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			const result = await UserService.updateBalance(userId, changeValue);
@@ -58,15 +58,14 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const { bank, bankAccount } = req.body;
-			const changeValue = Number(req.body.changeValue);
+			const { bank, bankAccount, changeValue } = req.body;
 			if (
 				!changeValue ||
 				Number.isNaN(changeValue) ||
 				!bank ||
 				!bankAccount ||
 				changeValue <= 0 ||
-				changeValue >= 10000000000
+				changeValue >= config.maxTransperMoney
 			)
 				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			const result = await UserService.updateBalance(userId, changeValue * -1);

@@ -19,5 +19,6 @@ export default {
 	githubSecret: process.env.GITHUB_SECRET,
 	sessionSecret: process.env.SESSION_SECRET,
 	sessionCookieId: process.env.SESSION_COOKIE_ID || 'connect.sid',
-	maxAge: 10800000,
+	maxAge: 3 * 60 * 60 * 1000,
+	maxTransperMoney: 10000000,
 };
