@@ -1,15 +1,14 @@
 import React from 'react';
 import toast from 'react-hot-toast';
-import { SetterOrUpdater, useRecoilValue, useSetRecoilState } from 'recoil';
+import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
 import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
 import stockExecutionAtom, { IStockExecutionItem } from './recoil/stockExecution/atom';
 import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
 import Emitter from './common/utils/eventEmitter';
-import HoldStockListAtom, { IHoldStockItem } from './recoil/holdStockList/atom';
+import HoldStockListAtom from './recoil/holdStockList/atom';
 import { getHoldStocks } from './pages/trade/sideBar/refreshStockData';
-import userAtom from './recoil/user/atom';
 
 interface IProps {
 	children: React.ReactNode;
@@ -20,7 +19,7 @@ interface IStartSocket {
 	setStockExecution: SetterOrUpdater<IStockExecutionItem[]>;
 	setAskOrders: SetterOrUpdater<IAskOrderItem[]>;
 	setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
-	setHold: SetterOrUpdater<IHoldStockItem[]>;
+	setHold: SetterOrUpdater<string[]>;
 }
 interface IResponseConclusions {
 	createdAt: number;
@@ -250,20 +249,23 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 			}
 			case 'notice': {
 				if (data.userType === 'bid')
-					toast.success(`매수 체결되었습니다. ${data.stockCode}`, {
-						style: {
-							textAlign: 'center',
-							maxWidth: '180px',
-						},
-					});
+					toast.success(
+						<>
+							<p>
+								<b>{data.stockCode}</b>
+							</p>
+							<p>&nbsp;매수 주문 체결되었습니다.</p>
+						</>,
+					);
 				if (data.userType === 'ask')
-					toast.success(`매도 체결되었습니다. ${data.stockCode}`, {
-						style: {
-							textAlign: 'center',
-							maxWidth: '180px',
-						},
-					});
-
+					toast.success(
+						<>
+							<p>
+								<b>{data.stockCode}</b>
+							</p>
+							<p>&nbsp;매도 주문 체결되었습니다.</p>
+						</>,
+					);
 				break;
 			}
 			default:

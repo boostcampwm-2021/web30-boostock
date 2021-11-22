@@ -1,4 +1,4 @@
-import { AuthError, AuthErrorMessage } from '@services/errors';
+import { AuthError, AuthErrorMessage } from '@errors/index';
 import UserService from '@services/UserService';
 import express, { NextFunction, Request, Response } from 'express';
 
