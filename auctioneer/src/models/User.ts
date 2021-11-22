@@ -16,6 +16,6 @@ export default class User {
 	@Column({ name: 'social_github', unique: true })
 	socialGithub: string;
 
-	@Column({ type: 'int' })
+	@Column()
 	balance: number;
 }

@@ -4,7 +4,7 @@ import mongooseLoader from './mongoose';
 
 import Logger from './logger';
 
-export default async ({ expressApp, http }): Promise<void> => {
+export default async ({ expressApp }): Promise<void> => {
 	await expressLoader({ app: expressApp });
 	Logger.info('✌️ Express loaded');
 	await typeormLoader();

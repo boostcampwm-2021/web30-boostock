@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import fetch from 'node-fetch';
-import { Stock, User, UserStock, Order, STATUSTYPE, Transaction, Chart } from '@models/index';
+import { Stock, User, UserStock, Order, Transaction, Chart } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
 
 export interface ITransactionLog {
@@ -149,7 +149,7 @@ export default class BidAskTransaction implements IBidAskTransaction {
 						code: this.transactionLog.code,
 						price: this.transactionLog.price,
 						amount: this.transactionLog.amount,
-						createdAt: new Date(),
+						createdAt: this.transactionLog.createdAt,
 					},
 					currentChart: updatedCharts,
 				}),

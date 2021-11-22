@@ -11,13 +11,8 @@ if (env.error) {
 }
 export default {
 	clientURL: process.env.CLIENT_URL,
-	port: parseInt(process.env.PORT || '3000', 10),
-	jwtSecret: process.env.JWT_SECRET,
-	jwtAlgorithm: process.env.JWT_ALGO,
+	port: parseInt(process.env.PORT || '3333', 10),
 	logs: {
 		level: process.env.LOG_LEVEL || 'silly',
 	},
-	githubClientId: process.env.GITHUB_CLIENT_ID,
-	githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
-	sessionSecret: process.env.SESSION_SECRET,
 };
