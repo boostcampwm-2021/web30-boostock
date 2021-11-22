@@ -180,8 +180,8 @@ export default class OrderService {
 		try {
 			const orderRepository: OrderRepository = this.getOrderRepository(queryRunner.manager);
 
-			const askOrders = (await orderRepository.getOrders(stockId, '1')) as IAskOrder[];
-			const bidOrders = (await orderRepository.getOrders(stockId, '2')) as IBidOrder[];
+			const askOrders = (await orderRepository.getOrders(stockId, ORDERTYPE.ASK)) as IAskOrder[];
+			const bidOrders = (await orderRepository.getOrders(stockId, ORDERTYPE.BID)) as IBidOrder[];
 			queryRunner.commitTransaction();
 
 			return { askOrders, bidOrders };
