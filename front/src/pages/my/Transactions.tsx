@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
+import StockList, { IStockListItem } from '@recoil/stockList/index';
 import toDateString from '@src/common/utils/toDateString';
 
 import './Transactions.scss';
 
+export enum ORDERTYPE {
+	매도 = 1,
+	매수 = 2,
+}
+
 interface ITransaction {
 	transactionTime: number;
-	orderType: string;
+	orderType: number;
 
 	stockCode: string;
 	stockName: string;
@@ -16,17 +23,8 @@ interface ITransaction {
 }
 
 const Transactions = () => {
-	const [transactions, setTransactions] = useState<ITransaction[]>([
-		{
-			transactionTime: 1637043806237,
-			orderType: '매도',
-			stockCode: 'HNX',
-			stockName: '호눅스',
-			price: 1234567,
-			amount: 1234567,
-			volume: 1234567,
-		},
-	]);
+	const stockList = useRecoilValue<IStockListItem[]>(StockList);
+	const [transactions, setTransactions] = useState<ITransaction[]>([]);
 
 	useEffect(() => {
 		const currentTime = new Date().getTime();
@@ -37,18 +35,38 @@ const Transactions = () => {
 			headers: {
 				'Content-Type': 'application/json; charset=utf-8',
 			},
-		}).then(() => {});
+		}).then((res: Response) => {
+			if (res.ok) {
+				res.json().then((data) => {
+					setTransactions(
+						data.history.map(
+							(history: { type: number; amount: number; createdAt: number; price: number; stockCode: string }) => {
+								return {
+									transactionTime: history.createdAt,
+									orderType: history.type,
+									stockCode: history.stockCode,
+									stockName: stockList.find((stock) => stock.code === history.stockCode)?.nameKorean,
+									price: history.price,
+									amount: history.amount,
+									volume: history.price * history.amount,
+								};
+							},
+						),
+					);
+				});
+			}
+		});
 	}, []);
 
 	const getTransaction = (transaction: ITransaction) => {
 		let status = ' ';
-		if (transaction.orderType === '매수') status = ' my__item--up';
-		else if (transaction.orderType === '매도') status = ' my__item--down';
+		if (transaction.orderType === ORDERTYPE.매수) status = ' my__item--up';
+		else if (transaction.orderType === ORDERTYPE.매도) status = ' my__item--down';
 
 		return (
 			<div className="my__item" key={transaction.transactionTime}>
 				<div>{toDateString(transaction.transactionTime)}</div>
-				<div className={status}>{transaction.orderType}</div>
+				<div className={status}>{ORDERTYPE[transaction.orderType]}</div>
 				<div>
 					<span className="my__item-unit">{transaction.stockCode}</span>
 					<br />

@@ -11,7 +11,7 @@ import {
 	UserError,
 	UserErrorMessage,
 } from '@errors/index';
-import { User, UserBalance, IBalanceHistory, Transaction, ITransaction, Order, STATUSTYPE } from '@models/index';
+import { User, UserBalance, IBalanceHistory, Transaction, ITransaction, ORDERTYPE } from '@models/index';
 
 interface IUserInfo {
 	username: string;
@@ -104,45 +104,80 @@ export default class UserService {
 			const stock = await stockRepository.findOne({ where: { stockCode } });
 			if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 			const orders = await orderRepository.find({
-				select: ['type', 'amount', 'price'],
+				select: ['orderId', 'type', 'amount', 'price'],
 				where: { userId, stockId: stock.stockId },
 			});
 			const result = orders.map((elem) => {
-				return { stockCode, type: elem.type, amount: elem.amount, price: elem.price };
+				return { orderId: elem.orderId, stockCode, type: elem.type, amount: elem.amount, price: elem.price };
 			});
 
 			return result || [];
 		}
-		const orders = await orderRepository.find({ select: ['stockId', 'type', 'amount', 'price'], where: { userId } });
+		const orders = await orderRepository.find({
+			select: ['orderId', 'stockId', 'type', 'amount', 'price', 'createdAt'],
+			where: { userId },
+		});
 		const result = await Promise.all(
 			orders.map(async (elem) => {
 				const stock = await stockRepository.findOne({ where: { stockId: elem.stockId } });
 				if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 				return {
+					orderId: elem.orderId,
 					stockCode: stock.code,
+					nameKorean: stock.nameKorean,
 					type: elem.type,
 					amount: elem.amount,
 					price: elem.price,
+					createdAt: elem.createdAt,
 				};
 			}),
 		);
 		return result || [];
 	}
 
-	static async readTransactionHistory(userId: number, start: number, end: number, type = 0): Promise<ITransaction[]> {
+	static async readTransactionHistory(
+		userId: number,
+		start: number,
+		end: number,
+		type = 0,
+	): Promise<
+		{
+			createdAt: number;
+			stockCode: string;
+			type: number;
+			amount: number;
+			price: number;
+		}[]
+	> {
 		if (type) {
 			const document = await Transaction.find({
 				$or: [{ bidUserId: userId }, { askUserId: userId }],
 				createdAt: { $gte: start, $lte: end },
 				type,
 			});
-			return document || [];
+			return (
+				document.map((doc) => ({
+					createdAt: doc.createdAt,
+					stockCode: doc.stockCode,
+					type: doc.bidUserId === userId ? ORDERTYPE.BID : ORDERTYPE.ASK,
+					amount: doc.amount,
+					price: doc.price,
+				})) || []
+			);
 		}
 		const document = await Transaction.find({
 			$or: [{ bidUserId: userId }, { askUserId: userId }],
 			createdAt: { $gte: start, $lte: end },
 		});
-		return document || [];
+		return (
+			document.map((doc) => ({
+				createdAt: doc.createdAt,
+				stockCode: doc.stockCode,
+				type: doc.bidUserId === userId ? ORDERTYPE.BID : ORDERTYPE.ASK,
+				amount: doc.amount,
+				price: doc.price,
+			})) || []
+		);
 	}
 
 	static async readBalanceHistory(userId: number, start: number, end: number, type = 0): Promise<IBalanceHistory[]> {
