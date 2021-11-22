@@ -4,6 +4,7 @@ import bidAskPriceAtom from '@src/recoil/bidAskPrice/atom';
 import toast from 'react-hot-toast';
 import { getUserAskAvailable, getUserBidAvailable } from '@common/utils/getAvailableAmount';
 import userAtom, { IUser } from '@recoil/user/atom';
+import Emitter from '@common/utils/eventEmitter';
 import BidAskType from './BidAskType';
 import BidAskInputs from './BidAskInputs';
 import BidAskAction from './BidAskAction';
@@ -28,6 +29,11 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 	const { isLoggedIn } = useRecoilValue<IUser>(userAtom);
 
 	const handleSetBidAskType = (newType: string) => setBidAskType(newType);
+
+	const setUserAvailableAmount = async (code: string, isSignedIn: boolean) => {
+		setAskAvailable(await getUserAskAvailable(code, isSignedIn));
+		setBidAvailable(await getUserBidAvailable(isSignedIn));
+	};
 
 	const handleReset = () => {
 		setBidAskPrice(0);
@@ -68,8 +74,7 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 				throw error;
 			}
 			handleReset();
-			setAskAvailable(await getUserAskAvailable(stockCode, isLoggedIn));
-			setBidAvailable(await getUserBidAvailable(isLoggedIn));
+			await setUserAvailableAmount(stockCode, isLoggedIn);
 			toast.success('주문이 접수되었습니다.');
 		} catch (error) {
 			if (error.message === 'Not Correct Quote Digit') {
@@ -98,6 +103,18 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 	};
 
 	useEffect(() => {
+		const listener = async (code: string) => {
+			setUserAvailableAmount(code, isLoggedIn);
+		};
+
+		Emitter.on('order concluded', listener);
+
+		return () => {
+			Emitter.off('order concluded', listener);
+		};
+	}, [isLoggedIn]);
+
+	useEffect(() => {
 		handleReset();
 	}, [bidAskType]);
 
@@ -109,8 +126,7 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 	useEffect(() => {
 		if (!stockCode) return;
 		(async () => {
-			setAskAvailable(await getUserAskAvailable(stockCode, isLoggedIn));
-			setBidAvailable(await getUserBidAvailable(isLoggedIn));
+			await setUserAvailableAmount(stockCode, isLoggedIn);
 		})();
 	}, [stockCode, isLoggedIn]);
 
