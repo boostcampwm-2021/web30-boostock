@@ -118,11 +118,8 @@ export default class BidAskTransaction implements IBidAskTransaction {
 			chart.priceEnd = this.transactionLog.price;
 			chart.priceHigh = Math.max(chart.priceHigh, this.transactionLog.price);
 			chart.priceLow = Math.min(chart.priceLow, this.transactionLog.price);
-
-			const newAmount = BigInt(chart.amount) + BigInt(this.transactionLog.amount);
-			const newVolume = BigInt(chart.volume) + BigInt(this.transactionLog.price) * BigInt(this.transactionLog.amount);
-			chart.amount = newAmount.toString();
-			chart.volume = newVolume.toString();
+			chart.amount += this.transactionLog.amount;
+			chart.volume += this.transactionLog.price * this.transactionLog.amount;
 			return chart;
 		});
 
