@@ -11,7 +11,7 @@ import {
 	UserError,
 	UserErrorMessage,
 } from '@errors/index';
-import { User, UserBalance, IBalanceHistory, Transaction, ITransaction, Order, STATUSTYPE } from '@models/index';
+import { User, UserBalance, IBalanceHistory, Transaction, ITransaction } from '@models/index';
 
 interface IUserInfo {
 	username: string;
