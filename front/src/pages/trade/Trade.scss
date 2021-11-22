@@ -50,14 +50,8 @@ $aside-width: 400px;
 	height: 400px;
 	box-shadow: 2px 2px 4px #dee1e7;
 	border-radius: $cardBorderRadius;
-	background-image: url('@assets/stock-chart-placeholder.png');
-	background-size: cover;
 
 	@include darkModeCardStyle();
-
-	.dark-theme & {
-		background-image: url('@assets/stock-chart-placeholder-dark.png');
-	}
 }
 .trade-status {
 	display: flex;
