@@ -14,8 +14,8 @@ export default (): express.Router => {
 		res.end();
 
 		Emitter.emit('broadcast', { stockCode, msg: broadcastMessage });
-		Emitter.emit('notice', bidUser, { userType: 'ask', stockCode });
-		Emitter.emit('notice', askUser, { userType: 'bid', stockCode });
+		Emitter.emit('notice', bidUser, { userType: 'bid', stockCode });
+		Emitter.emit('notice', askUser, { userType: 'ask', stockCode });
 	});
 
 	return router;
