@@ -60,26 +60,8 @@ export default class BidAskTransaction implements IBidAskTransaction {
 
 	async askOrderProcess(askUser: User, askUserStock: UserStock | undefined, askOrder: Order): Promise<void | Error> {
 		this.transactionLog.askUser = askUser.userId;
-		if (askUserStock === undefined) {
-			const newUserStock = this.UserStockRepositoryRunner.create({
-				userId: askOrder.userId,
-				stockId: askOrder.stockId,
-				amount: this.transactionLog.amount,
-				average: askOrder.price,
-			});
-			this.UserStockRepositoryRunner.insert(newUserStock);
-		} else {
-			askUserStock.amount += this.transactionLog.amount;
-			askUserStock.average = getAveragePrice(
-				askUserStock.amount,
-				askUserStock.average,
-				this.transactionLog.amount,
-				this.transactionLog.price,
-			);
-			await this.UserStockRepositoryRunner.save(askUserStock);
-		}
-		// 매수주문이랑 실제거래가가 차이있을 때 잔돈 반환하는 로직
-		askUser.balance += (askOrder.price - this.transactionLog.price) * this.transactionLog.amount;
+		this.transactionLog.stockId = askOrder.stockId;
+		askUser.balance += this.transactionLog.amount * this.transactionLog.price;
 		await this.UserRepositoryRunner.save(askUser);
 
 		askOrder.amount -= this.transactionLog.amount;
@@ -90,8 +72,28 @@ export default class BidAskTransaction implements IBidAskTransaction {
 	async bidOrderProcess(bidUser: User, bidUserStock: UserStock | undefined, bidOrder: Order): Promise<void | Error> {
 		this.transactionLog.bidUser = bidUser.userId;
 		this.transactionLog.stockId = bidOrder.stockId;
-		bidUser.balance += this.transactionLog.amount * this.transactionLog.price;
+		// 매수주문이랑 실제거래가가 차이있을 때 잔돈 반환하는 로직
+		bidUser.balance += (bidOrder.price - this.transactionLog.price) * this.transactionLog.amount;
 		await this.UserRepositoryRunner.save(bidUser);
+
+		if (bidUserStock === undefined) {
+			const newUserStock = this.UserStockRepositoryRunner.create({
+				userId: bidOrder.userId,
+				stockId: bidOrder.stockId,
+				amount: this.transactionLog.amount,
+				average: bidOrder.price,
+			});
+			this.UserStockRepositoryRunner.insert(newUserStock);
+		} else {
+			bidUserStock.amount += this.transactionLog.amount;
+			bidUserStock.average = getAveragePrice(
+				bidUserStock.amount,
+				bidUserStock.average,
+				this.transactionLog.amount,
+				this.transactionLog.price,
+			);
+			await this.UserStockRepositoryRunner.save(bidUserStock);
+		}
 
 		bidOrder.amount -= this.transactionLog.amount;
 		if (bidOrder.amount === 0) await this.OrderRepositoryRunner.remove(bidOrder);
@@ -116,11 +118,8 @@ export default class BidAskTransaction implements IBidAskTransaction {
 			chart.priceEnd = this.transactionLog.price;
 			chart.priceHigh = Math.max(chart.priceHigh, this.transactionLog.price);
 			chart.priceLow = Math.min(chart.priceLow, this.transactionLog.price);
-
-			const newAmount = BigInt(chart.amount) + BigInt(this.transactionLog.amount);
-			const newVolume = BigInt(chart.volume) + BigInt(this.transactionLog.price) * BigInt(this.transactionLog.amount);
-			chart.amount = newAmount.toString();
-			chart.volume = newVolume.toString();
+			chart.amount += this.transactionLog.amount;
+			chart.volume += this.transactionLog.price * this.transactionLog.amount;
 			return chart;
 		});
 

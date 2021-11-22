@@ -27,13 +27,13 @@ export default class AuctioneerService {
 			const OrderRepositoryRunner = queryRunner.manager.getCustomRepository(OrderRepository);
 			const ChartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
 
-			const [stock, orderAsk, orderBid]: [Stock | undefined, Order | undefined, Order | undefined] = await Promise.all([
+			const [stock, orderBid, orderAsk]: [Stock | undefined, Order | undefined, Order | undefined] = await Promise.all([
 				StockRepositoryRunner.readStockById(stockId),
 				OrderRepositoryRunner.readOrderByDesc(stockId, ORDERTYPE.BID),
 				OrderRepositoryRunner.readOrderByAsc(stockId, ORDERTYPE.ASK),
 			]);
 
-			if (stock === undefined || orderAsk === undefined || orderBid === undefined || orderBid.price > orderAsk.price)
+			if (stock === undefined || orderAsk === undefined || orderBid === undefined || orderAsk.price > orderBid.price)
 				throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
 
 			const task = new BidAskTransaction(
@@ -65,6 +65,7 @@ export default class AuctioneerService {
 				task.bidOrderProcess(bidUser, bidUserStock, orderBid),
 				task.askOrderProcess(askUser, askUserStock, orderAsk),
 			]);
+
 			await task.noticeProcess(stock);
 			queryRunner.commitTransaction();
 			result = true;
