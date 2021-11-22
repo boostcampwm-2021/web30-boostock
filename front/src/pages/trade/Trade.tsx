@@ -11,6 +11,7 @@ import stockListAtom from '@src/recoil/stockList/atom';
 import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
+import Chart from './chart/Chart';
 import BidAsk from './bidAsk/BidAsk';
 import Conclusion from './conclusion/Conclusion';
 import Order from './order/Order';
@@ -94,7 +95,9 @@ const Trade = () => {
 					<section className="trade-info">
 						<StockInfo info={stockState} />
 					</section>
-					<section className="trade-chart">&nbsp;</section>
+					<section className="trade-chart">
+						<Chart />
+					</section>
 					<section className="trade-status">
 						<section className="trade-order">
 							<header className="order-header">호가정보</header>
