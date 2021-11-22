@@ -138,32 +138,8 @@
 	height: 46px;
 }
 
-.bidask-option-radio-input {
-	display: none;
-}
-
-.bidask-option-label {
-	border: 1px solid $borderColor;
-	cursor: pointer;
-	border-radius: 4px;
-	padding: 10px 20px;
-	box-shadow: 2px 2px 4px $boxShadowColor;
-
-	&:last-child {
-		margin-left: 10px;
-	}
-
-	.bidask-option-radio-input:checked + & {
-		background-color: $indigo;
-		color: $white;
-		border: 1px solid $indigo;
-		box-shadow: none;
-	}
-
-	.dark-theme & {
-		border: 1px solid $darkModeBorderColor;
-		box-shadow: none;
-	}
+.bidask-stock-code {
+	font-weight: 700;
 }
 
 .bidask-info-price {

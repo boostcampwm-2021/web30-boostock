@@ -2,71 +2,79 @@
 @import '@common/mixins.scss';
 
 .my-info {
-    width: 100%;
-    height: 150px;
+	width: 100%;
+	height: 150px;
 
-    @include darkModeCardStyle();
+	@include darkModeCardStyle();
 }
 
 .my-info__top {
-    height: 60%;
-    padding: 16px;
-    box-sizing: border-box;
+	height: 60%;
+	padding: 16px;
+	box-sizing: border-box;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 
-    border-bottom: 1px solid $borderColor;
+	border-bottom: 1px solid $borderColor;
 
-    .dark-theme & {
+	.dark-theme & {
 		border-bottom: 1px solid $darkModeBorderColor;
 	}
 }
 
 .my-info__bottom {
-    height: 40%;
-    padding: 16px;
-    box-sizing: border-box;
+	height: 40%;
+	padding: 16px;
+	box-sizing: border-box;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 
 .my-info__group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 
-    width: 100%;
+	width: 100%;
 
-    .my-info__title--top {
-        font-size: 14px;
-        font-weight: bold;
-        line-height: 24px;
-    }
+	.my-info__title--top {
+		font-size: 14px;
+		font-weight: bold;
+		line-height: 24px;
+	}
 
-    .my-info__title--bottom {
-        font-size: 12px;
-        font-weight: bold;
-        line-height: 16px;
-    }
+	.my-info__title--bottom {
+		font-size: 12px;
+		font-weight: bold;
+		line-height: 16px;
+	}
 
-    .my-info__data--top {
-        font-size: 24px;
-    }
+	.my-info__data--top {
+		font-size: 24px;
+	}
 
-    .my-info__data--bottom {
-        font-size: 16px;
-    }
+	.my-info__data--bottom {
+		font-size: 16px;
+	}
 
-    .my-info__data--up {
-        color: $red;
-    }
+	.my-info__data--up {
+		color: $red;
 
-    .my-info__data--down {
-        color: $blue;
-    }
+		.dark-theme & {
+			color: $darkModeRed;
+		}
+	}
+
+	.my-info__data--down {
+		color: $blue;
+
+		.dark-theme & {
+			color: $darkModeLightBlue;
+		}
+	}
 }

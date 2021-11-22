@@ -18,7 +18,7 @@ $aside-width: 400px;
 }
 .aside-bar {
 	position: sticky;
-	top: 65px;
+	top: 84px;
 	height: calc(100vh - $header-height - $gap * 2);
 	width: $aside-width;
 	flex-shrink: 0;

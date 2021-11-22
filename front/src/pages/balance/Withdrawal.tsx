@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import formatNumber from '@src/common/utils/formatNumber';
 
 interface WithdrawalProps {
@@ -62,7 +62,6 @@ const Withdrawal = (props: WithdrawalProps) => {
 
 	return (
 		<div className="balance__wrapper">
-			<Toaster />
 			<div className="balance__box balance__box--border">
 				<b>출금 가능 금액</b>
 				<br />₩ {myBalance.toLocaleString()}

@@ -3,31 +3,34 @@
 
 .my {
 	display: flex;
-    flex-direction: column;
-    align-items: center;
+	flex-direction: column;
+	align-items: center;
 	justify-content: flex-start;
 
-    width: 100vw;
-    height: 100vh;
-    padding: 96px 32px 32px 32px;
-    box-sizing: border-box;
+	width: 100vw;
+	height: 100vh;
+	padding: 96px 32px 32px 32px;
+	box-sizing: border-box;
 }
 
 .my__container {
 	display: flex;
-    flex-direction: column;
-    align-items: center;
+	flex-direction: column;
+	align-items: center;
 	justify-content: flex-start;
 
-    width: 950px;
-    margin: 8px;
-    box-sizing: border-box;
+	width: 950px;
+	max-height: 600px;
+	margin: 8px;
+	overflow-y: auto;
+	box-sizing: border-box;
 
-    background-color: white;
+	background-color: white;
 	border-radius: $cardBorderRadius;
 	box-shadow: 2px 2px 4px $boxShadowColor;
 
 	@include darkModeCardStyle();
+	@include scrollBarStyle();
 }
 
 .my__tab {
@@ -45,8 +48,8 @@
 	.my__tab-item {
 		width: 150px;
 		height: 48px;
-        padding: 0px 32px 0px 32px;
-        box-sizing: border-box;
+		padding: 0px 32px 0px 32px;
+		box-sizing: border-box;
 
 		display: flex;
 		align-items: center;
@@ -72,7 +75,7 @@
 .my__legend {
 	width: 100%;
 	height: 32px;
-	padding: 0px 10px;
+	padding: 0px 16px 0px 10px;
 	box-sizing: border-box;
 	font-size: 12px;
 	font-weight: 700;
@@ -91,13 +94,13 @@
 		border-bottom: 1px solid $darkModeBorderColor;
 	}
 
-    & > * {
-        width: 100%;
-    }
+	& > * {
+		width: 100%;
+	}
 
-    & > .my__legend-number {
-        text-align: right;
-    }
+	& > .my__legend-number {
+		text-align: right;
+	}
 }
 
 .my__item {
@@ -107,9 +110,10 @@
 	box-sizing: border-box;
 	border-bottom: 1px solid $borderColor;
 
-    display: flex;
+	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	flex-shrink: 0;
 
 	font-size: 12px;
 
@@ -117,17 +121,17 @@
 		border-bottom: 1px solid $darkModeBorderColor;
 	}
 
-    & > * {
-        width: 100%;
-    }
+	& > * {
+		width: 100%;
+	}
 
 	.my__item-title {
 		font-weight: bold;
 	}
 
-    .my__item-number {
-        text-align: right;
-    }
+	.my__item-number {
+		text-align: right;
+	}
 
 	.my__item-unit {
 		color: #bbb;
@@ -135,10 +139,18 @@
 	}
 
 	.my__item--up {
-        color: $red;
-    }
+		color: $red;
+
+		.dark-theme & {
+			color: $darkModeRed;
+		}
+	}
 
 	.my__item--down {
-        color: $blue;
-    }
+		color: $blue;
+
+		.dark-theme & {
+			color: $darkModeLightBlue;
+		}
+	}
 }

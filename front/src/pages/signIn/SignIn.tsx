@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import toast, { Toaster } from 'react-hot-toast';
-import { Link, Redirect, useLocation } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { Link, Redirect, useLocation, useHistory } from 'react-router-dom';
 
 import User from '@recoil/user/index';
 import eventEmitter from '@common/utils/eventEmitter';
@@ -10,10 +10,10 @@ import { getCookie } from '@src/common/utils/cookie';
 import './SignIn.scss';
 
 const SignIn = () => {
+	const history = useHistory();
 	const { pathname, search } = useLocation();
 	const query = new URLSearchParams(search);
 	const [userState, setUserState] = useRecoilState(User);
-	const [result, setResult] = useState<boolean>(false);
 
 	const isSignUp = pathname === '/auth/signup';
 
@@ -21,7 +21,11 @@ const SignIn = () => {
 	const SWITCH_URL = isSignUp ? '/auth/signin' : '/auth/signup';
 	const SWITCH_TEXT = isSignUp ? '기존 계정으로 로그인' : '새로운 계정으로 회원가입';
 
-	if (query.get('code') && result === false) {
+	if (userState.isLoggedIn) {
+		return <Redirect to="/" />;
+	}
+
+	if (query.get('code')) {
 		fetch(`${process.env.SERVER_URL}/api/auth/github/signin`, {
 			method: 'POST',
 			credentials: 'include',
@@ -34,18 +38,16 @@ const SignIn = () => {
 				await res.json();
 				eventEmitter.emit('registerAlarm', getCookie('alarmToken'));
 				setUserState({ ...userState, isLoggedIn: true });
-				setResult(true);
+				history.push('/');
+				toast.success('성공적으로 로그인 되었습니다.');
 			} else {
 				toast.error('로그인에 실패했습니다. 잠시 후 재시도 해주세요.');
 			}
 		});
 	}
 
-	if (result === true) return <Redirect to="/trade" />;
-
 	return (
 		<div className="signin">
-			<Toaster />
 			<h1 className="sign-page-header">{TEXT}</h1>
 			<a
 				className="signin-button github-type"

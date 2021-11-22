@@ -1,24 +1,24 @@
-import React, { MouseEvent, KeyboardEvent } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { AiFillStar } from 'react-icons/ai';
 
 import caretIcon from '@src/common/utils/caretIcon';
 import formatNumber from '@src/common/utils/formatNumber';
 import { truncateNumber, truncateUnit } from '@src/common/utils/truncateNumber';
 import { IStockListItem } from '@src/recoil/stockList/index';
+import ToggleFavorite from './ToggleFavorite';
 import './SideBarItem.scss';
 
-export interface Props {
+export interface IProps {
 	stock: IStockListItem;
+	isLoggedIn: boolean;
 	isFavorite: boolean;
-	refresh: () => void;
+	onRefresh: (isLoggedIn: boolean) => void;
 }
 
-const SideBarItem = (props: Props) => {
-	const { stock, isFavorite, refresh } = props;
+const SideBarItem = ({ stock, isLoggedIn, isFavorite, onRefresh }: IProps) => {
 	const { code, nameKorean, price, previousClose, charts } = stock;
 
-	const { volume = 0 } = charts.filter(({ type }) => type === 1440)[0] ?? [];
+	const { volume = '0' } = charts.filter(({ type }) => type === 1440)[0] ?? [];
 	const percent = ((price - previousClose) / previousClose) * 100;
 
 	let status = '';
@@ -26,37 +26,15 @@ const SideBarItem = (props: Props) => {
 	else if (percent > 0) status = 'up';
 	else if (percent < 0) status = 'down';
 
-	const toggleFavorite = () => {
-		fetch(`${process.env.SERVER_URL}/api/user/favorite`, {
-			method: isFavorite ? 'DELETE' : 'POST',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8',
-			},
-			body: JSON.stringify({ stockCode: code }),
-		}).then((res: Response) => {
-			if (res.ok) {
-				refresh();
-			}
-		});
-	};
-
-	const toggleFavoriteKey = (event: KeyboardEvent<HTMLDivElement>) => {
-		if (event.type === 'keydown' && event.keyCode !== 13) return;
-		toggleFavorite();
-	};
-
 	return (
 		<Link className={`sidebar__item ${status}`} to={`?code=${code}`}>
-			<div
-				className="sidebar__item-favorite"
-				role="button"
-				tabIndex={0}
-				onClick={toggleFavorite}
-				onKeyDown={toggleFavoriteKey}
-			>
-				<AiFillStar color={isFavorite ? '#FFA800' : '#999'} />
-			</div>
+			<ToggleFavorite
+				isFavorite={isFavorite}
+				isLoggedIn={isLoggedIn}
+				stockCode={code}
+				onRefresh={onRefresh}
+				nameKorean={nameKorean}
+			/>
 			<div className="sidebar__item-name">{nameKorean}</div>
 			<div className="sidebar__item-price">{formatNumber(price)}</div>
 			<div className="sidebar__item-percent">

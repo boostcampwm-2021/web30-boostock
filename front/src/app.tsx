@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import * as ReactDOM from 'react-dom';
 import { RecoilRoot, useRecoilState } from 'recoil';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import User from '@recoil/user/index';
 import TopBar from '@common/topbar/TopBar';
 import Theme from './Theme';
@@ -49,6 +50,7 @@ const App: React.FC = () => {
 
 	return (
 		<BrowserRouter>
+			<Toaster />
 			<Theme>
 				<TopBar pages={pages} />
 				<Switch>
