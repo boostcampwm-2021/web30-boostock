@@ -3,27 +3,25 @@
 
 .balance {
 	display: flex;
-    flex-direction: column;
-    align-items: center;
+	flex-direction: column;
+	align-items: center;
 	justify-content: flex-start;
 
-    width: 100vw;
-    height: 100vh;
-    padding: 96px 32px 32px 32px;
-    box-sizing: border-box;
+	padding: 96px 32px 32px 32px;
+	box-sizing: border-box;
 }
 
 .balance__conatiner {
 	display: flex;
-    flex-direction: column;
-    align-items: center;
+	flex-direction: column;
+	align-items: center;
 	justify-content: flex-start;
 
-    width: 950px;
-    margin: 8px;
-    box-sizing: border-box;
+	width: 950px;
+	margin: 8px;
+	box-sizing: border-box;
 
-    background-color: white;
+	background-color: white;
 	border-radius: $cardBorderRadius;
 	box-shadow: 2px 2px 4px $boxShadowColor;
 
@@ -31,101 +29,108 @@
 }
 
 .balance__wrapper {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
 
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
+	width: 100%;
+	padding: 8px;
+	box-sizing: border-box;
 }
 
+.balance-items {
+	width: 100%;
+	max-height: 600px;
+	overflow-y: auto;
+
+	@include scrollBarStyle();
+}
 
 .balance__button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
-    width: 100%;
-    height: 48px;
-    margin: 8px;
-    box-sizing: border-box;
-    border: none;
-    border-radius: 4px;
+	width: 100%;
+	height: 48px;
+	margin: 8px;
+	box-sizing: border-box;
+	border: none;
+	border-radius: 4px;
 
-    text-decoration: none;
-    cursor: pointer;
+	text-decoration: none;
+	cursor: pointer;
 
-    color: #fff;
-    background-color: $primary2;
+	color: #fff;
+	background-color: $primary2;
 
-    &:hover {
-        background-color: $primary;
-        transition: background-color 0.5s;
-    }
+	&:hover {
+		background-color: $primary;
+		transition: background-color 0.5s;
+	}
 
-    &:disabled {
-        background-color: #bbb;
-        cursor: default;
-    }
+	&:disabled {
+		background-color: #bbb;
+		cursor: default;
+	}
 }
 
 .balance__box {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 
-    width: 100%;
-    height: 64px;
-    padding: 16px;
-    margin: 8px;
-    box-sizing: border-box;
+	width: 100%;
+	height: 64px;
+	padding: 16px;
+	margin: 8px;
+	box-sizing: border-box;
 
-    font-size: 13px;
-    line-height: 10px;
+	font-size: 13px;
+	line-height: 10px;
 
-    &.balance__box--fill {
-        background-color: #eee;
+	&.balance__box--fill {
+		background-color: #eee;
 
-        .dark-theme & {
-            background-color: $darkModeCardBorderColor;
-            color: $white;
-        }
-    }
+		.dark-theme & {
+			background-color: $darkModeCardBorderColor;
+			color: $white;
+		}
+	}
 
-    &.balance__box--border {
-        border: 1px solid $borderColor;
+	&.balance__box--border {
+		border: 1px solid $borderColor;
 
-        .dark-theme & {
-            border: 1px solid $darkModeListHoverColor;
-            color: $white;
-        }
-    }
+		.dark-theme & {
+			border: 1px solid $darkModeListHoverColor;
+			color: $white;
+		}
+	}
 }
 
 .balance__label {
-    font-size: 10pt;
-    font-weight: bold;
-    margin-left: 8px;
+	font-size: 10pt;
+	font-weight: bold;
+	margin-left: 8px;
 }
 
 .balance__input {
-    width: 230px;
-    height: 32px;
-    padding: 8px;
-    margin: 8px;
-    box-sizing: border-box;
-    background-color: transparent;
+	width: 230px;
+	height: 32px;
+	padding: 8px;
+	margin: 8px;
+	box-sizing: border-box;
+	background-color: transparent;
 
-    border: 1px solid #ccc;
+	border: 1px solid #ccc;
 
-    &:focus {
-        outline: none;
-        border: 1px solid $primary;
-    }
+	&:focus {
+		outline: none;
+		border: 1px solid $primary;
+	}
 
-    .dark-theme & {
-        color: $white;
-        border: 1px solid $darkModeListHoverColor;
-    }
+	.dark-theme & {
+		color: $white;
+		border: 1px solid $darkModeListHoverColor;
+	}
 }

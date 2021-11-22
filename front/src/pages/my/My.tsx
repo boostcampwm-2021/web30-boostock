@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
+import userAtom, { IUser } from '@src/recoil/user/atom';
 import StockList, { IStockListItem } from '@recoil/stockList/index';
 import { IHold } from './IHold';
 
@@ -18,6 +20,7 @@ enum TAB {
 
 const My = () => {
 	const stockListState = useRecoilValue(StockList);
+	const { isLoggedIn } = useRecoilValue<IUser>(userAtom);
 	const [tab, setTab] = useState<TAB>(TAB.HOLDS);
 	const [holds, setHolds] = useState<IHold[]>([]);
 
@@ -70,6 +73,10 @@ const My = () => {
 			});
 		});
 	}, [stockListState]);
+
+	if (!isLoggedIn) {
+		return <Redirect to="/" />;
+	}
 
 	return (
 		<div className="my">

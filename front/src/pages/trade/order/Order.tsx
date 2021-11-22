@@ -36,6 +36,7 @@ function volumeWidth(amount: number, maxAmount: number): string {
 }
 
 const Order = ({ previousClose }: IProps) => {
+	const isFirstRender = useRef<boolean>(true);
 	const orderContentRef = useRef<HTMLDivElement>(null);
 	const askOrders = useRecoilValue<IAskOrderItem[]>(askOrdersAtom);
 	const bidOrders = useRecoilValue<IBidOrderItem[]>(bidOrdersAtom);
@@ -49,21 +50,28 @@ const Order = ({ previousClose }: IProps) => {
 
 	useEffect(() => {
 		if (!orderContentRef.current) return;
+		if (!isFirstRender.current) return;
 
 		const tableElem = orderContentRef.current.children[0] as HTMLTableElement;
-		const tableHeight = tableElem.offsetHeight;
+		const orderContentElem = tableElem.parentElement as HTMLDivElement;
+
+		const tableHeight = tableElem.clientHeight;
+		const orderContentHeight = orderContentElem.clientHeight;
 		const TABLE_MAX_HEIGHT = 470;
 		const isOrderContentOverflowed = orderContentRef.current.scrollHeight - TABLE_MAX_HEIGHT > 0;
+
 		const ORDER_CONTENT_PADDING_SIZE = 6;
 		const orderContentStyle = orderContentRef.current.style;
 
-		orderContentRef.current.scrollTo(0, (tableHeight - TABLE_MAX_HEIGHT) / 2);
+		orderContentRef.current.scrollTo(0, (tableHeight - orderContentHeight) / 2);
 
 		if (!isOrderContentOverflowed) {
 			orderContentStyle.padding = `0px ${ORDER_CONTENT_PADDING_SIZE}px`;
 			return;
 		}
 		orderContentStyle.padding = `0px 0px 0px ${ORDER_CONTENT_PADDING_SIZE}px`;
+
+		if (askOrders.length > 0 || bidOrders.length > 0) isFirstRender.current = false;
 	}, [orderContentRef, askOrders, bidOrders]);
 
 	if (!isOrdersExist(askOrders, bidOrders)) {

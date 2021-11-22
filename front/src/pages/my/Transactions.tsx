@@ -37,10 +37,7 @@ const Transactions = () => {
 			headers: {
 				'Content-Type': 'application/json; charset=utf-8',
 			},
-		}).then((res: Response) => {
-			console.log(res.ok);
-			// setTransactions([]);
-		});
+		}).then(() => {});
 	}, []);
 
 	const getTransaction = (transaction: ITransaction) => {

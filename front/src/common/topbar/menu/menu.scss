@@ -1,0 +1,101 @@
+@import '@common/global.scss';
+
+.container {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	box-sizing: border-box;
+	color: $gray;
+}
+
+.auth-actions {
+	& > a {
+		text-decoration: none;
+		&:hover {
+			color: $primary2;
+		}
+		&.active {
+			color: $white;
+		}
+	}
+}
+
+.navbar__signin {
+	margin-right: 10px;
+}
+
+.navbar__user {
+	position: relative;
+
+	&.open {
+		box-shadow: 0px 0px 2px 3px lighten($primary, 30%);
+		border-radius: 50%;
+	}
+}
+
+.navbar__user-icon {
+	outline: none;
+	border: 1px solid $primary;
+	border-radius: 50%;
+	background-color: $white2;
+	padding: 7px 8px;
+	cursor: pointer;
+
+	& > svg {
+		color: $gray;
+		width: 24px;
+		height: 24px;
+	}
+}
+
+.navbar__user-dropdown-list {
+	&::before {
+		content: '▲';
+		position: absolute;
+		top: -16px;
+		left: 73px;
+		color: $primary;
+	}
+
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	position: absolute;
+	top: 64px;
+	left: calc(21px - 80px);
+	width: 160px;
+	background-color: $primary;
+	color: $white;
+}
+
+.navbar__user-dropdown-item {
+	text-align: center;
+	cursor: pointer;
+
+	& + & {
+		border-top: 1px solid $primary2;
+	}
+
+	&:hover {
+		background-color: darken($primary, 5%);
+	}
+
+	& > a {
+		display: inline-block;
+		width: 100%;
+		padding: 10px 0px;
+		text-decoration: none;
+	}
+}
+
+.logout-btn {
+	background: none;
+	border: none;
+	outline: none;
+	padding: 10px 0px;
+	color: $darkModeRed;
+	cursor: pointer;
+	width: 100%;
+}

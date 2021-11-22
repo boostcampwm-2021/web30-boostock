@@ -1,12 +1,13 @@
 import React, { ChangeEvent, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import { Redirect, useLocation } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import User from '@recoil/user';
 
 import './SignUp.scss';
 
 const SignUp = () => {
+	const history = useHistory();
 	const { search } = useLocation();
 	const query = new URLSearchParams(search);
 
@@ -14,8 +15,11 @@ const SignUp = () => {
 	const [email, setEmail] = useState<string>('');
 	const [isEmailValidate, setEmailValidate] = useState<boolean>(false);
 	const [term, setTerm] = useState<boolean>(false);
-	const [result, setResult] = useState<boolean>(false);
 	const [userState, setUserState] = useRecoilState(User);
+
+	if (userState.isLoggedIn) {
+		return <Redirect to="/" />;
+	}
 
 	const emailValidator = new RegExp('\\S+@\\S+\\.\\S+');
 
@@ -58,18 +62,16 @@ const SignUp = () => {
 		}).then((res: Response) => {
 			if (res.ok) {
 				setUserState({ ...userState, isLoggedIn: true });
-				setResult(true);
+				toast.success('성공적으로 회원가입 되었습니다.');
+				history.push('/');
 			} else {
-				toast.error('로그인에 실패했습니다. 잠시 후 재시도 해주세요.');
+				toast.error('회원가입에 실패했습니다. 잠시 후 재시도 해주세요.');
 			}
 		});
 	};
 
-	if (result === true) return <Redirect to="/trade" />;
-
 	return (
 		<form className="signup" action="#">
-			<Toaster />
 			<div className="signup-container">
 				<h1>회원가입</h1>
 				<div className="signup-box">
