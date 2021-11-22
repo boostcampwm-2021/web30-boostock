@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 export * from './Chart';
 export { default as Chart } from './Chart';
 

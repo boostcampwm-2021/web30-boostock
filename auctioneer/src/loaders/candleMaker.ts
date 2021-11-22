@@ -3,7 +3,7 @@ import { ScheduleService } from '@services/index';
 import { CHARTTYPE } from '@interfaces/IChartCandle';
 import Logger from './logger';
 
-const candleMaker = () => {
+const candleMaker = (): void => {
 	const candleMinutes = schedule.scheduleJob('* * * * *', () => {
 		new ScheduleService().runAllChart(CHARTTYPE.MINUTES);
 		Logger.info('Minutes scheduled');

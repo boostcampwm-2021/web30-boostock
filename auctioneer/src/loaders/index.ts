@@ -1,3 +1,5 @@
+import express from 'express';
+
 import config from '@config/index';
 import expressLoader from './express';
 import typeormLoader from './typeorm';
@@ -5,7 +7,7 @@ import mongooseLoader from './mongoose';
 import candleMaker from './candleMaker';
 import Logger from './logger';
 
-export default async ({ expressApp }): Promise<void> => {
+export default async ({ expressApp }: { expressApp: express.Application }): Promise<void> => {
 	await expressLoader({ app: expressApp });
 	Logger.info('✌️ Express loaded');
 	await typeormLoader();

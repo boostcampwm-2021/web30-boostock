@@ -1,29 +1,27 @@
-import { EntityRepository, Repository, MoreThan } from 'typeorm';
-import { Order } from '@models/index';
+import { EntityRepository, Repository } from 'typeorm';
+import { Order, ORDERTYPE } from '@models/index';
 
 @EntityRepository(Order)
 export default class OrderRepository extends Repository<Order> {
-	public async readOrderByAsc(stockId: number, type: number): Promise<Order | undefined> {
-		return this.findOne({
-			where: {
-				stockId,
-				type,
-				amount: MoreThan(0),
-			},
-			order: { price: 'ASC', createdAt: 'ASC' },
-			lock: { mode: 'pessimistic_write' },
-		});
+	public async readAskOrderByCode(code: string): Promise<Order | undefined> {
+		return this.createQueryBuilder('Order')
+			.leftJoin('Order.stock', 'Stock')
+			.where('Stock.code = :code', { code })
+			.andWhere('Order.type = :type', { type: ORDERTYPE.ASK })
+			.orderBy('Order.price', 'ASC')
+			.addOrderBy('Order.createdAt', 'ASC')
+			.setLock('pessimistic_write')
+			.getOne();
 	}
 
-	public async readOrderByDesc(stockId: number, type: number): Promise<Order | undefined> {
-		return this.findOne({
-			where: {
-				stockId,
-				type,
-				amount: MoreThan(0),
-			},
-			order: { price: 'DESC', createdAt: 'ASC' },
-			lock: { mode: 'pessimistic_write' },
-		});
+	public async readBidOrderByCode(code: string): Promise<Order | undefined> {
+		return this.createQueryBuilder('Order')
+			.leftJoin('Order.stock', 'Stock')
+			.where('Stock.code = :code', { code })
+			.andWhere('Order.type = :type', { type: ORDERTYPE.BID })
+			.orderBy('Order.price', 'ASC')
+			.addOrderBy('Order.createdAt', 'ASC')
+			.setLock('pessimistic_write')
+			.getOne();
 	}
 }

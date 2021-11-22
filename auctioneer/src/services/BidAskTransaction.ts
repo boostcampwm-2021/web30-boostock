@@ -2,31 +2,23 @@
 import fetch from 'node-fetch';
 import { Stock, User, UserStock, Order, Transaction, Chart } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
+import { CommonError, CommonErrorMessage } from '@errors/index';
 
 export interface ITransactionLog {
 	code: string;
 	price: number;
 	amount: number;
-	stockId?: number;
-	bidUser?: number;
-	askUser?: number;
-	createdAt?: number;
-}
-
-export interface IBidAskTransaction {
-	StockRepositoryRunner: StockRepository;
-	UserRepositoryRunner: UserRepository;
-	UserStockRepositoryRunner: UserStockRepository;
-	OrderRepositoryRunner: OrderRepository;
-	ChartRepositoryRunner: ChartRepository;
-	transactionLog: ITransactionLog;
+	stockId: number;
+	bidUser: number;
+	askUser: number;
+	createdAt: Date;
 }
 
 function getAveragePrice(holdAmount: number, holdAverage: number, newAmount: number, newPrice: number): number {
 	return (holdAmount * holdAverage + newAmount * newPrice) / (holdAmount + newAmount);
 }
 
-export default class BidAskTransaction implements IBidAskTransaction {
+export default class BidAskTransaction {
 	StockRepositoryRunner: StockRepository;
 
 	UserRepositoryRunner: UserRepository;
@@ -38,6 +30,8 @@ export default class BidAskTransaction implements IBidAskTransaction {
 	ChartRepositoryRunner: ChartRepository;
 
 	transactionLog: ITransactionLog;
+
+	updatedCharts: Chart[];
 
 	constructor(
 		StockRepositoryRunner: StockRepository,
@@ -58,9 +52,7 @@ export default class BidAskTransaction implements IBidAskTransaction {
 		return this;
 	}
 
-	async askOrderProcess(askUser: User, askUserStock: UserStock | undefined, askOrder: Order): Promise<void | Error> {
-		this.transactionLog.askUser = askUser.userId;
-		this.transactionLog.stockId = askOrder.stockId;
+	async askOrderProcess(askUser: User, askOrder: Order): Promise<void | Error> {
 		askUser.balance += this.transactionLog.amount * this.transactionLog.price;
 		await this.UserRepositoryRunner.save(askUser);
 
@@ -78,8 +70,8 @@ export default class BidAskTransaction implements IBidAskTransaction {
 
 		if (bidUserStock === undefined) {
 			const newUserStock = this.UserStockRepositoryRunner.create({
-				userId: bidOrder.userId,
-				stockId: bidOrder.stockId,
+				user: bidUser,
+				stock: bidOrder.stock,
 				amount: this.transactionLog.amount,
 				average: bidOrder.price,
 			});
@@ -100,17 +92,17 @@ export default class BidAskTransaction implements IBidAskTransaction {
 		else await this.OrderRepositoryRunner.save(bidOrder);
 	}
 
-	async noticeProcess(stock: Stock): Promise<void | Error> {
+	async chartProcess(stock: Stock): Promise<void | Error> {
 		stock.price = this.transactionLog.price;
 		await this.StockRepositoryRunner.save(stock);
 
 		const charts = await this.ChartRepositoryRunner.find({
 			where: {
-				stockId: this.transactionLog.stockId,
+				stock,
 			},
 		});
 
-		const updatedCharts = charts.map((chart: Chart) => {
+		this.updatedCharts = charts.map((chart: Chart) => {
 			chart.priceEnd = this.transactionLog.price;
 			if (chart.priceStart === 0) {
 				chart.priceStart = this.transactionLog.price;
@@ -125,10 +117,10 @@ export default class BidAskTransaction implements IBidAskTransaction {
 			return chart;
 		});
 
-		updatedCharts.forEach(async (chart: Chart) => {
-			await this.ChartRepositoryRunner.update(chart.chartId, chart);
-		});
+		await Promise.all(this.updatedCharts.map((chart: Chart) => this.ChartRepositoryRunner.update(chart.chartId, chart)));
+	}
 
+	async logProcess(): Promise<void> {
 		const transaction = new Transaction({
 			bidUserId: this.transactionLog.bidUser,
 			askUserId: this.transactionLog.askUser,
@@ -139,7 +131,7 @@ export default class BidAskTransaction implements IBidAskTransaction {
 		});
 
 		transaction.save((err, document) => {
-			if (err) throw new Error('오류났어요 롤백해주세요');
+			if (err) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
 
 			fetch(`${process.env.API_SERVER_URL}/api/stock/conclusion`, {
 				method: 'POST',
@@ -157,7 +149,7 @@ export default class BidAskTransaction implements IBidAskTransaction {
 						amount: this.transactionLog.amount,
 						createdAt: this.transactionLog.createdAt,
 					},
-					currentChart: updatedCharts,
+					currentChart: this.updatedCharts,
 				}),
 			});
 		});

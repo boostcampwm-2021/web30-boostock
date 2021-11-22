@@ -54,11 +54,15 @@ export default class ScheduleService {
 		const queryRunner = getConnection().createQueryRunner();
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
-		const chartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
-		const charts = await chartRepositoryRunner.readLock(type);
-		const chartTasks = charts.map((chart) => this.saveCandleAndInitialize(chart, chartRepositoryRunner));
-		await Promise.all(chartTasks);
-		await queryRunner.commitTransaction();
-		await queryRunner.release();
+		try {
+			const chartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
+			const charts = await chartRepositoryRunner.readLock(type);
+			await Promise.all(charts.map((chart) => this.saveCandleAndInitialize(chart, chartRepositoryRunner)));
+			await queryRunner.commitTransaction();
+		} catch (error) {
+			await queryRunner.rollbackTransaction();
+		} finally {
+			await queryRunner.release();
+		}
 	}
 }
