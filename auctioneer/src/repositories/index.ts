@@ -1,9 +1,6 @@
 export * from './UserRepository';
 export { default as UserRepository } from './UserRepository';
 
-export * from './UserFavoriteRepository';
-export { default as UserFavoriteRepository } from './UserFavoriteRepository';
-
 export * from './UserStockRepository';
 export { default as UserStockRepository } from './UserStockRepository';
 

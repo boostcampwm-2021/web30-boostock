@@ -8,7 +8,7 @@ import config from '@config/index';
 async function startServer() {
 	const app = express();
 	const http = _http.createServer(app);
-	await loaders({ expressApp: app, http });
+	await loaders({ expressApp: app });
 
 	http.listen(config.port, () => {
 		Logger.info(`

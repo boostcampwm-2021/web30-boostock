@@ -3,8 +3,8 @@ import { getConnection } from 'typeorm';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
 import { Stock, Order, ORDERTYPE } from '@models/index';
 import { needToHandle } from '@helper/tools';
+import { OrderError, OrderErrorMessage } from '@errors/index';
 import BidAskTransaction, { ITransactionLog } from './BidAskTransaction';
-import { OrderError, OrderErrorMessage } from './errors';
 
 export default class AuctioneerService {
 	static instance: AuctioneerService | null = null;

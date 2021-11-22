@@ -9,3 +9,9 @@ export { default as StockError } from './StockError';
 
 export * from './OrderError';
 export { default as OrderError } from './OrderError';
+
+export * from './ParamError';
+export { default as ParamError } from './ParamError';
+
+export * from './NotFoundError';
+export { default as NotFoundError } from './NotFoundError';

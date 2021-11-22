@@ -1,6 +1,4 @@
-import { getConnection } from 'typeorm';
-import { Request, Response } from 'express';
-import { CommonError } from '@services/errors/index';
+import { CommonError } from '@errors/index';
 
 export const snakeToCamel = (str) => {
 	return str.toLowerCase().replace(/([-_][a-z])/g, (group) => {
@@ -24,32 +22,9 @@ export const toJsonFromError = (error: CommonError): { status: number; json: { e
 	};
 };
 
-export const transaction = async (req: Request, res: Response, callback: any): Promise<void> => {
-	const connection = getConnection();
-	const queryRunner = connection.createQueryRunner();
-	const thenTransaction = () => {
-		queryRunner.commitTransaction();
-	};
-	const catchTransaction = (err: CommonError) => {
-		const errJson = toJsonFromError(err);
-		res.status(errJson.status).json(errJson.json).end();
-		queryRunner.rollbackTransaction();
-	};
-	const finallyTransaction = () => {
-		queryRunner.release();
-	};
-
-	await queryRunner.connect();
-	await queryRunner.startTransaction();
-
-	callback(queryRunner, thenTransaction, catchTransaction, finallyTransaction);
-};
-
-function sleep(ms) {
+export function sleep(ms) {
 	const wakeUpTime = Date.now() + ms;
-	while (Date.now() < wakeUpTime) {}
+	while (Date.now() < wakeUpTime);
 }
 
 export function needToHandle() {}
-
-export { QueryRunner, EntityManager } from 'typeorm';
