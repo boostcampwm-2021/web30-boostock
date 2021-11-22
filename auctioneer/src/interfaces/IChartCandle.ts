@@ -9,3 +9,10 @@ export default interface IChartCandle {
 	volume: number;
 	createdAt: Date;
 }
+
+const CHARTTYPE = {
+	DAYS: 1440,
+	MINUTES: 1,
+};
+
+export { CHARTTYPE };
