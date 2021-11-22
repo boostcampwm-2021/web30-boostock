@@ -19,11 +19,12 @@ const Chart = () => {
 
 	return (
 		<div className="chart-container">
+			<PeriodLegend chartData={chart.slice(start, end + 1)} />
+			<CandleLegend chartData={chart.slice(start, end + 1)} />
+			<VolumeLegend chartData={chart.slice(start, end + 1)} />
 			<CandleGraph chartData={chart.slice(start, end + 1)} numOfCandles={NUM_OF_CANDLES} />
-			<CandleLegend chartData={chart.slice(start, end + 1)} numOfCandles={NUM_OF_CANDLES} />
-			<VolumeGraph chartData={chart.slice(start, end + 1)} numOfCandles={NUM_OF_CANDLES} />
-			<VolumeLegend chartData={chart.slice(start, end + 1)} numOfCandles={NUM_OF_CANDLES} />
-			<PeriodLegend chartData={chart.slice(start, end + 1)} numOfCandles={NUM_OF_CANDLES} />
+			<VolumeGraph chartData={chart.slice(start, end + 1)} />
+			<div className="chart-menu" />
 		</div>
 	);
 };
