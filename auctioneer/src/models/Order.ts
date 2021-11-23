@@ -1,5 +1,7 @@
+/* eslint-disable import/no-cycle */
 import 'reflect-metadata';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Stock } from './index';
 
 export enum ORDERTYPE {
 	ASK = 1,
@@ -21,6 +23,10 @@ export default class Order {
 	@Column({ name: 'user_id' })
 	userId: number;
 
+	@ManyToOne(() => Stock, (stock: Stock) => stock.stockId)
+	@JoinColumn({ name: 'stock_id', referencedColumnName: 'stockId' })
+	stock: Stock;
+
 	@Column({ name: 'stock_id' })
 	stockId: number;
 
@@ -33,6 +39,6 @@ export default class Order {
 	@Column()
 	price: number;
 
-	@Column({ name: 'created_at', type: 'datetime' })
+	@Column({ name: 'created_at' })
 	createdAt: Date;
 }

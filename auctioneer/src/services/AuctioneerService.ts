@@ -1,10 +1,9 @@
 /* eslint-disable class-methods-use-this */
 import { getConnection } from 'typeorm';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
-import { Stock, Order, ORDERTYPE } from '@models/index';
-import { needToHandle } from '@helper/tools';
+import { Stock, Order } from '@models/index';
 import { OrderError, OrderErrorMessage } from '@errors/index';
-import BidAskTransaction, { ITransactionLog } from './BidAskTransaction';
+import BidAskTransaction from './BidAskTransaction';
 
 export default class AuctioneerService {
 	static instance: AuctioneerService | null = null;
@@ -14,7 +13,7 @@ export default class AuctioneerService {
 		AuctioneerService.instance = this;
 	}
 
-	public async bidAsk(stockId: number, code: string): Promise<boolean> {
+	public async bidAsk(code: string): Promise<boolean> {
 		let result = false;
 		const connection = getConnection();
 		const queryRunner = connection.createQueryRunner();
@@ -28,13 +27,19 @@ export default class AuctioneerService {
 			const ChartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
 
 			const [stock, orderBid, orderAsk]: [Stock | undefined, Order | undefined, Order | undefined] = await Promise.all([
-				StockRepositoryRunner.readStockById(stockId),
-				OrderRepositoryRunner.readOrderByDesc(stockId, ORDERTYPE.BID),
-				OrderRepositoryRunner.readOrderByAsc(stockId, ORDERTYPE.ASK),
+				StockRepositoryRunner.readStockByCode(code),
+				OrderRepositoryRunner.readBidOrderByCode(code),
+				OrderRepositoryRunner.readAskOrderByCode(code),
 			]);
-
 			if (stock === undefined || orderAsk === undefined || orderBid === undefined || orderAsk.price > orderBid.price)
 				throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
+
+			const [askUser, bidUser] = await Promise.all([
+				UserRepositoryRunner.readUserById(orderAsk.userId),
+				UserRepositoryRunner.readUserById(orderBid.userId),
+			]);
+			if (askUser === undefined || bidUser === undefined) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
+			const bidUserStock = await UserStockRepositoryRunner.readUserStockByCode(bidUser.userId, code);
 
 			const task = new BidAskTransaction(
 				StockRepositoryRunner,
@@ -44,33 +49,26 @@ export default class AuctioneerService {
 				ChartRepositoryRunner,
 			);
 
-			const transactionLog: ITransactionLog = {
+			task.init({
 				code,
 				price: orderAsk.createdAt < orderBid.createdAt ? orderAsk.price : orderBid.price,
 				amount: Math.min(orderBid.amount, orderAsk.amount),
 				createdAt: new Date().getTime(),
-			};
-
-			await task.init(transactionLog);
-
-			const askUser = await UserRepositoryRunner.readUserById(orderAsk.userId);
-			if (askUser === undefined) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
-			const askUserStock = await UserStockRepositoryRunner.readUserStockById(askUser.userId, stockId);
-
-			const bidUser = await UserRepositoryRunner.readUserById(orderBid.userId);
-			if (bidUser === undefined) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
-			const bidUserStock = await UserStockRepositoryRunner.readUserStockById(bidUser.userId, stockId);
+				askUser: orderAsk.userId,
+				bidUser: orderBid.userId,
+				stockId: orderAsk.stockId,
+			});
 
 			await Promise.all([
 				task.bidOrderProcess(bidUser, bidUserStock, orderBid),
-				task.askOrderProcess(askUser, askUserStock, orderAsk),
+				task.askOrderProcess(askUser, orderAsk),
+				task.chartProcess(stock),
 			]);
+			await task.logProcess();
 
-			await task.noticeProcess(stock);
 			queryRunner.commitTransaction();
 			result = true;
 		} catch (err) {
-			if (err instanceof OrderError) needToHandle();
 			queryRunner.rollbackTransaction();
 			result = false;
 		} finally {

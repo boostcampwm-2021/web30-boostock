@@ -1,7 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { AuthError, AuthErrorMessage, ParamError, ParamErrorMessage } from 'errors/index';
 import { UserService } from '@services/index';
-import { IBalanceHistory, BALANCETYPE, STATUSTYPE } from '@models/index';
+import { IBalanceLog, BALANCETYPE, STATUSTYPE } from '@models/index';
+import config from '@config/index';
 
 export default (): express.Router => {
 	const router = express.Router();
@@ -9,12 +10,10 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const type = Number(req.query.type);
-			const start = Number(req.query.start);
-			const end = Number(req.query.end);
+			const { type, start, end } = req.query;
 			const result = await UserService.getUserById(userId);
 			const { balance } = result;
-			const history = await UserService.readBalanceHistory(userId, start, end, type);
+			const history = await UserService.readBalanceLog(userId, Number(start), Number(end), Number(type));
 			res.status(200).json({ balance, history });
 		} catch (error) {
 			next(error);
@@ -25,29 +24,28 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const { bank, bankAccount } = req.body;
-			const changeValue = Number(req.body.changeValue);
+			const { bank, bankAccount, changeValue } = req.body;
 			if (
 				!changeValue ||
 				Number.isNaN(changeValue) ||
 				!bank ||
 				!bankAccount ||
 				changeValue <= 0 ||
-				changeValue >= 10000000000
+				changeValue >= config.maxTransperMoney
 			)
 				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			const result = await UserService.updateBalance(userId, changeValue);
 			const { balance } = result;
 
-			const newBalanceHistory: IBalanceHistory = {
+			const newBalanceLog: IBalanceLog = {
 				type: BALANCETYPE.DEPOSIT,
 				volume: changeValue,
 				status: STATUSTYPE.FINISHED,
 				bank,
 				bankAccount,
-				createdAt: new Date(),
+				createdAt: new Date().getTime(),
 			};
-			await UserService.pushBalanceHistory(userId, newBalanceHistory);
+			await UserService.pushBalanceLog(userId, newBalanceLog);
 			res.status(200).json({ balance });
 		} catch (error) {
 			next(error);
@@ -58,29 +56,28 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const { bank, bankAccount } = req.body;
-			const changeValue = Number(req.body.changeValue);
+			const { bank, bankAccount, changeValue } = req.body;
 			if (
 				!changeValue ||
 				Number.isNaN(changeValue) ||
 				!bank ||
 				!bankAccount ||
 				changeValue <= 0 ||
-				changeValue >= 10000000000
+				changeValue >= config.maxTransperMoney
 			)
 				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			const result = await UserService.updateBalance(userId, changeValue * -1);
 			const { balance } = result;
 
-			const newBalanceHistory: IBalanceHistory = {
+			const newBalanceLog: IBalanceLog = {
 				type: BALANCETYPE.WITHDRAW,
 				volume: changeValue,
 				status: STATUSTYPE.FINISHED,
 				bank,
 				bankAccount,
-				createdAt: new Date(),
+				createdAt: new Date().getTime(),
 			};
-			await UserService.pushBalanceHistory(userId, newBalanceHistory);
+			await UserService.pushBalanceLog(userId, newBalanceLog);
 			res.status(200).json({ balance });
 		} catch (error) {
 			next(error);

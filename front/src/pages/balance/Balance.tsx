@@ -58,7 +58,7 @@ const Balance = () => {
 			if (res.ok) {
 				res.json().then((data) => {
 					setBalance(data.balance || 0);
-					setHistories(data.history || []);
+					setHistories(data.log || []);
 				});
 			}
 		});

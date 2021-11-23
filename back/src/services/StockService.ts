@@ -1,9 +1,9 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, getCustomRepository, getConnection, createConnection, getRepository } from 'typeorm';
-import { Stock } from '@models/index';
+import { EntityManager, getCustomRepository, getConnection, createConnection } from 'typeorm';
+import { Stock, ChartLog, TransactionLog, ITransactionLog } from '@models/index';
 import { StockRepository } from '@repositories/index';
-import Transaction, { ITransaction } from '@models/Transaction';
 import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage, StockError, StockErrorMessage } from 'errors/index';
+import IChartLog, { CHARTTYPE_VALUE } from '@interfaces/IChartLog';
 
 export default class StockService {
 	static instance: StockService | null = null;
@@ -20,21 +20,21 @@ export default class StockService {
 		StockService.instance = this;
 	}
 
-	static async getStockCodeById(id: number): Promise<string> {
-		if (id === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-		const stockRepository: StockRepository = getCustomRepository(StockRepository);
-		const stock = await stockRepository.findOne(id);
-		if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-		return stock.code;
-	}
+	// static async getStockCodeById(id: number): Promise<string> {
+	// 	if (id === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+	// 	const stockRepository: StockRepository = getCustomRepository(StockRepository);
+	// 	const stock = await stockRepository.findOne(id);
+	// 	if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+	// 	return stock.code;
+	// }
 
-	static async getStockIdByCode(code: string): Promise<number> {
-		if (code === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-		const stockRepository: StockRepository = getCustomRepository(StockRepository);
-		const stock = await stockRepository.findOne({ where: { code } });
-		if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-		return stock.stockId;
-	}
+	// static async getStockIdByCode(code: string): Promise<number> {
+	// 	if (code === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+	// 	const stockRepository: StockRepository = getCustomRepository(StockRepository);
+	// 	const stock = await stockRepository.findOne({ where: { code } });
+	// 	if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+	// 	return stock.stockId;
+	// }
 
 	public async getCurrentStockPrice(entityManager: EntityManager, stockId: number): Promise<{ price: number }> {
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
@@ -67,6 +67,18 @@ export default class StockService {
 		return allStocks.map((stock) => ({ ...stock, charts: stock.charts.filter(({ type }) => type === 1440) }));
 	}
 
+	static async getStockLog(code: string, type: CHARTTYPE_VALUE, start: number, end: number): Promise<IChartLog[]> {
+		console.log(start);
+		const document = await ChartLog.find()
+			.select('-_id -type -__v')
+			.where('code', code)
+			.where('type', type)
+			.gte('createdAt', start)
+			.lt('createdAt', end)
+			.sort('createdAt');
+		return document || [];
+	}
+
 	public async getStocksBaseInfo(): Promise<{ stock_id: number; code: string }[]> {
 		const connection = await createConnection();
 		const stockRepository = connection.getCustomRepository(StockRepository);
@@ -75,8 +87,8 @@ export default class StockService {
 		return baseInfo;
 	}
 
-	public async getConclusionByCode(code: string): Promise<ITransaction[]> {
-		const conclusionsData = await Transaction.find({ stockCode: code }, { amount: 1, price: 1, createdAt: 1, _id: 1 })
+	public async getConclusionByCode(code: string): Promise<ITransactionLog[]> {
+		const conclusionsData = await TransactionLog.find({ stockCode: code }, { amount: 1, price: 1, createdAt: 1, _id: 1 })
 			.sort({ createdAt: -1 })
 			.limit(50);
 
@@ -93,14 +105,14 @@ export default class StockService {
 			const stockRepository: StockRepository = this.getStockRepository(queryRunner.manager);
 			const stock = await stockRepository.readStockByCode(code);
 			if (!stock) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-			queryRunner.commitTransaction();
+			await queryRunner.commitTransaction();
 
 			return stock.price;
 		} catch (error) {
-			queryRunner.rollbackTransaction();
+			await queryRunner.rollbackTransaction();
 			throw new StockError(StockErrorMessage.CANNOT_READ_STOCK);
 		} finally {
-			queryRunner.release();
+			await queryRunner.release();
 		}
 	}
 }
