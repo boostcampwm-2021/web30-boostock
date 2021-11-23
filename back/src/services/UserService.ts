@@ -29,7 +29,7 @@ export default class UserService {
 	static instance: UserService | null = null;
 
 	constructor() {
-		if (UserService.instance) return UserService.instance;'orderId', 'stockId', 'type', 'amount', 'price', 'createdAt'
+		if (UserService.instance) return UserService.instance;
 		UserService.instance = this;
 	}
 
