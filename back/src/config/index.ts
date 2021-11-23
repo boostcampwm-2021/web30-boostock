@@ -21,4 +21,6 @@ export default {
 	sessionCookieId: process.env.SESSION_COOKIE_ID || 'connect.sid',
 	maxAge: 3 * 60 * 60 * 1000,
 	maxTransperMoney: 10000000,
+	maxPrice: 10000000000,
+	maxAmount: 10000,
 };
