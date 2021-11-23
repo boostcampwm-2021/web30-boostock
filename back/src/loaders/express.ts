@@ -10,13 +10,6 @@ import loggers from '@loaders/logger';
 import session from './session';
 
 export default async ({ app }: { app: express.Application }): Promise<void> => {
-	app.get('/status', (req, res) => {
-		res.status(200).end();
-	});
-	app.head('/status', (req, res) => {
-		res.status(200).end();
-	});
-
 	app.enable('trust proxy');
 	app.use(morgan('tiny'));
 	app.use(cors({ origin: [config.clientURL, 'http://127.0.0.1'], credentials: true }));

@@ -4,7 +4,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import { OrderService, UserService } from '@services/index';
 import Emitter from '@helper/eventEmitter';
 import { AuthError, AuthErrorMessage, ParamError, ParamErrorMessage } from 'errors/index';
-import { orderValidator } from '@api/middleware/orderValidator';
+import { orderValidator, stockIdValidator } from '@api/middleware/orderValidator';
 import config from '@config/index';
 
 export default (): express.Router => {
@@ -87,6 +87,42 @@ export default (): express.Router => {
 			)
 				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.modify(userId, orderId, amount, price);
+			res.status(200).json({});
+		} catch (error) {
+			next(error);
+		}
+	});
+
+	router.get('/bid-ask', stockIdValidator, async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const { stockId } = req.query;
+			const orderServiceInstance = new OrderService();
+			const { askOrders, bidOrders } = await orderServiceInstance.getBidAskOrders(Number(stockId));
+
+			res.status(200).json({ askOrders, bidOrders });
+		} catch (error) {
+			next(error);
+		}
+	});
+
+	// trading Bot
+	router.post('/border', async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const { botId: userId, stockCode, type, amount, price } = req.body;
+			await OrderService.order(userId, stockCode, type, amount, price);
+			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
+
+			const acceptedOrderInfo = {
+				stockCode,
+				msg: {
+					order: {
+						type,
+						amount,
+						price,
+					},
+				},
+			};
+			Emitter.emit('order accepted', acceptedOrderInfo);
 			res.status(200).json({});
 		} catch (error) {
 			next(error);

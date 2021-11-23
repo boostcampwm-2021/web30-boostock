@@ -16,14 +16,14 @@ export default class StockRepository extends Repository<Stock> {
 
 	public async readStockById(id: number): Promise<Stock | undefined> {
 		return this.findOne(id, {
-			lock: { mode: 'pessimistic_write' },
+			// lock: { mode: 'pessimistic_write' },
 		});
 	}
 
 	public async readStockByCode(code: string): Promise<Stock | undefined> {
 		return this.findOne({
 			where: { code },
-			lock: { mode: 'pessimistic_write' },
+			// lock: { mode: 'pessimistic_write' },
 		});
 	}
 
@@ -39,6 +39,10 @@ export default class StockRepository extends Repository<Stock> {
 	public async readStockBaseInfo(): Promise<{ stock_id: number; code: string }[]> {
 		const baseInfo = await this.createQueryBuilder().select(['stock_id', 'code']).getRawMany();
 		return baseInfo;
-		// return this.createQueryBuilder().select('price').where('stock_id = :stockId', { stockId }).getRawOne();
+	}
+
+	public async readPriceStocks(): Promise<{ code: string; price: number }[]> {
+		const stockPrices = await this.createQueryBuilder().select(['code', 'price']).getRawMany();
+		return stockPrices;
 	}
 }

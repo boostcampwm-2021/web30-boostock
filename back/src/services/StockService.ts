@@ -79,7 +79,7 @@ export default class StockService {
 	}
 
 	public async getStocksBaseInfo(): Promise<{ stock_id: number; code: string }[]> {
-		const connection = await createConnection();
+		const connection = await getConnection();
 		const stockRepository = connection.getCustomRepository(StockRepository);
 		const baseInfo = await stockRepository.readStockBaseInfo();
 
@@ -113,5 +113,12 @@ export default class StockService {
 		} finally {
 			await queryRunner.release();
 		}
+	}
+
+	public async getPriceStockAll(): Promise<{ code: string; price: number }[]> {
+		const connection = await getConnection();
+		const stockRepository = connection.getCustomRepository(StockRepository);
+		const stockPrices = await stockRepository.readPriceStocks();
+		return stockPrices;
 	}
 }

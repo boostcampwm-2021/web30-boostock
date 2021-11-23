@@ -4,24 +4,28 @@ import { Order, ORDERTYPE } from '@models/index';
 @EntityRepository(Order)
 export default class OrderRepository extends Repository<Order> {
 	public async readAskOrderByCode(code: string): Promise<Order | undefined> {
-		return this.createQueryBuilder('Order')
-			.innerJoin('Order.stock', 'Stock')
-			.where('Stock.code = :code', { code })
-			.andWhere('Order.type = :type', { type: ORDERTYPE.ASK })
-			.orderBy('Order.price', 'ASC')
-			.addOrderBy('Order.createdAt', 'ASC')
-			.setLock('pessimistic_write')
-			.getOneOrFail();
+		return (
+			this.createQueryBuilder('Order')
+				.innerJoin('Order.stock', 'Stock')
+				.where('Stock.code = :code', { code })
+				.andWhere('Order.type = :type', { type: ORDERTYPE.ASK })
+				.orderBy('Order.price', 'ASC')
+				.addOrderBy('Order.createdAt', 'ASC')
+				// .setLock('pessimistic_write')
+				.getOneOrFail()
+		);
 	}
 
 	public async readBidOrderByCode(code: string): Promise<Order | undefined> {
-		return this.createQueryBuilder('Order')
-			.innerJoin('Order.stock', 'Stock')
-			.where('Stock.code = :code', { code })
-			.andWhere('Order.type = :type', { type: ORDERTYPE.BID })
-			.orderBy('Order.price', 'DESC')
-			.addOrderBy('Order.createdAt', 'ASC')
-			.setLock('pessimistic_write')
-			.getOne();
+		return (
+			this.createQueryBuilder('Order')
+				.innerJoin('Order.stock', 'Stock')
+				.where('Stock.code = :code', { code })
+				.andWhere('Order.type = :type', { type: ORDERTYPE.BID })
+				.orderBy('Order.price', 'DESC')
+				.addOrderBy('Order.createdAt', 'ASC')
+				// .setLock('pessimistic_write')
+				.getOne()
+		);
 	}
 }
