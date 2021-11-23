@@ -1,32 +1,24 @@
 /* eslint-disable no-param-reassign */
 import fetch from 'node-fetch';
-import { Stock, User, UserStock, Order, Transaction, Chart } from '@models/index';
+import { Stock, User, UserStock, Order, TransactionLog, Chart } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
+import { CommonError, CommonErrorMessage } from '@errors/index';
 
-export interface ITransactionLog {
+export interface ITransactionInfo {
 	code: string;
 	price: number;
 	amount: number;
-	stockId?: number;
-	bidUser?: number;
-	askUser?: number;
-	createdAt?: number;
-}
-
-export interface IBidAskTransaction {
-	StockRepositoryRunner: StockRepository;
-	UserRepositoryRunner: UserRepository;
-	UserStockRepositoryRunner: UserStockRepository;
-	OrderRepositoryRunner: OrderRepository;
-	ChartRepositoryRunner: ChartRepository;
-	transactionLog: ITransactionLog;
+	stockId: number;
+	bidUser: number;
+	askUser: number;
+	createdAt: number;
 }
 
 function getAveragePrice(holdAmount: number, holdAverage: number, newAmount: number, newPrice: number): number {
 	return (holdAmount * holdAverage + newAmount * newPrice) / (holdAmount + newAmount);
 }
 
-export default class BidAskTransaction implements IBidAskTransaction {
+export default class BidAskTransaction {
 	StockRepositoryRunner: StockRepository;
 
 	UserRepositoryRunner: UserRepository;
@@ -37,7 +29,9 @@ export default class BidAskTransaction implements IBidAskTransaction {
 
 	ChartRepositoryRunner: ChartRepository;
 
-	transactionLog: ITransactionLog;
+	TransactionInfo: ITransactionInfo;
+
+	updatedCharts: Chart[];
 
 	constructor(
 		StockRepositoryRunner: StockRepository,
@@ -53,91 +47,90 @@ export default class BidAskTransaction implements IBidAskTransaction {
 		this.ChartRepositoryRunner = ChartRepositoryRunner;
 	}
 
-	init(transactionLog: ITransactionLog): BidAskTransaction {
-		this.transactionLog = transactionLog;
+	init(TransactionInfo: ITransactionInfo): BidAskTransaction {
+		this.TransactionInfo = TransactionInfo;
 		return this;
 	}
 
-	async askOrderProcess(askUser: User, askUserStock: UserStock | undefined, askOrder: Order): Promise<void | Error> {
-		this.transactionLog.askUser = askUser.userId;
-		this.transactionLog.stockId = askOrder.stockId;
-		askUser.balance += this.transactionLog.amount * this.transactionLog.price;
+	async askOrderProcess(askUser: User, askOrder: Order): Promise<void | Error> {
+		askUser.balance += this.TransactionInfo.amount * this.TransactionInfo.price;
 		await this.UserRepositoryRunner.save(askUser);
 
-		askOrder.amount -= this.transactionLog.amount;
+		askOrder.amount -= this.TransactionInfo.amount;
 		if (askOrder.amount === 0) await this.OrderRepositoryRunner.remove(askOrder);
 		else await this.OrderRepositoryRunner.save(askOrder);
 	}
 
 	async bidOrderProcess(bidUser: User, bidUserStock: UserStock | undefined, bidOrder: Order): Promise<void | Error> {
-		this.transactionLog.bidUser = bidUser.userId;
-		this.transactionLog.stockId = bidOrder.stockId;
+		this.TransactionInfo.bidUser = bidUser.userId;
+		this.TransactionInfo.stockId = bidOrder.stockId;
 		// 매수주문이랑 실제거래가가 차이있을 때 잔돈 반환하는 로직
-		bidUser.balance += (bidOrder.price - this.transactionLog.price) * this.transactionLog.amount;
+		bidUser.balance += (bidOrder.price - this.TransactionInfo.price) * this.TransactionInfo.amount;
 		await this.UserRepositoryRunner.save(bidUser);
 
 		if (bidUserStock === undefined) {
 			const newUserStock = this.UserStockRepositoryRunner.create({
-				userId: bidOrder.userId,
-				stockId: bidOrder.stockId,
-				amount: this.transactionLog.amount,
+				user: bidUser,
+				stock: bidOrder.stock,
+				amount: this.TransactionInfo.amount,
 				average: bidOrder.price,
 			});
 			this.UserStockRepositoryRunner.insert(newUserStock);
 		} else {
-			bidUserStock.amount += this.transactionLog.amount;
+			bidUserStock.amount += this.TransactionInfo.amount;
 			bidUserStock.average = getAveragePrice(
 				bidUserStock.amount,
 				bidUserStock.average,
-				this.transactionLog.amount,
-				this.transactionLog.price,
+				this.TransactionInfo.amount,
+				this.TransactionInfo.price,
 			);
 			await this.UserStockRepositoryRunner.save(bidUserStock);
 		}
 
-		bidOrder.amount -= this.transactionLog.amount;
+		bidOrder.amount -= this.TransactionInfo.amount;
 		if (bidOrder.amount === 0) await this.OrderRepositoryRunner.remove(bidOrder);
 		else await this.OrderRepositoryRunner.save(bidOrder);
 	}
 
-	async noticeProcess(stock: Stock): Promise<void | Error> {
-		stock.price = this.transactionLog.price;
+	async chartProcess(stock: Stock): Promise<void | Error> {
+		stock.price = this.TransactionInfo.price;
 		await this.StockRepositoryRunner.save(stock);
 
 		const charts = await this.ChartRepositoryRunner.find({
 			where: {
-				stockId: this.transactionLog.stockId,
+				stock,
 			},
 		});
 
-		const updatedCharts = charts.map((chart: Chart) => {
+		this.updatedCharts = charts.map((chart: Chart) => {
+			chart.priceEnd = this.TransactionInfo.price;
 			if (chart.priceStart === 0) {
-				chart.priceStart = this.transactionLog.price;
+				chart.priceStart = this.TransactionInfo.price;
+				chart.priceHigh = this.TransactionInfo.price;
+				chart.priceLow = this.TransactionInfo.price;
+			} else {
+				chart.priceHigh = Math.max(chart.priceHigh, this.TransactionInfo.price);
+				chart.priceLow = Math.min(chart.priceLow, this.TransactionInfo.price);
 			}
-
-			chart.priceEnd = this.transactionLog.price;
-			chart.priceHigh = Math.max(chart.priceHigh, this.transactionLog.price);
-			chart.priceLow = Math.min(chart.priceLow, this.transactionLog.price);
-			chart.amount += this.transactionLog.amount;
-			chart.volume += this.transactionLog.price * this.transactionLog.amount;
+			chart.amount += this.TransactionInfo.amount;
+			chart.volume += this.TransactionInfo.price * this.TransactionInfo.amount;
 			return chart;
 		});
 
-		updatedCharts.forEach(async (chart: Chart) => {
-			await this.ChartRepositoryRunner.update(chart.chartId, chart);
-		});
+		await Promise.all(this.updatedCharts.map((chart: Chart) => this.ChartRepositoryRunner.update(chart.chartId, chart)));
+	}
 
-		const transaction = new Transaction({
-			bidUserId: this.transactionLog.bidUser,
-			askUserId: this.transactionLog.askUser,
-			stockCode: this.transactionLog.code,
-			amount: this.transactionLog.amount,
-			price: this.transactionLog.price,
-			createdAt: new Date(),
+	async logProcess(): Promise<void> {
+		const transaction = new TransactionLog({
+			bidUserId: this.TransactionInfo.bidUser,
+			askUserId: this.TransactionInfo.askUser,
+			stockCode: this.TransactionInfo.code,
+			amount: this.TransactionInfo.amount,
+			price: this.TransactionInfo.price,
 		});
 
 		transaction.save((err, document) => {
-			if (err) throw new Error('오류났어요 롤백해주세요');
+			if (err) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
 
 			fetch(`${process.env.API_SERVER_URL}/api/stock/conclusion`, {
 				method: 'POST',
@@ -146,16 +139,17 @@ export default class BidAskTransaction implements IBidAskTransaction {
 				},
 				body: JSON.stringify({
 					match: {
+						// document??
 						id: document.id,
-						stockId: this.transactionLog.stockId,
-						bidUser: this.transactionLog.bidUser,
-						askUser: this.transactionLog.askUser,
-						code: this.transactionLog.code,
-						price: this.transactionLog.price,
-						amount: this.transactionLog.amount,
-						createdAt: this.transactionLog.createdAt,
+						stockId: this.TransactionInfo.stockId,
+						bidUser: this.TransactionInfo.bidUser,
+						askUser: this.TransactionInfo.askUser,
+						code: this.TransactionInfo.code,
+						price: this.TransactionInfo.price,
+						amount: this.TransactionInfo.amount,
+						createdAt: this.TransactionInfo.createdAt,
 					},
-					currentChart: updatedCharts,
+					currentChart: this.updatedCharts,
 				}),
 			});
 		});

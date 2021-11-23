@@ -1,5 +1,7 @@
+import { ORDERTYPE } from '@models/Order';
+
 export interface IBidOrder {
-	type: 2;
+	type: ORDERTYPE.BID;
 	price: number;
 	amount: number;
 }

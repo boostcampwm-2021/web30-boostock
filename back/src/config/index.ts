@@ -18,5 +18,9 @@ export default {
 	githubClient: process.env.GITHUB_CLIENT,
 	githubSecret: process.env.GITHUB_SECRET,
 	sessionSecret: process.env.SESSION_SECRET,
-	maxAge: 10800000,
+	sessionCookieId: process.env.SESSION_COOKIE_ID || 'connect.sid',
+	maxAge: 3 * 60 * 60 * 1000,
+	maxTransperMoney: 10000000,
+	maxPrice: 10000000000,
+	maxAmount: 10000,
 };

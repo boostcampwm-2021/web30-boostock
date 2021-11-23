@@ -15,4 +15,5 @@ export default {
 	logs: {
 		level: process.env.LOG_LEVEL || 'silly',
 	},
+	instanceId: parseInt(process.env.INSTANCE_ID || '0', 10),
 };

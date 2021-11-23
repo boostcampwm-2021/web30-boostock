@@ -24,9 +24,9 @@ export default class UserFavoriteService {
 		return userFavorites.map((userFavorite) => userFavorite.stockId);
 	}
 
-	static async createUserFavorite(userId: number, stockId: number): Promise<UserFavorite> {
+	static async createUserFavorite(userId: number, stockCode: string): Promise<UserFavorite> {
 		const targetUser = await getCustomRepository(UserRepository).findOne(userId);
-		const targetStock = await getCustomRepository(StockRepository).findOne(stockId);
+		const targetStock = await getCustomRepository(StockRepository).findOne({ where: { code: stockCode } });
 		if (targetUser === undefined || targetStock === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 		const newFavorite = new UserFavorite();
 		newFavorite.userId = targetUser;
@@ -34,12 +34,14 @@ export default class UserFavoriteService {
 		return getCustomRepository(UserFavoriteRepository).save(newFavorite);
 	}
 
-	static async removeUserFavorite(userId: number, stockId: number): Promise<UserFavorite> {
+	static async removeUserFavorite(userId: number, stockCode: string): Promise<UserFavorite> {
 		const userFavoriteRepository = getCustomRepository(UserFavoriteRepository);
+		const targetStock = await getCustomRepository(StockRepository).findOne({ where: { code: stockCode } });
+		if (targetStock === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 		const targetFavorite = await userFavoriteRepository.findOne({
 			where: {
 				userId,
-				stockId,
+				stockId: targetStock,
 			},
 		});
 		if (targetFavorite === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
