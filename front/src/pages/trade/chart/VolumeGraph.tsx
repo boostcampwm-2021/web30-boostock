@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { NUM_OF_CANDLES, RATIO_MAX, IProps, IDrawProps, initializeCanvasSize, getPriceColor } from './common';
+
 import './Chart.scss';
 
 interface IDrawVolumeBarProps {
@@ -25,14 +26,11 @@ const drawVolumeGraph = ({ canvas, chartData }: IDrawProps): void => {
 	if (!canvas || !context) return;
 
 	const [CONTAINER_WIDTH, CONTAINER_HEIGHT] = initializeCanvasSize(canvas);
-	const [AMOUNT_MIN, AMOUNT_MAX] = chartData.reduce(
-		(prev, current) => {
-			return [Math.min(prev[0], current.amount), Math.max(prev[1], current.amount * RATIO_MAX)];
-		},
-		[Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER],
-	);
-
 	const INDEX_START = NUM_OF_CANDLES - chartData.length - 1;
+	const AMOUNT_MAX = chartData.reduce((prev, current) => {
+		return Math.max(prev, current.amount * RATIO_MAX);
+	}, Number.MIN_SAFE_INTEGER);
+
 	context.clearRect(0, 0, CONTAINER_WIDTH, CONTAINER_HEIGHT);
 	chartData.forEach((bar, index) => {
 		drawVolumeBar({
@@ -40,7 +38,7 @@ const drawVolumeGraph = ({ canvas, chartData }: IDrawProps): void => {
 			width: CONTAINER_WIDTH / NUM_OF_CANDLES,
 			height: CONTAINER_HEIGHT,
 			index: INDEX_START + index,
-			ratio: (bar.amount - AMOUNT_MIN) / (AMOUNT_MAX - AMOUNT_MIN),
+			ratio: bar.amount / AMOUNT_MAX,
 			color: getPriceColor(bar.priceStart, bar.priceEnd),
 		});
 	});
