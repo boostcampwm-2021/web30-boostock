@@ -12,6 +12,7 @@ export interface IBalanceHistory {
 	status: number;
 	bank: string;
 	bankAccount: string;
+	createdAt: number;
 }
 
 export interface IUserBalance {
@@ -19,16 +20,14 @@ export interface IUserBalance {
 	balanceHistory: IBalanceHistory[];
 }
 
-export const BalanceHistorySchema = new Schema<IBalanceHistory>(
-	{
-		type: { type: Number, required: true },
-		volume: { type: Number, required: true },
-		status: { type: Number, required: true },
-		bank: { type: String, required: true },
-		bankAccount: { type: String, required: true },
-	},
-	{ timestamps: { updatedAt: false } },
-);
+export const BalanceHistorySchema = new Schema<IBalanceHistory>({
+	type: { type: Number, required: true },
+	volume: { type: Number, required: true },
+	status: { type: Number, required: true },
+	bank: { type: String, required: true },
+	bankAccount: { type: String, required: true },
+	createdAt: Number,
+});
 
 export const UserBalanceSchema = new Schema<IUserBalance>(
 	{

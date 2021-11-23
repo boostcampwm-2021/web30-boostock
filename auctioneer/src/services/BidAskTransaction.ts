@@ -11,7 +11,7 @@ export interface ITransactionLog {
 	stockId: number;
 	bidUser: number;
 	askUser: number;
-	createdAt: Date;
+	createdAt: number;
 }
 
 function getAveragePrice(holdAmount: number, holdAverage: number, newAmount: number, newPrice: number): number {

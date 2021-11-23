@@ -17,6 +17,7 @@ export default class ScheduleService {
 			priceLow: chart.priceLow,
 			amount: chart.amount,
 			volume: chart.volume,
+			createdAt: new Date().getTime(),
 		};
 		const chartLog = new ChartLog(log);
 		await chartLog.save();

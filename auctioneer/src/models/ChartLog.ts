@@ -15,8 +15,9 @@ export const ChartLogSchema = new Schema<IChartLog>(
 		priceLow: Number,
 		amount: Number,
 		volume: Number,
+		createdAt: Number,
 	},
-	{ collection: 'ChartLog', timestamps: { updatedAt: false, currentTime: () => Date.now() } },
+	{ collection: 'ChartLog' },
 );
 
-export default mongoose.model('ChartDays', ChartLogSchema);
+export default mongoose.model('ChartLog', ChartLogSchema);

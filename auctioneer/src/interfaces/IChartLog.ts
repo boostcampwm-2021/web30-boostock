@@ -8,6 +8,7 @@ export default interface IChartLog {
 	priceLow: number;
 	amount: number;
 	volume: number;
+	createdAt: number;
 }
 
 const CHARTTYPE = {

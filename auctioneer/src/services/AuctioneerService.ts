@@ -53,7 +53,7 @@ export default class AuctioneerService {
 				code,
 				price: orderAsk.createdAt < orderBid.createdAt ? orderAsk.price : orderBid.price,
 				amount: Math.min(orderBid.amount, orderAsk.amount),
-				createdAt: new Date(),
+				createdAt: new Date().getTime(),
 				askUser: orderAsk.userId,
 				bidUser: orderBid.userId,
 				stockId: orderAsk.stockId,

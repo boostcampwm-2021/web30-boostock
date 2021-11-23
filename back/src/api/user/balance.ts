@@ -43,6 +43,7 @@ export default (): express.Router => {
 				status: STATUSTYPE.FINISHED,
 				bank,
 				bankAccount,
+				createdAt: new Date().getTime(),
 			};
 			await UserService.pushBalanceHistory(userId, newBalanceHistory);
 			res.status(200).json({ balance });
@@ -74,6 +75,7 @@ export default (): express.Router => {
 				status: STATUSTYPE.FINISHED,
 				bank,
 				bankAccount,
+				createdAt: new Date().getTime(),
 			};
 			await UserService.pushBalanceHistory(userId, newBalanceHistory);
 			res.status(200).json({ balance });
