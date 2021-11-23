@@ -20,7 +20,7 @@ export const TransactionSchema = new Schema<ITransaction>(
 		amount: Number,
 		price: Number,
 	},
-	{ collection: 'transaction', timestamps: { updatedAt: false } },
+	{ collection: 'transaction', timestamps: { updatedAt: false, currentTime: () => Date.now() } },
 );
 
 export default mongoose.model('Transaction', TransactionSchema);
