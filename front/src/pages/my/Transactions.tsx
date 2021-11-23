@@ -40,15 +40,15 @@ const Transactions = () => {
 				res.json().then((data) => {
 					setTransactions(
 						data.log.map(
-							(history: { type: number; amount: number; createdAt: number; price: number; stockCode: string }) => {
+							(log: { type: number; amount: number; createdAt: number; price: number; stockCode: string }) => {
 								return {
-									transactionTime: history.createdAt,
-									orderType: history.type,
-									stockCode: history.stockCode,
-									stockName: stockList.find((stock) => stock.code === history.stockCode)?.nameKorean,
-									price: history.price,
-									amount: history.amount,
-									volume: history.price * history.amount,
+									transactionTime: log.createdAt,
+									orderType: log.type,
+									stockCode: log.stockCode,
+									stockName: stockList.find((stock) => stock.code === log.stockCode)?.nameKorean,
+									price: log.price,
+									amount: log.amount,
+									volume: log.price * log.amount,
 								};
 							},
 						),
