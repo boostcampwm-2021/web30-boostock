@@ -26,3 +26,6 @@ export { default as UserFavorite } from './UserFavorite';
 
 export * from './UserStock';
 export { default as UserStock } from './UserStock';
+
+export * from './ChartLog';
+export { default as ChartLog } from './ChartLog';

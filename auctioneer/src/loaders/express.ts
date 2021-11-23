@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -30,7 +30,7 @@ export default async ({ app }: { app: express.Application }): Promise<void> => {
 	});
 
 	/// error handlers
-	app.use((err: CommonError, req: express.Request, res: express.Response, next: express.NextFunction) => {
+	app.use((err: CommonError, req: Request, res: Response, next: NextFunction) => {
 		/**
 		 * Handle 401 thrown by express-jwt library
 		 */
@@ -46,7 +46,7 @@ export default async ({ app }: { app: express.Application }): Promise<void> => {
 		return next(err);
 	});
 
-	app.use((err: Error, req: express.Request, res: express.Response) => {
+	app.use((err: Error, req: Request, res: Response) => {
 		loggers.warn(err);
 		const commonError = new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
 		return res.status(commonError.status).send({ message: err.message });

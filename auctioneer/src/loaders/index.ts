@@ -1,13 +1,13 @@
-import express from 'express';
+import { Application } from 'express';
 
 import config from '@config/index';
 import expressLoader from './express';
 import typeormLoader from './typeorm';
 import mongooseLoader from './mongoose';
-import candleMaker from './candleMaker';
+import chartLogger from './chartLogger';
 import Logger from './logger';
 
-export default async ({ expressApp }: { expressApp: express.Application }): Promise<void> => {
+export default async ({ expressApp }: { expressApp: Application }): Promise<void> => {
 	await expressLoader({ app: expressApp });
 	Logger.info('✌️ Express loaded');
 	await typeormLoader();
@@ -15,7 +15,7 @@ export default async ({ expressApp }: { expressApp: express.Application }): Prom
 	await mongooseLoader();
 	Logger.info('✌️ Mongoose loaded');
 	if (config.instanceId === 0) {
-		candleMaker();
-		Logger.info('✌️ CandleMaker loaded');
+		chartLogger();
+		Logger.info('✌️ ChartLogger loaded');
 	}
 };

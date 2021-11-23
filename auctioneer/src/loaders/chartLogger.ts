@@ -1,9 +1,9 @@
 import schedule from 'node-schedule';
 import { ScheduleService } from '@services/index';
-import { CHARTTYPE } from '@interfaces/IChartCandle';
+import { CHARTTYPE } from '@interfaces/IChartLog';
 import Logger from './logger';
 
-const candleMaker = (): void => {
+const chartLogger = (): void => {
 	const candleMinutes = schedule.scheduleJob('* * * * *', () => {
 		new ScheduleService().runAllChart(CHARTTYPE.MINUTES);
 		Logger.info('Minutes scheduled');
@@ -14,4 +14,4 @@ const candleMaker = (): void => {
 	});
 };
 
-export default candleMaker;
+export default chartLogger;

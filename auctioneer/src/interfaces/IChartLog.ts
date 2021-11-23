@@ -1,5 +1,6 @@
-export default interface IChartCandle {
+export default interface IChartLog {
 	code: string;
+	type: number;
 	priceBefore: number;
 	priceStart: number;
 	priceEnd: number;
@@ -7,5 +8,11 @@ export default interface IChartCandle {
 	priceLow: number;
 	amount: number;
 	volume: number;
-	createdAt: Date;
 }
+
+const CHARTTYPE = {
+	DAYS: 1440,
+	MINUTES: 1,
+};
+
+export { CHARTTYPE };

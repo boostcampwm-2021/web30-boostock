@@ -10,12 +10,10 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const type = Number(req.query.type);
-			const start = Number(req.query.start);
-			const end = Number(req.query.end);
+			const { type, start, end } = req.query;
 			const result = await UserService.getUserById(userId);
 			const { balance } = result;
-			const history = await UserService.readBalanceHistory(userId, start, end, type);
+			const history = await UserService.readBalanceHistory(userId, Number(start), Number(end), Number(type));
 			res.status(200).json({ balance, history });
 		} catch (error) {
 			next(error);
@@ -45,7 +43,6 @@ export default (): express.Router => {
 				status: STATUSTYPE.FINISHED,
 				bank,
 				bankAccount,
-				createdAt: new Date(),
 			};
 			await UserService.pushBalanceHistory(userId, newBalanceHistory);
 			res.status(200).json({ balance });
@@ -77,7 +74,6 @@ export default (): express.Router => {
 				status: STATUSTYPE.FINISHED,
 				bank,
 				bankAccount,
-				createdAt: new Date(),
 			};
 			await UserService.pushBalanceHistory(userId, newBalanceHistory);
 			res.status(200).json({ balance });

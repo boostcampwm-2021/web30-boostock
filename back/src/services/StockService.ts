@@ -1,9 +1,10 @@
 /* eslint-disable class-methods-use-this */
 import { EntityManager, getCustomRepository, getConnection, createConnection } from 'typeorm';
-import { Stock } from '@models/index';
+import { Stock, ChartLog } from '@models/index';
 import { StockRepository } from '@repositories/index';
 import Transaction, { ITransaction } from '@models/Transaction';
 import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage, StockError, StockErrorMessage } from 'errors/index';
+import IChartLog, { CHARTTYPE_VALUE } from '@interfaces/IChartLog';
 
 export default class StockService {
 	static instance: StockService | null = null;
@@ -20,21 +21,21 @@ export default class StockService {
 		StockService.instance = this;
 	}
 
-	static async getStockCodeById(id: number): Promise<string> {
-		if (id === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-		const stockRepository: StockRepository = getCustomRepository(StockRepository);
-		const stock = await stockRepository.findOne(id);
-		if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-		return stock.code;
-	}
+	// static async getStockCodeById(id: number): Promise<string> {
+	// 	if (id === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+	// 	const stockRepository: StockRepository = getCustomRepository(StockRepository);
+	// 	const stock = await stockRepository.findOne(id);
+	// 	if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+	// 	return stock.code;
+	// }
 
-	static async getStockIdByCode(code: string): Promise<number> {
-		if (code === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-		const stockRepository: StockRepository = getCustomRepository(StockRepository);
-		const stock = await stockRepository.findOne({ where: { code } });
-		if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-		return stock.stockId;
-	}
+	// static async getStockIdByCode(code: string): Promise<number> {
+	// 	if (code === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+	// 	const stockRepository: StockRepository = getCustomRepository(StockRepository);
+	// 	const stock = await stockRepository.findOne({ where: { code } });
+	// 	if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+	// 	return stock.stockId;
+	// }
 
 	public async getCurrentStockPrice(entityManager: EntityManager, stockId: number): Promise<{ price: number }> {
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
@@ -65,6 +66,18 @@ export default class StockService {
 
 		const allStocks: Stock[] = await stockRepository.readAllStocks();
 		return allStocks.map((stock) => ({ ...stock, charts: stock.charts.filter(({ type }) => type === 1440) }));
+	}
+
+	static async getStockLog(code: string, type: CHARTTYPE_VALUE, start: number, end: number): Promise<IChartLog[]> {
+		console.log(start);
+		const document = await ChartLog.find()
+			.select('-_id -type -__v')
+			.where('code', code)
+			.where('type', type)
+			.gte('createdAt', start)
+			.lt('createdAt', end)
+			.sort('createdAt');
+		return document || [];
 	}
 
 	public async getStocksBaseInfo(): Promise<{ stock_id: number; code: string }[]> {

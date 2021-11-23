@@ -1,5 +1,5 @@
 import wsModule from 'ws';
-import express from 'express';
+import { Application } from 'express';
 import Emitter from '@helper/eventEmitter';
 import { binArrayToJson, JsonToBinArray } from '@helper/tools';
 import { StockError, StockErrorMessage } from '@errors/index';
@@ -39,7 +39,7 @@ const disconnectUser = (client) => {
 	socketClientMap.delete(client);
 };
 
-export default async (app: express.Application): Promise<void> => {
+export default async (app: Application): Promise<void> => {
 	const HTTPServer = app.listen(process.env.SOCKET_PORT || 3333, () => {
 		Logger.info(`✌️ Socket loaded at port:${process.env.SOCKET_PORT || 3333}`);
 	});
