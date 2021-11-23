@@ -5,6 +5,7 @@ import expressLoader from './express';
 import typeormLoader from './typeorm';
 import mongooseLoader from './mongoose';
 import chartLogger from './chartLogger';
+import './matchLogger';
 import Logger from './logger';
 
 export default async ({ expressApp }: { expressApp: Application }): Promise<void> => {
