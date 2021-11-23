@@ -11,7 +11,7 @@ export default class OrderRepository extends Repository<Order> {
 			.orderBy('Order.price', 'ASC')
 			.addOrderBy('Order.createdAt', 'ASC')
 			.setLock('pessimistic_write')
-			.getOne();
+			.getOneOrFail();
 	}
 
 	public async readBidOrderByCode(code: string): Promise<Order | undefined> {
@@ -19,7 +19,7 @@ export default class OrderRepository extends Repository<Order> {
 			.innerJoin('Order.stock', 'Stock')
 			.where('Stock.code = :code', { code })
 			.andWhere('Order.type = :type', { type: ORDERTYPE.BID })
-			.orderBy('Order.price', 'ASC')
+			.orderBy('Order.price', 'DESC')
 			.addOrderBy('Order.createdAt', 'ASC')
 			.setLock('pessimistic_write')
 			.getOne();
