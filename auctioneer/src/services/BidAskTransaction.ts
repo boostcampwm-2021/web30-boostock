@@ -127,6 +127,7 @@ export default class BidAskTransaction {
 			stockCode: this.TransactionInfo.code,
 			amount: this.TransactionInfo.amount,
 			price: this.TransactionInfo.price,
+			createdAt: new Date().getTime(),
 		});
 
 		transaction.save((err, document) => {

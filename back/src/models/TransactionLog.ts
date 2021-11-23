@@ -9,6 +9,7 @@ export interface ITransactionLog {
 	stockCode: string;
 	amount: number;
 	price: number;
+	createdAt: number;
 }
 
 export const TransactionLogSchema = new Schema<ITransactionLog>(
@@ -19,6 +20,7 @@ export const TransactionLogSchema = new Schema<ITransactionLog>(
 		stockCode: String,
 		amount: Number,
 		price: Number,
+		createdAt: Number,
 	},
 	{ collection: 'TransactionLog' },
 );
