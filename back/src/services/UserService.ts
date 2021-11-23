@@ -11,7 +11,7 @@ import {
 	UserError,
 	UserErrorMessage,
 } from '@errors/index';
-import { User, UserBalance, IBalanceHistory, Transaction, ITransaction, Order, STATUSTYPE } from '@models/index';
+import { User, UserBalance, IBalanceLog, TransactionLog, ITransactionLog } from '@models/index';
 
 interface IUserInfo {
 	username: string;
@@ -101,7 +101,7 @@ export default class UserService {
 		const orderRepository = getCustomRepository(OrderRepository);
 		const stockRepository = getCustomRepository(StockRepository);
 		if (stockCode) {
-			const stock = await stockRepository.findOne({ where: { stockCode } });
+			const stock = await stockRepository.findOne({ where: { code: stockCode } });
 			if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 			const orders = await orderRepository.find({
 				select: ['type', 'amount', 'price'],
@@ -113,58 +113,69 @@ export default class UserService {
 
 			return result || [];
 		}
-		const orders = await orderRepository.find({ select: ['stockId', 'type', 'amount', 'price'], where: { userId } });
-		const result = await Promise.all(
-			orders.map(async (elem) => {
-				const stock = await stockRepository.findOne({ where: { stockId: elem.stockId } });
-				if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-				return {
-					stockCode: stock.code,
-					type: elem.type,
-					amount: elem.amount,
-					price: elem.price,
-				};
-			}),
-		);
+		const orders = await orderRepository.find({
+			select: ['stockId', 'type', 'amount', 'price'],
+			where: { userId },
+			relations: ['stock'],
+		});
+		const result = orders.map((elem) => {
+			return {
+				stockCode: elem.stock.code,
+				type: elem.type,
+				amount: elem.amount,
+				price: elem.price,
+			};
+		});
+
 		return result || [];
 	}
 
-	static async readTransactionHistory(userId: number, start: number, end: number, type = 0): Promise<ITransaction[]> {
+	static async readTransactionLog(userId: number, start: number, end: number, type = 0): Promise<ITransactionLog[]> {
 		if (type) {
-			const document = await Transaction.find({
-				$or: [{ bidUserId: userId }, { askUserId: userId }],
-				createdAt: { $gte: start, $lte: end },
-				type,
-			});
+			const document = await TransactionLog.find()
+				.select('-_id -__v -transactionId -bidUserId -askUserId')
+				.where('type', type)
+				.or([{ bidUserId: userId }, { askUserId: userId }])
+				.gte('createdAt', start)
+				.lt('createdAt', end)
+				.sort('createdAt');
+
 			return document || [];
 		}
-		const document = await Transaction.find({
-			$or: [{ bidUserId: userId }, { askUserId: userId }],
-			createdAt: { $gte: start, $lte: end },
-		});
+		const document = await TransactionLog.find()
+			.select('-_id -__v -transactionId -bidUserId -askUserId')
+			.or([{ bidUserId: userId }, { askUserId: userId }])
+			.gte('createdAt', start)
+			.lt('createdAt', end)
+			.sort('createdAt');
 		return document || [];
 	}
 
-	static async readBalanceHistory(userId: number, start: number, end: number, type = 0): Promise<IBalanceHistory[]> {
+	static async readBalanceLog(userId: number, start: number, end: number, type = 0): Promise<IBalanceLog[]> {
 		if (type) {
-			const document = await UserBalance.findOne({
-				userId,
-				'balanceHistory.createdAt': { $gte: start, $lte: end },
-				'balanceHistory.type': { $eq: type },
-			});
-			return document?.balanceHistory || [];
+			const document = await UserBalance.findOne()
+				.select('-_id -__v -balanceLog._id')
+				.where('userId', userId)
+				.where('balanceHistroy.type', type)
+				.all([{ userId }, { 'balanceLog.type': type }])
+				.gte('balanceLog.createdAt', start)
+				.lt('balanceLog.createdAt', end)
+				.sort('balanceLog.createdAt');
+			return document?.balanceLog || [];
 		}
-		const document = await UserBalance.findOne({
-			userId,
-			'balanceHistory.createdAt': { $gte: start, $lte: end },
-		});
-		return document?.balanceHistory || [];
+		const document = await UserBalance.findOne()
+			.select('-_id -__v -balanceLog._id')
+			.where('userId', userId)
+			.gte('balanceLog.createdAt', start)
+			.lt('balanceLog.createdAt', end)
+			.sort('balanceLog.createdAt');
+		return document?.balanceLog || [];
 	}
 
-	static async pushBalanceHistory(userId: number, newBalanceHistory: IBalanceHistory): Promise<void> {
+	static async pushBalanceLog(userId: number, newBalanceLog: IBalanceLog): Promise<void> {
 		const document = await UserBalance.findOne({ userId });
 		if (document) {
-			document.balanceHistory.push(newBalanceHistory);
+			document.balanceLog.push(newBalanceLog);
 			document.save((err) => {
 				if (err) throw err;
 			});
@@ -172,7 +183,7 @@ export default class UserService {
 			const newDocument = new UserBalance({
 				userId,
 			});
-			newDocument.balanceHistory.push(newBalanceHistory);
+			newDocument.balanceLog.push(newBalanceLog);
 			newDocument.save();
 		}
 	}

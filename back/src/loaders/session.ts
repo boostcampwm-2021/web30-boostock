@@ -18,6 +18,7 @@ export default function session(): express.Application {
 	app.use(
 		expressSession.default({
 			secret: config.sessionSecret as string,
+			name: config.sessionCookieId,
 			resave: false,
 			saveUninitialized: false,
 			rolling: true,

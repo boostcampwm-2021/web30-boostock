@@ -1,5 +1,5 @@
 import { EntityRepository, Repository, UpdateResult, DeleteResult } from 'typeorm';
-import Order from '@models/Order';
+import Order, { ORDERTYPE } from '@models/Order';
 import { IAskOrder } from '@interfaces/askOrder';
 import { IBidOrder } from '@interfaces/bidOrder';
 
@@ -21,9 +21,9 @@ export default class OrderRepository extends Repository<Order> {
 		return result.affected != null && result.affected > 0;
 	}
 
-	public async getOrders(stockId: number, type: '1' | '2'): Promise<Array<IAskOrder | IBidOrder>> {
+	public async getOrders(stockId: number, type: ORDERTYPE): Promise<Array<IAskOrder | IBidOrder>> {
 		const LIMIT = 10;
-		const orderPredicate = type === '1' ? 'ASC' : 'DESC';
+		const orderPredicate = type === ORDERTYPE.ASK ? 'ASC' : 'DESC';
 
 		const result = await this.createQueryBuilder()
 			.select(['price', 'SUM(amount) AS amount', 'type'])
@@ -34,6 +34,6 @@ export default class OrderRepository extends Repository<Order> {
 			.limit(LIMIT)
 			.getRawMany<IAskOrder | IBidOrder>();
 
-		return type === '1' ? result.reverse() : result;
+		return type === ORDERTYPE.ASK ? result.reverse() : result;
 	}
 }
