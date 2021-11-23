@@ -139,6 +139,7 @@ export default class BidAskTransaction {
 				},
 				body: JSON.stringify({
 					match: {
+						// document??
 						id: document.id,
 						stockId: this.transactionLog.stockId,
 						bidUser: this.transactionLog.bidUser,
@@ -147,7 +148,7 @@ export default class BidAskTransaction {
 						price: this.transactionLog.price,
 						amount: this.transactionLog.amount,
 						createdAt: this.transactionLog.createdAt,
-					}, //document??
+					},
 					currentChart: this.updatedCharts,
 				}),
 			});
