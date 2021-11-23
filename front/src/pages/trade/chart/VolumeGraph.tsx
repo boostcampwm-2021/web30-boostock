@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { NUM_OF_CANDLES, RATIO_MAX, IProps, IDrawProps, initializeCanvasSize, getPriceColor } from './common';
 
+import VolumeBackground from './VolumeBackground';
+import VolumeLegend from './VolumeLegend';
 import './Chart.scss';
 
 interface IDrawVolumeBarProps {
@@ -44,7 +46,7 @@ const drawVolumeGraph = ({ canvas, chartData }: IDrawProps): void => {
 	});
 };
 
-const VolumeGraph = ({ chartData }: IProps) => {
+const VolumeGraph = ({ chartData, crossLine }: IProps) => {
 	const volumeGraphRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
@@ -54,7 +56,13 @@ const VolumeGraph = ({ chartData }: IProps) => {
 		});
 	});
 
-	return <canvas className="chart-canvas chart-volume-graph" ref={volumeGraphRef} />;
+	return (
+		<>
+			<VolumeBackground chartData={chartData} crossLine={crossLine} />
+			<canvas className="chart-canvas chart-volume-graph" ref={volumeGraphRef} />
+			<VolumeLegend chartData={chartData} crossLine={crossLine} />
+		</>
+	);
 };
 
 export default VolumeGraph;

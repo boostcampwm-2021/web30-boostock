@@ -1,11 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import { IChartItem } from '@src/recoil/chart/atom';
 
+import { ICrossLine } from './common';
+import CandleBackground from './CandleBackground';
+import CandleLegend from './CandleLegend';
 import './Chart.scss';
 
 interface IProps {
 	chartData: IChartItem[];
 	readonly numOfCandles: number;
+	crossLine: ICrossLine;
 }
 
 interface IDrawData {
@@ -84,7 +88,7 @@ const drawCandles = ({ chartData, ctx, canvasWidth, candleWidth, tailWidth, maxP
 	});
 };
 
-const CandleGraph = ({ chartData, numOfCandles }: IProps) => {
+const CandleGraph = ({ chartData, numOfCandles, crossLine }: IProps) => {
 	const candleGraphChartRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
@@ -111,7 +115,13 @@ const CandleGraph = ({ chartData, numOfCandles }: IProps) => {
 		});
 	}, [candleGraphChartRef]);
 
-	return <canvas className="chart-canvas chart-candle-graph" ref={candleGraphChartRef} />;
+	return (
+		<>
+			<CandleBackground chartData={chartData} crossLine={crossLine} />
+			<canvas className="chart-canvas chart-candle-graph" ref={candleGraphChartRef} />
+			<CandleLegend chartData={chartData} crossLine={crossLine} />
+		</>
+	);
 };
 
 export default CandleGraph;
