@@ -25,7 +25,7 @@ const Orders = () => {
 	const [orders, setOrders] = useState<IOrder[]>([]);
 
 	const refresh = () => {
-		fetch(`${process.env.SERVER_URL}/api/order`, {
+		fetch(`${process.env.SERVER_URL}/api/user/order`, {
 			method: 'GET',
 			credentials: 'include',
 			headers: {
@@ -50,7 +50,7 @@ const Orders = () => {
 									orderTime: order.createdAt,
 									orderType: order.type,
 									stockCode: order.stockCode,
-									stockName: order.nameKorean,
+									stockName: 'order.nameKorean',
 									price: order.price,
 									orderAmount: order.amount,
 								};
@@ -63,7 +63,7 @@ const Orders = () => {
 	};
 
 	const cancel = (orderId: number) => {
-		fetch(`${process.env.SERVER_URL}/api/order?id=${orderId}`, {
+		fetch(`${process.env.SERVER_URL}/api/user/order?id=${orderId}`, {
 			method: 'DELETE',
 			credentials: 'include',
 			headers: {
@@ -86,7 +86,7 @@ const Orders = () => {
 		if (order.orderType === ORDERTYPE.매수) status = ' my__item--up';
 		else if (order.orderType === ORDERTYPE.매도) status = ' my__item--down';
 		return (
-			<div className="my__item" key={order.orderTime}>
+			<div className="my__item" key={order.orderId}>
 				<div>{toDateString(order.orderTime)}</div>
 				<div className={status}>{ORDERTYPE[order.orderType]}</div>
 				<div>

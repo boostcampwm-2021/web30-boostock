@@ -39,7 +39,7 @@ const Transactions = () => {
 			if (res.ok) {
 				res.json().then((data) => {
 					setTransactions(
-						data.history.map(
+						data.log.map(
 							(history: { type: number; amount: number; createdAt: number; price: number; stockCode: string }) => {
 								return {
 									transactionTime: history.createdAt,
