@@ -5,7 +5,7 @@ import { Order, ORDERTYPE } from '@models/index';
 export default class OrderRepository extends Repository<Order> {
 	public async readAskOrderByCode(code: string): Promise<Order | undefined> {
 		return this.createQueryBuilder('Order')
-			.leftJoin('Order.stock', 'Stock')
+			.innerJoin('Order.stock', 'Stock')
 			.where('Stock.code = :code', { code })
 			.andWhere('Order.type = :type', { type: ORDERTYPE.ASK })
 			.orderBy('Order.price', 'ASC')
@@ -16,7 +16,7 @@ export default class OrderRepository extends Repository<Order> {
 
 	public async readBidOrderByCode(code: string): Promise<Order | undefined> {
 		return this.createQueryBuilder('Order')
-			.leftJoin('Order.stock', 'Stock')
+			.innerJoin('Order.stock', 'Stock')
 			.where('Stock.code = :code', { code })
 			.andWhere('Order.type = :type', { type: ORDERTYPE.BID })
 			.orderBy('Order.price', 'ASC')

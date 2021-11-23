@@ -6,40 +6,35 @@ import { ChartRepository } from '@repositories/index';
 import { getConnection } from 'typeorm';
 
 export default class ScheduleService {
-	async saveCandleAndInitialize(chart: Chart, chartRepositoryRunner: ChartRepository): Promise<void> {
+	async saveChartLog(chart: Chart): Promise<void> {
+		const log = {
+			code: chart.stock.code,
+			priceBefore: chart.priceBefore,
+			priceStart: chart.priceStart,
+			priceEnd: chart.priceEnd,
+			priceHigh: chart.priceHigh,
+			priceLow: chart.priceLow,
+			amount: chart.amount,
+			volume: chart.volume,
+			createdAt: new Date(),
+		};
 		switch (chart.type) {
 			case CHARTTYPE.MINUTES: {
-				const chartLog = new ChartMinutes({
-					code: chart.stock.code,
-					priceBefore: chart.priceBefore,
-					priceStart: chart.priceStart,
-					priceEnd: chart.priceEnd,
-					priceHigh: chart.priceHigh,
-					priceLow: chart.priceLow,
-					amount: chart.amount,
-					volume: chart.volume,
-					createdAt: new Date(),
-				});
-				chartLog.save();
+				const chartLog = new ChartMinutes(log);
+				await chartLog.save();
 				break;
 			}
 			case CHARTTYPE.DAYS: {
-				const chartLog = new ChartDays({
-					code: chart.stock.code,
-					priceBefore: chart.priceBefore,
-					priceStart: chart.priceStart,
-					priceEnd: chart.priceEnd,
-					priceHigh: chart.priceHigh,
-					priceLow: chart.priceLow,
-					amount: chart.amount,
-					volume: chart.volume,
-					createdAt: new Date(),
-				});
-				chartLog.save();
+				const chartLog = new ChartDays(log);
+				await chartLog.save();
 				break;
 			}
 			default:
 		}
+	}
+
+	async initializeChart(chart: Chart, chartRepositoryRunner: ChartRepository): Promise<void> {
+		this.saveChartLog(chart);
 		chart.priceBefore = chart.priceEnd;
 		chart.priceStart = 0;
 		chart.priceEnd = 0;
@@ -57,7 +52,7 @@ export default class ScheduleService {
 		try {
 			const chartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
 			const charts = await chartRepositoryRunner.readLock(type);
-			await Promise.all(charts.map((chart) => this.saveCandleAndInitialize(chart, chartRepositoryRunner)));
+			await Promise.all(charts.map((chart) => this.initializeChart(chart, chartRepositoryRunner)));
 			await queryRunner.commitTransaction();
 		} catch (error) {
 			await queryRunner.rollbackTransaction();
