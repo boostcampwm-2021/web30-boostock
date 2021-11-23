@@ -4,8 +4,6 @@ import userAtom, { IUser } from '@src/recoil/user/atom';
 import StockList, { IStockListItem } from '@recoil/stockList/index';
 import HoldStockListAtom from '@recoil/holdStockList/atom';
 import SideBarItem from './sideBarItem/SideBarItem';
-import fetchFavoriteStocks from '@src/common/utils/fetchFavoriteStocks';
-import fetchHoldStocks from '@src/common/utils/fetchHoldStocks';
 
 import SideBarNav, { MENU } from './sideBarNav/SideBarNav';
 import SearchBar from './searchbar/SearchBar';
@@ -29,7 +27,9 @@ const SideBar = () => {
 		setRegex(getRegExp(event?.target?.value));
 	};
 
-	const refreshData = async () => {
+	const refreshUserStockData = async (isSignedIn: boolean) => {
+		if (!isSignedIn) return;
+
 		setFavorite(await getFavoriteStocks());
 		setHold(await getHoldStocks());
 	};
