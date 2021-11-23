@@ -9,7 +9,6 @@ export interface ITransaction {
 	stockCode: string;
 	amount: number;
 	price: number;
-	createdAt: number;
 }
 
 export const TransactionSchema = new Schema<ITransaction>(
@@ -20,9 +19,8 @@ export const TransactionSchema = new Schema<ITransaction>(
 		stockCode: String,
 		amount: Number,
 		price: Number,
-		createdAt: Number,
 	},
-	{ collection: 'transaction' },
+	{ collection: 'transaction', timestamps: { updatedAt: false } },
 );
 
 export default mongoose.model('Transaction', TransactionSchema);

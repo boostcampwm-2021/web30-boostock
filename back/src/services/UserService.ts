@@ -132,33 +132,43 @@ export default class UserService {
 
 	static async readTransactionHistory(userId: number, start: number, end: number, type = 0): Promise<ITransaction[]> {
 		if (type) {
-			const document = await Transaction.find({
-				$or: [{ bidUserId: userId }, { askUserId: userId }],
-				createdAt: { $gte: start, $lte: end },
-				type,
-			});
+			const document = await Transaction.find()
+				.select('-_id -__v -transactionId -bidUserId -askUserId')
+				.where('type', type)
+				.or([{ bidUserId: userId }, { askUserId: userId }])
+				.gte('createdAt', start)
+				.lt('createdAt', end)
+				.sort('createdAt');
+
 			return document || [];
 		}
-		const document = await Transaction.find({
-			$or: [{ bidUserId: userId }, { askUserId: userId }],
-			createdAt: { $gte: start, $lte: end },
-		});
+		const document = await Transaction.find()
+			.select('-_id -__v -transactionId -bidUserId -askUserId')
+			.or([{ bidUserId: userId }, { askUserId: userId }])
+			.gte('createdAt', start)
+			.lt('createdAt', end)
+			.sort('createdAt');
 		return document || [];
 	}
 
 	static async readBalanceHistory(userId: number, start: number, end: number, type = 0): Promise<IBalanceHistory[]> {
 		if (type) {
-			const document = await UserBalance.findOne({
-				userId,
-				'balanceHistory.createdAt': { $gte: start, $lte: end },
-				'balanceHistory.type': { $eq: type },
-			});
+			const document = await UserBalance.findOne()
+				.select('-_id -__v -balanceHistory._id')
+				.where('userId', userId)
+				.where('balanceHistroy.type', type)
+				.all([{ userId }, { 'balanceHistory.type': type }])
+				.gte('balanceHistory.createdAt', start)
+				.lt('balanceHistory.createdAt', end)
+				.sort('balanceHistory.createdAt');
 			return document?.balanceHistory || [];
 		}
-		const document = await UserBalance.findOne({
-			userId,
-			'balanceHistory.createdAt': { $gte: start, $lte: end },
-		});
+		const document = await UserBalance.findOne()
+			.select('-_id -__v -balanceHistory._id')
+			.where('userId', userId)
+			.gte('balanceHistory.createdAt', start)
+			.lt('balanceHistory.createdAt', end)
+			.sort('balanceHistory.createdAt');
 		return document?.balanceHistory || [];
 	}
 

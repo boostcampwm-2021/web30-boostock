@@ -127,7 +127,6 @@ export default class BidAskTransaction {
 			stockCode: this.transactionLog.code,
 			amount: this.transactionLog.amount,
 			price: this.transactionLog.price,
-			createdAt: new Date(),
 		});
 
 		transaction.save((err, document) => {
@@ -148,7 +147,7 @@ export default class BidAskTransaction {
 						price: this.transactionLog.price,
 						amount: this.transactionLog.amount,
 						createdAt: this.transactionLog.createdAt,
-					},
+					}, //document??
 					currentChart: this.updatedCharts,
 				}),
 			});
