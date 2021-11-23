@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import toDateString from '@src/common/utils/toDateString';
+import { useRecoilValue } from 'recoil';
+import StockList, { IStockListItem } from '@src/recoil/stockList';
 
 import './Orders.scss';
 
@@ -22,6 +24,7 @@ interface IOrder {
 }
 
 const Orders = () => {
+	const stockList = useRecoilValue<IStockListItem[]>(StockList);
 	const [orders, setOrders] = useState<IOrder[]>([]);
 
 	const refresh = () => {
@@ -50,7 +53,7 @@ const Orders = () => {
 									orderTime: order.createdAt,
 									orderType: order.type,
 									stockCode: order.stockCode,
-									stockName: 'order.nameKorean',
+									stockName: stockList.find((stock) => stock.code === order.stockCode)?.nameKorean,
 									price: order.price,
 									orderAmount: order.amount,
 								};

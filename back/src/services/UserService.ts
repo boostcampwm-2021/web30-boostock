@@ -104,11 +104,12 @@ export default class UserService {
 			const stock = await stockRepository.findOne({ where: { code: stockCode } });
 			if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 			const orders = await orderRepository.find({
-				select: ['orderId', 'stockId', 'type', 'amount', 'price', 'createdAt'],
+				select: ['orderId', 'type', 'amount', 'price', 'createdAt'],
 				where: { userId, stockId: stock.stockId },
 				order: { createdAt: 'ASC' },
 			});
-			const result = orders.map((elem) => {
+
+			return orders.map((elem) => {
 				return {
 					orderId: elem.orderId,
 					stockCode,
@@ -118,16 +119,14 @@ export default class UserService {
 					createdAt: elem.createdAt,
 				};
 			});
-
-			return result || [];
 		}
 		const orders = await orderRepository.find({
-			select: ['orderId', 'stockId', 'type', 'amount', 'price', 'createdAt'],
+			select: ['orderId', 'type', 'amount', 'price', 'createdAt'],
 			where: { userId },
 			order: { createdAt: 'ASC' },
 			relations: ['stock'],
 		});
-		const result = orders.map((elem) => {
+		return orders.map((elem) => {
 			return {
 				orderId: elem.orderId,
 				stockCode: elem.stock.code,
@@ -137,29 +136,34 @@ export default class UserService {
 				createdAt: elem.createdAt,
 			};
 		});
-
-		return result || [];
 	}
 
 	static async readTransactionLog(userId: number, start: number, end: number, type = 0): Promise<ITransactionLog[]> {
+		let document;
 		if (type) {
-			const document = await TransactionLog.find()
-				.select('-_id -__v -transactionId -bidUserId -askUserId')
+			document = await TransactionLog.find()
+				.select('-_id -__v -transactionId')
 				.where('type', type)
 				.or([{ bidUserId: userId }, { askUserId: userId }])
 				.gte('createdAt', start)
 				.lt('createdAt', end)
 				.sort('createdAt');
-
-			return document || [];
 		}
-		const document = await TransactionLog.find()
-			.select('-_id -__v -transactionId -bidUserId -askUserId')
+		document = await TransactionLog.find()
+			.select('-_id -__v -transactionId')
 			.or([{ bidUserId: userId }, { askUserId: userId }])
 			.gte('createdAt', start)
 			.lt('createdAt', end)
 			.sort('createdAt');
-		return document || [];
+		return document.map((elem) => {
+			return {
+				stockCode: elem.stockCode,
+				amount: elem.amount,
+				price: elem.price,
+				type: elem.bidUserId === userId ? ORDERTYPE.BID : ORDERTYPE.ASK,
+				createdAt: elem.createdAt,
+			};
+		});
 	}
 
 	static async readBalanceLog(userId: number, start: number, end: number, type = 0): Promise<IBalanceLog[]> {
