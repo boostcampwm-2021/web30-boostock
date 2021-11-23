@@ -3,10 +3,9 @@ import { useRecoilState } from 'recoil';
 import ChartAtom from '@src/recoil/chart/atom';
 import { ICrossLine } from './common';
 
+import PeriodBackground from './PeriodBackground';
 import CandleGraph from './CandleGraph';
-import CandleLegend from './CandleLegend';
 import VolumeGraph from './VolumeGraph';
-import VolumeLegend from './VolumeLegend';
 import PeriodLegend from './PeriodLegend';
 
 import './Chart.scss';
@@ -40,11 +39,10 @@ const Chart = () => {
 
 	return (
 		<div className="chart-container" ref={chartRef}>
-			<PeriodLegend chartData={chart.slice(start, end + 1)} crossLine={crossLine} />
-			<CandleLegend chartData={chart.slice(start, end + 1)} crossLine={crossLine} />
-			<VolumeLegend chartData={chart.slice(start, end + 1)} crossLine={crossLine} />
-			<CandleGraph chartData={chart.slice(start, end + 1)} numOfCandles={NUM_OF_CANDLES} />
+			<PeriodBackground chartData={chart.slice(start, end + 1)} crossLine={crossLine} />
+			<CandleGraph chartData={chart.slice(start, end + 1)} numOfCandles={NUM_OF_CANDLES} crossLine={crossLine} />
 			<VolumeGraph chartData={chart.slice(start, end + 1)} crossLine={crossLine} />
+			<PeriodLegend chartData={chart.slice(start, end + 1)} crossLine={crossLine} />
 			<div className="chart-menu" />
 		</div>
 	);

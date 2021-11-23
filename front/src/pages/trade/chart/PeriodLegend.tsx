@@ -1,16 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import { OFFSET, NUM_OF_CANDLES, COLOR_BORDER, COLOR_LEGEND, IProps, IDrawLegendProps, initializeCanvasSize } from './common';
+import { OFFSET, NUM_OF_CANDLES, COLOR_BORDER, IProps, IDrawLegendProps, initializeCanvasSize } from './common';
 
 import './Chart.scss';
-
-const PARTITION = 5;
 
 const drawPeriodLegend = ({ canvas, crossLine }: IDrawLegendProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
 	const [CONTAINER_WIDTH, CONTAINER_HEIGHT] = initializeCanvasSize(canvas);
-	const [CHART_TOP, LEGEND_TOP] = [Math.floor(CONTAINER_HEIGHT * 0.1), Math.floor(CONTAINER_HEIGHT * 0.9)];
+	const LEGEND_TOP = Math.floor(CONTAINER_HEIGHT * 0.9);
 	const [BOX_WIDTH, BOX_HEIGHT] = [50, 20];
 
 	context.font = '11px dotum';
@@ -23,23 +21,6 @@ const drawPeriodLegend = ({ canvas, crossLine }: IDrawLegendProps): void => {
 	context.moveTo(crossLine.posX + OFFSET, 0);
 	context.lineTo(crossLine.posX + OFFSET, LEGEND_TOP);
 	context.stroke();
-
-	context.strokeStyle = COLOR_LEGEND;
-	context.fillStyle = COLOR_BORDER;
-	Array.from(Array(NUM_OF_CANDLES).keys()).forEach((index) => {
-		if (index % PARTITION !== 0) return;
-
-		const width = CONTAINER_WIDTH / NUM_OF_CANDLES;
-		const value = index;
-		const posX = Math.round(width * index - width / 2) + OFFSET;
-
-		context.beginPath();
-		context.moveTo(posX, CHART_TOP);
-		context.lineTo(posX, LEGEND_TOP);
-		context.stroke();
-
-		context.fillText(String(value), posX, LEGEND_TOP + BOX_HEIGHT / 2);
-	});
 
 	const ratio = crossLine.posX / CONTAINER_WIDTH;
 	const value = Math.round(NUM_OF_CANDLES * ratio);
