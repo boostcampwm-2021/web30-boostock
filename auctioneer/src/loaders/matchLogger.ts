@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import EventEmitter from '@helper/eventEmitter';
 import AuctioneerService from '@services/AuctioneerService';
 
@@ -16,6 +17,7 @@ const quitAuctioneer = (stockCode) => {
 };
 const runAuctioneer = async (): Promise<void> => {
 	const stockCode = waitingQueue.pop();
+	if (!stockCode) return;
 
 	startAuctioneer(stockCode);
 	while (await auctioneerServiceInstance.bidAsk(stockCode));
@@ -26,8 +28,10 @@ const runAuctioneer = async (): Promise<void> => {
 
 EventEmitter.on('waiting', (stockCode: string): void => {
 	if (runningState === stockCode || waitingSet.has(stockCode)) return;
+
 	waitingQueue.unshift(stockCode);
 	waitingSet.add(stockCode);
+
 	if (!runningState) runAuctioneer();
 });
 
