@@ -68,7 +68,6 @@ export default class StockService {
 	}
 
 	static async getStockLog(code: string, type: CHARTTYPE_VALUE, start: number, end: number): Promise<IChartLog[]> {
-		console.log(start);
 		const document = await ChartLog.find()
 			.select('-_id -type -__v')
 			.where('code', code)

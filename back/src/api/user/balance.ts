@@ -13,8 +13,8 @@ export default (): express.Router => {
 			const { type, start, end } = req.query;
 			const result = await UserService.getUserById(userId);
 			const { balance } = result;
-			const history = await UserService.readBalanceLog(userId, Number(start), Number(end), Number(type));
-			res.status(200).json({ balance, history });
+			const log = await UserService.readBalanceLog(userId, Number(start), Number(end), Number(type));
+			res.status(200).json({ balance, log });
 		} catch (error) {
 			next(error);
 		}

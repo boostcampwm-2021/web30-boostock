@@ -29,7 +29,7 @@ export default class UserService {
 	static instance: UserService | null = null;
 
 	constructor() {
-		if (UserService.instance) return UserService.instance;'orderId', 'stockId', 'type', 'amount', 'price', 'createdAt'
+		if (UserService.instance) return UserService.instance;
 		UserService.instance = this;
 	}
 
@@ -104,26 +104,37 @@ export default class UserService {
 			const stock = await stockRepository.findOne({ where: { code: stockCode } });
 			if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 			const orders = await orderRepository.find({
-				select: ['orderId', 'type', 'amount', 'price'],
+				select: ['orderId', 'stockId', 'type', 'amount', 'price', 'createdAt'],
 				where: { userId, stockId: stock.stockId },
+				order: { createdAt: 'ASC' },
 			});
 			const result = orders.map((elem) => {
-				return { orderId: elem.orderId, stockCode, type: elem.type, amount: elem.amount, price: elem.price };
+				return {
+					orderId: elem.orderId,
+					stockCode,
+					type: elem.type,
+					amount: elem.amount,
+					price: elem.price,
+					createdAt: elem.createdAt,
+				};
 			});
 
 			return result || [];
 		}
 		const orders = await orderRepository.find({
-			select: ['stockId', 'type', 'amount', 'price'],
+			select: ['orderId', 'stockId', 'type', 'amount', 'price', 'createdAt'],
 			where: { userId },
+			order: { createdAt: 'ASC' },
 			relations: ['stock'],
 		});
 		const result = orders.map((elem) => {
 			return {
+				orderId: elem.orderId,
 				stockCode: elem.stock.code,
 				type: elem.type,
 				amount: elem.amount,
 				price: elem.price,
+				createdAt: elem.createdAt,
 			};
 		});
 
