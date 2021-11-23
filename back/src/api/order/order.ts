@@ -62,9 +62,9 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const { orderId } = req.body;
-			if (!orderId) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-			await OrderService.cancel(userId, orderId);
+			const { id } = req.query;
+			if (!id) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+			await OrderService.cancel(userId, Number(id));
 			res.status(200).json({});
 		} catch (error) {
 			next(error);

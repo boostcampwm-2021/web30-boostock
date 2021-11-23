@@ -11,7 +11,7 @@ import {
 	UserError,
 	UserErrorMessage,
 } from '@errors/index';
-import { User, UserBalance, IBalanceLog, TransactionLog, ITransactionLog } from '@models/index';
+import { User, UserBalance, IBalanceLog, TransactionLog, ITransactionLog, ORDERTYPE } from '@models/index';
 
 interface IUserInfo {
 	username: string;
@@ -29,7 +29,7 @@ export default class UserService {
 	static instance: UserService | null = null;
 
 	constructor() {
-		if (UserService.instance) return UserService.instance;
+		if (UserService.instance) return UserService.instance;'orderId', 'stockId', 'type', 'amount', 'price', 'createdAt'
 		UserService.instance = this;
 	}
 
@@ -104,11 +104,11 @@ export default class UserService {
 			const stock = await stockRepository.findOne({ where: { code: stockCode } });
 			if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 			const orders = await orderRepository.find({
-				select: ['type', 'amount', 'price'],
+				select: ['orderId', 'type', 'amount', 'price'],
 				where: { userId, stockId: stock.stockId },
 			});
 			const result = orders.map((elem) => {
-				return { stockCode, type: elem.type, amount: elem.amount, price: elem.price };
+				return { orderId: elem.orderId, stockCode, type: elem.type, amount: elem.amount, price: elem.price };
 			});
 
 			return result || [];
