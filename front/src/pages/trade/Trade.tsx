@@ -48,7 +48,7 @@ const Trade = () => {
 		if (!stockId) return;
 		(async () => {
 			try {
-				const bidAskOrdersRes = await fetch(`${process.env.SERVER_URL}/api/order/bid-ask?stockId=${stockId}`);
+				const bidAskOrdersRes = await fetch(`${process.env.SERVER_URL}/api/stock/bid-ask?stockId=${stockId}`);
 				if (bidAskOrdersRes.status !== 200) throw new Error('서버 에러');
 				const bidAskOrdersData: IOrderApiRes = await bidAskOrdersRes.json();
 				const { askOrders, bidOrders } = bidAskOrdersData;
