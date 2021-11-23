@@ -2,16 +2,17 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-export interface ITransaction {
+export interface ITransactionLog {
 	transactionId: number;
 	bidUserId: number;
 	askUserId: number;
 	stockCode: string;
 	amount: number;
 	price: number;
+	createdAt: number;
 }
 
-export const TransactionSchema = new Schema<ITransaction>(
+export const TransactionLogSchema = new Schema<ITransactionLog>(
 	{
 		transactionId: Number,
 		bidUserId: Number,
@@ -19,8 +20,9 @@ export const TransactionSchema = new Schema<ITransaction>(
 		stockCode: String,
 		amount: Number,
 		price: Number,
+		createdAt: Number,
 	},
-	{ collection: 'transaction' },
+	{ collection: 'TransactionLog' },
 );
 
-export default mongoose.model('Transaction', TransactionSchema);
+export default mongoose.model('TransactionLog', TransactionLogSchema);

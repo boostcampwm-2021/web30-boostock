@@ -1,10 +1,10 @@
 /* eslint-disable no-param-reassign */
 import fetch from 'node-fetch';
-import { Stock, User, UserStock, Order, Transaction, Chart } from '@models/index';
+import { Stock, User, UserStock, Order, TransactionLog, Chart } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
 import { CommonError, CommonErrorMessage } from '@errors/index';
 
-export interface ITransactionLog {
+export interface ITransactionInfo {
 	code: string;
 	price: number;
 	amount: number;
@@ -29,7 +29,7 @@ export default class BidAskTransaction {
 
 	ChartRepositoryRunner: ChartRepository;
 
-	transactionLog: ITransactionLog;
+	TransactionInfo: ITransactionInfo;
 
 	updatedCharts: Chart[];
 
@@ -47,53 +47,53 @@ export default class BidAskTransaction {
 		this.ChartRepositoryRunner = ChartRepositoryRunner;
 	}
 
-	init(transactionLog: ITransactionLog): BidAskTransaction {
-		this.transactionLog = transactionLog;
+	init(TransactionInfo: ITransactionInfo): BidAskTransaction {
+		this.TransactionInfo = TransactionInfo;
 		return this;
 	}
 
 	async askOrderProcess(askUser: User, askOrder: Order): Promise<void | Error> {
-		askUser.balance += this.transactionLog.amount * this.transactionLog.price;
+		askUser.balance += this.TransactionInfo.amount * this.TransactionInfo.price;
 		await this.UserRepositoryRunner.save(askUser);
 
-		askOrder.amount -= this.transactionLog.amount;
+		askOrder.amount -= this.TransactionInfo.amount;
 		if (askOrder.amount === 0) await this.OrderRepositoryRunner.remove(askOrder);
 		else await this.OrderRepositoryRunner.save(askOrder);
 	}
 
 	async bidOrderProcess(bidUser: User, bidUserStock: UserStock | undefined, bidOrder: Order): Promise<void | Error> {
-		this.transactionLog.bidUser = bidUser.userId;
-		this.transactionLog.stockId = bidOrder.stockId;
+		this.TransactionInfo.bidUser = bidUser.userId;
+		this.TransactionInfo.stockId = bidOrder.stockId;
 		// 매수주문이랑 실제거래가가 차이있을 때 잔돈 반환하는 로직
-		bidUser.balance += (bidOrder.price - this.transactionLog.price) * this.transactionLog.amount;
+		bidUser.balance += (bidOrder.price - this.TransactionInfo.price) * this.TransactionInfo.amount;
 		await this.UserRepositoryRunner.save(bidUser);
 
 		if (bidUserStock === undefined) {
 			const newUserStock = this.UserStockRepositoryRunner.create({
 				user: bidUser,
 				stock: bidOrder.stock,
-				amount: this.transactionLog.amount,
+				amount: this.TransactionInfo.amount,
 				average: bidOrder.price,
 			});
 			this.UserStockRepositoryRunner.insert(newUserStock);
 		} else {
-			bidUserStock.amount += this.transactionLog.amount;
+			bidUserStock.amount += this.TransactionInfo.amount;
 			bidUserStock.average = getAveragePrice(
 				bidUserStock.amount,
 				bidUserStock.average,
-				this.transactionLog.amount,
-				this.transactionLog.price,
+				this.TransactionInfo.amount,
+				this.TransactionInfo.price,
 			);
 			await this.UserStockRepositoryRunner.save(bidUserStock);
 		}
 
-		bidOrder.amount -= this.transactionLog.amount;
+		bidOrder.amount -= this.TransactionInfo.amount;
 		if (bidOrder.amount === 0) await this.OrderRepositoryRunner.remove(bidOrder);
 		else await this.OrderRepositoryRunner.save(bidOrder);
 	}
 
 	async chartProcess(stock: Stock): Promise<void | Error> {
-		stock.price = this.transactionLog.price;
+		stock.price = this.TransactionInfo.price;
 		await this.StockRepositoryRunner.save(stock);
 
 		const charts = await this.ChartRepositoryRunner.find({
@@ -103,17 +103,17 @@ export default class BidAskTransaction {
 		});
 
 		this.updatedCharts = charts.map((chart: Chart) => {
-			chart.priceEnd = this.transactionLog.price;
+			chart.priceEnd = this.TransactionInfo.price;
 			if (chart.priceStart === 0) {
-				chart.priceStart = this.transactionLog.price;
-				chart.priceHigh = this.transactionLog.price;
-				chart.priceLow = this.transactionLog.price;
+				chart.priceStart = this.TransactionInfo.price;
+				chart.priceHigh = this.TransactionInfo.price;
+				chart.priceLow = this.TransactionInfo.price;
 			} else {
-				chart.priceHigh = Math.max(chart.priceHigh, this.transactionLog.price);
-				chart.priceLow = Math.min(chart.priceLow, this.transactionLog.price);
+				chart.priceHigh = Math.max(chart.priceHigh, this.TransactionInfo.price);
+				chart.priceLow = Math.min(chart.priceLow, this.TransactionInfo.price);
 			}
-			chart.amount += this.transactionLog.amount;
-			chart.volume += this.transactionLog.price * this.transactionLog.amount;
+			chart.amount += this.TransactionInfo.amount;
+			chart.volume += this.TransactionInfo.price * this.TransactionInfo.amount;
 			return chart;
 		});
 
@@ -121,12 +121,12 @@ export default class BidAskTransaction {
 	}
 
 	async logProcess(): Promise<void> {
-		const transaction = new Transaction({
-			bidUserId: this.transactionLog.bidUser,
-			askUserId: this.transactionLog.askUser,
-			stockCode: this.transactionLog.code,
-			amount: this.transactionLog.amount,
-			price: this.transactionLog.price,
+		const transaction = new TransactionLog({
+			bidUserId: this.TransactionInfo.bidUser,
+			askUserId: this.TransactionInfo.askUser,
+			stockCode: this.TransactionInfo.code,
+			amount: this.TransactionInfo.amount,
+			price: this.TransactionInfo.price,
 		});
 
 		transaction.save((err, document) => {
@@ -141,13 +141,13 @@ export default class BidAskTransaction {
 					match: {
 						// document??
 						id: document.id,
-						stockId: this.transactionLog.stockId,
-						bidUser: this.transactionLog.bidUser,
-						askUser: this.transactionLog.askUser,
-						code: this.transactionLog.code,
-						price: this.transactionLog.price,
-						amount: this.transactionLog.amount,
-						createdAt: this.transactionLog.createdAt,
+						stockId: this.TransactionInfo.stockId,
+						bidUser: this.TransactionInfo.bidUser,
+						askUser: this.TransactionInfo.askUser,
+						code: this.TransactionInfo.code,
+						price: this.TransactionInfo.price,
+						amount: this.TransactionInfo.amount,
+						createdAt: this.TransactionInfo.createdAt,
 					},
 					currentChart: this.updatedCharts,
 				}),

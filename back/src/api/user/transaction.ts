@@ -9,8 +9,8 @@ export default (): express.Router => {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
 			const { type, start, end } = req.query;
-			const history = await UserService.readTransactionHistory(userId, Number(start), Number(end), Number(type));
-			res.status(200).json({ history });
+			const log = await UserService.readTransactionLog(userId, Number(start), Number(end), Number(type));
+			res.status(200).json({ log });
 		} catch (error) {
 			next(error);
 		}

@@ -39,6 +39,6 @@ export default class Order {
 	@Column()
 	price: number;
 
-	@Column({ name: 'created_at', type: 'datetime' })
+	@Column({ name: 'created_at' })
 	createdAt: Date;
 }

@@ -11,7 +11,7 @@ import {
 	UserError,
 	UserErrorMessage,
 } from '@errors/index';
-import { User, UserBalance, IBalanceHistory, Transaction, ITransaction } from '@models/index';
+import { User, UserBalance, IBalanceLog, TransactionLog, ITransactionLog } from '@models/index';
 
 interface IUserInfo {
 	username: string;
@@ -130,9 +130,9 @@ export default class UserService {
 		return result || [];
 	}
 
-	static async readTransactionHistory(userId: number, start: number, end: number, type = 0): Promise<ITransaction[]> {
+	static async readTransactionLog(userId: number, start: number, end: number, type = 0): Promise<ITransactionLog[]> {
 		if (type) {
-			const document = await Transaction.find()
+			const document = await TransactionLog.find()
 				.select('-_id -__v -transactionId -bidUserId -askUserId')
 				.where('type', type)
 				.or([{ bidUserId: userId }, { askUserId: userId }])
@@ -142,7 +142,7 @@ export default class UserService {
 
 			return document || [];
 		}
-		const document = await Transaction.find()
+		const document = await TransactionLog.find()
 			.select('-_id -__v -transactionId -bidUserId -askUserId')
 			.or([{ bidUserId: userId }, { askUserId: userId }])
 			.gte('createdAt', start)
@@ -151,31 +151,31 @@ export default class UserService {
 		return document || [];
 	}
 
-	static async readBalanceHistory(userId: number, start: number, end: number, type = 0): Promise<IBalanceHistory[]> {
+	static async readBalanceLog(userId: number, start: number, end: number, type = 0): Promise<IBalanceLog[]> {
 		if (type) {
 			const document = await UserBalance.findOne()
-				.select('-_id -__v -balanceHistory._id')
+				.select('-_id -__v -balanceLog._id')
 				.where('userId', userId)
 				.where('balanceHistroy.type', type)
-				.all([{ userId }, { 'balanceHistory.type': type }])
-				.gte('balanceHistory.createdAt', start)
-				.lt('balanceHistory.createdAt', end)
-				.sort('balanceHistory.createdAt');
-			return document?.balanceHistory || [];
+				.all([{ userId }, { 'balanceLog.type': type }])
+				.gte('balanceLog.createdAt', start)
+				.lt('balanceLog.createdAt', end)
+				.sort('balanceLog.createdAt');
+			return document?.balanceLog || [];
 		}
 		const document = await UserBalance.findOne()
-			.select('-_id -__v -balanceHistory._id')
+			.select('-_id -__v -balanceLog._id')
 			.where('userId', userId)
-			.gte('balanceHistory.createdAt', start)
-			.lt('balanceHistory.createdAt', end)
-			.sort('balanceHistory.createdAt');
-		return document?.balanceHistory || [];
+			.gte('balanceLog.createdAt', start)
+			.lt('balanceLog.createdAt', end)
+			.sort('balanceLog.createdAt');
+		return document?.balanceLog || [];
 	}
 
-	static async pushBalanceHistory(userId: number, newBalanceHistory: IBalanceHistory): Promise<void> {
+	static async pushBalanceLog(userId: number, newBalanceLog: IBalanceLog): Promise<void> {
 		const document = await UserBalance.findOne({ userId });
 		if (document) {
-			document.balanceHistory.push(newBalanceHistory);
+			document.balanceLog.push(newBalanceLog);
 			document.save((err) => {
 				if (err) throw err;
 			});
@@ -183,7 +183,7 @@ export default class UserService {
 			const newDocument = new UserBalance({
 				userId,
 			});
-			newDocument.balanceHistory.push(newBalanceHistory);
+			newDocument.balanceLog.push(newBalanceLog);
 			newDocument.save();
 		}
 	}

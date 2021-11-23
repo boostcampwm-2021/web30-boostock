@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { AuthError, AuthErrorMessage, ParamError, ParamErrorMessage } from 'errors/index';
 import { UserService } from '@services/index';
-import { IBalanceHistory, BALANCETYPE, STATUSTYPE } from '@models/index';
+import { IBalanceLog, BALANCETYPE, STATUSTYPE } from '@models/index';
 import config from '@config/index';
 
 export default (): express.Router => {
@@ -13,7 +13,7 @@ export default (): express.Router => {
 			const { type, start, end } = req.query;
 			const result = await UserService.getUserById(userId);
 			const { balance } = result;
-			const history = await UserService.readBalanceHistory(userId, Number(start), Number(end), Number(type));
+			const history = await UserService.readBalanceLog(userId, Number(start), Number(end), Number(type));
 			res.status(200).json({ balance, history });
 		} catch (error) {
 			next(error);
@@ -37,7 +37,7 @@ export default (): express.Router => {
 			const result = await UserService.updateBalance(userId, changeValue);
 			const { balance } = result;
 
-			const newBalanceHistory: IBalanceHistory = {
+			const newBalanceLog: IBalanceLog = {
 				type: BALANCETYPE.DEPOSIT,
 				volume: changeValue,
 				status: STATUSTYPE.FINISHED,
@@ -45,7 +45,7 @@ export default (): express.Router => {
 				bankAccount,
 				createdAt: new Date().getTime(),
 			};
-			await UserService.pushBalanceHistory(userId, newBalanceHistory);
+			await UserService.pushBalanceLog(userId, newBalanceLog);
 			res.status(200).json({ balance });
 		} catch (error) {
 			next(error);
@@ -69,7 +69,7 @@ export default (): express.Router => {
 			const result = await UserService.updateBalance(userId, changeValue * -1);
 			const { balance } = result;
 
-			const newBalanceHistory: IBalanceHistory = {
+			const newBalanceLog: IBalanceLog = {
 				type: BALANCETYPE.WITHDRAW,
 				volume: changeValue,
 				status: STATUSTYPE.FINISHED,
@@ -77,7 +77,7 @@ export default (): express.Router => {
 				bankAccount,
 				createdAt: new Date().getTime(),
 			};
-			await UserService.pushBalanceHistory(userId, newBalanceHistory);
+			await UserService.pushBalanceLog(userId, newBalanceLog);
 			res.status(200).json({ balance });
 		} catch (error) {
 			next(error);

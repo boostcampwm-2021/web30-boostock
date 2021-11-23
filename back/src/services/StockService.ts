@@ -1,8 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { EntityManager, getCustomRepository, getConnection, createConnection } from 'typeorm';
-import { Stock, ChartLog } from '@models/index';
+import { Stock, ChartLog, TransactionLog, ITransactionLog } from '@models/index';
 import { StockRepository } from '@repositories/index';
-import Transaction, { ITransaction } from '@models/Transaction';
 import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage, StockError, StockErrorMessage } from 'errors/index';
 import IChartLog, { CHARTTYPE_VALUE } from '@interfaces/IChartLog';
 
@@ -88,8 +87,8 @@ export default class StockService {
 		return baseInfo;
 	}
 
-	public async getConclusionByCode(code: string): Promise<ITransaction[]> {
-		const conclusionsData = await Transaction.find({ stockCode: code }, { amount: 1, price: 1, createdAt: 1, _id: 1 })
+	public async getConclusionByCode(code: string): Promise<ITransactionLog[]> {
+		const conclusionsData = await TransactionLog.find({ stockCode: code }, { amount: 1, price: 1, createdAt: 1, _id: 1 })
 			.sort({ createdAt: -1 })
 			.limit(50);
 
