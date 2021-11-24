@@ -1,35 +1,37 @@
 import React, { useEffect, useRef } from 'react';
 import {
 	OFFSET,
-	RATIO_MIN,
 	RATIO_MAX,
+	RATIO_MIN,
 	COLOR_BORDER,
-	COLOR_LEGEND,
 	IProps,
 	IDrawLegendProps,
-	initializeCanvasSize,
 	getPriceColor,
-	getMaxPriceAndMinPrice,
+	getMaxValue,
+	getMinValue,
 } from './common';
 
 import './Chart.scss';
+
+const CANVAS_WIDTH = 950;
+const CANVAS_HEIGHT = 240;
 
 const drawCandleLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
-	const [CONTAINER_WIDTH, CONTAINER_HEIGHT] = initializeCanvasSize(canvas);
-	const LEGEND_LEFT = Math.floor(CONTAINER_WIDTH - 100);
-	const { maxPrice, minPrice } = getMaxPriceAndMinPrice(chartData, 1.1, 0.9);
+	const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 100);
+	const maxPrice = getMaxValue(chartData, 'priceHigh', RATIO_MAX);
+	const minPrice = getMinValue(chartData, 'priceLow', RATIO_MIN);
 
 	context.font = '11px dotum';
 	context.fillStyle = '#fff';
-	context.clearRect(0, 0, CONTAINER_WIDTH, CONTAINER_HEIGHT);
+	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
 	const recentChart = chartData[chartData.length - 1];
 	if (recentChart) {
 		const ratio = (recentChart.priceEnd - minPrice) / (maxPrice - minPrice);
-		const posY = CONTAINER_HEIGHT * (1 - ratio) + OFFSET;
+		const posY = CANVAS_HEIGHT * (1 - ratio) + OFFSET;
 
 		context.strokeStyle = getPriceColor(chartData[chartData.length - 1].priceStart, chartData[chartData.length - 1].priceEnd);
 		context.beginPath();
@@ -45,7 +47,7 @@ const drawCandleLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): v
 	}
 
 	if (crossLine.event?.target === canvas) {
-		const ratio = (CONTAINER_HEIGHT - crossLine.posY) / CONTAINER_HEIGHT;
+		const ratio = (CANVAS_HEIGHT - crossLine.posY) / CANVAS_HEIGHT;
 		const value = Math.floor(minPrice + (maxPrice - minPrice) * ratio);
 
 		context.strokeStyle = COLOR_BORDER;
@@ -73,7 +75,9 @@ const CandleLegend = ({ chartData, crossLine }: IProps) => {
 		});
 	}, [crossLine]);
 
-	return <canvas className="chart-canvas chart-candle-legend" ref={candleLegendRef} />;
+	return (
+		<canvas className="chart-canvas chart-candle-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={candleLegendRef} />
+	);
 };
 
 export default CandleLegend;

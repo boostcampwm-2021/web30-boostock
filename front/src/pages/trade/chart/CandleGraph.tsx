@@ -1,19 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { IChartItem } from '@src/recoil/chart/atom';
 
-import { ICrossLine } from './common';
+import { ICrossLine, getMaxValue, getMinValue, RATIO_MAX, RATIO_MIN, CANDLE_GAP, NUM_OF_CANDLES } from './common';
 import CandleBackground from './CandleBackground';
 import CandleLegend from './CandleLegend';
-import { getMaxPriceAndMinPrice } from './common';
 import './Chart.scss';
 
 const CANVAS_WIDTH = 850;
 const CANVAS_HEIGHT = 280;
-const TOP_BOTTOM_PADDING = 0;
 
 interface IProps {
 	chartData: IChartItem[];
-	readonly numOfCandles: number;
 	crossLine: ICrossLine;
 }
 
@@ -82,8 +79,7 @@ const drawCandles = ({ chartData, ctx, canvasWidth, candleWidth, candleGap, tail
 	});
 };
 
-const CandleGraph = ({ chartData, numOfCandles, crossLine }: IProps) => {
-	// console.log(chartData);
+const CandleGraph = ({ chartData, crossLine }: IProps) => {
 	const candleGraphChartRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
@@ -92,14 +88,13 @@ const CandleGraph = ({ chartData, numOfCandles, crossLine }: IProps) => {
 		const ctx = candleGraphChartRef.current.getContext('2d');
 		if (!ctx) return;
 
-		const CANDLE_GAP = 5;
-		const CANDLE_WIDTH = (CANVAS_WIDTH - (numOfCandles + 1) * CANDLE_GAP) / numOfCandles;
+		const CANDLE_WIDTH = (CANVAS_WIDTH - (NUM_OF_CANDLES + 1) * CANDLE_GAP) / NUM_OF_CANDLES;
 		const TAIL_WIDTH = 1;
 
-		const { maxPrice, minPrice } = getMaxPriceAndMinPrice(chartData, 1.1, 0.9);
+		const maxPrice = getMaxValue(chartData, 'priceHigh', RATIO_MAX);
+		const minPrice = getMinValue(chartData, 'priceLow', RATIO_MIN);
 
-		const convertPriceToYPos = (curPrice: number) =>
-			((maxPrice - curPrice) / (maxPrice - minPrice)) * (CANVAS_HEIGHT - TOP_BOTTOM_PADDING * 2) + TOP_BOTTOM_PADDING;
+		const convertPriceToYPos = (curPrice: number) => ((maxPrice - curPrice) / (maxPrice - minPrice)) * CANVAS_HEIGHT;
 
 		drawCandles({
 			chartData,
