@@ -80,11 +80,7 @@ const CandleLegend = ({ chartData, crossLine }: IProps) => {
 			crossLine,
 			theme,
 		});
-<<<<<<< HEAD
-	}, [chartData, crossLine]);
-=======
 	}, [crossLine, chartData, theme]);
->>>>>>> feat: 차트 다크모드 지원
 
 	return (
 		<canvas className="chart-canvas chart-candle-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={candleLegendRef} />

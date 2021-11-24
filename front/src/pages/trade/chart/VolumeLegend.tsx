@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@src/recoil/user/atom';
 import formatNumber from '@src/common/utils/formatNumber';
-import { OFFSET, RATIO_MAX, IProps, IDrawLegendProps, getTextColor, getBorderColor } from './common';
+import { RATIO_MAX, IProps, IDrawLegendProps, getTextColor, getBorderColor } from './common';
 
 import './Chart.scss';
 

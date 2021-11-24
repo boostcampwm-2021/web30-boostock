@@ -54,11 +54,7 @@ const VolumeBackground = ({ chartData, crossLine }: IProps) => {
 			chartData,
 			theme,
 		});
-<<<<<<< HEAD
-	}, [chartData, crossLine]);
-=======
 	}, [crossLine, chartData, theme]);
->>>>>>> feat: 차트 다크모드 지원
 
 	return (
 		<canvas className="chart-canvas chart-volume-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={volumeLegendRef} />
