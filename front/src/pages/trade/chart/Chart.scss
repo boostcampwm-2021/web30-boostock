@@ -12,6 +12,10 @@
 	&.grabbing {
 		cursor: grabbing;
 	}
+
+	.dark-theme & {
+		background-color: $darkModeCardBackgroundColor;
+	}
 }
 
 .chart-menu {
