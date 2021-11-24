@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import useChartData from './useChartData';
 import { ICrossLine } from './common';
 
@@ -9,7 +10,6 @@ import VolumeGraph from './VolumeGraph';
 import PeriodLegend from './PeriodLegend';
 
 import './Chart.scss';
-import { Link } from 'react-router-dom';
 
 const DEFAULT_START_INDEX = 0;
 const DEFAULT_END_INDEX = 60;
@@ -40,7 +40,6 @@ const Chart = ({ stockCode, stockType }: { stockCode: string; stockType: number 
 	const [offset, setOffset] = useState<number>(-1);
 	const [crossLine, setCrossLine] = useState<ICrossLine>({ event: null, posX: 0, posY: 0 });
 	const [chart, next] = useChartData(stockCode, stockType, offset);
-
 
 	useEffect(() => {
 		const bindedMoveCrossLine = moveCrossLine.bind(undefined, setCrossLine);

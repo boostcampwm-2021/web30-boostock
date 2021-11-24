@@ -29,7 +29,7 @@ export default class OrderRepository extends Repository<Order> {
 
 	public async updateOrder(order: Order, amount: number): Promise<void> {
 		this.createQueryBuilder()
-			.setLock('optimistic', 0)
+			.setLock('optimistic', order.version)
 			.update(Order)
 			.set({
 				amount: () => `amount - ${amount}`,

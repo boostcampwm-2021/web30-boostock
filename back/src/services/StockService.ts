@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, getCustomRepository, getConnection, createConnection } from 'typeorm';
+import { EntityManager, getCustomRepository, getConnection } from 'typeorm';
 import { Stock, ChartLog, TransactionLog, ITransactionLog } from '@models/index';
 import { StockRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage, StockError, StockErrorMessage } from 'errors/index';
+import { CommonError, CommonErrorMessage, StockError, StockErrorMessage } from 'errors/index';
 import IChartLog, { CHARTTYPE_VALUE } from '@interfaces/IChartLog';
 
 export default class StockService {
@@ -104,5 +104,13 @@ export default class StockService {
 		const stockRepository = connection.getCustomRepository(StockRepository);
 		const stockPrices = await stockRepository.readPriceStocks();
 		return stockPrices;
+	}
+
+	public async getDailyLogs(code: string): Promise<IChartLog[]> {
+		const dailyLogs = await ChartLog.find({ stockCode: code }, { _id: 1, priceEnd: 1, amount: 1, createdAt: 1 })
+			.sort({ createdAt: -1 })
+			.limit(50);
+
+		return dailyLogs;
 	}
 }
