@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState, useEffect, useRef } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import ChartAtom, { IChartItem } from '@src/recoil/chart/atom';
 import { ICrossLine } from './common';
 
@@ -35,7 +35,7 @@ const chartContainerClass = (isUserGrabbing: boolean) => {
 const Chart = () => {
 	const chartRef = useRef<HTMLDivElement>(null);
 	const [isUserGrabbing, setIsUserGrabbing] = useState<boolean>(false);
-	const [chart, setChart] = useRecoilState<IChartItem[]>(ChartAtom);
+	const chart = useRecoilValue<IChartItem[]>(ChartAtom);
 	const [start, setStart] = useState<number>(DEFAULT_START_INDEX); // 맨 오른쪽 캔들의 인덱스
 	const [end, setEnd] = useState<number>(DEFAULT_END_INDEX); // 맨 왼쪽 캔들의 인덱스
 
