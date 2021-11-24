@@ -11,7 +11,6 @@ import PeriodLegend from './PeriodLegend';
 
 import './Chart.scss';
 
-const NUM_OF_CANDLES = 60;
 const DEFAULT_START_INDEX = 0;
 const DEFAULT_END_INDEX = 60;
 const MOVE_INDEX_SLOW_WEIGHT = 4;
@@ -91,7 +90,7 @@ const Chart = () => {
 			}}
 		>
 			<PeriodBackground chartData={chart.slice(start, end)} crossLine={crossLine} />
-			<CandleGraph chartData={chart.slice(start, end)} numOfCandles={NUM_OF_CANDLES} crossLine={crossLine} />
+			<CandleGraph chartData={chart.slice(start, end)} crossLine={crossLine} />
 			<VolumeGraph chartData={chart.slice(start, end)} crossLine={crossLine} />
 			<PeriodLegend chartData={chart.slice(start, end)} crossLine={crossLine} />
 			<div className="chart-menu" />

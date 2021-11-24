@@ -1,29 +1,29 @@
 import React, { useEffect, useRef } from 'react';
-import { OFFSET, NUM_OF_CANDLES, COLOR_BORDER, COLOR_LEGEND, IProps, IDrawProps, initializeCanvasSize } from './common';
+import { OFFSET, NUM_OF_CANDLES, COLOR_BORDER, COLOR_LEGEND, IProps, IDrawProps } from './common';
 
 import './Chart.scss';
 
 const PARTITION = 5;
+const CANVAS_WIDTH = 850;
+const CANVAS_HEIGHT = 400;
+const BOX_HEIGHT = 20;
 
 const drawPeriodBackground = ({ canvas }: IDrawProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
-
-	const [CONTAINER_WIDTH, CONTAINER_HEIGHT] = initializeCanvasSize(canvas);
-	const [CHART_TOP, LEGEND_TOP] = [Math.floor(CONTAINER_HEIGHT * 0.1), Math.floor(CONTAINER_HEIGHT * 0.9)];
-	const [BOX_WIDTH, BOX_HEIGHT] = [50, 20];
+	const [CHART_TOP, LEGEND_TOP] = [Math.floor(CANVAS_HEIGHT * 0.1), Math.floor(CANVAS_HEIGHT * 0.9)];
 
 	context.font = '11px dotum';
 	context.textAlign = 'center';
 	context.textBaseline = 'middle';
-	context.clearRect(0, 0, CONTAINER_WIDTH, CONTAINER_HEIGHT);
+	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
 	context.strokeStyle = COLOR_LEGEND;
 	context.fillStyle = COLOR_BORDER;
 	Array.from(Array(NUM_OF_CANDLES).keys()).forEach((index) => {
 		if (index % PARTITION !== 0) return;
 
-		const width = CONTAINER_WIDTH / NUM_OF_CANDLES;
+		const width = CANVAS_WIDTH / NUM_OF_CANDLES;
 		const value = index;
 		const posX = Math.round(width * index - width / 2) + OFFSET;
 
@@ -36,7 +36,7 @@ const drawPeriodBackground = ({ canvas }: IDrawProps): void => {
 	});
 };
 
-const periodBackground = ({ chartData, crossLine }: IProps) => {
+const PeriodBackground = ({ chartData, crossLine }: IProps) => {
 	const periodLegendRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
@@ -46,7 +46,9 @@ const periodBackground = ({ chartData, crossLine }: IProps) => {
 		});
 	}, [crossLine]);
 
-	return <canvas className="chart-canvas chart-period-legend" ref={periodLegendRef} />;
+	return (
+		<canvas className="chart-canvas chart-period-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={periodLegendRef} />
+	);
 };
 
-export default periodBackground;
+export default PeriodBackground;
