@@ -69,7 +69,6 @@ export default class AuctioneerService {
 			await task.logProcess();
 			result = true;
 		} catch (err) {
-			console.log(err);
 			await queryRunner.rollbackTransaction();
 			result = false;
 		} finally {
