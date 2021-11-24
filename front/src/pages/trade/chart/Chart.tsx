@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 
 const DEFAULT_START_INDEX = 0;
 const DEFAULT_END_INDEX = 60;
-const MOVE_INDEX_SLOW_WEIGHT = 4;
+const MOVE_INDEX_SLOW_WEIGHT = 8;
 
 const moveCrossLine = (set: React.Dispatch<React.SetStateAction<ICrossLine>>, event: MouseEvent) => {
 	set(() => ({
@@ -39,7 +39,8 @@ const Chart = ({ stockCode, stockType }: { stockCode: string; stockType: number 
 	const [end, setEnd] = useState<number>(DEFAULT_END_INDEX); // 맨 왼쪽 캔들의 인덱스
 	const [offset, setOffset] = useState<number>(-1);
 	const [crossLine, setCrossLine] = useState<ICrossLine>({ event: null, posX: 0, posY: 0 });
-	const [chart, next] = useChartData(stockCode, stockType);
+	const [chart, next] = useChartData(stockCode, stockType, offset);
+
 
 	useEffect(() => {
 		const bindedMoveCrossLine = moveCrossLine.bind(undefined, setCrossLine);

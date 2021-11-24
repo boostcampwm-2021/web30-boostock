@@ -1,12 +1,15 @@
 import React, { useEffect, useRef } from 'react';
-import { OFFSET, RATIO_MAX, COLOR_BORDER, IProps, IDrawLegendProps } from './common';
+import { useRecoilValue } from 'recoil';
+import userAtom, { IUser } from '@src/recoil/user/atom';
+import formatNumber from '@src/common/utils/formatNumber';
+import { RATIO_MAX, IProps, IDrawLegendProps, getTextColor, getBorderColor } from './common';
 
 import './Chart.scss';
 
 const CANVAS_WIDTH = 950;
 const CANVAS_HEIGHT = 72;
 
-const drawVolumeLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): void => {
+const drawVolumeLegend = ({ canvas, chartData, crossLine, theme }: IDrawLegendProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
@@ -22,20 +25,21 @@ const drawVolumeLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): v
 		const ratio = (CANVAS_HEIGHT - crossLine.posY) / CANVAS_HEIGHT;
 		const value = Math.floor(AMOUNT_MAX * ratio);
 
-		context.strokeStyle = COLOR_BORDER;
+		context.strokeStyle = getBorderColor(theme);
 		context.beginPath();
 		context.moveTo(0, crossLine.posY);
 		context.lineTo(LEGEND_LEFT, crossLine.posY);
 		context.stroke();
 
-		context.fillStyle = COLOR_BORDER;
+		context.fillStyle = getBorderColor(theme);
 		context.fillRect(LEGEND_LEFT, crossLine.posY - 10, 100, 20);
-		context.fillStyle = '#fff';
-		context.fillText(String(value), LEGEND_LEFT + 10, crossLine.posY + 5);
+		context.fillStyle = getTextColor(theme === 'light' ? 'dark' : 'light');
+		context.fillText(formatNumber(value), LEGEND_LEFT + 10, crossLine.posY + 5);
 	}
 };
 
 const VolumeLegend = ({ chartData, crossLine }: IProps) => {
+	const { theme } = useRecoilValue<IUser>(userAtom);
 	const volumeLegendRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
@@ -43,8 +47,9 @@ const VolumeLegend = ({ chartData, crossLine }: IProps) => {
 			canvas: volumeLegendRef.current,
 			chartData,
 			crossLine,
+			theme,
 		});
-	}, [chartData, crossLine]);
+	}, [crossLine, chartData, theme]);
 
 	return (
 		<canvas className="chart-canvas chart-volume-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={volumeLegendRef} />

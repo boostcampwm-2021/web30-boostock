@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { CANDLE_GAP, NUM_OF_CANDLES, COLOR_BORDER, COLOR_LEGEND, IProps, IDrawProps, formatCandleDate } from './common';
+import { useRecoilValue } from 'recoil';
+import userAtom, { IUser } from '@src/recoil/user/atom';
+import { CANDLE_GAP, NUM_OF_CANDLES, IProps, IDrawProps, formatCandleDate, getTextColor, getLegendColor } from './common';
 
 import './Chart.scss';
 
@@ -9,7 +11,7 @@ const CANVAS_HEIGHT = 400;
 const CANDLE_WIDTH = (CANVAS_WIDTH - (NUM_OF_CANDLES + 1) * CANDLE_GAP) / NUM_OF_CANDLES;
 const BOX_HEIGHT = 20;
 
-const drawPeriodBackground = ({ canvas, chartData }: IDrawProps): void => {
+const drawPeriodBackground = ({ canvas, chartData, theme }: IDrawProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
@@ -20,8 +22,8 @@ const drawPeriodBackground = ({ canvas, chartData }: IDrawProps): void => {
 	context.textBaseline = 'middle';
 	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-	context.strokeStyle = COLOR_LEGEND;
-	context.fillStyle = COLOR_BORDER;
+	context.strokeStyle = getLegendColor(theme);
+	context.fillStyle = getTextColor(theme);
 	chartData.forEach(({ createdAt }, index) => {
 		if (index % PARTITION !== 0) return;
 
@@ -37,14 +39,16 @@ const drawPeriodBackground = ({ canvas, chartData }: IDrawProps): void => {
 };
 
 const PeriodBackground = ({ chartData, crossLine }: IProps) => {
+	const { theme } = useRecoilValue<IUser>(userAtom);
 	const periodLegendRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
 		drawPeriodBackground({
 			canvas: periodLegendRef.current,
 			chartData,
+			theme,
 		});
-	}, [crossLine, chartData]);
+	}, [crossLine, chartData, theme]);
 
 	return (
 		<canvas className="chart-canvas chart-period-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={periodLegendRef} />
