@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 
 const DEFAULT_START_INDEX = 0;
 const DEFAULT_END_INDEX = 60;
-const MOVE_INDEX_SLOW_WEIGHT = 4;
+const MOVE_INDEX_SLOW_WEIGHT = 8;
 
 const moveCrossLine = (set: React.Dispatch<React.SetStateAction<ICrossLine>>, event: MouseEvent) => {
 	set(() => ({

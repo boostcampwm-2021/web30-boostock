@@ -1,4 +1,6 @@
 import React, { useEffect, useRef } from 'react';
+import { useRecoilValue } from 'recoil';
+import userAtom, { IUser } from '@src/recoil/user/index';
 import { NUM_OF_CANDLES, RATIO_MAX, CANDLE_GAP, IProps, IDrawProps, getPriceColor, getMaxValue } from './common';
 
 import VolumeBackground from './VolumeBackground';
@@ -25,7 +27,7 @@ const drawVolumeBar = ({ context, index, ratio, color }: IDrawVolumeBarProps): v
 	context.fillRect(x, y, w, h);
 };
 
-const drawVolumeGraph = ({ canvas, chartData }: IDrawProps): void => {
+const drawVolumeGraph = ({ canvas, chartData, theme }: IDrawProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
@@ -37,20 +39,22 @@ const drawVolumeGraph = ({ canvas, chartData }: IDrawProps): void => {
 			context,
 			index,
 			ratio: bar.amount / maxAmount,
-			color: getPriceColor(bar.priceStart, bar.priceEnd),
+			color: getPriceColor(bar.priceStart, bar.priceEnd, theme),
 		});
 	});
 };
 
 const VolumeGraph = ({ chartData, crossLine }: IProps) => {
+	const { theme } = useRecoilValue<IUser>(userAtom);
 	const volumeGraphRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
 		drawVolumeGraph({
 			canvas: volumeGraphRef.current,
 			chartData,
+			theme,
 		});
-	}, [chartData, volumeGraphRef]);
+	}, [chartData, volumeGraphRef, theme]);
 
 	return (
 		<>

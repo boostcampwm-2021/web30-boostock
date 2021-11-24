@@ -49,6 +49,11 @@
 	border-end-start-radius: 8px;
 	border-end-end-radius: 8px;
 	background-color: #fefefe;
+
+	.dark-theme & {
+		background-color: $darkModeCardBackgroundColor;
+		border-bottom: 1px solid $darkModeBorderColor;
+	}
 }
 
 .chart-menu-item {
