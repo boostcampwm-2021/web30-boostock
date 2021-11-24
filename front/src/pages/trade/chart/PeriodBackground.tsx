@@ -24,7 +24,7 @@ const drawPeriodBackground = ({ canvas, chartData, theme }: IDrawProps): void =>
 
 	context.strokeStyle = getLegendColor(theme);
 	context.fillStyle = getTextColor(theme);
-	chartData.forEach(({ timestamp }, index) => {
+	chartData.forEach(({ createdAt }, index) => {
 		if (index % PARTITION !== 0) return;
 
 		const posX = CANVAS_WIDTH - (CANDLE_WIDTH + CANDLE_GAP) * (index + 1) + CANDLE_WIDTH / 2;
