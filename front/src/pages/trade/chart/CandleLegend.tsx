@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import formatNumber from '@src/common/utils/formatNumber';
 import {
 	OFFSET,
 	RATIO_MAX,
@@ -43,7 +44,7 @@ const drawCandleLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): v
 		context.fillStyle = context.strokeStyle;
 		context.fillRect(LEGEND_LEFT, posY - 10, 100, 20);
 		context.fillStyle = '#fff';
-		context.fillText(String(recentChart.priceEnd), LEGEND_LEFT + 10, posY + 5);
+		context.fillText(formatNumber(recentChart.priceEnd), LEGEND_LEFT + 10, posY + 5);
 	}
 
 	if (crossLine.event?.target === canvas) {
@@ -60,7 +61,7 @@ const drawCandleLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): v
 		context.fillStyle = COLOR_BORDER;
 		context.fillRect(LEGEND_LEFT, crossLine.posY - 10, 100, 20);
 		context.fillStyle = '#fff';
-		context.fillText(String(value), LEGEND_LEFT + 10, crossLine.posY + 5);
+		context.fillText(formatNumber(value), LEGEND_LEFT + 10, crossLine.posY + 5);
 	}
 };
 

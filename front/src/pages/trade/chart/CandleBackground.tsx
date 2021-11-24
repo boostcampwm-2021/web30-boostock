@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import formatNumber from '@src/common/utils/formatNumber';
 import { OFFSET, COLOR_BORDER, COLOR_LEGEND, IProps, RATIO_MAX, RATIO_MIN, IDrawProps, getMaxValue, getMinValue } from './common';
 
 import './Chart.scss';
@@ -38,7 +39,7 @@ const drawCandleLegend = ({ canvas, chartData }: IDrawProps): void => {
 		context.lineTo(LEGEND_LEFT, posY);
 		context.stroke();
 
-		context.fillText(String(value), LEGEND_LEFT + 10, posY + 5);
+		context.fillText(formatNumber(value), LEGEND_LEFT + 10, posY + 5);
 	});
 };
 
@@ -50,7 +51,7 @@ const CandleLegend = ({ chartData }: IProps) => {
 			canvas: candleLegendRef.current,
 			chartData,
 		});
-	}, []);
+	}, [chartData, candleLegendRef]);
 
 	return (
 		<canvas className="chart-canvas chart-candle-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={candleLegendRef} />
