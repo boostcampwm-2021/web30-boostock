@@ -40,7 +40,7 @@ export default class AuctioneerService {
 			]);
 			if (askUser === undefined || bidUser === undefined) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
 			const bidUserStock = await UserStockRepositoryRunner.readUserStockByCode(bidUser.userId, code);
-
+			console.log(bidUserStock);
 			const task = new BidAskTransaction(
 				StockRepositoryRunner,
 				UserRepositoryRunner,
@@ -69,6 +69,7 @@ export default class AuctioneerService {
 			queryRunner.commitTransaction();
 			result = true;
 		} catch (err) {
+			console.log(err);
 			queryRunner.rollbackTransaction();
 			result = false;
 		} finally {

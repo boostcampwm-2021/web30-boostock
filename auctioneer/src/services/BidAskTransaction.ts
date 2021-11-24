@@ -71,7 +71,7 @@ export default class BidAskTransaction {
 		if (bidUserStock === undefined) {
 			const newUserStock = this.UserStockRepositoryRunner.create({
 				user: bidUser,
-				stock: bidOrder.stock,
+				stock: bidOrder,
 				amount: this.TransactionInfo.amount,
 				average: bidOrder.price,
 			});

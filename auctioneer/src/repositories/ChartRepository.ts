@@ -7,7 +7,7 @@ export default class ChartRepository extends Repository<Chart> {
 		return this.find({
 			where: { type },
 			relations: ['stock'],
-			lock: { mode: 'pessimistic_write' },
+			// lock: { mode: 'pessimistic_write' },
 		});
 	}
 }
