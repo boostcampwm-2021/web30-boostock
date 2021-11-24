@@ -23,9 +23,16 @@ const moveCrossLine = (set: React.Dispatch<React.SetStateAction<ICrossLine>>, ev
 
 const isTarget = (target: HTMLElement) => !target.closest('.chart-menu');
 
+const chartContainerClass = (isUserGrabbing: boolean) => {
+	let result = 'chart-container';
+	if (isUserGrabbing) result += ' grabbing';
+
+	return result;
+};
+
 const Chart = () => {
 	const chartRef = useRef<HTMLDivElement>(null);
-	const isMouseDownOn = useRef<boolean>(false);
+	const [isUserGrabbing, setIsUserGrabbing] = useState<boolean>(false);
 	const [chart, setChart] = useRecoilState(ChartAtom);
 	const [start, setStart] = useState<number>(0); // 맨 오른쪽 캔들의 인덱스
 	const [end, setEnd] = useState<number>(60); // 맨 왼쪽 캔들의 인덱스
@@ -43,24 +50,21 @@ const Chart = () => {
 
 	return (
 		<div
-			className="chart-container"
+			className={chartContainerClass(isUserGrabbing)}
 			ref={chartRef}
 			role="main"
 			onMouseDown={(e) => {
 				if (!isTarget(e.target as HTMLDivElement)) return;
 
-				isMouseDownOn.current = true;
-				console.log('mousedown');
+				setIsUserGrabbing(true);
 			}}
 			onMouseUp={(e) => {
 				if (!isTarget(e.target as HTMLDivElement)) return;
-				isMouseDownOn.current = false;
-				console.log('mouseup');
+				setIsUserGrabbing(false);
 			}}
 			onMouseMove={(e) => {
 				if (!isTarget(e.target as HTMLDivElement)) return;
-				if (!isMouseDownOn.current) return;
-				console.log('mousemove');
+				if (!isUserGrabbing) return;
 			}}
 		>
 			<PeriodBackground chartData={chart.slice(start, end + 1)} crossLine={crossLine} />

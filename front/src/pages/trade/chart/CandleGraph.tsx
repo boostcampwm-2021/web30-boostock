@@ -119,7 +119,12 @@ const CandleGraph = ({ chartData, numOfCandles, crossLine }: IProps) => {
 	return (
 		<>
 			<CandleBackground chartData={chartData} crossLine={crossLine} />
-			<canvas className="chart-canvas chart-candle-graph" ref={candleGraphChartRef} />
+			<canvas
+				className="chart-canvas chart-candle-graph"
+				width={CANVAS_WIDTH}
+				height={CANVAS_HEIGHT}
+				ref={candleGraphChartRef}
+			/>
 			<CandleLegend chartData={chartData} crossLine={crossLine} />
 		</>
 	);
