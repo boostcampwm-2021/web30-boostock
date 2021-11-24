@@ -9,6 +9,7 @@ import {
 	IDrawLegendProps,
 	initializeCanvasSize,
 	getPriceColor,
+	getMaxPriceAndMinPrice,
 } from './common';
 
 import './Chart.scss';
@@ -19,12 +20,7 @@ const drawCandleLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): v
 
 	const [CONTAINER_WIDTH, CONTAINER_HEIGHT] = initializeCanvasSize(canvas);
 	const LEGEND_LEFT = Math.floor(CONTAINER_WIDTH - 100);
-	const [PRICE_MIN, PRICE_MAX] = chartData.reduce(
-		(prev, current) => {
-			return [Math.min(prev[0], current.priceLow * RATIO_MIN), Math.max(prev[1], current.priceHigh * RATIO_MAX)];
-		},
-		[Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER],
-	);
+	const { maxPrice, minPrice } = getMaxPriceAndMinPrice(chartData, 1.1, 0.9);
 
 	context.font = '11px dotum';
 	context.fillStyle = '#fff';
@@ -32,7 +28,7 @@ const drawCandleLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): v
 
 	const recentChart = chartData[chartData.length - 1];
 	if (recentChart) {
-		const ratio = (recentChart.priceEnd - PRICE_MIN) / (PRICE_MAX - PRICE_MIN);
+		const ratio = (recentChart.priceEnd - minPrice) / (maxPrice - minPrice);
 		const posY = CONTAINER_HEIGHT * (1 - ratio) + OFFSET;
 
 		context.strokeStyle = getPriceColor(chartData[chartData.length - 1].priceStart, chartData[chartData.length - 1].priceEnd);
@@ -50,7 +46,7 @@ const drawCandleLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): v
 
 	if (crossLine.event?.target === canvas) {
 		const ratio = (CONTAINER_HEIGHT - crossLine.posY) / CONTAINER_HEIGHT;
-		const value = Math.floor(PRICE_MIN + (PRICE_MAX - PRICE_MIN) * ratio);
+		const value = Math.floor(minPrice + (maxPrice - minPrice) * ratio);
 
 		context.strokeStyle = COLOR_BORDER;
 		context.beginPath();
