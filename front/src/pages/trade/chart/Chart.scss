@@ -1,10 +1,9 @@
 @import '@common/global.scss';
 
-.chart-container {
-	position: relative;
+.chart {
 	width: 100%;
 	height: 100%;
-	cursor: crosshair;
+	box-sizing: border-box;
 
 	background-color: $white;
 	border-radius: 8px;
@@ -14,21 +13,56 @@
 	}
 }
 
-.chart-menu {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	bottom: 0px;
-	right: 0px;
+.chart-container {
+	position: relative;
 
 	width: 100%;
-	height: 10%;
+	height: 360px;
+	cursor: crosshair;
+
+	background-color: $white;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+
+	&.grabbing {
+		cursor: grabbing;
+	}
+
+	.dark-theme & {
+		background-color: $darkModeCardBackgroundColor;
+	}
+}
+
+.chart-menu {
+	position: relative;
+
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+
+	width: 100%;
+	height: 40px;
+	padding-left: 10px;
+	box-sizing: border-box;
 	cursor: default;
 
-	border-start-start-radius: 8px;
-	border-start-end-radius: 8px;
-	border-bottom: 1px solid #888;
+	border-end-start-radius: 4px;
+	border-end-end-radius: 4px;
+	border-top: 1px solid $borderColor;
 	background-color: #fefefe;
+
+	.dark-theme & {
+		background-color: $darkModeCardBackgroundColor;
+		border-top: 1px solid $darkModeBorderColor;
+	}
+}
+
+.chart-menu-item {
+	margin: 10px;
+	box-sizing: border-box;
+
+	cursor: pointer;
+	text-decoration: none;
 }
 
 .chart-canvas {
@@ -41,26 +75,26 @@
 
 .chart-candle-graph {
 	position: absolute;
-	top: 10%;
+	top: 0px;
 	left: 0px;
 	bottom: 0px;
 	right: 0px;
 
 	width: calc(100% - 100px);
-	height: 60%;
+	height: 70%;
 
 	pointer-events: none;
 }
 
 .chart-candle-legend {
 	position: absolute;
-	top: 10%;
+	top: 0px;
 	left: 0px;
 	bottom: 0px;
 	right: 0px;
 
 	width: 100%;
-	height: 60%;
+	height: 70%;
 }
 
 .chart-volume-graph {

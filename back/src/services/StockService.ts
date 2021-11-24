@@ -48,7 +48,7 @@ export default class StockService {
 		const stockRepository = getCustomRepository(StockRepository);
 
 		const allStocks: Stock[] = await stockRepository.readAllStocks();
-		return allStocks.map((stock) => ({ ...stock, charts: stock.charts.filter(({ type }) => type === 1440) }));
+		return allStocks;
 	}
 
 	static async getStockLog(code: string, type: CHARTTYPE_VALUE, start: number, end: number): Promise<IChartLog[]> {

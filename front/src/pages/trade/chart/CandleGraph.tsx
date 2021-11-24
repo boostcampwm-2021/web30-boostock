@@ -1,18 +1,18 @@
 import React, { useEffect, useRef } from 'react';
+import { useRecoilValue } from 'recoil';
+import userAtom, { IUser } from '@src/recoil/user/atom';
 import { IChartItem } from '@src/recoil/chart/atom';
 
-import { ICrossLine } from './common';
+import { ICrossLine, getMaxValue, getMinValue, RATIO_MAX, RATIO_MIN, CANDLE_GAP, NUM_OF_CANDLES, getPriceColor } from './common';
 import CandleBackground from './CandleBackground';
 import CandleLegend from './CandleLegend';
 import './Chart.scss';
 
 const CANVAS_WIDTH = 850;
 const CANVAS_HEIGHT = 280;
-const TOP_BOTTOM_PADDING = 15;
 
 interface IProps {
 	chartData: IChartItem[];
-	readonly numOfCandles: number;
 	crossLine: ICrossLine;
 }
 
@@ -34,13 +34,6 @@ interface ICandleDrawData {
 	height: number;
 }
 
-const getMaxPriceAndMinPrice = (chartData: IChartItem[]): { maxPrice: number; minPrice: number } => {
-	const maxPrice = Math.max(...chartData.map(({ priceHigh }) => priceHigh));
-	const minPrice = Math.min(...chartData.map(({ priceLow }) => priceLow));
-
-	return { maxPrice, minPrice };
-};
-
 const isDodgeCandle = (priceStart: number, priceEnd: number) => priceStart === priceEnd;
 
 const isPositiveCandle = (priceStart: number, priceEnd: number) => priceStart < priceEnd;
@@ -49,7 +42,17 @@ const drawCandleBar = ({ ctx, x, y, width, height }: ICandleDrawData) => ctx.fil
 
 const drawCandleTail = ({ ctx, x, y, width, height }: ICandleDrawData) => ctx.fillRect(x, y, width, height);
 
-const drawCandles = ({ chartData, ctx, canvasWidth, candleWidth, candleGap, tailWidth, convertPriceToYPos }: IDrawData) => {
+const drawCandles = ({
+	chartData,
+	ctx,
+	canvasWidth,
+	candleWidth,
+	candleGap,
+	tailWidth,
+	theme,
+	convertPriceToYPos,
+}: IDrawData) => {
+	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	chartData.forEach(({ priceHigh, priceLow, priceStart, priceEnd }, idx) => {
 		const isPositive = isPositiveCandle(priceStart, priceEnd);
 		const candleBarX = canvasWidth - (candleWidth + candleGap) * (idx + 1);
@@ -61,7 +64,7 @@ const drawCandles = ({ chartData, ctx, canvasWidth, candleWidth, candleGap, tail
 		const tailHeight = convertPriceToYPos(priceLow) - tailY;
 
 		if (isDodgeCandle(priceStart, priceEnd)) {
-			ctx.fillStyle = 'black';
+			ctx.fillStyle = getPriceColor(priceStart, priceEnd, theme);
 			drawCandleBar({ ctx, x: candleBarX, y: candleBarY, width: candleWidth, height: candleHeight + 1 });
 			drawCandleTail({
 				ctx,
@@ -73,7 +76,7 @@ const drawCandles = ({ chartData, ctx, canvasWidth, candleWidth, candleGap, tail
 			return;
 		}
 
-		const candleColor = isPositive ? '#d60000' : '#0051c7';
+		const candleColor = getPriceColor(priceStart, priceEnd, theme);
 		ctx.fillStyle = candleColor;
 
 		drawCandleBar({ ctx, x: candleBarX, y: candleBarY, width: candleWidth, height: candleHeight });
@@ -87,7 +90,8 @@ const drawCandles = ({ chartData, ctx, canvasWidth, candleWidth, candleGap, tail
 	});
 };
 
-const CandleGraph = ({ chartData, numOfCandles, crossLine }: IProps) => {
+const CandleGraph = ({ chartData, crossLine }: IProps) => {
+	const { theme } = useRecoilValue<IUser>(userAtom);
 	const candleGraphChartRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
@@ -96,14 +100,13 @@ const CandleGraph = ({ chartData, numOfCandles, crossLine }: IProps) => {
 		const ctx = candleGraphChartRef.current.getContext('2d');
 		if (!ctx) return;
 
-		const CANDLE_GAP = 5;
-		const CANDLE_WIDTH = (CANVAS_WIDTH - (numOfCandles + 1) * CANDLE_GAP) / numOfCandles;
+		const CANDLE_WIDTH = (CANVAS_WIDTH - (NUM_OF_CANDLES + 1) * CANDLE_GAP) / NUM_OF_CANDLES;
 		const TAIL_WIDTH = 1;
 
-		const { maxPrice, minPrice } = getMaxPriceAndMinPrice(chartData);
+		const maxPrice = getMaxValue(chartData, 'priceHigh', RATIO_MAX);
+		const minPrice = getMinValue(chartData, 'priceLow', RATIO_MIN);
 
-		const convertPriceToYPos = (curPrice: number) =>
-			((maxPrice - curPrice) / (maxPrice - minPrice)) * (CANVAS_HEIGHT - TOP_BOTTOM_PADDING * 2) + TOP_BOTTOM_PADDING;
+		const convertPriceToYPos = (curPrice: number) => ((maxPrice - curPrice) / (maxPrice - minPrice)) * CANVAS_HEIGHT;
 
 		drawCandles({
 			chartData,
@@ -112,9 +115,10 @@ const CandleGraph = ({ chartData, numOfCandles, crossLine }: IProps) => {
 			candleWidth: CANDLE_WIDTH,
 			candleGap: CANDLE_GAP,
 			tailWidth: TAIL_WIDTH,
+			theme,
 			convertPriceToYPos,
 		});
-	}, [candleGraphChartRef]);
+	}, [chartData, candleGraphChartRef, theme]);
 
 	return (
 		<>
