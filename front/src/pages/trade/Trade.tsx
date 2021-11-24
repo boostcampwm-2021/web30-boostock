@@ -42,6 +42,7 @@ const Trade = () => {
 	const webSocket = useRecoilValue(webSocketAtom);
 	const stockState = getStockState(stockList, queryData);
 	const stockCode = stockState?.code;
+	const stockType = Number(queryData.type || '1');
 	const stockId = stockState?.stockId;
 
 	useEffect(() => {
@@ -96,7 +97,7 @@ const Trade = () => {
 						<StockInfo info={stockState} />
 					</section>
 					<section className="trade-chart">
-						<Chart />
+						<Chart stockCode={stockCode} stockType={stockType} />
 					</section>
 					<section className="trade-status">
 						<section className="trade-order">

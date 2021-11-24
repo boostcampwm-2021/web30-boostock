@@ -3,8 +3,9 @@ import formatNumber from '@src/common/utils/formatNumber';
 import { OFFSET, RATIO_MAX, COLOR_BORDER, COLOR_LEGEND, IProps, IDrawProps } from './common';
 
 import './Chart.scss';
+
 const CANVAS_WIDTH = 950;
-const CANVAS_HEIGHT = 80;
+const CANVAS_HEIGHT = 72;
 
 const PARTITION = 4;
 
@@ -31,7 +32,7 @@ const drawVolumeLegend = ({ canvas, chartData }: IDrawProps): void => {
 	context.fillStyle = COLOR_BORDER;
 	Array.from(Array(PARTITION).keys()).forEach((index) => {
 		const ratio = (PARTITION - index) / (PARTITION + 1);
-		const value = AMOUNT_MAX * ratio;
+		const value = Math.floor(AMOUNT_MAX * ratio);
 		const posY = CANVAS_HEIGHT * (1 - ratio) + OFFSET;
 
 		context.beginPath();
@@ -51,7 +52,7 @@ const VolumeBackground = ({ chartData, crossLine }: IProps) => {
 			canvas: volumeLegendRef.current,
 			chartData,
 		});
-	}, [crossLine]);
+	}, [chartData, crossLine]);
 
 	return (
 		<canvas className="chart-canvas chart-volume-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={volumeLegendRef} />

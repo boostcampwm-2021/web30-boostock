@@ -36,7 +36,7 @@ const drawPeriodLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): v
 
 	const ratio = crossLine.posX / CANVAS_WIDTH;
 	const index = NUM_OF_CANDLES - Math.floor(NUM_OF_CANDLES * ratio) - 1;
-	const date = !chartData[index]?.timestamp ? '' : formatPeriodLegend(chartData[index]?.timestamp);
+	const date = !chartData[index]?.createdAt ? '' : formatPeriodLegend(chartData[index]?.createdAt);
 	const textWidth = context.measureText(date).width + textPadding * 2;
 
 	context.fillStyle = COLOR_BORDER;

@@ -15,7 +15,7 @@ import {
 import './Chart.scss';
 
 const CANVAS_WIDTH = 950;
-const CANVAS_HEIGHT = 240;
+const CANVAS_HEIGHT = 252;
 
 const drawCandleLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): void => {
 	const context = canvas?.getContext('2d');
@@ -29,16 +29,16 @@ const drawCandleLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): v
 	context.fillStyle = '#fff';
 	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-	const recentChart = chartData[chartData.length - 1];
-	if (recentChart) {
+	const recentChart = chartData[0];
+	if (recentChart && recentChart.priceEnd > 0) {
 		const ratio = (recentChart.priceEnd - minPrice) / (maxPrice - minPrice);
 		const posY = CANVAS_HEIGHT * (1 - ratio) + OFFSET;
 
-		context.strokeStyle = getPriceColor(chartData[chartData.length - 1].priceStart, chartData[chartData.length - 1].priceEnd);
+		context.strokeStyle = getPriceColor(recentChart.priceStart, recentChart.priceEnd);
 		context.beginPath();
 		context.setLineDash([5, 5]);
-		context.moveTo(0, posY + OFFSET);
-		context.lineTo(LEGEND_LEFT, posY + OFFSET);
+		context.moveTo(0, posY);
+		context.lineTo(LEGEND_LEFT, posY);
 		context.stroke();
 
 		context.fillStyle = context.strokeStyle;
@@ -74,7 +74,7 @@ const CandleLegend = ({ chartData, crossLine }: IProps) => {
 			chartData,
 			crossLine,
 		});
-	}, [crossLine]);
+	}, [chartData, crossLine]);
 
 	return (
 		<canvas className="chart-canvas chart-candle-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={candleLegendRef} />

@@ -5,7 +5,7 @@ import { OFFSET, COLOR_BORDER, COLOR_LEGEND, IProps, RATIO_MAX, RATIO_MIN, IDraw
 import './Chart.scss';
 
 const CANVAS_WIDTH = 950;
-const CANVAS_HEIGHT = 240;
+const CANVAS_HEIGHT = 252;
 const PARTITION = 4;
 
 const drawCandleLegend = ({ canvas, chartData }: IDrawProps): void => {
@@ -29,6 +29,7 @@ const drawCandleLegend = ({ canvas, chartData }: IDrawProps): void => {
 
 	context.strokeStyle = COLOR_LEGEND;
 	context.fillStyle = COLOR_BORDER;
+
 	Array.from(Array(PARTITION).keys()).forEach((index) => {
 		const ratio = (PARTITION - index) / (PARTITION + 1);
 		const value = minPrice + (maxPrice - minPrice) * ratio;
