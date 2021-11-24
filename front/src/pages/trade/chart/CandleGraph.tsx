@@ -44,6 +44,7 @@ const drawCandleBar = ({ ctx, x, y, width, height }: ICandleDrawData) => ctx.fil
 const drawCandleTail = ({ ctx, x, y, width, height }: ICandleDrawData) => ctx.fillRect(x, y, width, height);
 
 const drawCandles = ({ chartData, ctx, canvasWidth, candleWidth, candleGap, tailWidth, convertPriceToYPos }: IDrawData) => {
+	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	chartData.forEach(({ priceHigh, priceLow, priceStart, priceEnd }, idx) => {
 		const isPositive = isPositiveCandle(priceStart, priceEnd);
 		const candleBarX = canvasWidth - (candleWidth + candleGap) * (idx + 1);
@@ -82,6 +83,7 @@ const drawCandles = ({ chartData, ctx, canvasWidth, candleWidth, candleGap, tail
 };
 
 const CandleGraph = ({ chartData, numOfCandles, crossLine }: IProps) => {
+	// console.log(chartData);
 	const candleGraphChartRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
@@ -108,7 +110,7 @@ const CandleGraph = ({ chartData, numOfCandles, crossLine }: IProps) => {
 			tailWidth: TAIL_WIDTH,
 			convertPriceToYPos,
 		});
-	}, [candleGraphChartRef]);
+	}, [chartData, candleGraphChartRef]);
 
 	return (
 		<>
