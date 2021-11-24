@@ -13,7 +13,7 @@ const chartAtom = atom<IChartItem[]>({
 	key: 'chatAtom',
 	default: [
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745000000,
 			priceStart: 3000,
 			priceEnd: 7000,
 			priceLow: 1000,
@@ -21,7 +21,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 1000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744940000,
 			priceStart: 7000,
 			priceEnd: 3000,
 			priceLow: 1000,
@@ -29,7 +29,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 2000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744880000,
 			priceStart: 3000,
 			priceEnd: 3000,
 			priceLow: 1000,
@@ -37,7 +37,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 3000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744820000,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 1000,
@@ -45,7 +45,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 4000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744760000,
 			priceStart: 3000,
 			priceEnd: 7000,
 			priceLow: 1000,
@@ -53,7 +53,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 5000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744700000,
 			priceStart: 7000,
 			priceEnd: 3000,
 			priceLow: 1000,
@@ -61,7 +61,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 5000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744640000,
 			priceStart: 3000,
 			priceEnd: 7000,
 			priceLow: 1000,
@@ -69,7 +69,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 5000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744580000,
 			priceStart: 3000,
 			priceEnd: 7000,
 			priceLow: 1000,
@@ -77,7 +77,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 5000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744573000,
 			priceStart: 3000,
 			priceEnd: 7000,
 			priceLow: 1000,
@@ -85,7 +85,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 5000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744513000,
 			priceStart: 3000,
 			priceEnd: 7000,
 			priceLow: 1000,
@@ -93,7 +93,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 5000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744453000,
 			priceStart: 6000,
 			priceEnd: 7000,
 			priceLow: 5700,
@@ -101,7 +101,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744393000,
 			priceStart: 6000,
 			priceEnd: 7000,
 			priceLow: 5700,
@@ -109,7 +109,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744333000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -117,7 +117,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744273000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -125,7 +125,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744213000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -133,7 +133,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744153000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -141,7 +141,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744093000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -149,7 +149,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637744033000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -157,7 +157,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743973000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -165,7 +165,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743913000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -173,7 +173,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743853000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -181,7 +181,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743853000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -189,7 +189,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743733000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -197,7 +197,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743673000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -205,7 +205,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743613000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -213,7 +213,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743553000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -221,7 +221,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743493000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -229,7 +229,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743433000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -237,7 +237,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743373000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -245,7 +245,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743313000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -253,7 +253,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743253000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -261,7 +261,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743193000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -269,7 +269,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743133000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -277,7 +277,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743073000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -285,7 +285,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637743013000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -293,7 +293,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637742953000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -301,7 +301,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637742893000,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -309,7 +309,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637742833000,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -317,7 +317,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637742773000,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -325,7 +325,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637742713000,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -333,7 +333,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637742653000,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -341,7 +341,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637629161000,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -349,7 +349,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637629101000,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -357,7 +357,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637629041000,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -365,7 +365,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637628981000,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -373,7 +373,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637628921000,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -381,7 +381,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -389,7 +389,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -397,7 +397,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -405,7 +405,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -413,7 +413,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -421,7 +421,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -429,7 +429,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -437,7 +437,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -445,7 +445,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -453,7 +453,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -461,7 +461,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -469,7 +469,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -477,7 +477,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -485,7 +485,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -493,7 +493,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -501,7 +501,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -509,7 +509,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -517,7 +517,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -525,7 +525,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -533,7 +533,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -541,7 +541,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -549,7 +549,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -557,7 +557,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -565,7 +565,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -573,7 +573,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -581,7 +581,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -589,7 +589,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -597,7 +597,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -605,7 +605,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -613,7 +613,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -621,7 +621,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -629,7 +629,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -637,7 +637,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -645,7 +645,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -653,7 +653,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -661,7 +661,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -669,7 +669,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -677,7 +677,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -685,7 +685,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -693,7 +693,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -701,7 +701,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -709,7 +709,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -717,7 +717,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -725,7 +725,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -733,7 +733,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -741,7 +741,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 7000,
 			priceEnd: 7000,
 			priceLow: 6600,
@@ -749,7 +749,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -757,7 +757,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -765,7 +765,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -773,7 +773,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -781,7 +781,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -789,7 +789,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -797,7 +797,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -805,7 +805,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -813,7 +813,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -821,7 +821,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -829,7 +829,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -837,7 +837,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -845,7 +845,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -853,7 +853,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -861,7 +861,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -869,7 +869,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -877,7 +877,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -885,7 +885,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -893,7 +893,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -901,7 +901,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -909,7 +909,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -917,7 +917,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -925,7 +925,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -933,7 +933,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -941,7 +941,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -949,7 +949,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -957,7 +957,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -965,7 +965,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -973,7 +973,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -981,7 +981,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -989,7 +989,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -997,7 +997,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1005,7 +1005,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1013,7 +1013,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1021,7 +1021,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1029,7 +1029,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1037,7 +1037,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1045,7 +1045,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1053,7 +1053,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1061,7 +1061,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1069,7 +1069,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1077,7 +1077,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1085,7 +1085,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1093,7 +1093,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1101,7 +1101,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1109,7 +1109,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1117,7 +1117,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1125,7 +1125,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1133,7 +1133,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1141,7 +1141,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1149,7 +1149,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1157,7 +1157,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1165,7 +1165,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1173,7 +1173,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1181,7 +1181,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1189,7 +1189,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1197,7 +1197,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1205,7 +1205,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1213,7 +1213,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1221,7 +1221,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1229,7 +1229,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1237,7 +1237,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1245,7 +1245,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1253,7 +1253,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1261,7 +1261,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1269,7 +1269,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1277,7 +1277,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1285,7 +1285,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1293,7 +1293,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1301,7 +1301,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1309,7 +1309,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1317,7 +1317,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1325,7 +1325,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1333,7 +1333,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1341,7 +1341,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1349,7 +1349,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1357,7 +1357,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1365,7 +1365,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1373,7 +1373,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1381,7 +1381,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1389,7 +1389,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1397,7 +1397,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1405,7 +1405,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1413,7 +1413,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1421,7 +1421,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1429,7 +1429,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1437,7 +1437,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 3800,
 			priceEnd: 4700,
 			priceLow: 3700,
@@ -1445,7 +1445,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 21000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1453,7 +1453,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1461,7 +1461,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1469,7 +1469,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 5000,
 			priceEnd: 4500,
 			priceLow: 4200,
@@ -1477,7 +1477,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 15000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1485,7 +1485,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1493,7 +1493,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1501,7 +1501,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1509,7 +1509,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1517,7 +1517,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1525,7 +1525,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1533,7 +1533,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1541,7 +1541,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1549,7 +1549,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1557,7 +1557,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1565,7 +1565,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1573,7 +1573,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1581,7 +1581,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1589,7 +1589,23 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 55000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
+			priceStart: 41000,
+			priceEnd: 58000,
+			priceLow: 41000,
+			priceHigh: 63000,
+			amount: 4000,
+		},
+		{
+			timestamp: 1637745044726,
+			priceStart: 41000,
+			priceEnd: 58000,
+			priceLow: 41000,
+			priceHigh: 63000,
+			amount: 4000,
+		},
+		{
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1597,7 +1613,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 4000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1605,7 +1621,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 4000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1613,7 +1629,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 4000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1621,7 +1637,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 4000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1629,7 +1645,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 4000,
 		},
 		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
@@ -1637,23 +1653,7 @@ const chartAtom = atom<IChartItem[]>({
 			amount: 4000,
 		},
 		{
-			timestamp: 1637561386,
-			priceStart: 4100,
-			priceEnd: 5800,
-			priceLow: 4100,
-			priceHigh: 6300,
-			amount: 4000,
-		},
-		{
-			timestamp: 1637561386,
-			priceStart: 4100,
-			priceEnd: 5800,
-			priceLow: 4100,
-			priceHigh: 6300,
-			amount: 4000,
-		},
-		{
-			timestamp: 1637561386,
+			timestamp: 1637745044726,
 			priceStart: 4100,
 			priceEnd: 5800,
 			priceLow: 4100,
