@@ -12,7 +12,8 @@ const BOX_HEIGHT = 20;
 const drawPeriodBackground = ({ canvas, chartData }: IDrawProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
-	const [CHART_TOP, LEGEND_TOP] = [Math.floor(CANVAS_HEIGHT * 0.1), Math.floor(CANVAS_HEIGHT * 0.9)];
+
+	const [CHART_TOP, LEGEND_TOP] = [Math.floor(CANVAS_WIDTH * 0), Math.floor(CANVAS_HEIGHT * 0.9)];
 
 	context.font = '11px dotum';
 	context.textAlign = 'center';
@@ -21,7 +22,7 @@ const drawPeriodBackground = ({ canvas, chartData }: IDrawProps): void => {
 
 	context.strokeStyle = COLOR_LEGEND;
 	context.fillStyle = COLOR_BORDER;
-	chartData.forEach(({ timestamp }, index) => {
+	chartData.forEach(({ createdAt }, index) => {
 		if (index % PARTITION !== 0) return;
 
 		const posX = CANVAS_WIDTH - (CANDLE_WIDTH + CANDLE_GAP) * (index + 1) + CANDLE_WIDTH / 2;
@@ -31,7 +32,7 @@ const drawPeriodBackground = ({ canvas, chartData }: IDrawProps): void => {
 		context.lineTo(posX, LEGEND_TOP);
 		context.stroke();
 
-		context.fillText(formatCandleDate(timestamp), posX, LEGEND_TOP + BOX_HEIGHT / 2);
+		context.fillText(formatCandleDate(createdAt), posX, LEGEND_TOP + BOX_HEIGHT / 2);
 	});
 };
 

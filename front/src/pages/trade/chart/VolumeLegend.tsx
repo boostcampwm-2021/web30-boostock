@@ -4,7 +4,7 @@ import { OFFSET, RATIO_MAX, COLOR_BORDER, IProps, IDrawLegendProps } from './com
 import './Chart.scss';
 
 const CANVAS_WIDTH = 950;
-const CANVAS_HEIGHT = 80;
+const CANVAS_HEIGHT = 72;
 
 const drawVolumeLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): void => {
 	const context = canvas?.getContext('2d');
@@ -24,8 +24,8 @@ const drawVolumeLegend = ({ canvas, chartData, crossLine }: IDrawLegendProps): v
 
 		context.strokeStyle = COLOR_BORDER;
 		context.beginPath();
-		context.moveTo(0, crossLine.posY + OFFSET);
-		context.lineTo(LEGEND_LEFT, crossLine.posY + OFFSET);
+		context.moveTo(0, crossLine.posY);
+		context.lineTo(LEGEND_LEFT, crossLine.posY);
 		context.stroke();
 
 		context.fillStyle = COLOR_BORDER;
@@ -44,7 +44,7 @@ const VolumeLegend = ({ chartData, crossLine }: IProps) => {
 			chartData,
 			crossLine,
 		});
-	}, [crossLine]);
+	}, [chartData, crossLine]);
 
 	return (
 		<canvas className="chart-canvas chart-volume-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={volumeLegendRef} />

@@ -116,28 +116,13 @@ function updateTargetStock(
 ): IStockListItem[] {
 	const { code: stockCode, price, amount } = data;
 	return stockList.map((stockItem) => {
-		const dailyChartData: IStockChartItem = currentChart.filter(
-			({ type: chartType }: IStockChartItem) => chartType === 1440,
-		)[0];
 		if (stockItem.code !== stockCode) return stockItem;
-
-		const newChartsData = stockItem.charts.map((chartItem) => {
-			return chartItem.type === 1
-				? chartItem
-				: {
-						...chartItem,
-						volume: chartItem.volume + price * amount,
-						amount: chartItem.amount + amount,
-						priceLow: dailyChartData.priceLow,
-						priceHigh: dailyChartData.priceHigh,
-				  };
-		});
 
 		return {
 			...stockItem,
 			price,
 			amount,
-			charts: newChartsData,
+			charts: currentChart,
 		};
 	});
 }

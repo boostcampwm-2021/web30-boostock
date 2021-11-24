@@ -54,6 +54,7 @@ export default class OrderService {
 				user.balance -= payout;
 				await userRepository.save(user);
 			}
+
 			await orderRepository.save(
 				orderRepository.create({
 					userId: user.userId,

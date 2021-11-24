@@ -6,7 +6,7 @@ import VolumeLegend from './VolumeLegend';
 import './Chart.scss';
 
 const CANVAS_WIDTH = 850;
-const CANVAS_HEIGHT = 80;
+const CANVAS_HEIGHT = 72;
 const CANDLE_WIDTH = (CANVAS_WIDTH - (NUM_OF_CANDLES + 1) * CANDLE_GAP) / NUM_OF_CANDLES;
 
 interface IDrawVolumeBarProps {
