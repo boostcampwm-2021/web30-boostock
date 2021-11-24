@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState, useEffect, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import ChartAtom from '@src/recoil/chart/atom';
@@ -20,8 +21,11 @@ const moveCrossLine = (set: React.Dispatch<React.SetStateAction<ICrossLine>>, ev
 	}));
 };
 
+const isTarget = (target: HTMLElement) => !target.closest('.chart-menu');
+
 const Chart = () => {
 	const chartRef = useRef<HTMLDivElement>(null);
+	const isMouseDownOn = useRef<boolean>(false);
 	const [chart, setChart] = useRecoilState(ChartAtom);
 	const [start, setStart] = useState<number>(0); // 맨 오른쪽 캔들의 인덱스
 	const [end, setEnd] = useState<number>(60); // 맨 왼쪽 캔들의 인덱스
@@ -38,7 +42,27 @@ const Chart = () => {
 	}, []);
 
 	return (
-		<div className="chart-container" ref={chartRef}>
+		<div
+			className="chart-container"
+			ref={chartRef}
+			role="main"
+			onMouseDown={(e) => {
+				if (!isTarget(e.target as HTMLDivElement)) return;
+
+				isMouseDownOn.current = true;
+				console.log('mousedown');
+			}}
+			onMouseUp={(e) => {
+				if (!isTarget(e.target as HTMLDivElement)) return;
+				isMouseDownOn.current = false;
+				console.log('mouseup');
+			}}
+			onMouseMove={(e) => {
+				if (!isTarget(e.target as HTMLDivElement)) return;
+				if (!isMouseDownOn.current) return;
+				console.log('mousemove');
+			}}
+		>
 			<PeriodBackground chartData={chart.slice(start, end + 1)} crossLine={crossLine} />
 			<CandleGraph chartData={chart.slice(start, end + 1)} numOfCandles={NUM_OF_CANDLES} crossLine={crossLine} />
 			<VolumeGraph chartData={chart.slice(start, end + 1)} crossLine={crossLine} />

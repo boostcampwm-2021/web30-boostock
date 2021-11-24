@@ -92,6 +92,22 @@ const chartAtom = atom<IChartItem[]>({
 			priceHigh: 9000,
 			amount: 5000,
 		},
+		{
+			timestamp: 1637561386,
+			priceStart: 6000,
+			priceEnd: 7000,
+			priceLow: 5700,
+			priceHigh: 7300,
+			amount: 15000,
+		},
+		{
+			timestamp: 1637561386,
+			priceStart: 6000,
+			priceEnd: 7000,
+			priceLow: 5700,
+			priceHigh: 7300,
+			amount: 15000,
+		},
 	],
 });
 
