@@ -4,9 +4,9 @@ import StockRepository from '@repositories/StockRepository';
 import AuctioneerService from '@services/AuctioneerService';
 import { getCustomRepository } from 'typeorm';
 
+const waitingSet = {};
 const auctioneerServiceInstance = new AuctioneerService();
 
-const waitingSet = {};
 const auctioneerLoader = async (): Promise<void> => {
 	const stockRepository = getCustomRepository(StockRepository);
 	const stockCodeList = await stockRepository.readStockCodeList();

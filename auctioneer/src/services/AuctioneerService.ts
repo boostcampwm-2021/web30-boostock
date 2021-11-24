@@ -19,6 +19,7 @@ export default class AuctioneerService {
 		const queryRunner = connection.createQueryRunner();
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
+
 		try {
 			const StockRepositoryRunner = queryRunner.manager.getCustomRepository(StockRepository);
 			const UserRepositoryRunner = queryRunner.manager.getCustomRepository(UserRepository);
@@ -40,7 +41,6 @@ export default class AuctioneerService {
 			]);
 			if (askUser === undefined || bidUser === undefined) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
 			const bidUserStock = await UserStockRepositoryRunner.readUserStockByCode(bidUser.userId, code);
-			console.log(bidUserStock);
 			const task = new BidAskTransaction(
 				StockRepositoryRunner,
 				UserRepositoryRunner,
@@ -64,16 +64,16 @@ export default class AuctioneerService {
 				task.askOrderProcess(askUser, orderAsk),
 				task.chartProcess(stock),
 			]);
-			await task.logProcess();
 
-			queryRunner.commitTransaction();
+			await queryRunner.commitTransaction();
+			await task.logProcess();
 			result = true;
 		} catch (err) {
 			console.log(err);
-			queryRunner.rollbackTransaction();
+			await queryRunner.rollbackTransaction();
 			result = false;
 		} finally {
-			queryRunner.release();
+			await queryRunner.release();
 		}
 		return result;
 	}

@@ -56,9 +56,11 @@ export default class BidAskTransaction {
 		askUser.balance += this.TransactionInfo.amount * this.TransactionInfo.price;
 		await this.UserRepositoryRunner.save(askUser);
 
-		askOrder.amount -= this.TransactionInfo.amount;
-		if (askOrder.amount === 0) await this.OrderRepositoryRunner.remove(askOrder);
-		else await this.OrderRepositoryRunner.save(askOrder);
+		if (askOrder.amount === this.TransactionInfo.amount) {
+			await this.OrderRepositoryRunner.removeOrder(askOrder);
+		} else {
+			await this.OrderRepositoryRunner.updateOrder(askOrder, this.TransactionInfo.amount);
+		}
 	}
 
 	async bidOrderProcess(bidUser: User, bidUserStock: UserStock | undefined, bidOrder: Order): Promise<void | Error> {
@@ -87,9 +89,11 @@ export default class BidAskTransaction {
 			await this.UserStockRepositoryRunner.save(bidUserStock);
 		}
 
-		bidOrder.amount -= this.TransactionInfo.amount;
-		if (bidOrder.amount === 0) await this.OrderRepositoryRunner.remove(bidOrder);
-		else await this.OrderRepositoryRunner.save(bidOrder);
+		if (bidOrder.amount === this.TransactionInfo.amount) {
+			await this.OrderRepositoryRunner.removeOrder(bidOrder);
+		} else {
+			await this.OrderRepositoryRunner.updateOrder(bidOrder, this.TransactionInfo.amount);
+		}
 	}
 
 	async chartProcess(stock: Stock): Promise<void | Error> {
@@ -140,7 +144,6 @@ export default class BidAskTransaction {
 				},
 				body: JSON.stringify({
 					match: {
-						// document??
 						id: document.id,
 						stockId: this.TransactionInfo.stockId,
 						bidUser: this.TransactionInfo.bidUser,

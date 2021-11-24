@@ -14,7 +14,6 @@ export default class UserStockRepository extends Repository<UserStock> {
 			.leftJoin('UserStock.user', 'User')
 			.where('User.userId=:userId', { userId })
 			.andWhere('Stock.code=:code', { code })
-			.setLock('optimistic', 0)
 			.getOne();
 	}
 }
