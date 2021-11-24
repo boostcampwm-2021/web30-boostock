@@ -50,7 +50,7 @@ const App: React.FC = () => {
 
 	return (
 		<BrowserRouter>
-			<Toaster />
+			<Toaster position="bottom-left" reverseOrder={false} />
 			<Theme>
 				<TopBar pages={pages} />
 				<Switch>

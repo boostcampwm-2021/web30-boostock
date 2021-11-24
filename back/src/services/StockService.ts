@@ -20,22 +20,6 @@ export default class StockService {
 		StockService.instance = this;
 	}
 
-	// static async getStockCodeById(id: number): Promise<string> {
-	// 	if (id === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-	// 	const stockRepository: StockRepository = getCustomRepository(StockRepository);
-	// 	const stock = await stockRepository.findOne(id);
-	// 	if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-	// 	return stock.code;
-	// }
-
-	// static async getStockIdByCode(code: string): Promise<number> {
-	// 	if (code === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-	// 	const stockRepository: StockRepository = getCustomRepository(StockRepository);
-	// 	const stock = await stockRepository.findOne({ where: { code } });
-	// 	if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-	// 	return stock.stockId;
-	// }
-
 	public async getCurrentStockPrice(entityManager: EntityManager, stockId: number): Promise<{ price: number }> {
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
 
@@ -79,7 +63,7 @@ export default class StockService {
 	}
 
 	public async getStocksBaseInfo(): Promise<{ stock_id: number; code: string }[]> {
-		const connection = await createConnection();
+		const connection = await getConnection();
 		const stockRepository = connection.getCustomRepository(StockRepository);
 		const baseInfo = await stockRepository.readStockBaseInfo();
 
@@ -113,5 +97,12 @@ export default class StockService {
 		} finally {
 			await queryRunner.release();
 		}
+	}
+
+	public async getPriceStockAll(): Promise<{ code: string; price: number }[]> {
+		const connection = await getConnection();
+		const stockRepository = connection.getCustomRepository(StockRepository);
+		const stockPrices = await stockRepository.readPriceStocks();
+		return stockPrices;
 	}
 }

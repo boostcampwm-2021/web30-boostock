@@ -10,9 +10,10 @@ export default class UserStockRepository extends Repository<UserStock> {
 
 	async readUserStockByCode(userId: number, code: string): Promise<UserStock | undefined> {
 		return this.createQueryBuilder('UserStock')
-			.leftJoin('UserStock.stock', 'Stock', 'Stock.code = :code', { code })
-			.leftJoin('UserStock.user', 'User', 'User.userId = :userId', { userId })
-			.setLock('pessimistic_write')
+			.leftJoin('UserStock.stock', 'Stock')
+			.leftJoin('UserStock.user', 'User')
+			.where('User.userId=:userId', { userId })
+			.andWhere('Stock.code=:code', { code })
 			.getOne();
 	}
 }

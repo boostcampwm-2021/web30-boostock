@@ -242,7 +242,6 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 
 					Emitter.emit('order concluded', matchData.code);
 				}
-				setHold(await getHoldStocks());
 				break;
 			}
 			case 'baseStock': {
@@ -268,6 +267,7 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 							<p>&nbsp;매도 주문 체결되었습니다.</p>
 						</>,
 					);
+				setHold(await getHoldStocks());
 				break;
 			}
 			default:
