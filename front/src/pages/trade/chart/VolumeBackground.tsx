@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import formatNumber from '@src/common/utils/formatNumber';
 import { OFFSET, RATIO_MAX, COLOR_BORDER, COLOR_LEGEND, IProps, IDrawProps } from './common';
 
 import './Chart.scss';
@@ -38,7 +39,7 @@ const drawVolumeLegend = ({ canvas, chartData }: IDrawProps): void => {
 		context.lineTo(LEGEND_LEFT, posY);
 		context.stroke();
 
-		context.fillText(String(value), LEGEND_LEFT + 10, posY + 5);
+		context.fillText(formatNumber(value), LEGEND_LEFT + 10, posY + 5);
 	});
 };
 

@@ -27,6 +27,7 @@ export interface IDrawProps {
 
 export interface IDrawLegendProps extends IDrawProps {
 	crossLine: ICrossLine;
+	chartData: IChartItem[];
 }
 
 export function getPriceColor(priceStart: number, priceEnd: number): string {
@@ -55,3 +56,11 @@ export const getMaxValue = (chartData: IChartItem[], property: keyof IChartItem,
 
 export const getMinValue = (chartData: IChartItem[], property: keyof IChartItem, lowerBuffer = 1): number =>
 	Math.min(...chartData.map((data) => data[property])) * lowerBuffer;
+
+export const formatCandleDate = (timestamp: number) => {
+	const date = new Date(timestamp);
+	const hh = date.getHours().toString().padStart(2, '0');
+	const mm = date.getMinutes().toString().padStart(2, '0');
+
+	return `${hh}:${mm}`;
+};

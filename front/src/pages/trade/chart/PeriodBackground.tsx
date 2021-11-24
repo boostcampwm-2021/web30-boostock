@@ -1,14 +1,15 @@
 import React, { useEffect, useRef } from 'react';
-import { OFFSET, NUM_OF_CANDLES, COLOR_BORDER, COLOR_LEGEND, IProps, IDrawProps } from './common';
+import { CANDLE_GAP, NUM_OF_CANDLES, COLOR_BORDER, COLOR_LEGEND, IProps, IDrawProps, formatCandleDate } from './common';
 
 import './Chart.scss';
 
 const PARTITION = 5;
 const CANVAS_WIDTH = 850;
 const CANVAS_HEIGHT = 400;
+const CANDLE_WIDTH = (CANVAS_WIDTH - (NUM_OF_CANDLES + 1) * CANDLE_GAP) / NUM_OF_CANDLES;
 const BOX_HEIGHT = 20;
 
-const drawPeriodBackground = ({ canvas }: IDrawProps): void => {
+const drawPeriodBackground = ({ canvas, chartData }: IDrawProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 	const [CHART_TOP, LEGEND_TOP] = [Math.floor(CANVAS_HEIGHT * 0.1), Math.floor(CANVAS_HEIGHT * 0.9)];
@@ -20,19 +21,17 @@ const drawPeriodBackground = ({ canvas }: IDrawProps): void => {
 
 	context.strokeStyle = COLOR_LEGEND;
 	context.fillStyle = COLOR_BORDER;
-	Array.from(Array(NUM_OF_CANDLES).keys()).forEach((index) => {
+	chartData.forEach(({ timestamp }, index) => {
 		if (index % PARTITION !== 0) return;
 
-		const width = CANVAS_WIDTH / NUM_OF_CANDLES;
-		const value = index;
-		const posX = Math.round(width * index - width / 2) + OFFSET;
+		const posX = CANVAS_WIDTH - (CANDLE_WIDTH + CANDLE_GAP) * (index + 1) + CANDLE_WIDTH / 2;
 
 		context.beginPath();
 		context.moveTo(posX, CHART_TOP);
 		context.lineTo(posX, LEGEND_TOP);
 		context.stroke();
 
-		context.fillText(String(value), posX, LEGEND_TOP + BOX_HEIGHT / 2);
+		context.fillText(formatCandleDate(timestamp), posX, LEGEND_TOP + BOX_HEIGHT / 2);
 	});
 };
 
@@ -44,7 +43,7 @@ const PeriodBackground = ({ chartData, crossLine }: IProps) => {
 			canvas: periodLegendRef.current,
 			chartData,
 		});
-	}, [crossLine]);
+	}, [crossLine, chartData]);
 
 	return (
 		<canvas className="chart-canvas chart-period-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={periodLegendRef} />
