@@ -1,38 +1,29 @@
 /* eslint-disable no-await-in-loop */
 import EventEmitter from '@helper/eventEmitter';
+import StockRepository from '@repositories/StockRepository';
 import AuctioneerService from '@services/AuctioneerService';
+import { getCustomRepository } from 'typeorm';
 
 const auctioneerServiceInstance = new AuctioneerService();
 
-let runningState = '';
-const waitingQueue: string[] = [];
-const waitingSet = new Set();
-
-const startAuctioneer = (stockCode) => {
-	runningState = stockCode;
+const waitingSet = {};
+const auctioneerLoader = async (): Promise<void> => {
+	const stockRepository = getCustomRepository(StockRepository);
+	const stockCodeList = await stockRepository.readStockCodeList();
+	stockCodeList.forEach(({ code }) => {
+		waitingSet[code] = false;
+	});
 };
-const quitAuctioneer = (stockCode) => {
-	runningState = '';
-	waitingSet.delete(stockCode);
-};
-const runAuctioneer = async (): Promise<void> => {
-	const stockCode = waitingQueue.pop();
-	if (!stockCode) return;
 
-	startAuctioneer(stockCode);
+const runAuctioneer = async (stockCode: string): Promise<void> => {
+	waitingSet[stockCode] = true;
 	while (await auctioneerServiceInstance.bidAsk(stockCode));
-	quitAuctioneer(stockCode);
-
-	if (waitingQueue.length) runAuctioneer();
+	waitingSet[stockCode] = false;
 };
 
 EventEmitter.on('waiting', (stockCode: string): void => {
-	if (runningState === stockCode || waitingSet.has(stockCode)) return;
-
-	waitingQueue.unshift(stockCode);
-	waitingSet.add(stockCode);
-
-	if (!runningState) runAuctioneer();
+	if (waitingSet[stockCode]) return;
+	runAuctioneer(stockCode);
 });
 
-export default runAuctioneer;
+export default auctioneerLoader;

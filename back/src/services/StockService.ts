@@ -20,22 +20,6 @@ export default class StockService {
 		StockService.instance = this;
 	}
 
-	// static async getStockCodeById(id: number): Promise<string> {
-	// 	if (id === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-	// 	const stockRepository: StockRepository = getCustomRepository(StockRepository);
-	// 	const stock = await stockRepository.findOne(id);
-	// 	if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-	// 	return stock.code;
-	// }
-
-	// static async getStockIdByCode(code: string): Promise<number> {
-	// 	if (code === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-	// 	const stockRepository: StockRepository = getCustomRepository(StockRepository);
-	// 	const stock = await stockRepository.findOne({ where: { code } });
-	// 	if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-	// 	return stock.stockId;
-	// }
-
 	public async getCurrentStockPrice(entityManager: EntityManager, stockId: number): Promise<{ price: number }> {
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
 

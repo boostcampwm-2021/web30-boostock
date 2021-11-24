@@ -15,4 +15,9 @@ export default class StockRepository extends Repository<Stock> {
 			// lock: { mode: 'pessimistic_write' },
 		});
 	}
+
+	public async readStockCodeList(): Promise<{ code: string }[]> {
+		const stockCodeList = await this.createQueryBuilder().select(['code']).getRawMany();
+		return stockCodeList;
+	}
 }
