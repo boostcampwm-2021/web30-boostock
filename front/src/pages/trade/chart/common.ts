@@ -31,19 +31,6 @@ export interface IDrawLegendProps extends IDrawProps {
 	theme: Ttheme;
 }
 
-export const drawCrossLine = (context: CanvasRenderingContext2D, width: number, height: number, crossLine: ICrossLine): void => {
-	context.strokeStyle = COLOR_BORDER;
-	context.beginPath();
-	context.moveTo(0, crossLine.posY + OFFSET);
-	context.lineTo(width, crossLine.posY + OFFSET);
-	context.stroke();
-
-	context.beginPath();
-	context.moveTo(crossLine.posX + OFFSET, 0);
-	context.lineTo(crossLine.posX + OFFSET, height);
-	context.stroke();
-};
-
 export const getMaxValue = (chartData: IChartItem[], property: keyof IChartItem, upperBuffer = 1): number =>
 	Math.max(...chartData.map((data) => data[property])) * upperBuffer;
 

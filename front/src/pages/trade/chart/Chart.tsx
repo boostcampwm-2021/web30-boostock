@@ -39,7 +39,8 @@ const Chart = ({ stockCode, stockType }: { stockCode: string; stockType: number 
 	const [end, setEnd] = useState<number>(DEFAULT_END_INDEX); // 맨 왼쪽 캔들의 인덱스
 	const [offset, setOffset] = useState<number>(-1);
 	const [crossLine, setCrossLine] = useState<ICrossLine>({ event: null, posX: 0, posY: 0 });
-	const [chart, next] = useChartData(stockCode, stockType);
+	const [chart, next] = useChartData(stockCode, stockType, offset);
+
 
 	useEffect(() => {
 		const bindedMoveCrossLine = moveCrossLine.bind(undefined, setCrossLine);

@@ -64,10 +64,10 @@ const next = (set: SetterOrUpdater<number>) => {
 	set((prev) => prev + 1);
 };
 
-export default function useChartData(code: string, type: number): [IChartItem[], () => void] {
+export default function useChartData(code: string, type: number, index: number): [IChartItem[], () => void] {
 	const stockList = useRecoilValue(stockListAtom);
 	const [chart, setChart] = useRecoilState(ChartAtom);
-	const [offset, setOffset] = useState<number>(0);
+	const [offset, setOffset] = useState<number>(index);
 
 	useEffect(() => {
 		reset(setChart);
