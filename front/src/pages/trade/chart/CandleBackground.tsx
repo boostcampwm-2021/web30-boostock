@@ -9,6 +9,7 @@ import {
 	IDrawProps,
 	initializeCanvasSize,
 	getPriceColor,
+	getMaxPriceAndMinPrice,
 } from './common';
 
 import './Chart.scss';
@@ -21,12 +22,7 @@ const drawCandleLegend = ({ canvas, chartData }: IDrawProps): void => {
 
 	const [CONTAINER_WIDTH, CONTAINER_HEIGHT] = initializeCanvasSize(canvas);
 	const LEGEND_LEFT = Math.floor(CONTAINER_WIDTH - 100);
-	const [PRICE_MIN, PRICE_MAX] = chartData.reduce(
-		(prev, current) => {
-			return [Math.min(prev[0], current.priceLow * RATIO_MIN), Math.max(prev[1], current.priceHigh * RATIO_MAX)];
-		},
-		[Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER],
-	);
+	const { maxPrice, minPrice } = getMaxPriceAndMinPrice(chartData, 1.1, 0.9);
 
 	context.font = '11px dotum';
 	context.fillStyle = '#fff';
@@ -43,7 +39,7 @@ const drawCandleLegend = ({ canvas, chartData }: IDrawProps): void => {
 	context.fillStyle = COLOR_BORDER;
 	Array.from(Array(PARTITION).keys()).forEach((index) => {
 		const ratio = (PARTITION - index) / (PARTITION + 1);
-		const value = PRICE_MIN + (PRICE_MAX - PRICE_MIN) * ratio;
+		const value = minPrice + (maxPrice - minPrice) * ratio;
 		const posY = CONTAINER_HEIGHT * (1 - ratio) + OFFSET;
 
 		context.beginPath();

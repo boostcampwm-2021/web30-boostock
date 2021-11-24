@@ -57,3 +57,14 @@ export const drawCorssLine = (context: CanvasRenderingContext2D, width: number, 
 	context.lineTo(crossLine.posX + OFFSET, height);
 	context.stroke();
 };
+
+export const getMaxPriceAndMinPrice = (
+	chartData: IChartItem[],
+	upperBuffer = 1,
+	lowerBuffer = 1,
+): { maxPrice: number; minPrice: number } => {
+	const maxPrice = Math.max(...chartData.map(({ priceHigh }) => priceHigh));
+	const minPrice = Math.min(...chartData.map(({ priceLow }) => priceLow));
+
+	return { maxPrice: maxPrice * upperBuffer, minPrice: minPrice * lowerBuffer };
+};

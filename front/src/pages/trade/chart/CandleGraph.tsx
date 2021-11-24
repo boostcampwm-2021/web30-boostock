@@ -4,11 +4,12 @@ import { IChartItem } from '@src/recoil/chart/atom';
 import { ICrossLine } from './common';
 import CandleBackground from './CandleBackground';
 import CandleLegend from './CandleLegend';
+import { getMaxPriceAndMinPrice } from './common';
 import './Chart.scss';
 
 const CANVAS_WIDTH = 850;
 const CANVAS_HEIGHT = 280;
-const TOP_BOTTOM_PADDING = 15;
+const TOP_BOTTOM_PADDING = 0;
 
 interface IProps {
 	chartData: IChartItem[];
@@ -33,13 +34,6 @@ interface ICandleDrawData {
 	width: number;
 	height: number;
 }
-
-const getMaxPriceAndMinPrice = (chartData: IChartItem[]): { maxPrice: number; minPrice: number } => {
-	const maxPrice = Math.max(...chartData.map(({ priceHigh }) => priceHigh));
-	const minPrice = Math.min(...chartData.map(({ priceLow }) => priceLow));
-
-	return { maxPrice, minPrice };
-};
 
 const isDodgeCandle = (priceStart: number, priceEnd: number) => priceStart === priceEnd;
 
@@ -100,7 +94,7 @@ const CandleGraph = ({ chartData, numOfCandles, crossLine }: IProps) => {
 		const CANDLE_WIDTH = (CANVAS_WIDTH - (numOfCandles + 1) * CANDLE_GAP) / numOfCandles;
 		const TAIL_WIDTH = 1;
 
-		const { maxPrice, minPrice } = getMaxPriceAndMinPrice(chartData);
+		const { maxPrice, minPrice } = getMaxPriceAndMinPrice(chartData, 1.1, 0.9);
 
 		const convertPriceToYPos = (curPrice: number) =>
 			((maxPrice - curPrice) / (maxPrice - minPrice)) * (CANVAS_HEIGHT - TOP_BOTTOM_PADDING * 2) + TOP_BOTTOM_PADDING;
