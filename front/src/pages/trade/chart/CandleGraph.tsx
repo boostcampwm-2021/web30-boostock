@@ -6,6 +6,10 @@ import CandleBackground from './CandleBackground';
 import CandleLegend from './CandleLegend';
 import './Chart.scss';
 
+const CANVAS_WIDTH = 850;
+const CANVAS_HEIGHT = 280;
+const TOP_BOTTOM_PADDING = 15;
+
 interface IProps {
 	chartData: IChartItem[];
 	readonly numOfCandles: number;
@@ -13,34 +17,22 @@ interface IProps {
 }
 
 interface IDrawData {
-	chartData: IChartItem[];
+	chartData: Array<IChartItem>;
 	ctx: CanvasRenderingContext2D;
-	readonly canvasWidth: number;
-	readonly candleWidth: number;
-	readonly tailWidth: number;
-	readonly maxPrice: number;
-	readonly pixelsPerUnitWon: number;
+	canvasWidth: number;
+	candleWidth: number;
+	candleGap: number;
+	tailWidth: number;
+	convertPriceToYPos: (curPrice: number) => number;
 }
 
-interface ICandleBarDrawData {
+interface ICandleDrawData {
 	ctx: CanvasRenderingContext2D;
 	x: number;
 	y: number;
 	width: number;
 	height: number;
 }
-
-interface ICandleTailDrawData {
-	ctx: CanvasRenderingContext2D;
-	x: number;
-	upperTailY: number;
-	lowerTailY: number;
-	width: number;
-	upperTailHeight: number;
-	lowerTailHeight: number;
-}
-
-const NUM_OF_HEIGHT_UNITS = 1000; // 차트 높이를 몇 칸으로 쪼갤것인가?
 
 const getMaxPriceAndMinPrice = (chartData: IChartItem[]): { maxPrice: number; minPrice: number } => {
 	const maxPrice = Math.max(...chartData.map(({ priceHigh }) => priceHigh));
@@ -49,42 +41,49 @@ const getMaxPriceAndMinPrice = (chartData: IChartItem[]): { maxPrice: number; mi
 	return { maxPrice, minPrice };
 };
 
-const isDodgeCandle = (priceStart: number, priceEnd: number): boolean => priceStart === priceEnd;
+const isDodgeCandle = (priceStart: number, priceEnd: number) => priceStart === priceEnd;
 
-const isPositiveCandle = (priceStart: number, priceEnd: number): boolean => {
-	return priceStart < priceEnd;
-};
+const isPositiveCandle = (priceStart: number, priceEnd: number) => priceStart < priceEnd;
 
-const drawCandleBar = ({ ctx, x, y, width, height }: ICandleBarDrawData) => {
-	console.log(x, y, width, height);
-	ctx.fillRect(0, y, width, height); // 캔들 봉
-};
+const drawCandleBar = ({ ctx, x, y, width, height }: ICandleDrawData) => ctx.fillRect(x, y, width, height);
 
-const drawCandleTails = ({ ctx, x, upperTailY, lowerTailY, width, upperTailHeight, lowerTailHeight }: ICandleTailDrawData) => {
-	ctx.fillRect(x, upperTailY, width, upperTailHeight);
-	ctx.fillRect(x, lowerTailY, width, lowerTailHeight);
-};
+const drawCandleTail = ({ ctx, x, y, width, height }: ICandleDrawData) => ctx.fillRect(x, y, width, height);
 
-const drawCandles = ({ chartData, ctx, canvasWidth, candleWidth, tailWidth, maxPrice, pixelsPerUnitWon }: IDrawData) => {
+const drawCandles = ({ chartData, ctx, canvasWidth, candleWidth, candleGap, tailWidth, convertPriceToYPos }: IDrawData) => {
 	chartData.forEach(({ priceHigh, priceLow, priceStart, priceEnd }, idx) => {
+		const isPositive = isPositiveCandle(priceStart, priceEnd);
+		const candleBarX = canvasWidth - (candleWidth + candleGap) * (idx + 1);
+		const candleBarY = convertPriceToYPos(isPositive ? priceEnd : priceStart);
+		const candleHeight = Math.abs(convertPriceToYPos(priceStart) - convertPriceToYPos(priceEnd));
+
+		const tailX = candleBarX + (candleWidth - tailWidth) / 2;
+		const tailY = convertPriceToYPos(priceHigh);
+		const tailHeight = convertPriceToYPos(priceLow) - tailY;
+
 		if (isDodgeCandle(priceStart, priceEnd)) {
+			ctx.fillStyle = 'black';
+			drawCandleBar({ ctx, x: candleBarX, y: candleBarY, width: candleWidth, height: candleHeight + 1 });
+			drawCandleTail({
+				ctx,
+				x: tailX,
+				y: tailY,
+				width: tailWidth,
+				height: tailHeight,
+			});
 			return;
 		}
-		const isPositive = isPositiveCandle(priceStart, priceEnd);
-		const candleColor = isPositive ? 'red' : 'blue';
+
+		const candleColor = isPositive ? '#d60000' : '#0051c7';
 		ctx.fillStyle = candleColor;
 
-		const xPosOfCandleBar = canvasWidth - candleWidth * (idx + 1);
-		const yPosOfCandleBar = (maxPrice - (isPositive ? priceEnd : priceStart)) / pixelsPerUnitWon;
-		const candleHeight = Math.abs(priceStart - priceEnd) / pixelsPerUnitWon;
-
-		const xPosOfCandleTail = xPosOfCandleBar + (candleWidth - tailWidth) / 2;
-		const upperTailY = (maxPrice - priceHigh) / pixelsPerUnitWon;
-		const lowerTailY = (maxPrice - priceLow) / pixelsPerUnitWon;
-		const upperTailHeight = priceHigh - (isPositive ? priceEnd : priceStart);
-		const lowerTailHeight = (isPositive ? priceStart : priceEnd) - priceLow;
-		drawCandleBar({ ctx, x: xPosOfCandleBar, y: yPosOfCandleBar, width: candleWidth, height: candleHeight });
-		drawCandleTails({ ctx, x: xPosOfCandleTail, upperTailY, lowerTailY, width: tailWidth, upperTailHeight, lowerTailHeight });
+		drawCandleBar({ ctx, x: candleBarX, y: candleBarY, width: candleWidth, height: candleHeight });
+		drawCandleTail({
+			ctx,
+			x: tailX,
+			y: tailY,
+			width: tailWidth,
+			height: tailHeight,
+		});
 	});
 };
 
@@ -93,25 +92,27 @@ const CandleGraph = ({ chartData, numOfCandles, crossLine }: IProps) => {
 
 	useEffect(() => {
 		if (!candleGraphChartRef.current) return;
-		const CANVAS_WIDTH = candleGraphChartRef.current.clientWidth;
-		const CANVAS_HEIGHT = candleGraphChartRef.current.clientHeight;
-		const CANDLE_WIDTH = CANVAS_WIDTH / numOfCandles;
-		const TAIL_WIDTH = 1;
 
 		const ctx = candleGraphChartRef.current.getContext('2d');
 		if (!ctx) return;
 
+		const CANDLE_GAP = 5;
+		const CANDLE_WIDTH = (CANVAS_WIDTH - (numOfCandles + 1) * CANDLE_GAP) / numOfCandles;
+		const TAIL_WIDTH = 1;
+
 		const { maxPrice, minPrice } = getMaxPriceAndMinPrice(chartData);
-		const pixelsPerUnitWon = (maxPrice - minPrice) / CANVAS_HEIGHT; // 1원당 높이 px
+
+		const convertPriceToYPos = (curPrice: number) =>
+			((maxPrice - curPrice) / (maxPrice - minPrice)) * (CANVAS_HEIGHT - TOP_BOTTOM_PADDING * 2) + TOP_BOTTOM_PADDING;
 
 		drawCandles({
 			chartData,
 			ctx,
 			canvasWidth: CANVAS_WIDTH,
 			candleWidth: CANDLE_WIDTH,
+			candleGap: CANDLE_GAP,
 			tailWidth: TAIL_WIDTH,
-			maxPrice,
-			pixelsPerUnitWon,
+			convertPriceToYPos,
 		});
 	}, [candleGraphChartRef]);
 
