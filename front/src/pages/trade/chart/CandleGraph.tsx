@@ -97,7 +97,7 @@ const CandleGraph = ({ chartData, crossLine }: IProps) => {
 		if (!ctx) return;
 
 		const NUM_OF_CANDLES = chartData.length;
-		const candleWidth = Math.floor((CANVAS_WIDTH - (NUM_OF_CANDLES + 1) * CANDLE_GAP) / NUM_OF_CANDLES);
+		const candleWidth = (CANVAS_WIDTH - (NUM_OF_CANDLES + 1) * CANDLE_GAP) / NUM_OF_CANDLES;
 		const TAIL_WIDTH = 1;
 
 		const maxPrice = getMaxValue(chartData, 'amount', 'priceHigh', RATIO_MAX);
