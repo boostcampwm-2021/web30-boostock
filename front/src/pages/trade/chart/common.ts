@@ -2,8 +2,8 @@ import { IChartItem } from '@recoil/chart';
 
 export const OFFSET = 0.5;
 export const NUM_OF_CANDLES = 60;
-export const RATIO_MIN = 0.9;
-export const RATIO_MAX = 1.1;
+export const RATIO_MIN = 1.0;
+export const RATIO_MAX = 1.0;
 export const CANDLE_GAP = 5;
 
 type Ttheme = 'light' | 'dark';
