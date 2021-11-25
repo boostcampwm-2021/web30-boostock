@@ -2,8 +2,17 @@ import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { IChartItem } from '@src/recoil/chart';
 import userAtom, { IUser } from '@src/recoil/user/atom';
-import formatNumber from '@src/common/utils/formatNumber';
-import { OFFSET, RATIO_MAX, RATIO_MIN, IDrawProps, getMaxValue, getMinValue, getTextColor, getLegendColor } from './common';
+import {
+	OFFSET,
+	RATIO_MAX,
+	RATIO_MIN,
+	IDrawProps,
+	getMaxValue,
+	getMinValue,
+	getTextColor,
+	getLegendColor,
+	getText,
+} from './common';
 
 import './Chart.scss';
 
@@ -26,7 +35,8 @@ const drawCandleLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	context.fillStyle = getTextColor(theme);
 	Array.from(Array(PARTITION).keys()).forEach((index) => {
 		const ratio = (PARTITION - index) / (PARTITION + 1);
-		const value = Math.floor(minPrice + (maxPrice - minPrice) * ratio);
+		const priceValue = Math.floor(minPrice + (maxPrice - minPrice) * ratio);
+		const text = getText(priceValue, Number.isNaN);
 		const posY = Math.floor(CANVAS_HEIGHT * (1 - ratio)) + OFFSET;
 
 		context.beginPath();
@@ -34,7 +44,7 @@ const drawCandleLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 		context.lineTo(LEGEND_LEFT, posY);
 		context.stroke();
 
-		context.fillText(formatNumber(value), LEGEND_LEFT + 10, posY + 5);
+		context.fillText(text, LEGEND_LEFT + 10, posY + 5);
 	});
 };
 

@@ -1,4 +1,5 @@
 import { IChartItem } from '@recoil/chart';
+import formatNumber from '@src/common/utils/formatNumber';
 
 export const OFFSET = 0.5;
 export const NUM_OF_CANDLES = 60;
@@ -31,6 +32,11 @@ export interface IDrawLegendProps extends IDrawProps {
 	crossLine: ICrossLine;
 	numOfCandles?: number;
 }
+
+export const getText = (value: number, predicate: (arg: number) => boolean) => {
+	if (predicate(value)) return '';
+	return formatNumber(value);
+};
 
 export const getMaxValue = (
 	chartData: IChartItem[],

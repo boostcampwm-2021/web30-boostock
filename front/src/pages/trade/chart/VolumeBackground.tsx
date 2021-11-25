@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@src/recoil/user/atom';
-import formatNumber from '@src/common/utils/formatNumber';
-import { OFFSET, RATIO_MAX, IProps, IDrawProps, getBorderColor, getLegendColor, getMaxValue } from './common';
+import { OFFSET, RATIO_MAX, IProps, IDrawProps, getBorderColor, getLegendColor, getMaxValue, getText } from './common';
 
 import './Chart.scss';
 
@@ -25,15 +24,16 @@ const drawVolumeLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	context.fillStyle = getBorderColor(theme);
 	Array.from(Array(PARTITION).keys()).forEach((index) => {
 		const ratio = (PARTITION - index) / (PARTITION + 1);
-		const value = Math.floor(maxAmount * ratio);
 		const posY = Math.floor(CANVAS_HEIGHT * (1 - ratio)) + OFFSET;
+		const volumeValue = Math.floor(maxAmount * ratio);
+		const text = getText(volumeValue, (arg: number) => !Number.isFinite(arg));
 
 		context.beginPath();
 		context.moveTo(0, posY);
 		context.lineTo(LEGEND_LEFT, posY);
 		context.stroke();
 
-		context.fillText(formatNumber(value), LEGEND_LEFT + 10, posY + 5);
+		context.fillText(text, LEGEND_LEFT + 10, posY + 5);
 	});
 };
 

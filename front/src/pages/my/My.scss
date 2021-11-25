@@ -20,9 +20,7 @@
 	justify-content: flex-start;
 
 	width: 950px;
-	max-height: 600px;
 	margin: 8px;
-	overflow-y: auto;
 	box-sizing: border-box;
 
 	background-color: white;
@@ -75,7 +73,7 @@
 .my__legend {
 	width: 100%;
 	height: 32px;
-	padding: 0px 10px;
+	padding: 0px 16px 0px 10px;
 	box-sizing: border-box;
 	font-size: 12px;
 	font-weight: 700;
@@ -94,17 +92,27 @@
 		border-bottom: 1px solid $darkModeBorderColor;
 	}
 
-	& > * {
+	& * {
 		width: 100%;
 	}
 
-	& > .my__legend-number {
+	& .my__legend-left {
+		text-align: left;
+	}
+
+	& .my__legend-number {
 		text-align: right;
 	}
 
-	& > .my__legend-center {
+	& .my__legend-center {
 		text-align: center;
 	}
+}
+
+.my-legend-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 
 .my__item {
@@ -139,12 +147,15 @@
 
 	.my__item-center {
 		text-align: center;
-		cursor: pointer;
 	}
 
 	.my__item-unit {
-		color: #bbb;
+		color: $gray;
 		font-size: 11px;
+
+		.dark-theme & {
+			color: $blueGray;
+		}
 	}
 
 	.my__item--up {

@@ -91,24 +91,6 @@
 	}
 }
 
-.bidask-type-cancel {
-	&.on {
-		border-bottom: 4px solid $lightGreen;
-
-		& .bidask-type-select-list-btn {
-			color: $lightGreen;
-		}
-	}
-
-	&.on {
-		border-bottom: 4px solid $darkModeLightGreen;
-
-		& .bidask-type-select-list-btn {
-			color: $darkModeLightGreen;
-		}
-	}
-}
-
 .bidask-info-container {
 	border-top: 1px solid $borderColor;
 	padding: 30px 16px 16px;
@@ -287,14 +269,6 @@
 
 	.dark-theme & {
 		background-color: $darkModeLightBlue;
-	}
-}
-
-.cancel-action {
-	background-color: $lightGreen;
-
-	.dark-theme & {
-		background-color: $darkModeLightGreen;
 	}
 }
 

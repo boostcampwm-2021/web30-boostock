@@ -349,3 +349,7 @@ template {
 [hidden] {
 	display: none;
 }
+
+table {
+	border-spacing: 0;
+}

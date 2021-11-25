@@ -11,6 +11,10 @@
 	box-sizing: border-box;
 }
 
+.my__balance {
+	width: 100%;
+}
+
 .balance__conatiner {
 	display: flex;
 	flex-direction: column;
@@ -39,10 +43,9 @@
 }
 
 .balance-items {
-	width: 100%;
-	max-height: 600px;
-	overflow-y: auto;
-
+	display: block;
+	max-height: 60vh;
+	overflow-y: scroll;
 	@include scrollBarStyle();
 }
 

@@ -15,6 +15,9 @@ enum TAB {
 	WITHDRAWAL = '출금',
 }
 
+type TBalanceType = 'DEPOSIT' | 'WITHDRAWAL';
+type TStatusType = 'PENDING' | 'PROCEEDING' | 'FINISHED' | 'CANCELED';
+
 interface IHistory {
 	type: number;
 	bank: string;
@@ -23,6 +26,16 @@ interface IHistory {
 	status: number;
 	createdAt: number;
 }
+
+const translateBalanceTypeToKor = (type: TBalanceType) => {
+	return type === 'DEPOSIT' ? '입금' : '출금';
+};
+
+const translateStatusTypeToKor = (type: TStatusType) => {
+	const converter = { PENDING: '대기중', PROCEEDING: '처리중', FINISHED: '완료', CANCELED: '취소됨' };
+
+	return converter[type] ?? '처리중';
+};
 
 const Balance = () => {
 	const { isLoggedIn } = useRecoilValue<IUser>(userAtom);
@@ -34,14 +47,14 @@ const Balance = () => {
 
 	const getHistory = (history: IHistory) => {
 		return (
-			<div className="my__item" key={history.createdAt}>
-				<div>{BALANCETYPE[history.type]}</div>
-				<div>{history.bank}</div>
-				<div>{history.bankAccount}</div>
-				<div className="my__item-number">{history.volume.toLocaleString()}</div>
-				<div className="my__item-number">{STATUSTYPE[history.status]}</div>
-				<div className="my__item-number">{toDateString(history.createdAt)}</div>
-			</div>
+			<tr className="my__item" key={history.createdAt}>
+				<td>{translateBalanceTypeToKor(BALANCETYPE[history.type] as TBalanceType)}</td>
+				<td>{history.bank}</td>
+				<td>{history.bankAccount}</td>
+				<td className="my__item-number">{history.volume.toLocaleString()}</td>
+				<td className="my__item-number">{translateStatusTypeToKor(STATUSTYPE[history.status] as TStatusType)}</td>
+				<td className="my__item-number">{toDateString(history.createdAt + 32400000)}</td>
+			</tr>
 		);
 	};
 
@@ -107,15 +120,19 @@ const Balance = () => {
 				<div className="my__tab">
 					<div className="my__tab-item selected">입출금현황</div>
 				</div>
-				<div className="my__legend">
-					<div>종류</div>
-					<div>은행</div>
-					<div>계좌번호</div>
-					<div className="my__legend-number">금액 (원)</div>
-					<div className="my__legend-number">상태</div>
-					<div className="my__legend-number">승인시간</div>
-				</div>
-				<div className="balance-items">{histories.map((history: IHistory) => getHistory(history))}</div>
+				<table className="my__balance">
+					<thead className="my__legend">
+						<tr className="my-legend-row">
+							<th className="my__legend-left">종류</th>
+							<th className="my__legend-left">은행</th>
+							<th>계좌번호</th>
+							<th className="my__legend-number">금액 (원)</th>
+							<th className="my__legend-number">상태</th>
+							<th className="my__legend-number">승인시간</th>
+						</tr>
+					</thead>
+					<tbody className="balance-items">{histories.map((history: IHistory) => getHistory(history))}</tbody>
+				</table>
 			</div>
 		</div>
 	);

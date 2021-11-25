@@ -59,39 +59,42 @@ const Transactions = () => {
 	}, []);
 
 	const getTransaction = (transaction: ITransaction) => {
-		let status = ' ';
-		if (transaction.orderType === ORDERTYPE.매수) status = ' my__item--up';
-		else if (transaction.orderType === ORDERTYPE.매도) status = ' my__item--down';
+		let status = 'my__item-center';
+		if (transaction.orderType === ORDERTYPE.매수) status += ' my__item--up';
+		else if (transaction.orderType === ORDERTYPE.매도) status += ' my__item--down';
 
 		return (
-			<div className="my__item" key={transaction.transactionTime}>
-				<div>{toDateString(transaction.transactionTime)}</div>
-				<div className={status}>{ORDERTYPE[transaction.orderType]}</div>
-				<div>
+			<tr className="my__item" key={transaction.transactionTime}>
+				<td>{toDateString(transaction.transactionTime + 32400000)}</td>
+				<td className={status}>{ORDERTYPE[transaction.orderType]}</td>
+				<td className="my__item-center">
 					<span className="my__item-unit">{transaction.stockCode}</span>
 					<br />
 					<span className="my__item-title">{transaction.stockName}</span>
-				</div>
-				<div className="my__item-number">{transaction.amount.toLocaleString()}</div>
-				<div className="my__item-number">{transaction.price.toLocaleString()}</div>
-				<div className="my__item-number">{transaction.volume.toLocaleString()}</div>
-			</div>
+				</td>
+				<td className="my__item-number">{transaction.amount.toLocaleString()}</td>
+				<td className="my__item-number">{transaction.price.toLocaleString()}</td>
+				<td className="my__item-number">{transaction.volume.toLocaleString()}</td>
+			</tr>
 		);
 	};
 
 	return (
-		<div className="my-transactions">
-			<div className="my__legend">
-				<div>체결시간</div>
-				<div>주문종류</div>
-				<div>종목명</div>
-				<div className="my__legend-number">거래수량 (주)</div>
-				<div className="my__legend-number">거래단가 (원)</div>
-				<div className="my__legend-number">거래금액 (원)</div>
-			</div>
-
-			{transactions.map((transaction: ITransaction) => getTransaction(transaction))}
-		</div>
+		<table className="my-transactions">
+			<thead className="my__legend">
+				<tr className="my-legend-row">
+					<th className="my__legend-left">체결시간</th>
+					<th className="my__legend-center">주문종류</th>
+					<th className="my__legend-center">종목명</th>
+					<th className="my__legend-number">거래수량 (주)</th>
+					<th className="my__legend-number">거래단가 (원)</th>
+					<th className="my__legend-number">거래금액 (원)</th>
+				</tr>
+			</thead>
+			<tbody className="transaction-items">
+				{transactions.map((transaction: ITransaction) => getTransaction(transaction))}
+			</tbody>
+		</table>
 	);
 };
 
