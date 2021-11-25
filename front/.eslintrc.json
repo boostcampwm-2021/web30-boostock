@@ -21,11 +21,16 @@
 		"ecmaVersion": 12,
 		"sourceType": "module"
 	},
-	"plugins": ["react", "@typescript-eslint", "prettier"],
+	"plugins": [
+		"react",
+		"@typescript-eslint",
+		"prettier"
+	],
 	"rules": {
 		"prettier/prettier": "error",
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"react/jsx-props-no-spreading": "off",
-		"react-hooks/exhaustive-deps": "off"
+		"react-hooks/exhaustive-deps": "off",
+		"no-shadow": "off"
 	}
 }

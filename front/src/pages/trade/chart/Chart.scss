@@ -1,10 +1,10 @@
 @import '@common/global.scss';
+@import '@common/mixins.scss';
 
 .chart {
 	width: 100%;
 	height: 100%;
 	box-sizing: border-box;
-
 	background-color: $white;
 	border-radius: 8px;
 
@@ -58,11 +58,23 @@
 }
 
 .chart-menu-item {
-	margin: 10px;
+	@include disableDefaultButtonStyle();
+	margin: 5px;
+	padding: 5px 7px;
 	box-sizing: border-box;
 
 	cursor: pointer;
 	text-decoration: none;
+	border-radius: 4px;
+
+	&.selected {
+		background-color: $indigo;
+		color: $white;
+	}
+
+	.dark-theme & {
+		color: $white2;
+	}
 }
 
 .chart-canvas {

@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
+import { IChartItem } from '@src/recoil/chart';
 import userAtom, { IUser } from '@src/recoil/user/atom';
 import formatNumber from '@src/common/utils/formatNumber';
 import {
 	OFFSET,
-	IProps,
 	RATIO_MAX,
 	RATIO_MIN,
 	IDrawProps,
@@ -26,8 +26,8 @@ const drawCandleLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	if (!canvas || !context) return;
 
 	const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 100);
-	const maxPrice = getMaxValue(chartData, 'priceHigh', RATIO_MAX);
-	const minPrice = getMinValue(chartData, 'priceLow', RATIO_MIN);
+	const maxPrice = getMaxValue(chartData, 'amount', 'priceHigh', RATIO_MAX);
+	const minPrice = getMinValue(chartData, 'amount', 'priceLow', RATIO_MIN);
 
 	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
@@ -43,8 +43,8 @@ const drawCandleLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	context.fillStyle = getTextColor(theme);
 	Array.from(Array(PARTITION).keys()).forEach((index) => {
 		const ratio = (PARTITION - index) / (PARTITION + 1);
-		const value = minPrice + (maxPrice - minPrice) * ratio;
-		const posY = CANVAS_HEIGHT * (1 - ratio) + OFFSET;
+		const value = Math.floor(minPrice + (maxPrice - minPrice) * ratio);
+		const posY = Math.floor(CANVAS_HEIGHT * (1 - ratio)) + OFFSET;
 
 		context.beginPath();
 		context.moveTo(0, posY);
@@ -55,7 +55,7 @@ const drawCandleLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	});
 };
 
-const CandleLegend = ({ chartData }: IProps) => {
+const CandleLegend = ({ chartData }: { chartData: IChartItem[] }) => {
 	const { theme } = useRecoilValue<IUser>(userAtom);
 	const candleLegendRef = useRef<HTMLCanvasElement>(null);
 

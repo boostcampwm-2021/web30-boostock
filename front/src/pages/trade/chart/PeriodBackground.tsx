@@ -1,17 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@src/recoil/user/atom';
-import { CANDLE_GAP, NUM_OF_CANDLES, IProps, IDrawProps, formatCandleDate, getTextColor, getLegendColor } from './common';
+import { CANDLE_GAP, IProps, IDrawProps, formatCandleDate, getTextColor, getLegendColor } from './common';
 
 import './Chart.scss';
 
 const PARTITION = 5;
 const CANVAS_WIDTH = 850;
 const CANVAS_HEIGHT = 400;
-const CANDLE_WIDTH = (CANVAS_WIDTH - (NUM_OF_CANDLES + 1) * CANDLE_GAP) / NUM_OF_CANDLES;
 const BOX_HEIGHT = 20;
 
-const drawPeriodBackground = ({ canvas, chartData, theme }: IDrawProps): void => {
+const drawPeriodBackground = ({ canvas, chartData, candleWidth, theme }: IDrawProps): void => {
+	if (!candleWidth) return;
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
@@ -27,25 +27,28 @@ const drawPeriodBackground = ({ canvas, chartData, theme }: IDrawProps): void =>
 	chartData.forEach(({ createdAt }, index) => {
 		if (index % PARTITION !== 0) return;
 
-		const posX = CANVAS_WIDTH - (CANDLE_WIDTH + CANDLE_GAP) * (index + 1) + CANDLE_WIDTH / 2;
+		const posX = Math.floor(CANVAS_WIDTH - (candleWidth + CANDLE_GAP) * (index + 1) + candleWidth / 2);
 
 		context.beginPath();
 		context.moveTo(posX, CHART_TOP);
 		context.lineTo(posX, LEGEND_TOP);
 		context.stroke();
 
-		context.fillText(formatCandleDate(createdAt), posX, LEGEND_TOP + BOX_HEIGHT / 2);
+		context.fillText(formatCandleDate(createdAt), posX, Math.floor(LEGEND_TOP + BOX_HEIGHT / 2));
 	});
 };
 
 const PeriodBackground = ({ chartData, crossLine }: IProps) => {
 	const { theme } = useRecoilValue<IUser>(userAtom);
 	const periodLegendRef = useRef<HTMLCanvasElement>(null);
+	const numOfCandles = chartData.length;
+	const candleWidth = (CANVAS_WIDTH - (numOfCandles + 1) * CANDLE_GAP) / numOfCandles;
 
 	useEffect(() => {
 		drawPeriodBackground({
 			canvas: periodLegendRef.current,
 			chartData,
+			candleWidth,
 			theme,
 		});
 	}, [crossLine, chartData, theme]);
