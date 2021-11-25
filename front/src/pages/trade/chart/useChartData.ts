@@ -69,7 +69,9 @@ export default function useChartData(code: string, type: number, index: number):
 	}, [stockList]);
 
 	useEffect(() => {
-		refreshLogChart(code, type, index, setChart);
+		if (index !== 0) {
+			refreshLogChart(code, type, index, setChart);
+		}
 	}, [index]);
 
 	useEffect(() => {
