@@ -37,10 +37,9 @@ const Chart = ({ stockCode, stockType }: { stockCode: string; stockType: number 
 	const [isUserGrabbing, setIsUserGrabbing] = useState<boolean>(false);
 	const [start, setStart] = useState<number>(DEFAULT_START_INDEX); // 맨 오른쪽 캔들의 인덱스
 	const [end, setEnd] = useState<number>(DEFAULT_END_INDEX); // 맨 왼쪽 캔들의 인덱스
-	const [offset, setOffset] = useState<number>(-1);
+	const [offset, setOffset] = useState<number>(0);
 	const [crossLine, setCrossLine] = useState<ICrossLine>({ event: null, posX: 0, posY: 0 });
-	const [chart, next] = useChartData(stockCode, stockType, offset);
-
+	const chart = useChartData(stockCode, stockType, offset);
 
 	useEffect(() => {
 		const bindedMoveCrossLine = moveCrossLine.bind(undefined, setCrossLine);
@@ -51,8 +50,10 @@ const Chart = ({ stockCode, stockType }: { stockCode: string; stockType: number 
 	}, []);
 
 	useEffect(() => {
-		next();
-	}, [offset]);
+		setStart(DEFAULT_START_INDEX);
+		setEnd(DEFAULT_END_INDEX);
+		setOffset(0);
+	}, [stockCode, stockType]);
 
 	if (chart.length === 0) {
 		return <p>차트 데이터가 없습니다.</p>;
@@ -93,7 +94,7 @@ const Chart = ({ stockCode, stockType }: { stockCode: string; stockType: number 
 						return newIndex >= DEFAULT_END_INDEX ? newIndex : DEFAULT_END_INDEX;
 					});
 					setOffset((prev) => {
-						return Math.max(prev, Math.floor(start / DEFAULT_END_INDEX));
+						return Math.max(prev, Math.ceil(start / DEFAULT_END_INDEX));
 					});
 				}}
 			>
