@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@src/recoil/user/atom';
-import formatNumber from '@src/common/utils/formatNumber';
-import { OFFSET, RATIO_MAX, IProps, IDrawLegendProps, getTextColor, getBorderColor } from './common';
+import { OFFSET, RATIO_MAX, IProps, IDrawLegendProps, getTextColor, getBorderColor, getText } from './common';
 
 import './Chart.scss';
 
@@ -23,7 +22,8 @@ const drawVolumeLegend = ({ canvas, chartData, crossLine, theme }: IDrawLegendPr
 
 	if (crossLine.event?.target === canvas) {
 		const ratio = (CANVAS_HEIGHT - crossLine.posY) / CANVAS_HEIGHT;
-		const value = Math.floor(AMOUNT_MAX * ratio);
+		const volumeValue = Math.floor(AMOUNT_MAX * ratio);
+		const text = getText(volumeValue, (arg: number) => arg === 0);
 
 		context.strokeStyle = getBorderColor(theme);
 		context.beginPath();
@@ -34,7 +34,7 @@ const drawVolumeLegend = ({ canvas, chartData, crossLine, theme }: IDrawLegendPr
 		context.fillStyle = getBorderColor(theme);
 		context.fillRect(LEGEND_LEFT, crossLine.posY - 10, 100, 20);
 		context.fillStyle = getTextColor(theme === 'light' ? 'dark' : 'light');
-		context.fillText(formatNumber(value), LEGEND_LEFT + 10, crossLine.posY + 5);
+		context.fillText(text, LEGEND_LEFT + 10, crossLine.posY + 5);
 	}
 };
 

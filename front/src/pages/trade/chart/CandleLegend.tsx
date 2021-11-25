@@ -13,6 +13,7 @@ import {
 	getMinValue,
 	getTextColor,
 	getBorderColor,
+	getText,
 } from './common';
 
 import './Chart.scss';
@@ -53,7 +54,8 @@ const drawCandleLegend = ({ canvas, chartData, crossLine, theme }: IDrawLegendPr
 
 	if (crossLine.event?.target === canvas) {
 		const ratio = (CANVAS_HEIGHT - crossLine.posY) / CANVAS_HEIGHT;
-		const value = Math.floor(minPrice + (maxPrice - minPrice) * ratio);
+		const priceValue = Math.floor(minPrice + (maxPrice - minPrice) * ratio);
+		const text = getText(priceValue, Number.isNaN);
 
 		context.strokeStyle = getBorderColor(theme);
 		context.beginPath();
@@ -65,7 +67,7 @@ const drawCandleLegend = ({ canvas, chartData, crossLine, theme }: IDrawLegendPr
 		context.fillStyle = getBorderColor(theme);
 		context.fillRect(LEGEND_LEFT, crossLine.posY - 10, 100, 20);
 		context.fillStyle = getTextColor(theme === 'light' ? 'dark' : 'light');
-		context.fillText(formatNumber(value), LEGEND_LEFT + 10, crossLine.posY + 5);
+		context.fillText(text, LEGEND_LEFT + 10, crossLine.posY + 5);
 	}
 };
 
