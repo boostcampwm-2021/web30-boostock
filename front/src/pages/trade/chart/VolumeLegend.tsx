@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@src/recoil/user/atom';
 import formatNumber from '@src/common/utils/formatNumber';
-import { RATIO_MAX, IProps, IDrawLegendProps, getTextColor, getBorderColor } from './common';
+import { OFFSET, RATIO_MAX, IProps, IDrawLegendProps, getTextColor, getBorderColor } from './common';
 
 import './Chart.scss';
 
@@ -27,8 +27,8 @@ const drawVolumeLegend = ({ canvas, chartData, crossLine, theme }: IDrawLegendPr
 
 		context.strokeStyle = getBorderColor(theme);
 		context.beginPath();
-		context.moveTo(0, crossLine.posY);
-		context.lineTo(LEGEND_LEFT, crossLine.posY);
+		context.moveTo(0, crossLine.posY + OFFSET);
+		context.lineTo(LEGEND_LEFT, crossLine.posY + OFFSET);
 		context.stroke();
 
 		context.fillStyle = getBorderColor(theme);

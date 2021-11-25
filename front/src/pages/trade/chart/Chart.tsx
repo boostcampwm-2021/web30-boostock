@@ -1,9 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import useChartData from './useChartData';
 import { ICrossLine, TChartType } from './common';
-
+import useChartData from './useChartData';
 import PeriodBackground from './PeriodBackground';
 import CandleGraph from './CandleGraph';
 import VolumeGraph from './VolumeGraph';

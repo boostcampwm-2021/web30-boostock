@@ -10,6 +10,7 @@ import Emitter from './common/utils/eventEmitter';
 import HoldStockListAtom from './recoil/holdStockList/atom';
 import { getHoldStocks } from './pages/trade/sideBar/refreshStockData';
 import dailyLogAtom, { IDailyLog } from './recoil/stockDailyLog/atom';
+import chartAtom, { IChartItem } from './recoil/chart/atom';
 
 interface IProps {
 	children: React.ReactNode;
@@ -22,6 +23,7 @@ interface IStartSocket {
 	setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
 	setHold: SetterOrUpdater<string[]>;
 	setDailyLog: SetterOrUpdater<IDailyLog[]>;
+	setChart: SetterOrUpdater<IChartItem[]>;
 }
 interface IResponseConclusions {
 	createdAt: number;
@@ -191,6 +193,7 @@ const startSocket = ({
 	setBidOrders,
 	setHold,
 	setDailyLog,
+	setChart,
 }: IStartSocket) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.binaryType = 'arraybuffer';
@@ -202,7 +205,7 @@ const startSocket = ({
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setDailyLog });
+			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setDailyLog, setChart });
 		}, 1000);
 	};
 	webSocket.onmessage = async (event) => {
@@ -244,15 +247,35 @@ const startSocket = ({
 				break;
 			}
 			case 'chart': {
-				const { type: chartType } = data;
-				if (chartType === 1) {
-					// 1분봉 차트 생성
-				}
-				if (chartType === 1440) {
+				if (data.type === 1440) {
 					const { _id: id, priceEnd, amount, createdAt } = data;
-					// 일봉 차트 생성
 					setDailyLog((prev) => [{ _id: id, priceEnd, amount, createdAt }, ...prev]);
 				}
+				const currentChartType = Number(window.localStorage.getItem('chartType'));
+				if (data.type !== currentChartType) break;
+
+				const emptyChart = {
+					createdAt: Date.now(),
+					priceStart: 0,
+					priceEnd: 0,
+					priceLow: 0,
+					priceHigh: 0,
+					amount: 0,
+				};
+
+				const newChart: IChartItem = {
+					createdAt: data.createdAt,
+					priceStart: data.priceStart,
+					priceEnd: data.priceEnd,
+					priceLow: data.priceLow,
+					priceHigh: data.priceHigh,
+					amount: data.amount,
+				};
+
+				setChart((prev: IChartItem[]) => {
+					return [emptyChart, newChart, ...prev.slice(1, prev.length)];
+				});
+
 				break;
 			}
 			case 'notice': {
@@ -297,8 +320,9 @@ const Socket = ({ children }: IProps) => {
 	const setStockExecution = useSetRecoilState(stockExecutionAtom);
 	const setHold = useSetRecoilState(HoldStockListAtom);
 	const setDailyLog = useSetRecoilState(dailyLogAtom);
+	const setChart = useSetRecoilState(chartAtom);
 
-	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setDailyLog });
+	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setDailyLog, setChart });
 
 	return <>{children}</>;
 };
