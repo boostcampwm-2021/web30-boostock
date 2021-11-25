@@ -2,8 +2,8 @@ import { IChartItem } from '@recoil/chart';
 
 export const OFFSET = 0.5;
 export const NUM_OF_CANDLES = 60;
-export const RATIO_MIN = 0.9;
-export const RATIO_MAX = 1.1;
+export const RATIO_MIN = 1.0;
+export const RATIO_MAX = 1.0;
 export const CANDLE_GAP = 5;
 
 type Ttheme = 'light' | 'dark';
@@ -31,11 +31,19 @@ export interface IDrawLegendProps extends IDrawProps {
 	theme: Ttheme;
 }
 
-export const getMaxValue = (chartData: IChartItem[], property: keyof IChartItem, upperBuffer = 1): number =>
-	Math.max(...chartData.map((data) => data[property])) * upperBuffer;
+export const getMaxValue = (
+	chartData: IChartItem[],
+	validProperty: keyof IChartItem,
+	filterproperty: keyof IChartItem,
+	upperBuffer = 1,
+): number => Math.max(...chartData.filter((data) => data[validProperty] > 0).map((data) => data[filterproperty])) * upperBuffer;
 
-export const getMinValue = (chartData: IChartItem[], property: keyof IChartItem, lowerBuffer = 1): number =>
-	Math.min(...chartData.filter((data) => data[property] > 0).map((data) => data[property])) * lowerBuffer;
+export const getMinValue = (
+	chartData: IChartItem[],
+	validProperty: keyof IChartItem,
+	filterproperty: keyof IChartItem,
+	lowerBuffer = 1,
+): number => Math.min(...chartData.filter((data) => data[validProperty] > 0).map((data) => data[filterproperty])) * lowerBuffer;
 
 export const formatCandleDate = (timestamp: number) => {
 	const date = new Date(timestamp);
