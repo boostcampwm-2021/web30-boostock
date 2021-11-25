@@ -34,14 +34,23 @@ const disconnectUser = (client) => {
 	socketClientMap.delete(client);
 };
 
+const logoutUserHandler = (alarmToken) => {
+	const logoutUser = loginUserMap.get(alarmToken);
+	const logoutSocket = socketAlarmMap.get(logoutUser);
+
+	loginUserMap.delete(alarmToken);
+	socketAlarmMap.delete(logoutUser);
+	socketClientMap.set(logoutSocket, { ...socketClientMap.get(logoutSocket), alarmToken: '' });
+};
+
 const broadcast = ({ stockCode, msg }) => {
 	socketClientMap.forEach(({ target: targetStockCode }, client) => {
 		if (targetStockCode === stockCode) {
 			// 모든 데이터 전송, 현재가, 호가, 차트 등...
-			client.send(translateResponseFormat('updateTarget', msg));
+			client?.send(translateResponseFormat('updateTarget', msg));
 		} else {
 			// msg 오브젝트의 데이터에서 aside 바에 필요한 데이터만 골라서 전송
-			client.send(translateResponseFormat('updateStock', msg.match));
+			client?.send(translateResponseFormat('updateStock', msg.match));
 		}
 	});
 };
@@ -112,3 +121,5 @@ export default async (app: Application): Promise<void> => {
 		});
 	});
 };
+
+Emitter.on('logout', logoutUserHandler);
