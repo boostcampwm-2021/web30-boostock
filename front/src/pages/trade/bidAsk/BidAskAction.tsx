@@ -16,7 +16,6 @@ function orderActionClass(bidAskType: string): string {
 
 	if (bidAskType === '매수') result += ' bid-action';
 	if (bidAskType === '매도') result += ' ask-action';
-	if (bidAskType === '정정/취소') result += ' cancel-action';
 
 	return result;
 }

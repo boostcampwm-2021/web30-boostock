@@ -134,19 +134,17 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 		<div className="bidask-container">
 			<BidAskType bidAskType={bidAskType} handleSetBidAskType={handleSetBidAskType} />
 			<div className="bidask-info-container">
-				{bidAskType !== '정정/취소' && (
-					<BidAskInputs
-						bidAskType={bidAskType}
-						bidAskPrice={bidAskPrice}
-						bidAskAmount={bidAskAmount}
-						isAmountError={isAmountError}
-						askAvailable={askAvailable}
-						bidAvailable={bidAvailable}
-						stockCode={stockCode}
-						setBidAskPrice={setBidAskPrice}
-						setBidAskAmount={setBidAskAmount}
-					/>
-				)}
+				<BidAskInputs
+					bidAskType={bidAskType}
+					bidAskPrice={bidAskPrice}
+					bidAskAmount={bidAskAmount}
+					isAmountError={isAmountError}
+					askAvailable={askAvailable}
+					bidAvailable={bidAvailable}
+					stockCode={stockCode}
+					setBidAskPrice={setBidAskPrice}
+					setBidAskAmount={setBidAskAmount}
+				/>
 			</div>
 			<BidAskAction
 				bidAskType={bidAskType}
