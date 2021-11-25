@@ -1,12 +1,11 @@
-import { IStockExecutionItem } from '@src/recoil/stockExecution';
-import React from 'react';
+/* eslint-disable no-underscore-dangle */
+import dailyLogAtom, { IDailyLog } from '@src/recoil/stockDailyLog/atom';
+import React, { useEffect } from 'react';
+import { SetterOrUpdater, useRecoilState } from 'recoil';
 
 interface Props {
 	stockCode: string;
-	stockExecutionState: IStockExecutionItem[];
-	previousClose: number;
 }
-const fetchDailyLog = () => {};
 
 const translateTimestampFormat = (timestamp: number): string => {
 	const stamp = new Date(timestamp);
@@ -21,8 +20,31 @@ const colorPicker = (prev: number, current: number): string => {
 	if (prev < current) return 'up';
 	return '';
 };
+const getPriceRate = (prev: number, current: number): string => {
+	const rate = ((current - prev) / prev) * 100 || 0;
+	if (!prev || !Number.isFinite(rate)) return '-';
+	return `${rate.toFixed(1)}%`;
+};
 
-const Ticks = ({ stockCode, stockExecutionState, previousClose }: Props) => {
+const fetchDailyLog = async (stockCode: string, setDailyLog: SetterOrUpdater<IDailyLog[]>): Promise<void> => {
+	const config: RequestInit = {
+		method: 'GET',
+		credentials: 'include',
+	};
+	const res = await fetch(`${process.env.SERVER_URL}/api/stock/log/daily?code=${stockCode}`, config);
+	if (res.status !== 200) throw new Error('Fetch Failed Daily Log Error');
+
+	const { code, logs } = await res.json();
+	if (code === stockCode) setDailyLog(logs);
+};
+
+const Days = ({ stockCode }: Props) => {
+	const [dailyLog, setDailyLog] = useRecoilState(dailyLogAtom);
+
+	useEffect(() => {
+		fetchDailyLog(stockCode, setDailyLog);
+	}, [stockCode]);
+
 	return (
 		<>
 			<header className="conclusion-header">
@@ -32,22 +54,23 @@ const Ticks = ({ stockCode, stockExecutionState, previousClose }: Props) => {
 				<div className="conclusion-volume">체결량(주)</div>
 			</header>
 			<div className="conclusion-content">
-				{stockExecutionState.length === 0 ? (
-					<p className="conclusion-notice-no-data">체결 정보가 없습니다.</p>
+				{dailyLog.length === 0 ? (
+					<p className="conclusion-notice-no-data">일별 정보가 없습니다.</p>
 				) : (
-					stockExecutionState.map((log: IStockExecutionItem) => {
-						const [day, time] = translateTimestampFormat(log.timestamp).split(' ');
+					dailyLog.map((log: IDailyLog, index: number) => {
+						if (dailyLog.length === 51 && index === dailyLog.length - 1) return <></>;
+						const day = translateTimestampFormat(log.createdAt).split(' ');
+						const colors = colorPicker(dailyLog[index + 1]?.priceEnd, log.priceEnd);
 						return (
-							<div className="conclusion-row" key={log.id}>
+							<div className="conclusion-row" key={log._id}>
 								<div className="conclusion-timestamp">
 									<span className="timestamp-day">{day}</span>
-									<span className="timestamp-time">{time}</span>
 								</div>
-								<div className={`conclusion-single-price ${colorPicker(previousClose, log.price)}`}>
-									{log.price.toLocaleString('ko-kr')}
+								<div className={`conclusion-single-price ${colors}`}>{log.priceEnd.toLocaleString('ko-kr')}</div>
+								<div className={`conclusion-volume ${colors}`}>
+									{getPriceRate(dailyLog[index + 1]?.priceEnd, log.priceEnd)}
 								</div>
-								<div className="conclusion-volume">{log.amount.toLocaleString('ko-kr')}</div>
-								<div className="conclusion-total-price">{log.volume.toLocaleString('ko-kr')}</div>
+								<div className="conclusion-total-price">{log.amount.toLocaleString('ko-kr')}</div>
 							</div>
 						);
 					})
@@ -57,4 +80,4 @@ const Ticks = ({ stockCode, stockExecutionState, previousClose }: Props) => {
 	);
 };
 
-export default Ticks;
+export default Days;

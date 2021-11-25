@@ -9,6 +9,7 @@ import { translateRequestData, translateResponseData } from './common/utils/sock
 import Emitter from './common/utils/eventEmitter';
 import HoldStockListAtom from './recoil/holdStockList/atom';
 import { getHoldStocks } from './pages/trade/sideBar/refreshStockData';
+import dailyLogAtom, { IDailyLog } from './recoil/stockDailyLog/atom';
 import chartAtom, { IChartItem } from './recoil/chart/atom';
 
 interface IProps {
@@ -21,6 +22,7 @@ interface IStartSocket {
 	setAskOrders: SetterOrUpdater<IAskOrderItem[]>;
 	setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
 	setHold: SetterOrUpdater<string[]>;
+	setDailyLog: SetterOrUpdater<IDailyLog[]>;
 	setChart: SetterOrUpdater<IChartItem[]>;
 }
 interface IResponseConclusions {
@@ -190,6 +192,7 @@ const startSocket = ({
 	setAskOrders,
 	setBidOrders,
 	setHold,
+	setDailyLog,
 	setChart,
 }: IStartSocket) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
@@ -202,7 +205,7 @@ const startSocket = ({
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setChart });
+			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setDailyLog, setChart });
 		}, 1000);
 	};
 	webSocket.onmessage = async (event) => {
@@ -244,8 +247,11 @@ const startSocket = ({
 				break;
 			}
 			case 'chart': {
+				if (data.type === 1440) {
+					const { _id: id, priceEnd, amount, createdAt } = data;
+					setDailyLog((prev) => [{ _id: id, priceEnd, amount, createdAt }, ...prev]);
+				}
 				const currentChartType = Number(window.localStorage.getItem('chartType'));
-				console.log(data.type !== currentChartType);
 				if (data.type !== currentChartType) break;
 
 				const emptyChart = {
@@ -313,9 +319,10 @@ const Socket = ({ children }: IProps) => {
 	const setBidOrders = useSetRecoilState(bidOrdersAtom);
 	const setStockExecution = useSetRecoilState(stockExecutionAtom);
 	const setHold = useSetRecoilState(HoldStockListAtom);
+	const setDailyLog = useSetRecoilState(dailyLogAtom);
 	const setChart = useSetRecoilState(chartAtom);
 
-	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setChart });
+	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setDailyLog, setChart });
 
 	return <>{children}</>;
 };

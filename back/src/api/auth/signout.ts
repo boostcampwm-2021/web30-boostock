@@ -1,15 +1,19 @@
-import express, { NextFunction, Request, Response } from 'express';
-import config from '@config/index';
+import { AuthError, AuthErrorMessage } from 'errors';
 import UserService from '@services/UserService';
-import { AuthError, AuthErrorMessage } from '@errors/index';
+import express, { NextFunction, Request, Response } from 'express';
+import eventEmitter from '@helper/eventEmitter';
 
 export default (): express.Router => {
 	const router = express.Router();
 
 	router.post('/signout', (req: Request, res: Response, next: NextFunction) => {
 		try {
-			res.clearCookie(config.sessionCookieId);
+			const { alarmToken } = req.cookies;
+			res.clearCookie('connect.sid');
+			res.clearCookie('alarmToken');
 			req.session.destroy(() => res.status(200).json({}));
+
+			eventEmitter.emit('logout', alarmToken);
 		} catch (error) {
 			next(error);
 		}

@@ -24,14 +24,7 @@ const Conclusion = ({ previousClose, stockCode }: Props) => {
 			case TAB.TICK:
 				return <Ticks key={tab} stockExecutionState={stockExecutionState} previousClose={previousClose} />;
 			case TAB.DAY:
-				return (
-					<Days
-						key={tab}
-						stockCode={stockCode}
-						stockExecutionState={stockExecutionState}
-						previousClose={previousClose}
-					/>
-				);
+				return <Days key={tab} stockCode={stockCode} />;
 			default:
 				return <Ticks key={tab} stockExecutionState={stockExecutionState} previousClose={previousClose} />;
 		}

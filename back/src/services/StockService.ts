@@ -107,9 +107,9 @@ export default class StockService {
 	}
 
 	public async getDailyLogs(code: string): Promise<IChartLog[]> {
-		const dailyLogs = await ChartLog.find({ stockCode: code }, { _id: 1, priceEnd: 1, amount: 1, createdAt: 1 })
+		const dailyLogs = await ChartLog.find({ code, type: 1440 }, { _id: 1, code: 1, priceEnd: 1, amount: 1, createdAt: 1 })
 			.sort({ createdAt: -1 })
-			.limit(50);
+			.limit(51);
 
 		return dailyLogs;
 	}

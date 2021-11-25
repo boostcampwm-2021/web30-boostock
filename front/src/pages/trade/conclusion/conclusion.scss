@@ -92,6 +92,14 @@
 		margin-left: 6px;
 	}
 
+	& > div:first-child {
+		margin-left: 10px;
+	}
+
+	& > div:last-child {
+		margin-right: 10px;
+	}
+
 	.dark-theme & {
 		border-top: 1px solid $darkModeBorderColor;
 		border-bottom: 1px solid $darkModeBorderColor;
@@ -120,7 +128,6 @@
 .conclusion-total-price {
 	flex: 10;
 	text-align: right;
-	padding: 0 10px;
 }
 .conclusion-volume {
 	flex: 10;
@@ -136,8 +143,7 @@
 	align-items: center;
 	height: 34px;
 	font-size: 14px;
-	padding: 5px 0;
-	margin-left: 6px;
+	padding: 5px 10px;
 	cursor: pointer;
 
 	& + & {
