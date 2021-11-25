@@ -1,12 +1,23 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-param-reassign */
-import { CHARTTYPE } from '@interfaces/IChartLog';
+import IChartLog, { CHARTTYPE } from '@interfaces/IChartLog';
 import { Chart, ChartLog } from '@models/index';
 import { ChartRepository } from '@repositories/index';
 import { getConnection } from 'typeorm';
+import fetch from 'node-fetch';
 
 export default class ScheduleService {
-	async saveChartLog(chart: Chart): Promise<void> {
+	reportNewChart(chartLogList: IChartLog[]): void {
+		fetch(`${process.env.API_SERVER_URL}/api/stock/chart/new`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ charts: chartLogList }),
+		});
+	}
+
+	async saveChartLog(chart: Chart): Promise<IChartLog> {
 		const log = {
 			code: chart.stock.code,
 			type: chart.type,
@@ -21,10 +32,12 @@ export default class ScheduleService {
 		};
 		const chartLog = new ChartLog(log);
 		await chartLog.save();
+
+		return chartLog;
 	}
 
-	async initializeChart(chart: Chart, chartRepositoryRunner: ChartRepository): Promise<void> {
-		this.saveChartLog(chart);
+	async initializeChart(chart: Chart, chartRepositoryRunner: ChartRepository): Promise<IChartLog> {
+		const chartLog = this.saveChartLog(chart);
 		chart.priceBefore = chart.priceEnd;
 		chart.priceStart = 0;
 		chart.priceEnd = 0;
@@ -33,10 +46,12 @@ export default class ScheduleService {
 		chart.amount = 0;
 		chart.volume = 0;
 		await chartRepositoryRunner.save(chart);
+
+		return chartLog;
 	}
 
-	async initializeChartAndStock(chart: Chart, chartRepositoryRunner: ChartRepository): Promise<void> {
-		this.saveChartLog(chart);
+	async initializeChartAndStock(chart: Chart, chartRepositoryRunner: ChartRepository): Promise<IChartLog> {
+		const chartLog = this.saveChartLog(chart);
 		chart.stock.previousClose = chart.priceEnd;
 		chart.priceBefore = chart.priceEnd;
 		chart.priceStart = 0;
@@ -46,6 +61,8 @@ export default class ScheduleService {
 		chart.amount = 0;
 		chart.volume = 0;
 		await chartRepositoryRunner.save(chart);
+
+		return chartLog;
 	}
 
 	async runAllChart(type: number): Promise<void> {
@@ -56,9 +73,13 @@ export default class ScheduleService {
 			const chartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
 			const charts = await chartRepositoryRunner.readLock(type);
 			if (type === CHARTTYPE.DAYS) {
-				await Promise.all(charts.map((chart) => this.initializeChartAndStock(chart, chartRepositoryRunner)));
+				const chartLogList = await Promise.all(
+					charts.map((chart) => this.initializeChartAndStock(chart, chartRepositoryRunner)),
+				);
+				this.reportNewChart(chartLogList);
 			} else {
-				await Promise.all(charts.map((chart) => this.initializeChart(chart, chartRepositoryRunner)));
+				const chartLogList = await Promise.all(charts.map((chart) => this.initializeChart(chart, chartRepositoryRunner)));
+				this.reportNewChart(chartLogList);
 			}
 			await queryRunner.commitTransaction();
 		} catch (error) {

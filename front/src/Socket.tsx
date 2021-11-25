@@ -233,6 +233,16 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 				setStockExecution(dataToExecutionForm(data.conclusions));
 				break;
 			}
+			case 'chart': {
+				const { type: chartType } = data;
+				if (chartType === 1) {
+					// 1분봉 차트 생성
+				}
+				if (chartType === 1440) {
+					// 일봉 차트 생성
+				}
+				break;
+			}
 			case 'notice': {
 				if (data.userType === 'bid')
 					toast.success(

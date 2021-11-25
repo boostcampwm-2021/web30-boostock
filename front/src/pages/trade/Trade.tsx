@@ -108,7 +108,7 @@ const Trade = () => {
 						</section>
 					</section>
 					<section className="trade-conclusion">
-						<Conclusion previousClose={stockState.previousClose} />
+						<Conclusion previousClose={stockState.previousClose} stockCode={stockCode} />
 					</section>
 				</section>
 			</section>

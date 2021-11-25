@@ -30,5 +30,19 @@ export default (): express.Router => {
 		}
 	});
 
+	router.get('/log/daily', async (req: Request, res: Response, next: NextFunction) => {
+		const { code } = req.query;
+		if (!code) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+
+		try {
+			const stockService = new StockService();
+			const dailyLogs = await stockService.getDailyLogs(code as string);
+
+			res.status(200).json({ code, logs: dailyLogs });
+		} catch (error) {
+			next(error);
+		}
+	});
+
 	return router;
 };
