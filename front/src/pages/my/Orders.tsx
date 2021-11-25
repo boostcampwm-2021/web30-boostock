@@ -50,7 +50,7 @@ const Orders = () => {
 							}) => {
 								return {
 									orderId: order.orderId,
-									orderTime: order.createdAt,
+									orderTime: new Date(order.createdAt).getTime() + 32400000,
 									orderType: order.type,
 									stockCode: order.stockCode,
 									stockName: stockList.find((stock) => stock.code === order.stockCode)?.nameKorean,
@@ -85,39 +85,44 @@ const Orders = () => {
 	}, []);
 
 	const getOrder = (order: IOrder) => {
-		let status = ' ';
-		if (order.orderType === ORDERTYPE.매수) status = ' my__item--up';
-		else if (order.orderType === ORDERTYPE.매도) status = ' my__item--down';
+		let status = 'my__item-center';
+		if (order.orderType === ORDERTYPE.매수) status += ' my__item--up';
+		else if (order.orderType === ORDERTYPE.매도) status += ' my__item--down';
+
 		return (
-			<div className="my__item" key={order.orderId}>
-				<div>{toDateString(order.orderTime)}</div>
-				<div className={status}>{ORDERTYPE[order.orderType]}</div>
-				<div>
+			<tr className="my__item" key={order.orderId}>
+				<td>{toDateString(order.orderTime)}</td>
+				<td className={status}>{ORDERTYPE[order.orderType]}</td>
+				<td className="my__item-center">
 					<span className="my__item-unit">{order.stockCode}</span>
 					<br />
 					<span className="my__item-title">{order.stockName}</span>
-				</div>
-				<div className="my__item-number">{order.price.toLocaleString()}</div>
-				<div className="my__item-number">{order.orderAmount.toLocaleString()}</div>
-				<div className="my__item-center" onClick={() => cancel(order.orderId)}>
-					취소
-				</div>
-			</div>
+				</td>
+				<td className="my__item-number">{order.price.toLocaleString()}</td>
+				<td className="my__item-number">{order.orderAmount.toLocaleString()}</td>
+				<td className="my__item-center">
+					<button className="cancel-order-btn" type="button" onClick={() => cancel(order.orderId)}>
+						주문취소
+					</button>
+				</td>
+			</tr>
 		);
 	};
 
 	return (
-		<div className="my-orders">
-			<div className="my__legend">
-				<div>주문시간</div>
-				<div>주문종류</div>
-				<div>종목명</div>
-				<div className="my__legend-number">주문가격 (원)</div>
-				<div className="my__legend-number">주문수량 (주)</div>
-				<div className="my__legend-center">취소</div>
-			</div>
-			{orders.map((order: IOrder) => getOrder(order))}
-		</div>
+		<table className="my-orders">
+			<thead className="my__legend">
+				<tr className="my-legend-row">
+					<th className="my__legend-left">주문시간</th>
+					<th className="my__legend-center">주문종류</th>
+					<th className="my__legend-center">종목명</th>
+					<th className="my__legend-number">주문가격 (원)</th>
+					<th className="my__legend-number">주문수량 (주)</th>
+					<th className="my__legend-center">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody className="my-order-items">{orders.map((order: IOrder) => getOrder(order))}</tbody>
+		</table>
 	);
 };
 

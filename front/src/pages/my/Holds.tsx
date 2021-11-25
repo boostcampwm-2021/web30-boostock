@@ -18,35 +18,37 @@ const Holds = (props: HoldsProps) => {
 
 		const profitRate = (hold.totalValuationPrice / hold.totalAskPrice) * 100 - 100;
 		return (
-			<div className="my__item" key={hold.stockCode}>
-				<div>
+			<tr className="my__item" key={hold.stockCode}>
+				<td>
 					<span className="my__item-unit">{hold.stockCode}</span>
 					<br />
 					<span className="my__item-title">{hold.stockName}</span>
-				</div>
-				<div className="my__item-number">{hold.holdAmount.toLocaleString()}</div>
-				<div className="my__item-number">{formatInteger(hold.averageAskPrice)}</div>
-				<div className="my__item-number">{formatInteger(hold.totalAskPrice)}</div>
-				<div className={`my__item-number${status}`}>{formatInteger(hold.totalValuationPrice)}</div>
-				<div className={`my__item-number${status}`}>
+				</td>
+				<td className="my__item-center">{hold.holdAmount.toLocaleString()}</td>
+				<td className="my__item-number">{formatInteger(hold.averageAskPrice)}</td>
+				<td className="my__item-number">{formatInteger(hold.totalAskPrice)}</td>
+				<td className={`my__item-number${status}`}>{formatInteger(hold.totalValuationPrice)}</td>
+				<td className={`my__item-number${status}`}>
 					{caretIcon(profitRate)} {profitRate.toLocaleString(undefined, { maximumFractionDigits: 2 })} %
-				</div>
-			</div>
+				</td>
+			</tr>
 		);
 	};
 
 	return (
-		<div className="my-holds">
-			<div className="my__legend">
-				<div>종목명</div>
-				<div className="my__legend-number">보유수량 (주)</div>
-				<div className="my__legend-number">평균매수가 (원)</div>
-				<div className="my__legend-number">매수금액 (원)</div>
-				<div className="my__legend-number">평가금액 (원)</div>
-				<div className="my__legend-number">평가손익</div>
-			</div>
-			{holds.map((hold: IHold) => getHold(hold))}
-		</div>
+		<table className="my-holds">
+			<thead className="my__legend">
+				<tr className="my-legend-row">
+					<th className="my__legend-left">종목명</th>
+					<th className="my__legend-center">보유수량 (주)</th>
+					<th className="my__legend-number">평균매수가 (원)</th>
+					<th className="my__legend-number">매수금액 (원)</th>
+					<th className="my__legend-number">평가금액 (원)</th>
+					<th className="my__legend-number">평가손익</th>
+				</tr>
+			</thead>
+			<tbody className="hold-items">{holds.map((hold: IHold) => getHold(hold))}</tbody>
+		</table>
 	);
 };
 
