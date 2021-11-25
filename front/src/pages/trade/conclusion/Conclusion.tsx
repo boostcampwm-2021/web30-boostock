@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import StockExecution, { IStockExecutionItem } from '@recoil/stockExecution/index';
+import StockExecution from '@recoil/stockExecution/index';
 import './conclusion.scss';
 import Ticks from './Ticks';
 import Days from './Days';

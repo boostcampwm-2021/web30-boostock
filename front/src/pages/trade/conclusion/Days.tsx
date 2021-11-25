@@ -1,13 +1,12 @@
 import { IStockExecutionItem } from '@src/recoil/stockExecution';
 import React from 'react';
-import { useRecoilValue } from 'recoil';
-import StockList, { IStockListItem } from '@recoil/stockList/index';
 
 interface Props {
 	stockCode: string;
 	stockExecutionState: IStockExecutionItem[];
 	previousClose: number;
 }
+const fetchDailyLog = () => {};
 
 const translateTimestampFormat = (timestamp: number): string => {
 	const stamp = new Date(timestamp);
@@ -24,9 +23,6 @@ const colorPicker = (prev: number, current: number): string => {
 };
 
 const Ticks = ({ stockCode, stockExecutionState, previousClose }: Props) => {
-	const stockListState = useRecoilValue(StockList);
-	const targetStock = stockListState.find((stock) => stock.code === stockCode)?.charts.find((chart) => chart.type === 1440);
-
 	return (
 		<>
 			<header className="conclusion-header">

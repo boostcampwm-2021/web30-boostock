@@ -16,11 +16,6 @@ const getNemClientForm = () => {
 	return { target: '', alarmToken: '' };
 };
 
-const sendAlarmMessage = (userId, msg) => {
-	const client = socketAlarmMap.get(userId);
-	client?.send(translateResponseFormat('notice', msg));
-};
-
 const connectNewUser = async (client) => {
 	try {
 		const stockService = new StockService();
@@ -39,6 +34,30 @@ const disconnectUser = (client) => {
 	socketClientMap.delete(client);
 };
 
+const broadcast = ({ stockCode, msg }) => {
+	socketClientMap.forEach(({ target: targetStockCode }, client) => {
+		if (targetStockCode === stockCode) {
+			// 모든 데이터 전송, 현재가, 호가, 차트 등...
+			client.send(translateResponseFormat('updateTarget', msg));
+		} else {
+			// msg 오브젝트의 데이터에서 aside 바에 필요한 데이터만 골라서 전송
+			client.send(translateResponseFormat('updateStock', msg.match));
+		}
+	});
+};
+
+const sendAlarmMessage = (userId, msg) => {
+	const client = socketAlarmMap.get(userId);
+	client?.send(translateResponseFormat('notice', msg));
+};
+
+const sendNewChart = (stockCharts) => {
+	socketClientMap.forEach(({ target: targetStockCode }, client) => {
+		if (!stockCharts[targetStockCode]) return;
+		client.send(translateResponseFormat('chart', stockCharts[targetStockCode]));
+	});
+};
+
 export default async (app: Application): Promise<void> => {
 	const HTTPServer = app.listen(process.env.SOCKET_PORT || 3333, () => {
 		Logger.info(`✌️ Socket loaded at port:${process.env.SOCKET_PORT || 3333}`);
@@ -46,17 +65,6 @@ export default async (app: Application): Promise<void> => {
 	const webSocketServer = new wsModule.Server({ server: HTTPServer });
 	webSocketServer.binaryType = 'arraybuffer';
 
-	const broadcast = ({ stockCode, msg }) => {
-		socketClientMap.forEach(({ target: targetStockCode }, client) => {
-			if (targetStockCode === stockCode) {
-				// 모든 데이터 전송, 현재가, 호가, 차트 등...
-				client.send(translateResponseFormat('updateTarget', msg));
-			} else {
-				// msg 오브젝트의 데이터에서 aside 바에 필요한 데이터만 골라서 전송
-				client.send(translateResponseFormat('updateStock', msg.match));
-			}
-		});
-	};
 	const loginUser = (userId, alarmToken) => {
 		loginUserMap.set(alarmToken, userId);
 	};
@@ -70,6 +78,7 @@ export default async (app: Application): Promise<void> => {
 	Emitter.on('loginUser', loginUser);
 	Emitter.on('order accepted', broadcast);
 	Emitter.on('notice', sendAlarmMessage);
+	Emitter.on('chart', sendNewChart);
 
 	webSocketServer.on('connection', async (ws, req) => {
 		await connectNewUser(ws);
