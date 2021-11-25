@@ -26,8 +26,8 @@ const drawCandleLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	if (!canvas || !context) return;
 
 	const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 100);
-	const maxPrice = getMaxValue(chartData, 'priceHigh', RATIO_MAX);
-	const minPrice = getMinValue(chartData, 'priceLow', RATIO_MIN);
+	const maxPrice = getMaxValue(chartData, 'amount', 'priceHigh', RATIO_MAX);
+	const minPrice = getMinValue(chartData, 'amount', 'priceLow', RATIO_MIN);
 
 	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 

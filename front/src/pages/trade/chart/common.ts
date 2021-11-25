@@ -31,11 +31,19 @@ export interface IDrawLegendProps extends IDrawProps {
 	theme: Ttheme;
 }
 
-export const getMaxValue = (chartData: IChartItem[], property: keyof IChartItem, upperBuffer = 1): number =>
-	Math.max(...chartData.map((data) => data[property])) * upperBuffer;
+export const getMaxValue = (
+	chartData: IChartItem[],
+	validProperty: keyof IChartItem,
+	filterProperty: keyof IChartItem,
+	upperBuffer = 1,
+): number => Math.max(...chartData.filter((data) => data[validProperty] > 0).map((data) => data[filterProperty])) * upperBuffer;
 
-export const getMinValue = (chartData: IChartItem[], property: keyof IChartItem, lowerBuffer = 1): number =>
-	Math.min(...chartData.filter((data) => data[property] > 0).map((data) => data[property])) * lowerBuffer;
+export const getMinValue = (
+	chartData: IChartItem[],
+	validProperty: keyof IChartItem,
+	filterProperty: keyof IChartItem,
+	lowerBuffer = 1,
+): number => Math.min(...chartData.filter((data) => data[validProperty] > 0).map((data) => data[filterProperty])) * lowerBuffer;
 
 export const formatCandleDate = (timestamp: number) => {
 	const date = new Date(timestamp);

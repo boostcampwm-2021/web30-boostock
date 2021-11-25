@@ -16,7 +16,7 @@ const drawVolumeLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	if (!canvas || !context) return;
 
 	const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 100);
-	const maxAmount = getMaxValue(chartData, 'amount', RATIO_MAX);
+	const maxAmount = getMaxValue(chartData, 'amount', 'amount', RATIO_MAX);
 
 	context.font = '11px dotum';
 	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);

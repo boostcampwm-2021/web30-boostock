@@ -31,7 +31,7 @@ const drawVolumeGraph = ({ canvas, chartData, theme }: IDrawProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
-	const maxAmount = getMaxValue(chartData, 'amount', RATIO_MAX);
+	const maxAmount = getMaxValue(chartData, 'amount', 'amount', RATIO_MAX);
 
 	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	chartData.forEach((bar, index) => {

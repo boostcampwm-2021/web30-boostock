@@ -103,8 +103,8 @@ const CandleGraph = ({ chartData, crossLine }: IProps) => {
 		const CANDLE_WIDTH = Math.floor((CANVAS_WIDTH - (NUM_OF_CANDLES + 1) * CANDLE_GAP) / NUM_OF_CANDLES);
 		const TAIL_WIDTH = 1;
 
-		const maxPrice = getMaxValue(chartData, 'priceHigh', RATIO_MAX);
-		const minPrice = getMinValue(chartData, 'priceLow', RATIO_MIN);
+		const maxPrice = getMaxValue(chartData, 'amount', 'priceHigh', RATIO_MAX);
+		const minPrice = getMinValue(chartData, 'amount', 'priceLow', RATIO_MIN);
 
 		const convertPriceToYPos = (curPrice: number) => ((maxPrice - curPrice) / (maxPrice - minPrice)) * CANVAS_HEIGHT;
 
