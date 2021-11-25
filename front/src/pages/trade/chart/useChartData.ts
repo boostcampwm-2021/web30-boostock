@@ -18,8 +18,6 @@ const reset = (set: SetterOrUpdater<IChartItem[]>) => {
 };
 
 const refreshLogChart = (code: string, type: TChartType, offset: number, set: SetterOrUpdater<IChartItem[]>) => {
-	if (type !== 1 && type !== 1440) type = 1;
-
 	let unit = 0;
 	if (type === 1) unit = 1000 * 60 * 60;
 	if (type === 1440) unit = 1000 * 60 * 60 * 24;
@@ -45,8 +43,6 @@ const refreshLogChart = (code: string, type: TChartType, offset: number, set: Se
 };
 
 const refreshRecentChart = (code: string, type: TChartType, stockList: IStockListItem[], set: SetterOrUpdater<IChartItem[]>) => {
-	if (type !== 1 && type !== 1440) type = 1;
-
 	const myStock = stockList.find((stockData) => stockData.code === code);
 	const myChart = myStock?.charts.find((chartData) => chartData.type === type);
 	if (!myChart) return;

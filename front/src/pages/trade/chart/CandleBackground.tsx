@@ -3,17 +3,7 @@ import { useRecoilValue } from 'recoil';
 import { IChartItem } from '@src/recoil/chart';
 import userAtom, { IUser } from '@src/recoil/user/atom';
 import formatNumber from '@src/common/utils/formatNumber';
-import {
-	OFFSET,
-	RATIO_MAX,
-	RATIO_MIN,
-	IDrawProps,
-	getMaxValue,
-	getMinValue,
-	getTextColor,
-	getBorderColor,
-	getLegendColor,
-} from './common';
+import { OFFSET, RATIO_MAX, RATIO_MIN, IDrawProps, getMaxValue, getMinValue, getTextColor, getLegendColor } from './common';
 
 import './Chart.scss';
 
@@ -25,20 +15,13 @@ const drawCandleLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
-	const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 100);
+	const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 101);
 	const maxPrice = getMaxValue(chartData, 'amount', 'priceHigh', RATIO_MAX);
 	const minPrice = getMinValue(chartData, 'amount', 'priceLow', RATIO_MIN);
 
 	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
 	context.font = '11px dotum';
-	context.strokeStyle = getBorderColor(theme);
-	context.beginPath();
-	context.moveTo(LEGEND_LEFT + OFFSET, 0);
-	context.lineTo(LEGEND_LEFT + OFFSET, CANVAS_HEIGHT);
-	context.lineTo(0, CANVAS_HEIGHT - OFFSET);
-	context.stroke();
-
 	context.strokeStyle = getLegendColor(theme);
 	context.fillStyle = getTextColor(theme);
 	Array.from(Array(PARTITION).keys()).forEach((index) => {
