@@ -9,6 +9,7 @@ import { translateRequestData, translateResponseData } from './common/utils/sock
 import Emitter from './common/utils/eventEmitter';
 import HoldStockListAtom from './recoil/holdStockList/atom';
 import { getHoldStocks } from './pages/trade/sideBar/refreshStockData';
+import dailyLogAtom, { IDailyLog } from './recoil/stockDailyLog/atom';
 
 interface IProps {
 	children: React.ReactNode;
@@ -20,6 +21,7 @@ interface IStartSocket {
 	setAskOrders: SetterOrUpdater<IAskOrderItem[]>;
 	setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
 	setHold: SetterOrUpdater<string[]>;
+	setDailyLog: SetterOrUpdater<IDailyLog[]>;
 }
 interface IResponseConclusions {
 	createdAt: number;
@@ -181,7 +183,15 @@ const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[
 	});
 };
 
-const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold }: IStartSocket) => {
+const startSocket = ({
+	setSocket,
+	setStockList,
+	setStockExecution,
+	setAskOrders,
+	setBidOrders,
+	setHold,
+	setDailyLog,
+}: IStartSocket) => {
 	const webSocket = new WebSocket(process.env.WEBSOCKET || '');
 	webSocket.binaryType = 'arraybuffer';
 
@@ -192,7 +202,7 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold });
+			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setDailyLog });
 		}, 1000);
 	};
 	webSocket.onmessage = async (event) => {
@@ -239,7 +249,9 @@ const startSocket = ({ setSocket, setStockList, setStockExecution, setAskOrders,
 					// 1분봉 차트 생성
 				}
 				if (chartType === 1440) {
+					const { _id: id, priceEnd, amount, createdAt } = data;
 					// 일봉 차트 생성
+					setDailyLog((prev) => [{ _id: id, priceEnd, amount, createdAt }, ...prev]);
 				}
 				break;
 			}
@@ -284,8 +296,9 @@ const Socket = ({ children }: IProps) => {
 	const setBidOrders = useSetRecoilState(bidOrdersAtom);
 	const setStockExecution = useSetRecoilState(stockExecutionAtom);
 	const setHold = useSetRecoilState(HoldStockListAtom);
+	const setDailyLog = useSetRecoilState(dailyLogAtom);
 
-	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold });
+	startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setDailyLog });
 
 	return <>{children}</>;
 };
