@@ -22,7 +22,7 @@ const drawPeriodLegend = ({ canvas, chartData, crossLine, theme, numOfCandles }:
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
-	const LEGEND_TOP = Math.floor(CANVAS_HEIGHT * 0.9);
+	const [VOLUME_TOP, LEGEND_TOP] = [Math.floor(CANVAS_HEIGHT * 0.7), Math.floor(CANVAS_HEIGHT * 0.9)];
 	const textPadding = 5;
 	const BOX_HEIGHT = 20;
 
@@ -35,6 +35,11 @@ const drawPeriodLegend = ({ canvas, chartData, crossLine, theme, numOfCandles }:
 	context.beginPath();
 	context.moveTo(crossLine.posX + OFFSET, 0);
 	context.lineTo(crossLine.posX + OFFSET, LEGEND_TOP);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(0, VOLUME_TOP - OFFSET);
+	context.lineTo(CANVAS_WIDTH, VOLUME_TOP - OFFSET);
 	context.stroke();
 
 	const ratio = crossLine.posX / CANVAS_WIDTH;

@@ -15,18 +15,11 @@ const drawVolumeLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
-	const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 100);
+	const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 101);
 	const maxAmount = getMaxValue(chartData, 'amount', 'amount', RATIO_MAX);
 
 	context.font = '11px dotum';
 	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-	context.strokeStyle = getBorderColor(theme);
-	context.beginPath();
-	context.moveTo(LEGEND_LEFT + OFFSET, 0);
-	context.lineTo(LEGEND_LEFT + OFFSET, CANVAS_HEIGHT);
-	context.lineTo(0, CANVAS_HEIGHT - OFFSET);
-	context.stroke();
 
 	context.strokeStyle = getLegendColor(theme);
 	context.fillStyle = getBorderColor(theme);
