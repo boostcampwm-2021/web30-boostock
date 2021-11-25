@@ -19,10 +19,10 @@ interface IDrawVolumeBarProps {
 }
 
 const drawVolumeBar = ({ context, index, ratio, color }: IDrawVolumeBarProps): void => {
-	const x = CANVAS_WIDTH - (CANDLE_WIDTH + CANDLE_GAP) * (index + 1);
-	const y = CANVAS_HEIGHT - ratio * CANVAS_HEIGHT;
-	const w = CANDLE_WIDTH;
-	const h = ratio * CANVAS_HEIGHT;
+	const x = Math.floor(CANVAS_WIDTH - (CANDLE_WIDTH + CANDLE_GAP) * (index + 1));
+	const y = Math.floor(CANVAS_HEIGHT - ratio * CANVAS_HEIGHT);
+	const w = Math.floor(CANDLE_WIDTH);
+	const h = Math.floor(ratio * CANVAS_HEIGHT);
 	context.fillStyle = color;
 	context.fillRect(x, y, w, h);
 };

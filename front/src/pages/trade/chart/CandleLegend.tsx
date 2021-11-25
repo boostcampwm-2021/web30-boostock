@@ -35,7 +35,7 @@ const drawCandleLegend = ({ canvas, chartData, crossLine, theme }: IDrawLegendPr
 	const recentChart = chartData[0];
 	if (recentChart && recentChart.priceEnd > 0) {
 		const ratio = (recentChart.priceEnd - minPrice) / (maxPrice - minPrice);
-		const posY = CANVAS_HEIGHT * (1 - ratio) + OFFSET;
+		const posY = Math.floor(CANVAS_HEIGHT * (1 - ratio)) + OFFSET;
 
 		const { priceStart, priceEnd } = recentChart;
 		context.strokeStyle = getPriceColor(priceStart, priceEnd, theme);

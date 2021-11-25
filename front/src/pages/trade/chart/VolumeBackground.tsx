@@ -32,8 +32,8 @@ const drawVolumeLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	context.fillStyle = getBorderColor(theme);
 	Array.from(Array(PARTITION).keys()).forEach((index) => {
 		const ratio = (PARTITION - index) / (PARTITION + 1);
-		const value = maxAmount * ratio;
-		const posY = CANVAS_HEIGHT * (1 - ratio) + OFFSET;
+		const value = Math.floor(maxAmount * ratio);
+		const posY = Math.floor(CANVAS_HEIGHT * (1 - ratio)) + OFFSET;
 
 		context.beginPath();
 		context.moveTo(0, posY);

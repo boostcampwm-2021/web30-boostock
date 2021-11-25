@@ -35,7 +35,7 @@ export const getMaxValue = (chartData: IChartItem[], property: keyof IChartItem,
 	Math.max(...chartData.map((data) => data[property])) * upperBuffer;
 
 export const getMinValue = (chartData: IChartItem[], property: keyof IChartItem, lowerBuffer = 1): number =>
-	Math.min(...chartData.map((data) => data[property])) * lowerBuffer;
+	Math.min(...chartData.filter((data) => data[property] > 0).map((data) => data[property])) * lowerBuffer;
 
 export const formatCandleDate = (timestamp: number) => {
 	const date = new Date(timestamp);

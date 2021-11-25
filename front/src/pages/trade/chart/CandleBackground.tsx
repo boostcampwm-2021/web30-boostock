@@ -43,8 +43,8 @@ const drawCandleLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	context.fillStyle = getTextColor(theme);
 	Array.from(Array(PARTITION).keys()).forEach((index) => {
 		const ratio = (PARTITION - index) / (PARTITION + 1);
-		const value = minPrice + (maxPrice - minPrice) * ratio;
-		const posY = CANVAS_HEIGHT * (1 - ratio) + OFFSET;
+		const value = Math.floor(minPrice + (maxPrice - minPrice) * ratio);
+		const posY = Math.floor(CANVAS_HEIGHT * (1 - ratio)) + OFFSET;
 
 		context.beginPath();
 		context.moveTo(0, posY);
