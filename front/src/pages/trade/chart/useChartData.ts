@@ -47,7 +47,7 @@ const refreshRecentChart = (code: string, type: number, stockList: IStockListIte
 	if (!myChart) return;
 
 	const newChart = {
-		createdAt: 0,
+		createdAt: Date.now(),
 		priceStart: myChart.priceStart,
 		priceEnd: myChart.priceEnd,
 		priceLow: myChart.priceHigh,
