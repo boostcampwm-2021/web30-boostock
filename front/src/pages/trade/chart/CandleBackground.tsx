@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
+import { IChartItem } from '@src/recoil/chart';
 import userAtom, { IUser } from '@src/recoil/user/atom';
 import formatNumber from '@src/common/utils/formatNumber';
 import {
 	OFFSET,
-	IProps,
 	RATIO_MAX,
 	RATIO_MIN,
 	IDrawProps,
@@ -55,7 +55,7 @@ const drawCandleLegend = ({ canvas, chartData, theme }: IDrawProps): void => {
 	});
 };
 
-const CandleLegend = ({ chartData }: IProps) => {
+const CandleLegend = ({ chartData }: { chartData: IChartItem[] }) => {
 	const { theme } = useRecoilValue<IUser>(userAtom);
 	const candleLegendRef = useRef<HTMLCanvasElement>(null);
 
