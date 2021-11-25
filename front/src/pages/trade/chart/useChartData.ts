@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { SetterOrUpdater, useRecoilState, useRecoilValue } from 'recoil';
 import ChartAtom, { IChartItem } from '@src/recoil/chart/atom';
 import stockListAtom, { IStockListItem } from '@src/recoil/stockList/atom';
+import { TChartType } from './common';
 
 const reset = (set: SetterOrUpdater<IChartItem[]>) => {
 	set(() => [
@@ -16,7 +17,9 @@ const reset = (set: SetterOrUpdater<IChartItem[]>) => {
 	]);
 };
 
-const refreshLogChart = (code: string, type: number, offset: number, set: SetterOrUpdater<IChartItem[]>) => {
+const refreshLogChart = (code: string, type: TChartType, offset: number, set: SetterOrUpdater<IChartItem[]>) => {
+	if (type !== 1 && type !== 1440) type = 1;
+
 	let unit = 0;
 	if (type === 1) unit = 1000 * 60 * 60;
 	if (type === 1440) unit = 1000 * 60 * 60 * 24;
@@ -41,7 +44,9 @@ const refreshLogChart = (code: string, type: number, offset: number, set: Setter
 	});
 };
 
-const refreshRecentChart = (code: string, type: number, stockList: IStockListItem[], set: SetterOrUpdater<IChartItem[]>) => {
+const refreshRecentChart = (code: string, type: TChartType, stockList: IStockListItem[], set: SetterOrUpdater<IChartItem[]>) => {
+	if (type !== 1 && type !== 1440) type = 1;
+
 	const myStock = stockList.find((stockData) => stockData.code === code);
 	const myChart = myStock?.charts.find((chartData) => chartData.type === type);
 	if (!myChart) return;
@@ -60,7 +65,7 @@ const refreshRecentChart = (code: string, type: number, stockList: IStockListIte
 	});
 };
 
-export default function useChartData(code: string, type: number, index: number): IChartItem[] {
+export default function useChartData(code: string, type: TChartType, index: number): IChartItem[] {
 	const stockList = useRecoilValue(stockListAtom);
 	const [chart, setChart] = useRecoilState(ChartAtom);
 

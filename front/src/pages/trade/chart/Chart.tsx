@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState, useEffect, useRef } from 'react';
 import useChartData from './useChartData';
-import { ICrossLine } from './common';
+import { ICrossLine, TChartType } from './common';
 
 import PeriodBackground from './PeriodBackground';
 import CandleGraph from './CandleGraph';
@@ -9,7 +9,10 @@ import VolumeGraph from './VolumeGraph';
 import PeriodLegend from './PeriodLegend';
 
 import './Chart.scss';
-import { Link } from 'react-router-dom';
+
+interface IProps {
+	stockCode: string;
+}
 
 const DEFAULT_START_INDEX = 0;
 const DEFAULT_END_INDEX = 60;
@@ -25,6 +28,12 @@ const moveCrossLine = (set: React.Dispatch<React.SetStateAction<ICrossLine>>, ev
 
 const isTarget = (target: HTMLElement) => !target.closest('.chart-menu');
 
+const chartTypeMenuClass = (currentlySelectedType: TChartType, wantedType: TChartType) => {
+	let result = 'chart-menu-item';
+	if (currentlySelectedType === wantedType) result += ' selected';
+	return result;
+};
+
 const chartContainerClass = (isUserGrabbing: boolean) => {
 	let result = 'chart-container';
 	if (isUserGrabbing) result += ' grabbing';
@@ -32,14 +41,26 @@ const chartContainerClass = (isUserGrabbing: boolean) => {
 	return result;
 };
 
-const Chart = ({ stockCode, stockType }: { stockCode: string; stockType: number }) => {
+const getChartTypeFromLocalStorage = (): TChartType => {
+	let chartType = window.localStorage.getItem('chartType');
+	if (chartType !== '1' && chartType !== '1440') chartType = '1';
+	return Number(chartType) as TChartType;
+};
+
+const Chart = ({ stockCode }: IProps) => {
 	const chartRef = useRef<HTMLDivElement>(null);
 	const [isUserGrabbing, setIsUserGrabbing] = useState<boolean>(false);
 	const [start, setStart] = useState<number>(DEFAULT_START_INDEX); // 맨 오른쪽 캔들의 인덱스
 	const [end, setEnd] = useState<number>(DEFAULT_END_INDEX); // 맨 왼쪽 캔들의 인덱스
 	const [offset, setOffset] = useState<number>(0);
 	const [crossLine, setCrossLine] = useState<ICrossLine>({ event: null, posX: 0, posY: 0 });
-	const chart = useChartData(stockCode, stockType, offset);
+	const [chartType, setChartType] = useState<TChartType>(getChartTypeFromLocalStorage);
+	const chart = useChartData(stockCode, chartType, offset);
+
+	const handleSetChartType = (type: TChartType) => {
+		window.localStorage.setItem('chartType', type.toString());
+		setChartType(type);
+	};
 
 	useEffect(() => {
 		const bindedMoveCrossLine = moveCrossLine.bind(undefined, setCrossLine);
@@ -53,7 +74,7 @@ const Chart = ({ stockCode, stockType }: { stockCode: string; stockType: number 
 		setStart(DEFAULT_START_INDEX);
 		setEnd(DEFAULT_END_INDEX);
 		setOffset(0);
-	}, [stockCode, stockType]);
+	}, [stockCode, chartType]);
 
 	if (chart.length === 0) {
 		return <p>차트 데이터가 없습니다.</p>;
@@ -104,12 +125,12 @@ const Chart = ({ stockCode, stockType }: { stockCode: string; stockType: number 
 				<PeriodLegend chartData={chart.slice(start, end)} crossLine={crossLine} />
 			</div>
 			<div className="chart-menu">
-				<Link className="chart-menu-item" to={`?code=${stockCode}&type=1`}>
-					1분봉
-				</Link>
-				<Link className="chart-menu-item" to={`?code=${stockCode}&type=1440`}>
-					1일봉
-				</Link>
+				<button type="button" className={chartTypeMenuClass(1, chartType)} onClick={() => handleSetChartType(1)}>
+					1분
+				</button>
+				<button type="button" className={chartTypeMenuClass(1440, chartType)} onClick={() => handleSetChartType(1440)}>
+					1일
+				</button>
 			</div>
 		</div>
 	);

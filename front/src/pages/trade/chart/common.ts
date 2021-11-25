@@ -7,6 +7,7 @@ export const RATIO_MAX = 1.0;
 export const CANDLE_GAP = 5;
 
 type Ttheme = 'light' | 'dark';
+export type TChartType = 1 | 1440;
 
 export interface ICrossLine {
 	event: MouseEvent | null;
