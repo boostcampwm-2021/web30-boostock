@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@src/recoil/user/atom';
-import { CANDLE_GAP, NUM_OF_CANDLES, IProps, IDrawProps, formatCandleDate, getTextColor, getLegendColor } from './common';
+import { OFFSET, CANDLE_GAP, NUM_OF_CANDLES, IProps, IDrawProps, formatCandleDate, getTextColor, getLegendColor } from './common';
 
 import './Chart.scss';
 
@@ -27,14 +27,14 @@ const drawPeriodBackground = ({ canvas, chartData, theme }: IDrawProps): void =>
 	chartData.forEach(({ createdAt }, index) => {
 		if (index % PARTITION !== 0) return;
 
-		const posX = CANVAS_WIDTH - (CANDLE_WIDTH + CANDLE_GAP) * (index + 1) + CANDLE_WIDTH / 2;
+		const posX = Math.floor(CANVAS_WIDTH - (CANDLE_WIDTH + CANDLE_GAP) * (index + 1) + CANDLE_WIDTH / 2) + OFFSET;
 
 		context.beginPath();
 		context.moveTo(posX, CHART_TOP);
 		context.lineTo(posX, LEGEND_TOP);
 		context.stroke();
 
-		context.fillText(formatCandleDate(createdAt), posX, LEGEND_TOP + BOX_HEIGHT / 2);
+		context.fillText(formatCandleDate(createdAt), posX, Math.floor(LEGEND_TOP + BOX_HEIGHT / 2));
 	});
 };
 

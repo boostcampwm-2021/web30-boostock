@@ -19,10 +19,10 @@ interface IDrawVolumeBarProps {
 }
 
 const drawVolumeBar = ({ context, index, ratio, color }: IDrawVolumeBarProps): void => {
-	const x = CANVAS_WIDTH - (CANDLE_WIDTH + CANDLE_GAP) * (index + 1);
-	const y = CANVAS_HEIGHT - ratio * CANVAS_HEIGHT;
-	const w = CANDLE_WIDTH;
-	const h = ratio * CANVAS_HEIGHT;
+	const x = Math.floor(CANVAS_WIDTH - (CANDLE_WIDTH + CANDLE_GAP) * (index + 1));
+	const y = Math.floor(CANVAS_HEIGHT - ratio * CANVAS_HEIGHT);
+	const w = Math.floor(CANDLE_WIDTH);
+	const h = Math.floor(ratio * CANVAS_HEIGHT);
 	context.fillStyle = color;
 	context.fillRect(x, y, w, h);
 };
@@ -31,7 +31,7 @@ const drawVolumeGraph = ({ canvas, chartData, theme }: IDrawProps): void => {
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
-	const maxAmount = getMaxValue(chartData, 'amount', RATIO_MAX);
+	const maxAmount = getMaxValue(chartData, 'amount', 'amount', RATIO_MAX);
 
 	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	chartData.forEach((bar, index) => {

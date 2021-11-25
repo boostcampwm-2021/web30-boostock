@@ -55,13 +55,13 @@ const drawCandles = ({
 	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	chartData.forEach(({ priceHigh, priceLow, priceStart, priceEnd }, idx) => {
 		const isPositive = isPositiveCandle(priceStart, priceEnd);
-		const candleBarX = canvasWidth - (candleWidth + candleGap) * (idx + 1);
-		const candleBarY = convertPriceToYPos(isPositive ? priceEnd : priceStart);
-		const candleHeight = Math.abs(convertPriceToYPos(priceStart) - convertPriceToYPos(priceEnd));
+		const candleBarX = Math.floor(canvasWidth - (candleWidth + candleGap) * (idx + 1));
+		const candleBarY = Math.floor(convertPriceToYPos(isPositive ? priceEnd : priceStart));
+		const candleHeight = Math.floor(Math.abs(convertPriceToYPos(priceStart) - convertPriceToYPos(priceEnd)));
 
-		const tailX = candleBarX + (candleWidth - tailWidth) / 2;
-		const tailY = convertPriceToYPos(priceHigh);
-		const tailHeight = convertPriceToYPos(priceLow) - tailY;
+		const tailX = Math.floor(candleBarX + (candleWidth - tailWidth) / 2);
+		const tailY = Math.floor(convertPriceToYPos(priceHigh));
+		const tailHeight = Math.floor(convertPriceToYPos(priceLow) - tailY);
 
 		if (isDodgeCandle(priceStart, priceEnd)) {
 			ctx.fillStyle = getPriceColor(priceStart, priceEnd, theme);
@@ -100,11 +100,11 @@ const CandleGraph = ({ chartData, crossLine }: IProps) => {
 		const ctx = candleGraphChartRef.current.getContext('2d');
 		if (!ctx) return;
 
-		const CANDLE_WIDTH = (CANVAS_WIDTH - (NUM_OF_CANDLES + 1) * CANDLE_GAP) / NUM_OF_CANDLES;
+		const CANDLE_WIDTH = Math.floor((CANVAS_WIDTH - (NUM_OF_CANDLES + 1) * CANDLE_GAP) / NUM_OF_CANDLES);
 		const TAIL_WIDTH = 1;
 
-		const maxPrice = getMaxValue(chartData, 'priceHigh', RATIO_MAX);
-		const minPrice = getMinValue(chartData, 'priceLow', RATIO_MIN);
+		const maxPrice = getMaxValue(chartData, 'amount', 'priceHigh', RATIO_MAX);
+		const minPrice = getMinValue(chartData, 'amount', 'priceLow', RATIO_MIN);
 
 		const convertPriceToYPos = (curPrice: number) => ((maxPrice - curPrice) / (maxPrice - minPrice)) * CANVAS_HEIGHT;
 

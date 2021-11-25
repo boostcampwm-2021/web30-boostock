@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { SetterOrUpdater, useRecoilState, useRecoilValue } from 'recoil';
 import ChartAtom, { IChartItem } from '@src/recoil/chart/atom';
 import stockListAtom, { IStockListItem } from '@src/recoil/stockList/atom';
 
 const reset = (set: SetterOrUpdater<IChartItem[]>) => {
-	set([
+	set(() => [
 		{
 			createdAt: 0,
 			priceStart: 0,
@@ -47,7 +47,7 @@ const refreshRecentChart = (code: string, type: number, stockList: IStockListIte
 	if (!myChart) return;
 
 	const newChart = {
-		createdAt: 0,
+		createdAt: Date.now(),
 		priceStart: myChart.priceStart,
 		priceEnd: myChart.priceEnd,
 		priceLow: myChart.priceHigh,
@@ -60,27 +60,27 @@ const refreshRecentChart = (code: string, type: number, stockList: IStockListIte
 	});
 };
 
-const next = (set: SetterOrUpdater<number>) => {
-	set((prev) => prev + 1);
-};
-
-export default function useChartData(code: string, type: number, index: number): [IChartItem[], () => void] {
+export default function useChartData(code: string, type: number, index: number): IChartItem[] {
 	const stockList = useRecoilValue(stockListAtom);
 	const [chart, setChart] = useRecoilState(ChartAtom);
-	const [offset, setOffset] = useState<number>(index);
-
-	useEffect(() => {
-		reset(setChart);
-	}, [code, type]);
 
 	useEffect(() => {
 		refreshRecentChart(code, type, stockList, setChart);
-	}, [code, type, stockList]);
+	}, [stockList]);
 
 	useEffect(() => {
-		refreshLogChart(code, type, offset, setChart);
-	}, [code, type, offset]);
+		if (index !== 0) {
+			refreshLogChart(code, type, index, setChart);
+		}
+	}, [index]);
 
-	const bindedNext = next.bind(undefined, setOffset);
-	return [chart, bindedNext];
+	useEffect(() => {
+		if (index === 0) {
+			reset(setChart);
+			refreshRecentChart(code, type, stockList, setChart);
+			refreshLogChart(code, type, index, setChart);
+		}
+	}, [code, type, index]);
+
+	return chart;
 }
