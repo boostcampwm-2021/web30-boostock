@@ -47,7 +47,15 @@ const Holds = (props: HoldsProps) => {
 					<th className="my__legend-number">평가손익</th>
 				</tr>
 			</thead>
-			<tbody className="hold-items">{holds.map((hold: IHold) => getHold(hold))}</tbody>
+			<tbody className="hold-items">
+				{holds.length > 0 ? (
+					holds.map((hold: IHold) => getHold(hold))
+				) : (
+					<tr className="my__item">
+						<td className="my__item-center">보유 종목이 없습니다.</td>
+					</tr>
+				)}
+			</tbody>
 		</table>
 	);
 };

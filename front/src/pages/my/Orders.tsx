@@ -121,7 +121,15 @@ const Orders = () => {
 					<th className="my__legend-center">&nbsp;</th>
 				</tr>
 			</thead>
-			<tbody className="my-order-items">{orders.map((order: IOrder) => getOrder(order))}</tbody>
+			<tbody className="my-order-items">
+				{orders.length > 0 ? (
+					orders.map((order: IOrder) => getOrder(order))
+				) : (
+					<tr className="my__item">
+						<td className="my__item-center">주문 내역이 없습니다.</td>
+					</tr>
+				)}
+			</tbody>
 		</table>
 	);
 };

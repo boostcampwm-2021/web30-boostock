@@ -92,7 +92,13 @@ const Transactions = () => {
 				</tr>
 			</thead>
 			<tbody className="transaction-items">
-				{transactions.map((transaction: ITransaction) => getTransaction(transaction))}
+				{transactions.length > 0 ? (
+					transactions.map((transaction: ITransaction) => getTransaction(transaction))
+				) : (
+					<tr className="my__item">
+						<td className="my__item-center">거래 내역이 없습니다.</td>
+					</tr>
+				)}
 			</tbody>
 		</table>
 	);
