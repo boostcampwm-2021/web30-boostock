@@ -1,4 +1,7 @@
 import wsModule from 'ws';
+import fs from 'fs';
+import _http from 'http';
+import _https from 'https';
 import { Application } from 'express';
 import Emitter from '@helper/eventEmitter';
 import { binArrayToJson, JsonToBinArray } from '@helper/tools';
@@ -67,11 +70,23 @@ const sendNewChart = (stockCharts) => {
 	});
 };
 
-export default async (app: Application): Promise<void> => {
-	const HTTPServer = app.listen(process.env.SOCKET_PORT || 3333, () => {
-		Logger.info(`✌️ Socket loaded at port:${process.env.SOCKET_PORT || 3333}`);
+const startHttpServer = () => {
+	return _http.createServer();
+};
+
+const startHttpsServer = () => {
+	return _https.createServer({
+		ca: fs.readFileSync('/etc/ssl/ca_bundle.crt'),
+		key: fs.readFileSync('/etc/ssl/private.key'),
+		cert: fs.readFileSync('/etc/ssl/certificate.crt'),
 	});
-	const webSocketServer = new wsModule.Server({ server: HTTPServer });
+};
+
+export default async (): Promise<void> => {
+	const server = process.env.NODE_ENV === 'production' ? startHttpsServer() : startHttpServer();
+	const webSocketServer = new wsModule.WebSocketServer({ server });
+	server.listen(4444);
+
 	webSocketServer.binaryType = 'arraybuffer';
 
 	const loginUser = (userId, alarmToken) => {
