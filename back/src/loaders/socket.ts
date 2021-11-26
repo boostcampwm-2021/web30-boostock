@@ -1,5 +1,4 @@
 import wsModule from 'ws';
-import fs from 'fs';
 import { Application } from 'express';
 import Emitter from '@helper/eventEmitter';
 import { binArrayToJson, JsonToBinArray } from '@helper/tools';
@@ -72,18 +71,7 @@ export default async (app: Application): Promise<void> => {
 	const HTTPServer = app.listen(process.env.SOCKET_PORT || 3333, () => {
 		Logger.info(`✌️ Socket loaded at port:${process.env.SOCKET_PORT || 3333}`);
 	});
-
-	const webSocketServer =
-		process.env.NODE_ENV === 'production'
-			? new wsModule.Server({
-					httpServer: HTTPServer,
-					ssl: true,
-					ca: fs.readFileSync('/etc/ssl/ca_bundle.crt'),
-					key: fs.readFileSync('/etc/ssl/private.key'),
-					cert: fs.readFileSync('/etc/ssl/certificate.crt'),
-			  })
-			: new wsModule.Server({ server: HTTPServer });
-
+	const webSocketServer = new wsModule.Server({ server: HTTPServer });
 	webSocketServer.binaryType = 'arraybuffer';
 
 	const loginUser = (userId, alarmToken) => {
