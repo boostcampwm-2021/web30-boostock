@@ -2,7 +2,6 @@
 
 .my-orders {
 	width: 100%;
-	height: 60vh;
 
 	@include darkModeCardStyle();
 }
@@ -13,6 +12,7 @@
 	display: block;
 	max-height: 60vh;
 	overflow-y: scroll;
+	padding-left: 6px;
 }
 
 .cancel-order-btn {
