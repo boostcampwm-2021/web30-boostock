@@ -85,7 +85,7 @@ const startHttpsServer = () => {
 export default async (): Promise<void> => {
 	const server = process.env.NODE_ENV === 'production' ? startHttpsServer() : startHttpServer();
 	const webSocketServer = new wsModule.WebSocketServer({ server });
-	server.listen(4444);
+	server.listen(process.env.SOCKET_PORT || 3333);
 
 	webSocketServer.binaryType = 'arraybuffer';
 
