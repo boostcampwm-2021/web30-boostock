@@ -14,5 +14,5 @@ export default async ({ expressApp }: { expressApp: Application }): Promise<void
 	Logger.info('✌️ Typeorm loaded');
 	await mongooseLoader();
 	Logger.info('✌️ Mongoose loaded');
-	webSocketLoader(expressApp);
+	webSocketLoader();
 };
