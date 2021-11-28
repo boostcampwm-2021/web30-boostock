@@ -131,7 +131,15 @@ const Balance = () => {
 							<th className="my__legend-number">승인시간</th>
 						</tr>
 					</thead>
-					<tbody className="balance-items">{histories.map((history: IHistory) => getHistory(history))}</tbody>
+					<tbody className="balance-items">
+						{histories.length > 0 ? (
+							histories.map((history: IHistory) => getHistory(history))
+						) : (
+							<tr className="my__item">
+								<td className="my__item-center">입출금 내역이 없습니다.</td>
+							</tr>
+						)}
+					</tbody>
 				</table>
 			</div>
 		</div>
