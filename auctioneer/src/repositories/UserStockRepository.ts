@@ -8,12 +8,11 @@ export default class UserStockRepository extends Repository<UserStock> {
 		return result.identifiers.length > 0;
 	}
 
-	async readUserStockByCode(userId: number, code: string): Promise<UserStock | undefined> {
+	async readLock(userId: number, stockId: number): Promise<UserStock | undefined> {
 		return this.createQueryBuilder('UserStock')
-			.leftJoin('UserStock.stock', 'Stock')
-			.leftJoin('UserStock.user', 'User')
-			.where('User.userId=:userId', { userId })
-			.andWhere('Stock.code=:code', { code })
+			.where('UserStock.userId = :userId', { userId })
+			.andWhere('UserStock.stockId = :stockId', { stockId })
+			.setLock('pessimistic_read')
 			.getOne();
 	}
 }

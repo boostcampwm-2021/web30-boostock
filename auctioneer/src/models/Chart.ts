@@ -12,6 +12,9 @@ export default class Chart {
 	@JoinColumn({ name: 'stock_id', referencedColumnName: 'stockId' })
 	stock: Stock;
 
+	@Column({ name: 'stock_id' })
+	stockId: number;
+
 	@Column()
 	type: number;
 

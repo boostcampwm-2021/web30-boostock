@@ -4,14 +4,15 @@ import { Chart, Stock } from '@models/index';
 
 @EntityRepository(Chart)
 export default class ChartRepository extends Repository<Chart> {
-	public async readByStock(stock: Stock): Promise<Chart[]> {
+	public async readByStockIdLock(stockId: number): Promise<Chart[]> {
 		return this.find({
-			where: { stock },
+			where: { stockId },
+			relations: ['stock'],
 			lock: { mode: 'pessimistic_read' },
 		});
 	}
 
-	public async readByType(type: number): Promise<Chart[]> {
+	public async readByTypeLock(type: number): Promise<Chart[]> {
 		return this.find({
 			where: { type },
 			relations: ['stock'],
@@ -30,6 +31,7 @@ export default class ChartRepository extends Repository<Chart> {
 	}
 
 	public async updateChart(chart: Chart, price: number, amount: number): Promise<UpdateResult> {
+		chart.stock.price = price;
 		if (chart.amount === 0) {
 			chart.priceStart = price;
 			chart.priceHigh = price;

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import fetch from 'node-fetch';
-import { Stock, User, UserStock, Order, TransactionLog, Chart } from '@models/index';
+import { User, Order, TransactionLog, Chart } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
 import { CommonError, CommonErrorMessage } from '@errors/index';
 
@@ -16,6 +16,9 @@ export interface ITransactionInfo {
 
 function getAveragePrice(holdAmount: number, holdAverage: number, newAmount: number, newPrice: number): number {
 	return (holdAmount * holdAverage + newAmount * newPrice) / (holdAmount + newAmount);
+}
+function refundBetweenDepositTransacionAmount(deposit: number, price: number, amount: number) {
+	return (deposit - price) * amount;
 }
 
 export default class BidAskTransaction {
@@ -52,32 +55,27 @@ export default class BidAskTransaction {
 		return this;
 	}
 
-	async askOrderProcess(askUser: User, askOrder: Order): Promise<void | Error> {
+	async askUserProcess(askUser: User): Promise<void | Error> {
 		askUser.balance += this.TransactionInfo.amount * this.TransactionInfo.price;
-		await this.UserRepositoryRunner.save(askUser);
-
-		if (askOrder.amount === this.TransactionInfo.amount) {
-			await this.OrderRepositoryRunner.removeOrder(askOrder);
-		} else {
-			await this.OrderRepositoryRunner.updateOrder(askOrder, this.TransactionInfo.amount);
-		}
+		await this.UserRepositoryRunner.update(askUser.userId, askUser);
 	}
 
-	async bidOrderProcess(bidUser: User, bidUserStock: UserStock | undefined, bidOrder: Order): Promise<void | Error> {
-		this.TransactionInfo.bidUser = bidUser.userId;
-		this.TransactionInfo.stockId = bidOrder.stockId;
-		// 매수주문이랑 실제거래가가 차이있을 때 잔돈 반환하는 로직
-		bidUser.balance += (bidOrder.price - this.TransactionInfo.price) * this.TransactionInfo.amount;
-		await this.UserRepositoryRunner.save(bidUser);
+	async bidUserProcess(bidUser: User, bidOrder: Order): Promise<void> {
+		let bidUserStock = await this.UserStockRepositoryRunner.readLock(bidUser.userId, this.TransactionInfo.stockId);
+
+		bidUser.balance += refundBetweenDepositTransacionAmount(
+			bidOrder.price,
+			this.TransactionInfo.price,
+			this.TransactionInfo.amount,
+		);
 
 		if (bidUserStock === undefined) {
-			const newUserStock = this.UserStockRepositoryRunner.create({
-				user: bidUser,
-				stock: bidOrder,
+			bidUserStock = this.UserStockRepositoryRunner.create({
+				userId: bidUser.userId,
+				stockId: bidOrder.stockId,
 				amount: this.TransactionInfo.amount,
 				average: bidOrder.price,
 			});
-			this.UserStockRepositoryRunner.insert(newUserStock);
 		} else {
 			bidUserStock.amount += this.TransactionInfo.amount;
 			bidUserStock.average = getAveragePrice(
@@ -86,28 +84,32 @@ export default class BidAskTransaction {
 				this.TransactionInfo.amount,
 				this.TransactionInfo.price,
 			);
-			await this.UserStockRepositoryRunner.save(bidUserStock);
 		}
-
-		if (bidOrder.amount === this.TransactionInfo.amount) {
-			await this.OrderRepositoryRunner.removeOrder(bidOrder);
-		} else {
-			await this.OrderRepositoryRunner.updateOrder(bidOrder, this.TransactionInfo.amount);
-		}
+		await Promise.all([
+			this.UserRepositoryRunner.update(bidUser.userId, bidUser),
+			this.UserStockRepositoryRunner.save(bidUserStock),
+		]);
 	}
 
-	async chartProcess(stock: Stock): Promise<void | Error> {
-		stock.price = this.TransactionInfo.price;
-		await this.StockRepositoryRunner.save(stock);
+	async askOrderProcess(askOrder: Order): Promise<void> {
+		if (askOrder.amount === this.TransactionInfo.amount) await this.OrderRepositoryRunner.removeOrderOCC(askOrder);
+		else await this.OrderRepositoryRunner.decreaseAmountOCC(askOrder, this.TransactionInfo.amount);
+	}
 
-		const charts = await this.ChartRepositoryRunner.readByStock(stock);
+	async bidOrderProcess(bidOrder: Order): Promise<void> {
+		if (bidOrder.amount === this.TransactionInfo.amount) await this.OrderRepositoryRunner.removeOrderOCC(bidOrder);
+		else await this.OrderRepositoryRunner.decreaseAmountOCC(bidOrder, this.TransactionInfo.amount);
+	}
+
+	async chartProcess(): Promise<void> {
+		const charts = await this.ChartRepositoryRunner.readByStockIdLock(this.TransactionInfo.stockId);
 
 		await Promise.all(
 			charts.map((chart: Chart) =>
 				this.ChartRepositoryRunner.updateChart(chart, this.TransactionInfo.price, this.TransactionInfo.amount),
 			),
 		);
-		this.updatedCharts = await this.ChartRepositoryRunner.readByStock(stock);
+		this.updatedCharts = await this.ChartRepositoryRunner.readByStockIdLock(this.TransactionInfo.stockId);
 	}
 
 	async logProcess(): Promise<void> {

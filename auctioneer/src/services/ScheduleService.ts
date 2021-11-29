@@ -54,7 +54,7 @@ export default class ScheduleService {
 		await queryRunner.startTransaction();
 		try {
 			const chartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
-			const charts = await chartRepositoryRunner.readByType(type);
+			const charts = await chartRepositoryRunner.readByTypeLock(type);
 			if (type === CHARTTYPE.DAYS) {
 				const chartLogList = await Promise.all(
 					charts.map((chart) => this.initializeChartAndStock(chart, chartRepositoryRunner)),

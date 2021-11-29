@@ -16,12 +16,15 @@ export default class UserStock {
 	@JoinColumn({ name: 'stock_id', referencedColumnName: 'stockId' })
 	stock: Stock;
 
+	@Column({ name: 'user_id' })
+	userId: number;
+
+	@Column({ name: 'stock_id' })
+	stockId: number;
+
 	@Column()
 	amount: number;
 
 	@Column()
 	average: number;
-
-	@VersionColumn()
-	readonly version: number;
 }
