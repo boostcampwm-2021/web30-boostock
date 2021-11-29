@@ -1,7 +1,5 @@
 name: Test Backend
-###################################
-# Required Secret : BACK_ENV, BACK_ORM_CONFIG
-###################################
+
 on:
     pull_request:
         branches: [develop]
@@ -22,21 +20,21 @@ jobs:
 
             - name: Create Environment File
               run: |
-                  echo "${{ secrets.BACK_ENV }}" >> .env.dev
+                  echo "${{ secrets.TEST_ENV }}" >> .env.dev
               working-directory: ./back
 
             - name: Create ORM Config
               uses: jsdaniell/create-json@1.1.2
               with:
                   name: 'ormconfig.json'
-                  json: ${{ secrets.BACK_ORM_CONFIG }}
+                  json: ${{ secrets.TEST_ORM_CONFIG }}
                   dir: 'back/'
 
             - name: Create Session Config
               uses: jsdaniell/create-json@1.1.2
               with:
                   name: 'sessionStoreConfig.json'
-                  json: ${{ secrets.BACK_SESSION_CONFIG }}
+                  json: ${{ secrets.TEST_SESSION_CONFIG }}
                   dir: 'back/'
 
             - name: Run Test
