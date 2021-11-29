@@ -16,6 +16,7 @@ interface IProps {
 interface ISliceIndex {
 	start: number;
 	end: number;
+	offset: number;
 }
 
 const DEFAULT_START_INDEX = 0;
@@ -57,11 +58,10 @@ const getChartTypeFromLocalStorage = (): TChartType => {
 const Chart = ({ stockCode }: IProps) => {
 	const chartRef = useRef<HTMLDivElement>(null);
 	const [isUserGrabbing, setIsUserGrabbing] = useState<boolean>(false);
-	const [sliceIndex, setSliceIndex] = useState<ISliceIndex>({ start: DEFAULT_START_INDEX, end: DEFAULT_END_INDEX });
-	const [offset, setOffset] = useState<number>(0);
+	const [sliceIndex, setSliceIndex] = useState<ISliceIndex>({ start: DEFAULT_START_INDEX, end: DEFAULT_END_INDEX, offset: 0 });
 	const [crossLine, setCrossLine] = useState<ICrossLine>({ event: null, posX: 0, posY: 0 });
 	const [chartType, setChartType] = useState<TChartType>(getChartTypeFromLocalStorage);
-	const chart = useChartData(stockCode, chartType, offset);
+	const chart = useChartData(stockCode, chartType, sliceIndex.offset);
 
 	const handleSetChartType = (type: TChartType) => {
 		window.localStorage.setItem('chartType', type.toString());
@@ -73,14 +73,14 @@ const Chart = ({ stockCode }: IProps) => {
 			e.preventDefault();
 			const numCandleUnit = e.deltaY > 0 ? NUM_OF_CANDLE_UNIT : -NUM_OF_CANDLE_UNIT;
 			setSliceIndex((prev) => {
-				const { start, end } = prev;
+				const { start, end, offset } = prev;
 				let newEnd = end + numCandleUnit;
 				if (newEnd - start < MIN_NUM_OF_CANDLES) newEnd = start + MIN_NUM_OF_CANDLES;
 				if (newEnd - start > MAX_NUM_OF_CANDLES) newEnd = start + MAX_NUM_OF_CANDLES;
-				return { ...prev, end: newEnd };
-			});
 
-			if (numCandleUnit > 0) setOffset((prev) => prev + 1);
+				const newOffset = newEnd / DEFAULT_END_INDEX >= offset ? offset + 1 : offset;
+				return { ...prev, end: newEnd, offset: newOffset };
+			});
 		};
 
 		chartRef.current?.addEventListener('wheel', zoomCandleChart, { passive: false });
@@ -99,8 +99,7 @@ const Chart = ({ stockCode }: IProps) => {
 	}, []);
 
 	useEffect(() => {
-		setSliceIndex({ start: DEFAULT_START_INDEX, end: DEFAULT_END_INDEX });
-		setOffset(0);
+		setSliceIndex({ start: DEFAULT_START_INDEX, end: DEFAULT_END_INDEX, offset: 0 });
 	}, [stockCode, chartType]);
 
 	if (chart.length === 0) {
@@ -136,7 +135,7 @@ const Chart = ({ stockCode }: IProps) => {
 
 					const moveIndex = Math.floor(e.movementX / MOVE_INDEX_SLOW_WEIGHT);
 					setSliceIndex((prev) => {
-						const { start, end } = prev;
+						const { start, end, offset } = prev;
 						const numOfCandles = end - start;
 						const newStart = start + moveIndex >= DEFAULT_START_INDEX ? start + moveIndex : DEFAULT_START_INDEX;
 						const newEnd = newStart + numOfCandles;
@@ -144,10 +143,8 @@ const Chart = ({ stockCode }: IProps) => {
 						return {
 							start: newStart >= DEFAULT_START_INDEX ? newStart : DEFAULT_START_INDEX,
 							end: newEnd,
+							offset: Math.max(offset, Math.ceil(start / DEFAULT_END_INDEX)),
 						};
-					});
-					setOffset((prev) => {
-						return Math.max(prev, Math.ceil(sliceIndex.start / DEFAULT_END_INDEX));
 					});
 				}}
 			>

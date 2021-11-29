@@ -23,7 +23,7 @@ const refreshLogChart = (code: string, type: TChartType, offset: number, set: Se
 	if (type === 1440) unit = 1000 * 60 * 60 * 24;
 
 	const now = Date.now();
-	const [start, end] = [now - unit * (offset + 1), now - unit * offset];
+	const [start, end] = [now - unit * (offset + 2), now - unit * offset];
 
 	fetch(`${process.env.SERVER_URL}/api/stock/log?code=${code}&type=${type}&start=${start}&end=${end}`, {
 		method: 'GET',
