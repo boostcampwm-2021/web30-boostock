@@ -96,7 +96,7 @@ const Trade = () => {
 						<StockInfo info={stockState} />
 					</section>
 					<section className="trade-chart">
-						<Chart stockCode={stockCode} />
+						<Chart stockCode={stockCode} stockState={stockState} />
 					</section>
 					<section className="trade-status">
 						<section className="trade-order">

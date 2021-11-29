@@ -1,7 +1,10 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState, useEffect, useRef } from 'react';
+import { useRecoilState } from 'recoil';
+import chartAtom, { IChartItem } from '@recoil/chart/index';
+import { IStockListItem, IStockChartItem } from '@recoil/stockList/index';
 import { ICrossLine, TChartType } from './common';
-import useChartData from './useChartData';
+import fetchChartData from './fetchChartData';
 import PeriodBackground from './PeriodBackground';
 import CandleGraph from './CandleGraph';
 import VolumeGraph from './VolumeGraph';
@@ -11,12 +14,13 @@ import './Chart.scss';
 
 interface IProps {
 	stockCode: string;
+	stockState: IStockListItem;
 }
 
 interface ISliceIndex {
 	start: number;
 	end: number;
-	offset: number;
+	lastIndex: number;
 }
 
 const DEFAULT_START_INDEX = 0;
@@ -55,17 +59,55 @@ const getChartTypeFromLocalStorage = (): TChartType => {
 	return Number(chartType) as TChartType;
 };
 
-const Chart = ({ stockCode }: IProps) => {
+const Chart = ({ stockCode, stockState }: IProps) => {
 	const chartRef = useRef<HTMLDivElement>(null);
+	const [chart, setChart] = useRecoilState<IChartItem[]>(chartAtom);
 	const [isUserGrabbing, setIsUserGrabbing] = useState<boolean>(false);
-	const [sliceIndex, setSliceIndex] = useState<ISliceIndex>({ start: DEFAULT_START_INDEX, end: DEFAULT_END_INDEX, offset: 0 });
+	const [sliceIndex, setSliceIndex] = useState<ISliceIndex>({
+		start: DEFAULT_START_INDEX,
+		end: DEFAULT_END_INDEX,
+		lastIndex: DEFAULT_END_INDEX,
+	});
 	const [crossLine, setCrossLine] = useState<ICrossLine>({ event: null, posX: 0, posY: 0 });
 	const [chartType, setChartType] = useState<TChartType>(getChartTypeFromLocalStorage);
-	const chart = useChartData(stockCode, chartType, sliceIndex.offset);
 
 	const handleSetChartType = (type: TChartType) => {
 		window.localStorage.setItem('chartType', type.toString());
 		setChartType(type);
+	};
+
+	const resetChart = () => {
+		setChart(() => [
+			{
+				createdAt: Date.now(),
+				priceStart: 0,
+				priceEnd: 0,
+				priceLow: 0,
+				priceHigh: 0,
+				amount: 0,
+			},
+		]);
+	};
+
+	const updateChartData = async (stockCode: string, chartType: TChartType, endDate?: number) => {
+		const newChartData = await fetchChartData(stockCode, chartType, endDate);
+		setChart((prev) => [...prev, ...newChartData]);
+	};
+
+	const updateRealtimeCandle = (charts: IStockChartItem[], chartType: TChartType) => {
+		const targetChart = charts.find(({ type }) => type === chartType);
+		if (!targetChart) return;
+
+		const newChart = {
+			createdAt: Date.now(),
+			priceStart: targetChart.priceStart,
+			priceEnd: targetChart.priceEnd,
+			priceLow: targetChart.priceHigh,
+			priceHigh: targetChart.priceLow,
+			amount: targetChart.amount,
+		};
+
+		setChart((prev) => [newChart, ...prev.slice(1, prev.length)]);
 	};
 
 	useEffect(() => {
@@ -73,13 +115,17 @@ const Chart = ({ stockCode }: IProps) => {
 			e.preventDefault();
 			const numCandleUnit = e.deltaY > 0 ? NUM_OF_CANDLE_UNIT : -NUM_OF_CANDLE_UNIT;
 			setSliceIndex((prev) => {
-				const { start, end, offset } = prev;
+				const { start, end, lastIndex } = prev;
 				let newEnd = end + numCandleUnit;
 				if (newEnd - start < MIN_NUM_OF_CANDLES) newEnd = start + MIN_NUM_OF_CANDLES;
 				if (newEnd - start > MAX_NUM_OF_CANDLES) newEnd = start + MAX_NUM_OF_CANDLES;
 
-				const newOffset = newEnd / DEFAULT_END_INDEX >= offset ? offset + 1 : offset;
-				return { ...prev, end: newEnd, offset: newOffset };
+				if (newEnd >= lastIndex) {
+					updateChartData(stockCode, chartType, chart[chart.length - 1].createdAt);
+					return { ...prev, end: newEnd, lastIndex: lastIndex + DEFAULT_END_INDEX * 2 };
+				}
+
+				return { ...prev, end: newEnd };
 			});
 		};
 
@@ -99,8 +145,15 @@ const Chart = ({ stockCode }: IProps) => {
 	}, []);
 
 	useEffect(() => {
-		setSliceIndex({ start: DEFAULT_START_INDEX, end: DEFAULT_END_INDEX, offset: 0 });
+		setSliceIndex({ start: DEFAULT_START_INDEX, end: DEFAULT_END_INDEX, lastIndex: DEFAULT_END_INDEX });
+		resetChart();
+		updateChartData(stockCode, chartType);
 	}, [stockCode, chartType]);
+
+	useEffect(() => {
+		const { charts } = stockState;
+		updateRealtimeCandle(charts, chartType);
+	}, [stockState, chartType]);
 
 	if (chart.length === 0) {
 		return <p>차트 데이터가 없습니다.</p>;
@@ -135,15 +188,20 @@ const Chart = ({ stockCode }: IProps) => {
 
 					const moveIndex = Math.floor(e.movementX / MOVE_INDEX_SLOW_WEIGHT);
 					setSliceIndex((prev) => {
-						const { start, end, offset } = prev;
+						const { start, end, lastIndex } = prev;
 						const numOfCandles = end - start;
 						const newStart = start + moveIndex >= DEFAULT_START_INDEX ? start + moveIndex : DEFAULT_START_INDEX;
 						const newEnd = newStart + numOfCandles;
 
+						if (newEnd >= lastIndex) {
+							updateChartData(stockCode, chartType, chart[chart.length - 1].createdAt);
+							return { start: newStart, end: newEnd, lastIndex: lastIndex + DEFAULT_END_INDEX * 2 };
+						}
+
 						return {
 							start: newStart >= DEFAULT_START_INDEX ? newStart : DEFAULT_START_INDEX,
 							end: newEnd,
-							offset: Math.max(offset, Math.ceil(start / DEFAULT_END_INDEX)),
+							lastIndex,
 						};
 					});
 				}}
