@@ -61,7 +61,8 @@ export default class BidAskTransaction {
 	}
 
 	async bidUserProcess(bidUser: User, bidOrder: Order): Promise<void> {
-		let bidUserStock = await this.UserStockRepositoryRunner.readLock(bidUser.userId, this.TransactionInfo.stockId);
+		let bidUserStock = await this.UserStockRepositoryRunner.read(bidUser.userId, this.TransactionInfo.stockId);
+		if (bidUserStock) bidUserStock = await this.UserStockRepositoryRunner.readLock(bidUserStock.userStockId);
 
 		bidUser.balance += refundBetweenDepositTransacionAmount(
 			bidOrder.price,
