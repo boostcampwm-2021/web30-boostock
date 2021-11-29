@@ -14,17 +14,32 @@ jobs:
 
         steps:
             - name: Install Node.js
-              uses: actions/setup-node@v2
-              with:
-                  node-version: '16.x'
-                  
+                uses: actions/setup-node@v2
+                with:
+                    node-version: '16.x'
+
             - uses: actions/checkout@v2
 
             - name: Create Environment File
-              run: |
-                  echo "${{ secrets.BACK_ENV }}" >> ./.env
+                run: |
+                    echo "${{ secrets.BACK_ENV }}" >> ./back/.env
+
+            - name: Create ORM Config
+                uses: jsdaniell/create-json@1.1.2
+                with:
+                    name: 'ormconfig.json'
+                    json: ${{ secrets.BACK_ORM_CONFIG }}
+                    dir: './back/'
+
+            - name: Create Session Config
+                uses: jsdaniell/create-json@1.1.2
+                with:
+                    name: 'sessionStoreConfig.json'
+                    json: ${{ secrets.BACK_SESSION_CONFIG }}
+                    dir: './back/'
 
             - name: Test
-              run: | 
-                  npm install
-                  npm run test
+                run: | 
+                    cd back
+                    npm install
+                    npm run test
