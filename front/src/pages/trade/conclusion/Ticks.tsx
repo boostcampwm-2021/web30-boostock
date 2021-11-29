@@ -1,8 +1,9 @@
 import { IStockExecutionItem } from '@src/recoil/stockExecution';
 import React from 'react';
+import { useRecoilValue } from 'recoil';
+import StockExecution from '@recoil/stockExecution/index';
 
 interface Props {
-	stockExecutionState: IStockExecutionItem[];
 	previousClose: number;
 }
 
@@ -23,7 +24,9 @@ const colorPicker = (prev: number, current: number): string => {
 };
 
 const Ticks = (props: Props) => {
-	const { stockExecutionState, previousClose } = props;
+	const { previousClose } = props;
+	const stockExecutionState = useRecoilValue(StockExecution);
+
 	return (
 		<>
 			<header className="conclusion-header">
