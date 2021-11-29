@@ -117,7 +117,7 @@ export default async (): Promise<void> => {
 					const stockCode = requestData.stockCode ?? '';
 					const conclusions = await stockService.getConclusionByCode(stockCode);
 
-					ws.send(translateResponseFormat('baseStock', { conclusions, charts: [] }));
+					ws.send(translateResponseFormat('baseStock', { stockCode, conclusions }));
 					socketClientMap.set(ws, { ...socketClientMap.get(ws), target: stockCode });
 					break;
 				}

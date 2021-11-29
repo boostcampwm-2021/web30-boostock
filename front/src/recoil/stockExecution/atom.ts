@@ -5,12 +5,21 @@ export interface IStockExecutionItem {
 	price: number;
 	volume: number;
 	amount: number;
+	stockCode: string;
 	id: string;
 }
 
-const stockExecutionAtom = atom<IStockExecutionItem[]>({
+export interface IStockExecutionInfo {
+	stockCode: string;
+	executions: IStockExecutionItem[];
+}
+
+const stockExecutionAtom = atom<IStockExecutionInfo>({
 	key: 'stockExecutionAtom',
-	default: [],
+	default: {
+		stockCode: '',
+		executions: [],
+	},
 });
 
 export default stockExecutionAtom;
