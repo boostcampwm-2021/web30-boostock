@@ -1,8 +1,8 @@
 name: Test Backend
 
 on:
-    pull_request:
-        branches: [develop]
+    pull_request_target:
+        types: [labeled]
     workflow_dispatch:
 
 jobs:
