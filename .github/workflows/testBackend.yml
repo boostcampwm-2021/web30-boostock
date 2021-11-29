@@ -1,9 +1,9 @@
 name: Test Backend
 ###################################
-# Required Secret : SSH_PRIVATE_KEY, REMOTE_HOST, REMOTE_USER, REMOTE_PORT, REMOTE_TARGET, REMOTE_PM2, BACK_ENV, BACK_ORM_CONFIG, FRONT_ENV
+# Required Secret : BACK_ENV, BACK_ORM_CONFIG
 ###################################
 on:
-    push:
+    pull_request:
         branches: [develop]
     workflow_dispatch:
 
@@ -34,4 +34,4 @@ jobs:
                   echo "${{ secrets.BACK_ENV }}" >> .env
                   npm install
                   npm run test
-              working-directory: ./back
+              working-directory: back/
