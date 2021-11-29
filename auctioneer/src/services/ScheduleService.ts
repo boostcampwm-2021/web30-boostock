@@ -37,32 +37,15 @@ export default class ScheduleService {
 	}
 
 	async initializeChart(chart: Chart, chartRepositoryRunner: ChartRepository): Promise<IChartLog> {
-		const chartLog = this.saveChartLog(chart);
-		chart.priceBefore = chart.priceEnd;
-		chart.priceStart = 0;
-		chart.priceEnd = 0;
-		chart.priceHigh = 0;
-		chart.priceLow = 0;
-		chart.amount = 0;
-		chart.volume = 0;
-		await chartRepositoryRunner.save(chart);
+		const chartLog = await this.saveChartLog(chart);
+		await chartRepositoryRunner.resetChart(chart);
 
 		return chartLog;
 	}
 
 	async initializeChartAndStock(chart: Chart, chartRepositoryRunner: ChartRepository): Promise<IChartLog> {
-		const chartLog = this.saveChartLog(chart);
 		chart.stock.previousClose = chart.priceEnd;
-		chart.priceBefore = chart.priceEnd;
-		chart.priceStart = 0;
-		chart.priceEnd = 0;
-		chart.priceHigh = 0;
-		chart.priceLow = 0;
-		chart.amount = 0;
-		chart.volume = 0;
-		await chartRepositoryRunner.save(chart);
-
-		return chartLog;
+		return this.initializeChart(chart, chartRepositoryRunner);
 	}
 
 	async runAllChart(type: number): Promise<void> {
@@ -71,7 +54,7 @@ export default class ScheduleService {
 		await queryRunner.startTransaction();
 		try {
 			const chartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
-			const charts = await chartRepositoryRunner.readLock(type);
+			const charts = await chartRepositoryRunner.readByType(type);
 			if (type === CHARTTYPE.DAYS) {
 				const chartLogList = await Promise.all(
 					charts.map((chart) => this.initializeChartAndStock(chart, chartRepositoryRunner)),
@@ -84,6 +67,7 @@ export default class ScheduleService {
 			await queryRunner.commitTransaction();
 		} catch (error) {
 			await queryRunner.rollbackTransaction();
+			throw error;
 		} finally {
 			await queryRunner.release();
 		}

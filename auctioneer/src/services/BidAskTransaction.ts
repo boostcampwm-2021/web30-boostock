@@ -100,28 +100,14 @@ export default class BidAskTransaction {
 		stock.price = this.TransactionInfo.price;
 		await this.StockRepositoryRunner.save(stock);
 
-		const charts = await this.ChartRepositoryRunner.find({
-			where: {
-				stock,
-			},
-		});
+		const charts = await this.ChartRepositoryRunner.readByStock(stock);
 
-		this.updatedCharts = charts.map((chart: Chart) => {
-			chart.priceEnd = this.TransactionInfo.price;
-			if (chart.priceStart === 0) {
-				chart.priceStart = this.TransactionInfo.price;
-				chart.priceHigh = this.TransactionInfo.price;
-				chart.priceLow = this.TransactionInfo.price;
-			} else {
-				chart.priceHigh = Math.max(chart.priceHigh, this.TransactionInfo.price);
-				chart.priceLow = Math.min(chart.priceLow, this.TransactionInfo.price);
-			}
-			chart.amount += this.TransactionInfo.amount;
-			chart.volume += this.TransactionInfo.price * this.TransactionInfo.amount;
-			return chart;
-		});
-
-		await Promise.all(this.updatedCharts.map((chart: Chart) => this.ChartRepositoryRunner.update(chart.chartId, chart)));
+		await Promise.all(
+			charts.map((chart: Chart) =>
+				this.ChartRepositoryRunner.updateChart(chart, this.TransactionInfo.price, this.TransactionInfo.amount),
+			),
+		);
+		this.updatedCharts = await this.ChartRepositoryRunner.readByStock(stock);
 	}
 
 	async logProcess(): Promise<void> {
