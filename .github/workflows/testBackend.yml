@@ -8,7 +8,7 @@ on:
     workflow_dispatch:
 
 jobs:
-    initialize:
+    test:
         runs-on: ubuntu-latest
         environment: develop
 
@@ -38,7 +38,7 @@ jobs:
                   json: ${{ secrets.BACK_SESSION_CONFIG }}
                   dir: './back/'
 
-            - name: Test
+            - name: Run Test
               run: | 
                   cd back
                   npm install
