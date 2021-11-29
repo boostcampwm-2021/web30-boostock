@@ -29,9 +29,13 @@ jobs:
                   json: ${{ secrets.BACK_SESSION_CONFIG }}
                   dir: 'back/'
 
+            - name: Create Environment File
+              run: |
+                  echo "${{ secrets.BACK_ENV }}" >> .env
+              working-directory: ./back
+
             - name: Test
               run: | 
-                  echo "${{ secrets.BACK_ENV }}" >> .env
                   npm install
                   npm run test
-              working-directory: back/
+              working-directory: ./back
