@@ -22,7 +22,7 @@ jobs:
 
             - name: Create Environment File
               run: |
-                  echo "${{ secrets.BACK_ENV }}" >> ./back/.env
+                  echo "${{ secrets.BACK_ENV }}" >> ./back/.env.dev
 
             - name: Create ORM Config
               uses: jsdaniell/create-json@1.1.2
