@@ -20,20 +20,6 @@ jobs:
               with:
                   node-version: '16.x'
 
-            - name: Create ORM Config
-              uses: jsdaniell/create-json@1.1.2
-              with:
-                  name: 'ormconfig.json'
-                  json: ${{ secrets.BACK_ORM_CONFIG }}
-                  dir: 'back/'
-
-            - name: Create Session Config
-              uses: jsdaniell/create-json@1.1.2
-              with:
-                  name: 'sessionStoreConfig.json'
-                  json: ${{ secrets.BACK_SESSION_CONFIG }}
-                  dir: 'back/'
-
             - name: Create Environment File
               run: |
                   echo "${{ secrets.BACK_ENV }}" >> .env
