@@ -1,5 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Order, ORDERTYPE } from '@models/index';
+import { OptimisticVersionError, OptimisticVersionErrorMessage } from '@errors/index';
 
 @EntityRepository(Order)
 export default class OrderRepository extends Repository<Order> {
@@ -24,16 +25,18 @@ export default class OrderRepository extends Repository<Order> {
 	}
 
 	public async removeOrderOCC(order: Order): Promise<void> {
-		this.createQueryBuilder()
+		const { affected } = await this.createQueryBuilder()
 			.delete()
 			.from(Order)
 			.where('order_id = :orderId', { orderId: order.orderId })
 			.andWhere('version = :version', { version: order.version })
 			.execute();
+		if (affected !== 1)
+			throw new OptimisticVersionError(OptimisticVersionErrorMessage.OPTIMISTIC_LOCK_VERSION_MISMATCH_ERROR);
 	}
 
 	public async decreaseAmountOCC(order: Order, amount: number): Promise<void> {
-		this.createQueryBuilder()
+		const { affected } = await this.createQueryBuilder()
 			.update(Order)
 			.set({
 				amount: () => `amount - ${amount}`,
@@ -42,5 +45,7 @@ export default class OrderRepository extends Repository<Order> {
 			.where('order_id = :orderId', { orderId: order.orderId })
 			.andWhere('version = :version', { version: order.version })
 			.execute();
+		if (affected !== 1)
+			throw new OptimisticVersionError(OptimisticVersionErrorMessage.OPTIMISTIC_LOCK_VERSION_MISMATCH_ERROR);
 	}
 }

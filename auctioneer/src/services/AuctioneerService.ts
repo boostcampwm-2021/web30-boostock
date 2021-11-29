@@ -2,7 +2,7 @@
 import { getConnection } from 'typeorm';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
 import { Order } from '@models/index';
-import { OrderError, OrderErrorMessage } from '@errors/index';
+import { OptimisticVersionError, OrderError, OrderErrorMessage } from '@errors/index';
 import BidAskTransaction from './BidAskTransaction';
 
 export default class AuctioneerService {
@@ -77,6 +77,7 @@ export default class AuctioneerService {
 			await task.logProcess();
 			result = true;
 		} catch (err) {
+			if (err instanceof OptimisticVersionError) console.error(err);
 			await queryRunner.rollbackTransaction();
 			result = false;
 		} finally {
