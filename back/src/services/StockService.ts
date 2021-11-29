@@ -2,7 +2,7 @@
 import { EntityManager, getCustomRepository, getConnection } from 'typeorm';
 import { Stock, ChartLog, TransactionLog, ITransactionLog } from '@models/index';
 import { StockRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage, StockError, StockErrorMessage } from 'errors/index';
+import { CommonError, CommonErrorMessage, StockError, StockErrorMessage } from '@errors/index';
 import IChartLog, { CHARTTYPE_VALUE } from '@interfaces/IChartLog';
 
 export default class StockService {

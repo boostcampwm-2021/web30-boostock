@@ -1,0 +1,36 @@
+name: Test Backend
+###################################
+# Required Secret : SSH_PRIVATE_KEY, REMOTE_HOST, REMOTE_USER, REMOTE_PORT, REMOTE_TARGET, REMOTE_PM2, BACK_ENV, BACK_ORM_CONFIG, FRONT_ENV
+###################################
+on:
+    push:
+        branches: [develop]
+    workflow_dispatch:
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        environment: develop
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Create ORM Config
+              uses: jsdaniell/create-json@1.1.2
+              with:
+                  name: 'ormconfig.json'
+                  json: ${{ secrets.BACK_ORM_CONFIG }}
+                  dir: 'back/'
+
+            - name: Create Session Config
+              uses: jsdaniell/create-json@1.1.2
+              with:
+                  name: 'sessionStoreConfig.json'
+                  json: ${{ secrets.BACK_SESSION_CONFIG }}
+                  dir: 'back/'
+
+            - name: Test
+              run: | 
+                  npm install
+                  npm run test
+              working-directory: ./back

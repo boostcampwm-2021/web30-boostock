@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { EntityManager, getConnection } from 'typeorm';
 import { OrderRepository, StockRepository, UserRepository, UserStockRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage, OrderError, OrderErrorMessage } from 'errors/index';
+import { CommonError, CommonErrorMessage, OrderError, OrderErrorMessage } from '@errors/index';
 import { IAskOrder } from '@interfaces/askOrder';
 import { IBidOrder } from '@interfaces/bidOrder';
 import { ORDERTYPE } from '@models/Order';

@@ -115,5 +115,6 @@
   "exclude": [
     "node_modules",
     "tests"
-  ]
+  ],
+  "files": ["./global.d.ts"],
 }
