@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@src/recoil/user/atom';
-import { OFFSET, IProps, IDrawLegendProps, getTextColor, getBorderColor } from './common';
+import { OFFSET, IProps, IDrawLegendProps, getTextColor, getBorderColor, formatCandleDate } from './common';
 
 import './Chart.scss';
 
@@ -10,11 +10,9 @@ const CANVAS_HEIGHT = 400;
 
 const formatPeriodLegend = (timestamp: number) => {
 	const date = new Date(timestamp);
-	const yyyymmdd = date.toISOString().slice(0, 10);
-	const hh = date.getHours().toString().padStart(2, '0');
-	const mm = date.getMinutes().toString().padStart(2, '0');
+	const [mm, dd, yyyy] = date.toLocaleString().slice(0, 10).split('/');
 
-	return `${yyyymmdd} ${hh}:${mm}`;
+	return `${yyyy}-${mm}-${dd} ${formatCandleDate(timestamp)}`;
 };
 
 const drawPeriodLegend = ({ canvas, chartData, crossLine, theme, numOfCandles }: IDrawLegendProps): void => {
