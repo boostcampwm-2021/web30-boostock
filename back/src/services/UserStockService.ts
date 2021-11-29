@@ -2,7 +2,7 @@
 import { EntityManager, getCustomRepository } from 'typeorm';
 import { UserStock } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage } from 'errors/index';
+import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage } from '@errors/index';
 
 export default class UserStockService {
 	static instance: UserStockService | null = null;

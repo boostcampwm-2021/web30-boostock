@@ -2,7 +2,7 @@
 import { EntityManager, getCustomRepository } from 'typeorm';
 import { Stock, UserFavorite } from '@models/index';
 import { StockRepository, UserFavoriteRepository, UserRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage } from 'errors/index';
+import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage } from '@errors/index';
 
 export default class UserFavoriteService {
 	static instance: UserFavoriteService | null = null;
