@@ -22,7 +22,7 @@ const drawPeriodBackground = ({ canvas, chartData, candleWidth, theme }: IDrawPr
 	const context = canvas?.getContext('2d');
 	if (!canvas || !context) return;
 
-	const [VOLUME_TOP, LEGEND_TOP] = [Math.floor(CANVAS_HEIGHT * 0.7), Math.floor(CANVAS_HEIGHT * 0.9)];
+	const LEGEND_TOP = Math.floor(CANVAS_HEIGHT * 0.9);
 
 	context.font = '11px dotum';
 	context.textAlign = 'center';

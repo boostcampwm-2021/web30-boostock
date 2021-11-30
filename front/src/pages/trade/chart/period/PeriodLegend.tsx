@@ -23,7 +23,8 @@ const formatPeriodLegend = (timestamp: number) => {
 };
 
 const drawPeriodLegend = ({ ctx, chartData, crossLine, theme, numOfCandles }: IDrawPeriodLegendArgs): void => {
-	const [VOLUME_TOP, LEGEND_TOP] = [Math.floor(CANVAS_HEIGHT * 0.7), Math.floor(CANVAS_HEIGHT * 0.9)];
+	const VOLUME_TOP = Math.floor(CANVAS_HEIGHT * 0.7);
+	const LEGEND_TOP = Math.floor(CANVAS_HEIGHT * 0.9);
 	const textPadding = 5;
 	const BOX_HEIGHT = 20;
 
