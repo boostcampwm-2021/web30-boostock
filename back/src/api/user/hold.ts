@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { AuthError, AuthErrorMessage } from 'errors/index';
 import { UserStockService } from '@services/index';
+import sessionValidator from '@api/middleware/sessionValidator';
 
 export default (): express.Router => {
 	const router = express.Router();
@@ -19,6 +20,7 @@ export default (): express.Router => {
 					nameEnglish: elem.stock.nameEnglish,
 				};
 			});
+
 			res.status(200).json({ holdStocks });
 		} catch (error) {
 			next(error);

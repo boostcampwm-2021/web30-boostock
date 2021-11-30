@@ -16,6 +16,7 @@ export default (): express.Router => {
 			const alarmToken = generateUUID();
 
 			if (userInfo.userId === undefined) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
+
 			req.session.data = {
 				userId: userInfo.userId,
 				email: userInfo.email,

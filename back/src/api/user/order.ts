@@ -3,43 +3,31 @@ import express, { NextFunction, Request, Response } from 'express';
 
 import { OrderService, UserService } from '@services/index';
 import Emitter from '@helper/eventEmitter';
-import { AuthError, AuthErrorMessage, ParamError, ParamErrorMessage } from 'errors/index';
+import { ParamError, ParamErrorMessage } from 'errors/index';
 import { orderValidator, stockIdValidator } from '@api/middleware/orderValidator';
 import config from '@config/index';
+import sessionValidator from '@api/middleware/sessionValidator';
 
 export default (): express.Router => {
 	const router = express.Router();
 
-	router.get('/order', async (req: Request, res: Response, next: NextFunction) => {
+	router.get('/order', sessionValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const userId = req.session.data?.userId;
-			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
+			const { userId } = res.locals;
 			const { stockCode } = req.body;
 			const pendingOrder = await UserService.readPendingOrder(userId, stockCode);
+
 			res.status(200).json({ pendingOrder });
 		} catch (error) {
 			next(error);
 		}
 	});
 
-	router.post('/order', orderValidator, async (req: Request, res: Response, next: NextFunction) => {
+	router.post('/order', sessionValidator, orderValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const userId = req.session.data?.userId;
-			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
+			const { userId } = res.locals;
 			const { stockCode, type, amount, price } = req.body;
-			if (
-				!stockCode ||
-				!type ||
-				!amount ||
-				!price ||
-				price <= 0 ||
-				price >= config.maxPrice ||
-				amount <= 0 ||
-				amount >= config.maxAmount
-			)
-				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.order(userId, stockCode, type, amount, price);
-			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
 
 			const acceptedOrderInfo = {
 				stockCode,
@@ -51,17 +39,18 @@ export default (): express.Router => {
 					},
 				},
 			};
-			Emitter.emit('order accepted', acceptedOrderInfo);
+
 			res.status(200).json({});
+			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
+			Emitter.emit('order accepted', acceptedOrderInfo);
 		} catch (error) {
 			next(error);
 		}
 	});
 
-	router.delete('/order', async (req: Request, res: Response, next: NextFunction) => {
+	router.delete('/order', sessionValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const userId = req.session.data?.userId;
-			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
+			const { userId } = res.locals;
 			const { id } = req.query;
 			if (!id) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.cancel(userId, Number(id));
@@ -71,22 +60,12 @@ export default (): express.Router => {
 		}
 	});
 
-	router.put('/order', async (req: Request, res: Response, next: NextFunction) => {
+	router.put('/order', sessionValidator, orderValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const userId = req.session.data?.userId;
-			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
+			const { userId } = res.locals;
 			const { orderId, amount, price } = req.body;
-			if (
-				!orderId ||
-				!amount ||
-				!price ||
-				price <= 0 ||
-				price >= config.maxPrice ||
-				amount <= 0 ||
-				amount >= config.maxAmount
-			)
-				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.modify(userId, orderId, amount, price);
+
 			res.status(200).json({});
 		} catch (error) {
 			next(error);
@@ -110,8 +89,6 @@ export default (): express.Router => {
 		try {
 			const { botId: userId, stockCode, type, amount, price } = req.body;
 			await OrderService.order(userId, stockCode, type, amount, price);
-			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
-
 			const acceptedOrderInfo = {
 				stockCode,
 				msg: {
@@ -122,8 +99,10 @@ export default (): express.Router => {
 					},
 				},
 			};
-			Emitter.emit('order accepted', acceptedOrderInfo);
+
 			res.status(200).json({});
+			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
+			Emitter.emit('order accepted', acceptedOrderInfo);
 		} catch (error) {
 			next(error);
 		}

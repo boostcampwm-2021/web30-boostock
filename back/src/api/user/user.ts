@@ -1,15 +1,16 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { AuthError, AuthErrorMessage, ParamError, UserError } from '@errors/index';
+import { ParamError, UserError } from '@errors/index';
 import { UserService } from '@services/index';
+import sessionValidator from '@api/middleware/sessionValidator';
 
 export default (): express.Router => {
 	const router = express.Router();
 
-	router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+	router.get('/', sessionValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const userId = req.session.data?.userId;
-			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
+			const { userId } = res.locals;
 			const user = await UserService.getUserById(userId);
+
 			res.status(200).json({ user });
 		} catch (error) {
 			next(error);
@@ -20,6 +21,7 @@ export default (): express.Router => {
 		try {
 			const { email } = req.query;
 			await UserService.getUserByEmail(String(email));
+
 			return res.status(200).json({ result: false });
 		} catch (error) {
 			if (error instanceof UserError) return res.status(200).json({ result: true });

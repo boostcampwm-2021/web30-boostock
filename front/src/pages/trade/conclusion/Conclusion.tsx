@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import StockExecution from '@recoil/stockExecution/index';
+
 import './conclusion.scss';
 import Ticks from './Ticks';
 import Days from './Days';
@@ -17,16 +16,15 @@ interface Props {
 
 const Conclusion = ({ previousClose, stockCode }: Props) => {
 	const [tab, setTab] = useState(TAB.TICK);
-	const stockExecutionState = useRecoilValue(StockExecution);
 
 	const getCurrentTab = () => {
 		switch (tab) {
 			case TAB.TICK:
-				return <Ticks key={tab} stockExecutionState={stockExecutionState} previousClose={previousClose} />;
+				return <Ticks key={tab} previousClose={previousClose} />;
 			case TAB.DAY:
 				return <Days key={tab} stockCode={stockCode} />;
 			default:
-				return <Ticks key={tab} stockExecutionState={stockExecutionState} previousClose={previousClose} />;
+				return <Ticks key={tab} previousClose={previousClose} />;
 		}
 	};
 

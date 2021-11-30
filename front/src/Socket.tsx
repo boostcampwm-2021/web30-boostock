@@ -4,7 +4,7 @@ import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
 import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
-import stockExecutionAtom, { IStockExecutionItem } from './recoil/stockExecution/atom';
+import stockExecutionAtom, { IStockExecutionInfo, IStockExecutionItem } from './recoil/stockExecution/atom';
 import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
 import Emitter from './common/utils/eventEmitter';
 import HoldStockListAtom from './recoil/holdStockList/atom';
@@ -18,7 +18,7 @@ interface IProps {
 interface IStartSocket {
 	setSocket: SetterOrUpdater<WebSocket | null>;
 	setStockList: SetterOrUpdater<IStockListItem[]>;
-	setStockExecution: SetterOrUpdater<IStockExecutionItem[]>;
+	setStockExecution: SetterOrUpdater<IStockExecutionInfo>;
 	setAskOrders: SetterOrUpdater<IAskOrderItem[]>;
 	setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
 	setHold: SetterOrUpdater<string[]>;
@@ -29,6 +29,7 @@ interface IResponseConclusions {
 	createdAt: number;
 	price: number;
 	amount: number;
+	stockCode: string;
 	_id: string;
 }
 interface IMatchData {
@@ -159,29 +160,35 @@ function updateBidOrders(orders: IBidOrderItem[]): IBidOrderItem[] {
 }
 
 const dataToExecutionForm = (conclusionList: IResponseConclusions[]): IStockExecutionItem[] =>
-	conclusionList.map(({ createdAt, price, amount, _id }): IStockExecutionItem => {
+	conclusionList.map(({ createdAt, price, amount, stockCode, _id }): IStockExecutionItem => {
 		return {
 			timestamp: createdAt,
 			price,
 			volume: price * amount,
 			amount,
+			stockCode,
 			id: _id,
 		};
 	});
 
-const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[]>, match: IMatchData) => {
+const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionInfo>, match: IMatchData) => {
 	const newExecution = {
 		id: match.id,
 		price: match.price,
 		amount: match.amount,
 		timestamp: match.createdAt,
+		stockCode: match.code,
 		volume: match.price * match.amount,
 	};
-	setStockExecution((prev) => {
-		const executionList = [newExecution, ...prev];
-		if (executionList.length > MAX_EXECUTION_SIZE) executionList.pop();
 
-		return executionList;
+	setStockExecution((prev) => {
+		const { stockCode, executions } = prev;
+		if (stockCode !== match.code) return { stockCode, executions };
+
+		const newExecutions = [newExecution, ...executions];
+		if (newExecutions.length > MAX_EXECUTION_SIZE) newExecutions.pop();
+
+		return { stockCode: prev.stockCode, executions: newExecutions };
 	});
 };
 
@@ -205,7 +212,16 @@ const startSocket = ({
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setDailyLog, setChart });
+			startSocket({
+				setSocket,
+				setStockList,
+				setStockExecution,
+				setAskOrders,
+				setBidOrders,
+				setHold,
+				setDailyLog,
+				setChart,
+			});
 		}, 1000);
 	};
 	webSocket.onmessage = async (event) => {
@@ -243,7 +259,8 @@ const startSocket = ({
 				break;
 			}
 			case 'baseStock': {
-				setStockExecution(dataToExecutionForm(data.conclusions));
+				const stockExecutionForm = { stockCode: data.stockCode, executions: dataToExecutionForm(data.conclusions) };
+				setStockExecution(stockExecutionForm);
 				break;
 			}
 			case 'chart': {
