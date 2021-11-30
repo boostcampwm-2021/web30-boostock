@@ -61,7 +61,7 @@ const drawCandleDate = ({ ctx, index, createdAt, candleWidth, numOfPartitions }:
 
 const drawPeriodBackground = ({ ctx, chartData, candleWidth, theme }: IDrawPeriodBackground): void => {
 	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-	ctx.font = '11px Lato';
+	ctx.font = '12px Lato';
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
 
