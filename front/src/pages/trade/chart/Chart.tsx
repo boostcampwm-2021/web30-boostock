@@ -123,7 +123,7 @@ const Chart = ({ stockCode, stockState }: IProps) => {
 					setSliceIndexAfterSlide(moveIndex);
 				}}
 			>
-				<PeriodBackground chartData={chartToRender} />
+				<PeriodBackground chartData={chartToRender} chartType={chartType} />
 				<CandleGraph
 					chartData={chartToRender}
 					crossLine={crossLine}

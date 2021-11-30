@@ -44,12 +44,14 @@ export const getMinValue = (
 	lowerBuffer = 1,
 ): number => Math.min(...chartData.filter((data) => data[validProperty] > 0).map((data) => data[filterProperty])) * lowerBuffer;
 
-export const formatCandleDate = (timestamp: number) => {
+export const formatCandleDate = (timestamp: number, chartType: TChartType = 1) => {
 	const date = new Date(timestamp);
+	const month = (date.getMonth() + 1).toString().padStart(2, '0');
+	const dd = date.getDate().toString().padStart(2, '0');
 	const hh = date.getHours().toString().padStart(2, '0');
 	const mm = date.getMinutes().toString().padStart(2, '0');
 
-	return `${hh}:${mm}`;
+	return chartType === 1 ? `${hh}:${mm}` : `${month}-${dd}`;
 };
 
 export const getTextColor = (theme: TTheme) => {
