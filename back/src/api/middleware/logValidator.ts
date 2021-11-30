@@ -19,8 +19,6 @@ const logValidator = (req: Request, res: Response, next: NextFunction): void => 
 	} catch (error) {
 		next(error);
 	}
-
-	next();
 };
 
 export default logValidator;

@@ -1,3 +1,4 @@
+import logValidator from '@api/middleware/logValidator';
 import ParamError, { ParamErrorMessage } from '@errors/ParamError';
 import { CHARTTYPE_VALUE } from '@interfaces/IChartLog';
 import StockService from '@services/StockService';
@@ -6,11 +7,11 @@ import express, { NextFunction, Request, Response } from 'express';
 export default (): express.Router => {
 	const router = express.Router();
 
-	router.get('/log', async (req: Request, res: Response, next: NextFunction) => {
+	router.get('/log', logValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { code, start, end, type } = res.locals;
 			const log = await StockService.getStockLog(code, type as CHARTTYPE_VALUE, start, end);
-
+			console.log(log);
 			res.status(200).json({ log });
 		} catch (error) {
 			next(error);
