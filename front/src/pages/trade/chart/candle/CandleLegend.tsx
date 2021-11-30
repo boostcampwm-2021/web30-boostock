@@ -50,7 +50,7 @@ const drawCandleLegend = ({ ctx, chartData, theme, convertToYPosition }: IDrawCa
 
 		ctx.strokeStyle = getPriceColor(priceStart, priceEnd, theme);
 		ctx.beginPath();
-		ctx.setLineDash([3, 3]);
+		ctx.setLineDash([4, 4]);
 		ctx.moveTo(0, yPos);
 		ctx.lineTo(LEGEND_LEFT, yPos);
 		ctx.stroke();
@@ -72,6 +72,7 @@ const drawHoverCandleLegend = ({ crossLine, ctx, minPrice, maxPrice, theme, conv
 
 	ctx.strokeStyle = getBorderColor(theme);
 	ctx.beginPath();
+	ctx.setLineDash([6, 6]);
 	ctx.moveTo(0, yPos);
 	ctx.lineTo(LEGEND_LEFT, yPos);
 	ctx.stroke();

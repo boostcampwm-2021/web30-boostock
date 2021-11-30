@@ -43,7 +43,7 @@ const drawHoverVolumeLegend = ({ crossLine, ctx, minAmount, maxAmount, theme }: 
 
 	ctx.strokeStyle = getBorderColor(theme);
 	ctx.beginPath();
-	ctx.setLineDash([3, 3]);
+	ctx.setLineDash([6, 6]);
 	ctx.moveTo(0, crossLine.posY + 0.5);
 	ctx.lineTo(LEGEND_LEFT, crossLine.posY + 0.5);
 	ctx.stroke();
