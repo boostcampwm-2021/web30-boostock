@@ -7,7 +7,7 @@ import {
 	IGraphComponentProps,
 	ICrossLine,
 	TTheme,
-	CANVAS_TOP_BOTTOM_PADDING,
+	PRICE_CANVAS_TOP_BOT_PADDING as CANVAS_PADDING,
 	MAKE_CLEAR_OFFSET,
 	getPriceColor,
 	getMaxValue,
@@ -66,7 +66,7 @@ const drawCandleLegend = ({ ctx, chartData, theme, convertToYPosition }: IDrawCa
 const drawHoverCandleLegend = ({ crossLine, ctx, minPrice, maxPrice, theme, convertToYPosition }: IDrawHoverCandleLegendArgs) => {
 	if (!crossLine.event || crossLine.event.target !== ctx.canvas) return;
 
-	const ratio = (crossLine.posY - CANVAS_TOP_BOTTOM_PADDING) / (CANVAS_HEIGHT - CANVAS_TOP_BOTTOM_PADDING * 2);
+	const ratio = (crossLine.posY - CANVAS_PADDING) / (CANVAS_HEIGHT - CANVAS_PADDING * 2);
 	const priceValue = Math.floor(minPrice + (maxPrice - minPrice) * (1 - ratio));
 	const yPos = convertToYPosition(priceValue);
 	const text = getText(priceValue, Number.isNaN);

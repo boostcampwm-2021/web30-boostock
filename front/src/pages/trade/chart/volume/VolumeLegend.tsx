@@ -5,7 +5,7 @@ import { IChartItem } from '@recoil/chart';
 import {
 	ICrossLine,
 	TTheme,
-	CANVAS_TOP_BOTTOM_PADDING,
+	VOLUME_CANVAS_TOP_BOT_PADDING as CANVAS_PADDING,
 	MAKE_CLEAR_OFFSET,
 	getTextColor,
 	getBorderColor,
@@ -39,7 +39,7 @@ const drawHoverVolumeLegend = ({ crossLine, ctx, minAmount, maxAmount, theme }: 
 	if (!Number.isFinite(minAmount)) return;
 
 	ctx.font = '11px Lato';
-	const ratio = (crossLine.posY - CANVAS_TOP_BOTTOM_PADDING) / (CANVAS_HEIGHT - CANVAS_TOP_BOTTOM_PADDING * 2);
+	const ratio = (crossLine.posY - CANVAS_PADDING) / (CANVAS_HEIGHT - CANVAS_PADDING * 2);
 	const volumeValue = Math.floor(minAmount + (maxAmount - minAmount) * (1 - ratio));
 	const text = getText(volumeValue, (arg: number) => arg <= 0);
 

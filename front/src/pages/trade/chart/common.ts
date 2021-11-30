@@ -6,7 +6,8 @@ export const NUM_OF_CANDLES = 60;
 export const RATIO_MIN = 1.0;
 export const RATIO_MAX = 1.0;
 export const CANDLE_GAP = 5;
-export const CANVAS_TOP_BOTTOM_PADDING = 14;
+export const PRICE_CANVAS_TOP_BOT_PADDING = 14;
+export const VOLUME_CANVAS_TOP_BOT_PADDING = 7;
 
 export type TTheme = 'light' | 'dark';
 export type TChartType = 1 | 1440;

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState, useEffect, useRef } from 'react';
 import { IStockListItem } from '@recoil/stockList';
-import { ICrossLine, TChartType, CANVAS_TOP_BOTTOM_PADDING } from './common';
+import { ICrossLine, TChartType, PRICE_CANVAS_TOP_BOT_PADDING, VOLUME_CANVAS_TOP_BOT_PADDING } from './common';
 import PeriodBackground from './period/PeriodBackground';
 import CandleGraph from './candle/CandleGraph';
 import VolumeGraph from './volume/VolumeGraph';
@@ -63,8 +63,8 @@ const Chart = ({ stockCode, stockState }: IProps) => {
 		setChartType(type);
 	};
 
-	const getYPosition = (maxValue: number, minValue: number, canvasHeight: number) => (value: number) =>
-		CANVAS_TOP_BOTTOM_PADDING + ((maxValue - value) / (maxValue - minValue)) * (canvasHeight - CANVAS_TOP_BOTTOM_PADDING * 2);
+	const getYPosition = (padding: number) => (maxValue: number, minValue: number, canvasHeight: number) => (value: number) =>
+		padding + ((maxValue - value) / (maxValue - minValue)) * (canvasHeight - padding * 2);
 
 	useEffect(() => {
 		const zoomCandleChart = (e: WheelEvent) => {
@@ -124,8 +124,16 @@ const Chart = ({ stockCode, stockState }: IProps) => {
 				}}
 			>
 				<PeriodBackground chartData={chartToRender} />
-				<CandleGraph chartData={chartToRender} crossLine={crossLine} getYPosition={getYPosition} />
-				<VolumeGraph chartData={chartToRender} crossLine={crossLine} getYPosition={getYPosition} />
+				<CandleGraph
+					chartData={chartToRender}
+					crossLine={crossLine}
+					getYPosition={getYPosition(PRICE_CANVAS_TOP_BOT_PADDING)}
+				/>
+				<VolumeGraph
+					chartData={chartToRender}
+					crossLine={crossLine}
+					getYPosition={getYPosition(VOLUME_CANVAS_TOP_BOT_PADDING)}
+				/>
 				<PeriodLegend chartData={chartToRender} crossLine={crossLine} />
 			</div>
 			<div className="chart-menu">
