@@ -1,4 +1,4 @@
-interface IHoldStock {
+export interface IHoldStock {
 	amount: number;
 	average: number;
 	code: string;

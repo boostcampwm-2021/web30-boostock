@@ -6,6 +6,7 @@ import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockLis
 import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
 import stockExecutionAtom, { IStockExecutionInfo, IStockExecutionItem } from './recoil/stockExecution/atom';
 import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
+import fetchHoldStocks from '@common/utils/fetchHoldStocks';
 import Emitter from './common/utils/eventEmitter';
 import HoldStockListAtom from './recoil/holdStockList/atom';
 import { getHoldStocks } from './pages/trade/sideBar/refreshStockData';
@@ -253,8 +254,6 @@ const startSocket = ({
 
 					setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
 					addNewExecution(setStockExecution, data.match);
-
-					Emitter.emit('order concluded', matchData.code);
 				}
 				break;
 			}
@@ -314,7 +313,10 @@ const startSocket = ({
 							<p>&nbsp;매도 주문 체결되었습니다.</p>
 						</>,
 					);
-				setHold(await getHoldStocks());
+
+				const holdStockList = await fetchHoldStocks();
+				Emitter.emit('order concluded', data.stockCode, holdStockList);
+				setHold(holdStockList.map((stock: { code: string }) => stock.code));
 				break;
 			}
 			default:
