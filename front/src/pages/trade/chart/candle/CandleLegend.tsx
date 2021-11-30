@@ -1,20 +1,20 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import userAtom, { IUser } from '@src/recoil/user/atom';
-import formatNumber from '@src/common/utils/formatNumber';
-import { IChartItem } from '@recoil/chart/index';
+import userAtom, { IUser } from '@recoil/user';
+import formatNumber from '@common/utils/formatNumber';
+import { IChartItem } from '@recoil/chart';
 import {
-	IProps,
+	IGraphComponentProps,
 	ICrossLine,
 	TTheme,
+	CANVAS_TOP_BOTTOM_PADDING,
+	MAKE_CLEAR_OFFSET,
 	getPriceColor,
 	getMaxValue,
 	getMinValue,
 	getTextColor,
 	getBorderColor,
 	getText,
-	CANVAS_TOP_BOTTOM_PADDING,
-	MAKE_CLEAR_OFFSET,
 } from '../common';
 
 const CANVAS_WIDTH = 950;
@@ -84,7 +84,7 @@ const drawHoverCandleLegend = ({ crossLine, ctx, minPrice, maxPrice, theme, conv
 	ctx.fillText(text, LEGEND_LEFT + LEGEND_WIDTH / 10, yPos + LEGEND_HEIGHT / 4);
 };
 
-const CandleLegend = ({ chartData, crossLine, getYPosition }: IProps) => {
+const CandleLegend = ({ chartData, crossLine, getYPosition }: IGraphComponentProps) => {
 	const candleLegendRef = useRef<HTMLCanvasElement>(null);
 	const { theme } = useRecoilValue<IUser>(userAtom);
 	const maxPrice = getMaxValue(chartData, 'amount', 'priceHigh');

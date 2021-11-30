@@ -1,11 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import userAtom, { IUser } from '@src/recoil/user/atom';
-import { IChartItem } from '@src/recoil/chart';
-import { MAKE_CLEAR_OFFSET, IProps, ICrossLine, getTextColor, getBorderColor, formatCandleDate, TTheme } from '../common';
+import userAtom, { IUser } from '@recoil/user';
+import { IChartItem } from '@recoil/chart';
+import { ICrossLine, TTheme, getTextColor, MAKE_CLEAR_OFFSET, getBorderColor, formatCandleDate } from '../common';
 
 const CANVAS_WIDTH = 850;
 const CANVAS_HEIGHT = 400;
+
+interface IProps {
+	chartData: IChartItem[];
+	crossLine: ICrossLine;
+}
 
 interface IDrawPeriodLegendArgs {
 	ctx: CanvasRenderingContext2D;

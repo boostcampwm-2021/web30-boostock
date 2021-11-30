@@ -1,5 +1,5 @@
 import { IChartItem } from '@recoil/chart';
-import formatNumber from '@src/common/utils/formatNumber';
+import formatNumber from '@common/utils/formatNumber';
 
 export const MAKE_CLEAR_OFFSET = 0.5;
 export const NUM_OF_CANDLES = 60;
@@ -17,25 +17,10 @@ export interface ICrossLine {
 	posY: number;
 }
 
-export interface IProps {
+export interface IGraphComponentProps {
 	chartData: IChartItem[];
 	crossLine: ICrossLine;
 	getYPosition: (maxValue: number, minValue: number, canvasHeight: number) => (value: number) => number;
-}
-
-export interface IDrawProps {
-	canvas: HTMLCanvasElement | null;
-	chartData: IChartItem[];
-	theme: TTheme;
-	candleWidth?: number;
-}
-
-export interface IDrawLegendProps extends IDrawProps {
-	crossLine: ICrossLine;
-	maxPrice: number;
-	minPrice: number;
-	numOfCandles?: number;
-	convertToYPosition: (value: number) => number;
 }
 
 export const getText = (value: number, predicate: (arg: number) => boolean) => {

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import userAtom, { IUser } from '@src/recoil/user/index';
-import { IChartItem } from '@src/recoil/chart';
-import { CANDLE_GAP, IProps, getPriceColor, getMaxValue, getMinValue, TTheme } from '../common';
+import userAtom, { IUser } from '@recoil/user';
+import { IChartItem } from '@recoil/chart';
+import { TTheme, CANDLE_GAP, IGraphComponentProps, getPriceColor, getMaxValue, getMinValue } from '../common';
 import VolumeBackground from './VolumeBackground';
 import VolumeLegend from './VolumeLegend';
 
@@ -53,7 +53,7 @@ const drawVolumeGraph = ({ ctx, chartData, theme, candleWidth, convertToYPositio
 	});
 };
 
-const VolumeGraph = ({ chartData, crossLine, getYPosition }: IProps) => {
+const VolumeGraph = ({ chartData, crossLine, getYPosition }: IGraphComponentProps) => {
 	const { theme } = useRecoilValue<IUser>(userAtom);
 	const volumeGraphRef = useRef<HTMLCanvasElement>(null);
 	const numOfCandles = chartData.length;

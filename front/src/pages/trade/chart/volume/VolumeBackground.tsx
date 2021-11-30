@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import { IChartItem } from '@src/recoil/chart';
-import userAtom, { IUser } from '@recoil/user/atom';
+import { IChartItem } from '@recoil/chart';
+import userAtom, { IUser } from '@recoil/user';
 import { TTheme, getBorderColor, getLegendColor, getMaxValue, getMinValue, getText } from '../common';
 
 interface IProps {

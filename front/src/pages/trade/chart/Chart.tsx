@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState, useEffect, useRef } from 'react';
-import { IStockListItem } from '@recoil/stockList/index';
+import { IStockListItem } from '@recoil/stockList';
 import { ICrossLine, TChartType, CANVAS_TOP_BOTTOM_PADDING } from './common';
 import PeriodBackground from './period/PeriodBackground';
 import CandleGraph from './candle/CandleGraph';
@@ -126,7 +126,7 @@ const Chart = ({ stockCode, stockState }: IProps) => {
 				<PeriodBackground chartData={chartToRender} />
 				<CandleGraph chartData={chartToRender} crossLine={crossLine} getYPosition={getYPosition} />
 				<VolumeGraph chartData={chartToRender} crossLine={crossLine} getYPosition={getYPosition} />
-				<PeriodLegend chartData={chartToRender} crossLine={crossLine} getYPosition={getYPosition} />
+				<PeriodLegend chartData={chartToRender} crossLine={crossLine} />
 			</div>
 			<div className="chart-menu">
 				<button type="button" className={chartTypeMenuClass(1, chartType)} onClick={() => handleSetChartType(1)}>

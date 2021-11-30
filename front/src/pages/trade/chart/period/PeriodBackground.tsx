@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@recoil/user';
-import { IChartItem } from '@src/recoil/chart';
-import { MAKE_CLEAR_OFFSET, CANDLE_GAP, formatCandleDate, getTextColor, getBorderColor, getLegendColor, TTheme } from '../common';
+import { IChartItem } from '@recoil/chart';
+import { TTheme, MAKE_CLEAR_OFFSET, CANDLE_GAP, formatCandleDate, getTextColor, getBorderColor, getLegendColor } from '../common';
 
 const NUM_OF_PARTITIONS = 5;
 const CANVAS_WIDTH = 850;
