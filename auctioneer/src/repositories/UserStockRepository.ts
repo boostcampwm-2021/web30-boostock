@@ -1,5 +1,6 @@
 import { EntityRepository, Repository, InsertResult } from 'typeorm';
 import UserStock from '@models/UserStock';
+import ILockVersion from '@interfaces/ILockVersion';
 
 @EntityRepository(UserStock)
 export default class UserStockRepository extends Repository<UserStock> {
@@ -15,10 +16,19 @@ export default class UserStockRepository extends Repository<UserStock> {
 			.getOne();
 	}
 
-	async readLock(userStockId: number): Promise<UserStock | undefined> {
+	async readLock(userStockId: number, lock: ILockVersion): Promise<UserStock> {
 		return this.createQueryBuilder('UserStock')
 			.where('UserStock.userId = :userStockId', { userStockId })
-			.setLock('pessimistic_read')
-			.getOne();
+			.setLock(lock)
+			.getOneOrFail();
 	}
+
+	// async updateAmountAverage(userStockId: number, changeValue: number): Promise<boolean> {
+	// 	const { affected } = await this.createQueryBuilder()
+	// 		.update()
+	// 		.set({ amount: () => `amount += ${changeValue}` })
+	// 		.whereInIds(userStockId)
+	// 		.execute();
+	// 	return affected === 1;
+	// }
 }

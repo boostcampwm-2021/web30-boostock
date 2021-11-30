@@ -48,7 +48,7 @@ export default class ScheduleService {
 		await queryRunner.startTransaction();
 		try {
 			const chartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
-			const charts = await chartRepositoryRunner.readByTypeLock(type);
+			const charts = await chartRepositoryRunner.readByTypeLock(type, 'pessimistic_read');
 			const chartLogList = await Promise.all(charts.map((chart) => this.initializeChart(chart, chartRepositoryRunner)));
 			this.reportNewChart(chartLogList);
 			await queryRunner.commitTransaction();

@@ -56,19 +56,20 @@ export default class BidAskTransaction {
 	}
 
 	async askUserProcess(askUser: User): Promise<void | Error> {
-		askUser.balance += this.TransactionInfo.amount * this.TransactionInfo.price;
-		await this.UserRepositoryRunner.update(askUser.userId, askUser);
+		await this.UserRepositoryRunner.updateBalance(askUser.userId, this.TransactionInfo.amount * this.TransactionInfo.price);
 	}
 
 	async bidUserProcess(bidUser: User, bidOrder: Order): Promise<void> {
-		let bidUserStock = await this.UserStockRepositoryRunner.read(bidUser.userId, this.TransactionInfo.stockId);
-		if (bidUserStock) bidUserStock = await this.UserStockRepositoryRunner.readLock(bidUserStock.userStockId);
-
-		bidUser.balance += refundBetweenDepositTransacionAmount(
+		const refund = refundBetweenDepositTransacionAmount(
 			bidOrder.price,
 			this.TransactionInfo.price,
 			this.TransactionInfo.amount,
 		);
+		this.UserRepositoryRunner.updateBalance(bidUser.userId, refund);
+
+		let bidUserStock = await this.UserStockRepositoryRunner.read(bidUser.userId, this.TransactionInfo.stockId);
+		if (bidUserStock)
+			bidUserStock = await this.UserStockRepositoryRunner.readLock(bidUserStock.userStockId, 'pessimistic_read');
 
 		if (bidUserStock === undefined) {
 			bidUserStock = this.UserStockRepositoryRunner.create({
@@ -86,10 +87,7 @@ export default class BidAskTransaction {
 				this.TransactionInfo.price,
 			);
 		}
-		await Promise.all([
-			this.UserRepositoryRunner.update(bidUser.userId, bidUser),
-			this.UserStockRepositoryRunner.save(bidUserStock),
-		]);
+		await this.UserStockRepositoryRunner.save(bidUserStock);
 	}
 
 	async askOrderProcess(askOrder: Order): Promise<void> {
@@ -103,14 +101,14 @@ export default class BidAskTransaction {
 	}
 
 	async chartProcess(): Promise<void> {
-		const charts = await this.ChartRepositoryRunner.readByStockIdLock(this.TransactionInfo.stockId);
+		const charts = await this.ChartRepositoryRunner.readByStockIdLock(this.TransactionInfo.stockId, 'pessimistic_read');
 
 		await Promise.all(
 			charts.map((chart: Chart) =>
 				this.ChartRepositoryRunner.updateChart(chart, this.TransactionInfo.price, this.TransactionInfo.amount),
 			),
 		);
-		this.updatedCharts = await this.ChartRepositoryRunner.readByStockIdLock(this.TransactionInfo.stockId);
+		this.updatedCharts = await this.ChartRepositoryRunner.readByStockIdLock(this.TransactionInfo.stockId, 'pessimistic_read');
 	}
 
 	async logProcess(): Promise<void> {

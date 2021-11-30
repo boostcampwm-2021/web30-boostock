@@ -55,11 +55,11 @@ export default class AuctioneerService {
 			let bidUser;
 
 			if (askOrder.userId === bidOrder.userId) {
-				const user = await UserRepositoryRunner.readByIdLock(askOrder.userId);
+				const user = await UserRepositoryRunner.readByIdLock(askOrder.userId, 'pessimistic_read');
 				askUser = user;
 				bidUser = user;
 			} else {
-				const users = await UserRepositoryRunner.readAskBidByIdLock(askOrder.userId, bidOrder.userId);
+				const users = await UserRepositoryRunner.readAskBidByIdLock(askOrder.userId, bidOrder.userId, 'pessimistic_read');
 				askUser = users.find((user) => user.userId === askOrder.userId);
 				bidUser = users.find((user) => user.userId === bidOrder.userId);
 			}
