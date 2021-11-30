@@ -28,7 +28,7 @@ const drawPeriodLegend = ({ ctx, chartData, crossLine, theme, numOfCandles }: ID
 	const textPadding = 5;
 	const BOX_HEIGHT = 20;
 
-	ctx.font = '11px dotum';
+	ctx.font = '11px Lato';
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
 	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);

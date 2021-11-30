@@ -41,7 +41,7 @@ interface IDrawHoverCandleLegendArgs {
 
 const drawCandleLegend = ({ ctx, chartData, theme, convertToYPosition }: IDrawCandleLegendArgs): void => {
 	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-	ctx.font = '11px dotum';
+	ctx.font = '11px Lato';
 	ctx.fillStyle = getTextColor(theme);
 
 	const recentChart = chartData[0];

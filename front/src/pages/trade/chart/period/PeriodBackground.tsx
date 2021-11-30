@@ -35,10 +35,10 @@ const drawCandleDate = (ctx: CanvasRenderingContext2D, index: number, createdAt:
 };
 
 const drawPeriodBackground = ({ ctx, chartData, candleWidth, theme }: IDrawPeriodBackground): void => {
-	ctx.font = '11px dotum';
+	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+	ctx.font = '11px Lato';
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
-	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
 	ctx.strokeStyle = getBorderColor(theme);
 	ctx.beginPath();

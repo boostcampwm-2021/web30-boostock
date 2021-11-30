@@ -23,7 +23,7 @@ const NUM_OF_PARTITIONS = 4;
 const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 101);
 
 const drawVolumeLegend = ({ ctx, minAmount, maxAmount, theme, convertToYPosition }: IDrawVolumeBackgroundArgs): void => {
-	ctx.font = '11px dotum';
+	ctx.font = '11px Lato';
 	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
 	ctx.strokeStyle = getLegendColor(theme);

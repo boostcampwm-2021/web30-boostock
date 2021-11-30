@@ -36,7 +36,7 @@ interface IDrawHoverVolumeLegendArgs {
 const drawHoverVolumeLegend = ({ crossLine, ctx, minAmount, maxAmount, theme }: IDrawHoverVolumeLegendArgs) => {
 	if (!crossLine.event || crossLine.event.target !== ctx.canvas) return;
 
-	ctx.font = '11px dotum';
+	ctx.font = '11px Lato';
 	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	const ratio = (crossLine.posY - CANVAS_TOP_BOTTOM_PADDING) / (CANVAS_HEIGHT - CANVAS_TOP_BOTTOM_PADDING * 2);
 	const volumeValue = Math.floor(minAmount + (maxAmount - minAmount) * (1 - ratio));

@@ -24,7 +24,7 @@ const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 101);
 
 const drawCandleBackground = ({ ctx, maxPrice, minPrice, theme, convertToYPosition }: IDrawCandleBackgroundArgs): void => {
 	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-	ctx.font = '11px dotum';
+	ctx.font = '11px Lato';
 	ctx.strokeStyle = getLegendColor(theme);
 	ctx.fillStyle = getTextColor(theme);
 
@@ -54,7 +54,6 @@ const CandleBackground = ({ chartData, getYPosition }: IProps) => {
 
 	useEffect(() => {
 		if (!candleBackgroundRef.current) return;
-
 		const ctx = candleBackgroundRef.current.getContext('2d');
 		if (!ctx) return;
 
