@@ -3,6 +3,7 @@ import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@recoil/user';
 import { IChartItem } from '@recoil/chart';
 import {
+	TChartType,
 	TTheme,
 	MAKE_CLEAR_OFFSET,
 	MAX_NUM_OF_CANDLES,
@@ -20,12 +21,14 @@ const LEGEND_TOP = Math.floor(CANVAS_HEIGHT * 0.9);
 
 interface IProps {
 	chartData: IChartItem[];
+	chartType: TChartType;
 }
 
 interface IDrawPeriodBackground {
 	ctx: CanvasRenderingContext2D;
 	chartData: IChartItem[];
 	candleWidth: number;
+	chartType: TChartType;
 	theme: TTheme;
 }
 
@@ -35,6 +38,7 @@ interface IDrawCandleDateArgs {
 	createdAt: number;
 	candleWidth: number;
 	numOfPartitions: number;
+	chartType: TChartType;
 }
 
 const calculateNumOfPartitions = (numOfCandles: number) => {
@@ -46,7 +50,7 @@ const calculateNumOfPartitions = (numOfCandles: number) => {
 	return 3;
 };
 
-const drawCandleDate = ({ ctx, index, createdAt, candleWidth, numOfPartitions }: IDrawCandleDateArgs) => {
+const drawCandleDate = ({ ctx, index, createdAt, candleWidth, numOfPartitions, chartType }: IDrawCandleDateArgs) => {
 	if (index % numOfPartitions !== 0) return;
 
 	const posX = Math.floor(CANVAS_WIDTH - (candleWidth + CANDLE_GAP) * (index + 1) + candleWidth / 2);
@@ -56,10 +60,10 @@ const drawCandleDate = ({ ctx, index, createdAt, candleWidth, numOfPartitions }:
 	ctx.lineTo(posX + MAKE_CLEAR_OFFSET, LEGEND_TOP - 1);
 	ctx.stroke();
 
-	ctx.fillText(formatCandleDate(createdAt), posX, Math.floor(LEGEND_TOP + BOX_HEIGHT / 2));
+	ctx.fillText(formatCandleDate(createdAt, chartType), posX, Math.floor(LEGEND_TOP + BOX_HEIGHT / 2));
 };
 
-const drawPeriodBackground = ({ ctx, chartData, candleWidth, theme }: IDrawPeriodBackground): void => {
+const drawPeriodBackground = ({ ctx, chartData, candleWidth, chartType, theme }: IDrawPeriodBackground): void => {
 	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	ctx.font = '12px Lato';
 	ctx.textAlign = 'center';
@@ -79,11 +83,18 @@ const drawPeriodBackground = ({ ctx, chartData, candleWidth, theme }: IDrawPerio
 	ctx.strokeStyle = getLegendColor(theme);
 	ctx.fillStyle = getTextColor(theme);
 	chartData.forEach(({ createdAt }, index) => {
-		drawCandleDate({ ctx, index, createdAt, candleWidth, numOfPartitions: calculateNumOfPartitions(chartData.length) });
+		drawCandleDate({
+			ctx,
+			index,
+			createdAt,
+			candleWidth,
+			numOfPartitions: calculateNumOfPartitions(chartData.length),
+			chartType,
+		});
 	});
 };
 
-const PeriodBackground = ({ chartData }: IProps) => {
+const PeriodBackground = ({ chartData, chartType }: IProps) => {
 	const { theme } = useRecoilValue<IUser>(userAtom);
 	const periodBackground = useRef<HTMLCanvasElement>(null);
 	const numOfCandles = chartData.length;
@@ -99,9 +110,10 @@ const PeriodBackground = ({ chartData }: IProps) => {
 			ctx,
 			chartData,
 			candleWidth,
+			chartType,
 			theme,
 		});
-	}, [periodBackground, chartData, theme]);
+	}, [periodBackground, chartData, chartType, theme]);
 
 	return (
 		<canvas className="chart-canvas chart-period-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={periodBackground} />
