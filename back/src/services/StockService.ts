@@ -63,6 +63,14 @@ export default class StockService {
 		return document || [];
 	}
 
+	public async getDailyLogs(code: string): Promise<IChartLog[]> {
+		const dailyLogs = await ChartLog.find({ code, type: 1440 }, { _id: 1, code: 1, priceEnd: 1, amount: 1, createdAt: 1 })
+			.sort({ createdAt: -1 })
+			.limit(51);
+
+		return dailyLogs;
+	}
+
 	public async getStocksBaseInfo(): Promise<{ stock_id: number; code: string }[]> {
 		const connection = await getConnection();
 		const stockRepository = connection.getCustomRepository(StockRepository);
@@ -102,7 +110,7 @@ export default class StockService {
 	// }
 
 	public async getPriceStockAll(): Promise<{ code: string; price: number }[]> {
-		const stockRepository = await getConnection().getCustomRepository(StockRepository);
+		const stockRepository = getConnection().getCustomRepository(StockRepository);
 		const stockPrices = await stockRepository.readAllStocks();
 		return stockPrices.map((stock: Stock) => {
 			return {
@@ -110,13 +118,5 @@ export default class StockService {
 				price: stock.charts[0].priceEnd,
 			};
 		});
-	}
-
-	public async getDailyLogs(code: string): Promise<IChartLog[]> {
-		const dailyLogs = await ChartLog.find({ code, type: 1440 }, { _id: 1, code: 1, priceEnd: 1, amount: 1, createdAt: 1 })
-			.sort({ createdAt: -1 })
-			.limit(51);
-
-		return dailyLogs;
 	}
 }

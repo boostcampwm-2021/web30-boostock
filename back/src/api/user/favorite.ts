@@ -9,7 +9,7 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const userFavorite = await UserFavoriteService.getUserFavoriteByUserId(userId);
+			const userFavorite = await UserFavoriteService.readByUserId(userId);
 			const favorite = userFavorite.map((elem) => elem.code);
 			res.status(200).json({ favorite });
 		} catch (error) {
@@ -23,7 +23,7 @@ export default (): express.Router => {
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
 			const { stockCode } = req.body;
 			await UserFavoriteService.createUserFavorite(userId, stockCode);
-			res.status(200).json({ code: stockCode });
+			res.status(201).json({});
 		} catch (error) {
 			next(error);
 		}
@@ -35,7 +35,7 @@ export default (): express.Router => {
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
 			const { stockCode } = req.body;
 			await UserFavoriteService.removeUserFavorite(userId, stockCode);
-			res.status(200).json({ code: stockCode });
+			res.status(201).json({});
 		} catch (error) {
 			next(error);
 		}

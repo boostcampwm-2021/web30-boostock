@@ -52,7 +52,7 @@ export default (): express.Router => {
 				},
 			};
 			Emitter.emit('order accepted', acceptedOrderInfo);
-			res.status(200).json({});
+			res.status(201).json({});
 		} catch (error) {
 			next(error);
 		}
@@ -65,33 +65,34 @@ export default (): express.Router => {
 			const { id } = req.query;
 			if (!id) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.cancel(userId, Number(id));
-			res.status(200).json({});
+			res.status(201).json({});
 		} catch (error) {
 			next(error);
 		}
 	});
 
-	router.put('/order', async (req: Request, res: Response, next: NextFunction) => {
-		try {
-			const userId = req.session.data?.userId;
-			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const { orderId, amount, price } = req.body;
-			if (
-				!orderId ||
-				!amount ||
-				!price ||
-				price <= 0 ||
-				price >= config.maxPrice ||
-				amount <= 0 ||
-				amount >= config.maxAmount
-			)
-				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-			await OrderService.modify(userId, orderId, amount, price);
-			res.status(200).json({});
-		} catch (error) {
-			next(error);
-		}
-	});
+	// Deprecated
+	// router.put('/order', async (req: Request, res: Response, next: NextFunction) => {
+	// 	try {
+	// 		const userId = req.session.data?.userId;
+	// 		if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
+	// 		const { orderId, amount, price } = req.body;
+	// 		if (
+	// 			!orderId ||
+	// 			!amount ||
+	// 			!price ||
+	// 			price <= 0 ||
+	// 			price >= config.maxPrice ||
+	// 			amount <= 0 ||
+	// 			amount >= config.maxAmount
+	// 		)
+	// 			throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+	// 		await OrderService.modify(userId, orderId, amount, price);
+	// 		res.status(201).json({});
+	// 	} catch (error) {
+	// 		next(error);
+	// 	}
+	// });
 
 	router.get('/bid-ask', stockIdValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {

@@ -11,7 +11,7 @@ export default (): express.Router => {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
 			const { type, start, end } = req.query;
-			const result = await UserService.getUserById(userId);
+			const result = await UserService.readById(userId);
 			const { balance } = result;
 			const log = await UserService.readBalanceLog(userId, Number(start), Number(end), Number(type));
 			res.status(200).json({ balance, log });
@@ -34,8 +34,7 @@ export default (): express.Router => {
 				changeValue >= config.maxTransperMoney
 			)
 				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-			const result = await UserService.updateBalance(userId, changeValue);
-			const { balance } = result;
+			await UserService.updateBalance(userId, changeValue);
 
 			const newBalanceLog: IBalanceLog = {
 				type: BALANCETYPE.DEPOSIT,
@@ -46,7 +45,7 @@ export default (): express.Router => {
 				createdAt: new Date().getTime(),
 			};
 			await UserService.pushBalanceLog(userId, newBalanceLog);
-			res.status(200).json({ balance });
+			res.status(201).json({});
 		} catch (error) {
 			next(error);
 		}
@@ -66,8 +65,7 @@ export default (): express.Router => {
 				changeValue >= config.maxTransperMoney
 			)
 				throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-			const result = await UserService.updateBalance(userId, changeValue * -1);
-			const { balance } = result;
+			await UserService.updateBalance(userId, changeValue * -1);
 
 			const newBalanceLog: IBalanceLog = {
 				type: BALANCETYPE.WITHDRAW,
@@ -78,7 +76,7 @@ export default (): express.Router => {
 				createdAt: new Date().getTime(),
 			};
 			await UserService.pushBalanceLog(userId, newBalanceLog);
-			res.status(200).json({ balance });
+			res.status(201).json();
 		} catch (error) {
 			next(error);
 		}

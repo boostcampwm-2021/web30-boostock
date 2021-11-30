@@ -55,7 +55,7 @@ export default class BidAskTransaction {
 		return this;
 	}
 
-	async askUserProcess(askUser: User): Promise<void | Error> {
+	async askUserProcess(askUser: User): Promise<void> {
 		await this.UserRepositoryRunner.updateBalance(askUser.userId, this.TransactionInfo.amount * this.TransactionInfo.price);
 	}
 

@@ -1,27 +1,15 @@
 import { EntityRepository, Repository, UpdateResult, DeleteResult } from 'typeorm';
 import Order, { ORDERTYPE } from '@models/Order';
-import { IAskOrder } from '@interfaces/askOrder';
-import { IBidOrder } from '@interfaces/bidOrder';
+import { IOrder } from '@interfaces/IOrder';
+import { OptimisticVersionError, OptimisticVersionErrorMessage } from '@errors/index';
 
 @EntityRepository(Order)
 export default class OrderRepository extends Repository<Order> {
-	public async readOrderById(id: number): Promise<Order | undefined> {
-		return this.findOne(id, {
-			// lock: { mode: 'pessimistic_write' },
-		});
+	public async readById(id: number): Promise<Order> {
+		return this.findOneOrFail(id);
 	}
 
-	public async updateOrder(order: Order): Promise<boolean> {
-		const result: UpdateResult = await this.update(order.orderId, order);
-		return result.affected != null && result.affected > 0;
-	}
-
-	public async deleteOrder(id: number): Promise<boolean> {
-		const result: DeleteResult = await this.delete(id);
-		return result.affected != null && result.affected > 0;
-	}
-
-	public async getOrders(stockId: number, type: ORDERTYPE): Promise<Array<IAskOrder | IBidOrder>> {
+	public async readSummary(stockId: number, type: ORDERTYPE): Promise<IOrder[]> {
 		const LIMIT = 10;
 		const orderPredicate = type === ORDERTYPE.ASK ? 'ASC' : 'DESC';
 
@@ -32,8 +20,33 @@ export default class OrderRepository extends Repository<Order> {
 			.groupBy('price')
 			.orderBy({ price: orderPredicate })
 			.limit(LIMIT)
-			.getRawMany<IAskOrder | IBidOrder>();
+			.getRawMany<IOrder>();
 
 		return type === ORDERTYPE.ASK ? result.reverse() : result;
+	}
+
+	public async removeOrderOCC(order: Order): Promise<void> {
+		const { affected } = await this.createQueryBuilder()
+			.delete()
+			.from(Order)
+			.where('order_id = :orderId', { orderId: order.orderId })
+			.andWhere('version = :version', { version: order.version })
+			.execute();
+		if (affected !== 1)
+			throw new OptimisticVersionError(OptimisticVersionErrorMessage.OPTIMISTIC_LOCK_VERSION_MISMATCH_ERROR);
+	}
+
+	public async decreaseAmountOCC(order: Order, amount: number): Promise<void> {
+		const { affected } = await this.createQueryBuilder()
+			.update(Order)
+			.set({
+				amount: () => `amount - ${amount}`,
+				version: order.version + 1,
+			})
+			.where('order_id = :orderId', { orderId: order.orderId })
+			.andWhere('version = :version', { version: order.version })
+			.execute();
+		if (affected !== 1)
+			throw new OptimisticVersionError(OptimisticVersionErrorMessage.OPTIMISTIC_LOCK_VERSION_MISMATCH_ERROR);
 	}
 }

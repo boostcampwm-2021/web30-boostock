@@ -9,7 +9,7 @@ export default (): express.Router => {
 		try {
 			const userId = req.session.data?.userId;
 			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
-			const result = await UserStockService.readUserStockWithStockInfo(userId);
+			const result = await UserStockService.readWithStockInfo(userId);
 			const holdStocks = result.map((elem) => {
 				return {
 					amount: elem.amount,

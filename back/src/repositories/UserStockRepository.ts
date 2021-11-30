@@ -1,23 +1,25 @@
 import { EntityRepository, Repository, InsertResult, UpdateResult } from 'typeorm';
 import UserStock from '@models/UserStock';
+import ILockVersion from '@interfaces/ILockVersion';
 
 @EntityRepository(UserStock)
 export default class UserStockRepository extends Repository<UserStock> {
-	async readUserStockById(userId: number): Promise<UserStock[]> {
-		return this.find({ where: { userId }, relations: ['stock'] });
-	}
-
 	async createUserStock(userStock: UserStock): Promise<boolean> {
 		const result: InsertResult = await this.insert(userStock);
 		return result.identifiers.length > 0;
 	}
 
-	async updateUserStock(userStock: UserStock): Promise<boolean> {
-		const result: UpdateResult = await this.update(userStock.userStockId, userStock);
-		return result.affected != null && result.affected > 0;
+	async read(userId: number, stockId: number): Promise<UserStock | undefined> {
+		return this.createQueryBuilder('UserStock')
+			.where('UserStock.userId = :userId', { userId })
+			.andWhere('UserStock.stockId = :stockId', { stockId })
+			.getOne();
 	}
 
-	async readUserStockLock(userId: number, stockId: number): Promise<UserStock | undefined> {
-		return this.findOne({ where: { userId, stockId }, lock: { mode: 'pessimistic_write' } });
+	async readLock(userStockId: number, lock: ILockVersion): Promise<UserStock> {
+		return this.createQueryBuilder('UserStock')
+			.where('UserStock.userId = :userStockId', { userStockId })
+			.setLock(lock)
+			.getOneOrFail();
 	}
 }

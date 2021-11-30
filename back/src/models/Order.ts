@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 import 'reflect-metadata';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, VersionColumn } from 'typeorm';
 import { Stock } from './index';
 
 export enum ORDERTYPE {
@@ -41,4 +41,7 @@ export default class Order {
 
 	@Column({ name: 'created_at', type: 'datetime' })
 	createdAt: Date;
+
+	@VersionColumn()
+	version: number;
 }

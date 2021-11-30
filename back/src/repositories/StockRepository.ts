@@ -13,8 +13,8 @@ export default class StockRepository extends Repository<Stock> {
 		return this.findOne(id);
 	}
 
-	public async readByCode(code: string): Promise<Stock | undefined> {
-		return this.findOne({ where: { code } });
+	public async readByCode(code: string): Promise<Stock> {
+		return this.findOneOrFail({ where: { code } });
 	}
 
 	public async readBaseInfo(): Promise<{ stock_id: number; code: string }[]> {

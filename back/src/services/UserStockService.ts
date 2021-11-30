@@ -38,7 +38,7 @@ export default class UserStockService {
 		return userStockRepository.save(targetUserStock);
 	}
 
-	static async readUserStockWithStockInfo(userId: number): Promise<UserStock[]> {
+	static async readWithStockInfo(userId: number): Promise<UserStock[]> {
 		const userStockRepository = getCustomRepository(UserStockRepository);
 		return userStockRepository.find({ where: { userId }, relations: ['stock'] });
 	}

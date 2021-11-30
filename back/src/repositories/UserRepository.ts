@@ -1,5 +1,6 @@
 import { EntityRepository, Repository, InsertResult, UpdateResult, DeleteResult } from 'typeorm';
 import User from '@models/User';
+import ILockVersion from '@interfaces/ILockVersion';
 
 @EntityRepository(User)
 export default class UserRepository extends Repository<User> {
@@ -8,10 +9,17 @@ export default class UserRepository extends Repository<User> {
 		return result.raw.affectedRows > 0;
 	}
 
-	async readUserById(id: number): Promise<User | undefined> {
-		return this.findOne(id, {
-			lock: { mode: 'pessimistic_write' },
-		});
+	async readByIdLock(id: number, lock: ILockVersion): Promise<User> {
+		return this.createQueryBuilder().whereInIds(id).setLock(lock).getOneOrFail();
+	}
+
+	async updateBalance(userId: number, changeValue: number): Promise<boolean> {
+		const { affected } = await this.createQueryBuilder()
+			.update()
+			.set({ balance: () => `balance + ${changeValue}` })
+			.where('userId = :userId', { userId })
+			.execute();
+		return affected === 1;
 	}
 
 	async updateUser(user: User): Promise<boolean> {
