@@ -72,8 +72,8 @@ export default class AuctioneerService {
 			await Promise.all([
 				task.bidUserProcess(bidUser, bidOrder),
 				task.askUserProcess(askUser),
-				task.askOrderProcess(askOrder),
 				task.bidOrderProcess(bidOrder),
+				task.askOrderProcess(askOrder),
 				task.chartProcess(),
 			]);
 

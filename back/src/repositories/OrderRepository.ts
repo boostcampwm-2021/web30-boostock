@@ -5,6 +5,10 @@ import { OptimisticVersionError, OptimisticVersionErrorMessage } from '@errors/i
 
 @EntityRepository(Order)
 export default class OrderRepository extends Repository<Order> {
+	public async insertNewOrder(value) {
+		return this.createQueryBuilder().insert().into(Order).values(value).execute();
+	}
+
 	public async readById(id: number): Promise<Order> {
 		return this.findOneOrFail(id);
 	}

@@ -34,12 +34,11 @@ export default class OrderTransaction {
 	public async updateUser(user: User) {
 		if (this.type === ORDERTYPE.ASK) {
 			let holdStock = await this.userStockRepository.read(this.userId, this.stockId);
-			if (holdStock) holdStock = await this.userStockRepository.readLock(holdStock.userStockId, 'pessimistic_write');
-
 			if (holdStock === undefined || holdStock.amount < this.amount)
 				throw new OrderError(OrderErrorMessage.NOT_ENOUGH_STOCK);
+			if (holdStock) holdStock = await this.userStockRepository.readLock(holdStock.userStockId, 'pessimistic_write');
 			holdStock.amount -= this.amount;
-			if (holdStock.amount > 0) await this.userStockRepository.save(holdStock);
+			if (holdStock.amount > 0) await this.userStockRepository.update(holdStock.userStockId, holdStock);
 			else await this.userStockRepository.delete(holdStock.userStockId);
 		}
 
@@ -47,20 +46,19 @@ export default class OrderTransaction {
 			const payout: number = this.price * this.amount;
 			if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
 
-			await this.userRepository.updateBalance(this.userId, payout * -1);
+			if (!(await this.userRepository.updateBalance(this.userId, payout * -1)))
+				new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
 		}
 	}
 
 	public async insertOrder() {
-		await this.orderRepository.save(
-			this.orderRepository.create({
-				userId: this.userId,
-				stockId: this.stockId,
-				type: this.type,
-				amount: this.amount,
-				price: this.price,
-				createdAt: new Date(),
-			}),
-		);
+		await this.orderRepository.insertNewOrder({
+			userId: this.userId,
+			stockId: this.stockId,
+			type: this.type,
+			amount: this.amount,
+			price: this.price,
+			createdAt: new Date(),
+		});
 	}
 }

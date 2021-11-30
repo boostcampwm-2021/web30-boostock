@@ -32,7 +32,7 @@ const fetchDailyLog = async (stockCode: string, setDailyLog: SetterOrUpdater<IDa
 		credentials: 'include',
 	};
 	const res = await fetch(`${process.env.SERVER_URL}/api/stock/log/daily?code=${stockCode}`, config);
-	if (res.status !== 200) throw new Error('Fetch Failed Daily Log Error');
+	if (!res.ok) throw new Error('Fetch Failed Daily Log Error');
 
 	const { code, logs } = await res.json();
 	if (code === stockCode) setDailyLog(logs);

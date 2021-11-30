@@ -34,7 +34,7 @@ const Menu = ({ pages }: Props) => {
 
 		try {
 			const res = await fetch(`${process.env.SERVER_URL}/api/auth/signout`, config);
-			if (res.status !== 200) throw new Error();
+			if (!res.ok) throw new Error();
 			setUserState({ username: '', email: '', isLoggedIn: false, theme: 'light' });
 			toast.success('성공적으로 로그아웃 되었습니다.');
 		} catch (error) {

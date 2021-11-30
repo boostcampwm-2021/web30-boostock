@@ -9,8 +9,8 @@ export default class UserRepository extends Repository<User> {
 		return result.raw.length > 0;
 	}
 
-	async readByIdLock(UserId: number, lock: ILockVersion): Promise<User[]> {
-		return this.createQueryBuilder('User').where('User.userId = :askUserId', { UserId }).setLock(lock).getMany();
+	async readByIdLock(userId: number, lock: ILockVersion): Promise<User> {
+		return this.createQueryBuilder('User').where('User.userId = :userId', { userId }).setLock(lock).getOneOrFail();
 	}
 
 	async readAskBidByIdLock(askUserId: number, bidUserId: number, lock: ILockVersion): Promise<User[]> {

@@ -68,17 +68,9 @@ export default class BidAskTransaction {
 		this.UserRepositoryRunner.updateBalance(bidUser.userId, refund);
 
 		let bidUserStock = await this.UserStockRepositoryRunner.read(bidUser.userId, this.TransactionInfo.stockId);
-		if (bidUserStock)
-			bidUserStock = await this.UserStockRepositoryRunner.readLock(bidUserStock.userStockId, 'pessimistic_read');
 
-		if (bidUserStock === undefined) {
-			bidUserStock = this.UserStockRepositoryRunner.create({
-				userId: bidUser.userId,
-				stockId: bidOrder.stockId,
-				amount: this.TransactionInfo.amount,
-				average: bidOrder.price,
-			});
-		} else {
+		if (bidUserStock) {
+			bidUserStock = await this.UserStockRepositoryRunner.readLock(bidUserStock.userStockId, 'pessimistic_read');
 			bidUserStock.amount += this.TransactionInfo.amount;
 			bidUserStock.average = getAveragePrice(
 				bidUserStock.amount,
@@ -86,8 +78,16 @@ export default class BidAskTransaction {
 				this.TransactionInfo.amount,
 				this.TransactionInfo.price,
 			);
+			await this.UserStockRepositoryRunner.update(bidUserStock.userStockId, bidUserStock);
+		} else {
+			bidUserStock = this.UserStockRepositoryRunner.create({
+				userId: bidUser.userId,
+				stockId: bidOrder.stockId,
+				amount: this.TransactionInfo.amount,
+				average: bidOrder.price,
+			});
+			await this.UserStockRepositoryRunner.save(bidUserStock);
 		}
-		await this.UserStockRepositoryRunner.save(bidUserStock);
 	}
 
 	async askOrderProcess(askOrder: Order): Promise<void> {
