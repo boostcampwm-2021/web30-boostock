@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@src/recoil/user/atom';
 import {
-	OFFSET,
+	MAKE_CLEAR_OFFSET,
 	CANDLE_GAP,
 	IProps,
 	IDrawProps,
@@ -31,13 +31,13 @@ const drawPeriodBackground = ({ canvas, chartData, candleWidth, theme }: IDrawPr
 
 	context.strokeStyle = getBorderColor(theme);
 	context.beginPath();
-	context.moveTo(CANVAS_WIDTH - OFFSET, 0);
-	context.lineTo(CANVAS_WIDTH - OFFSET, LEGEND_TOP);
+	context.moveTo(CANVAS_WIDTH - MAKE_CLEAR_OFFSET, 0);
+	context.lineTo(CANVAS_WIDTH - MAKE_CLEAR_OFFSET, LEGEND_TOP);
 	context.stroke();
 
 	context.beginPath();
-	context.moveTo(0, LEGEND_TOP - OFFSET);
-	context.lineTo(CANVAS_WIDTH, LEGEND_TOP - OFFSET);
+	context.moveTo(0, LEGEND_TOP - MAKE_CLEAR_OFFSET);
+	context.lineTo(CANVAS_WIDTH, LEGEND_TOP - MAKE_CLEAR_OFFSET);
 	context.stroke();
 
 	context.strokeStyle = getLegendColor(theme);
@@ -48,8 +48,8 @@ const drawPeriodBackground = ({ canvas, chartData, candleWidth, theme }: IDrawPr
 		const posX = Math.floor(CANVAS_WIDTH - (candleWidth + CANDLE_GAP) * (index + 1) + candleWidth / 2);
 
 		context.beginPath();
-		context.moveTo(posX + OFFSET, 0);
-		context.lineTo(posX + OFFSET, LEGEND_TOP - 1);
+		context.moveTo(posX + MAKE_CLEAR_OFFSET, 0);
+		context.lineTo(posX + MAKE_CLEAR_OFFSET, LEGEND_TOP - 1);
 		context.stroke();
 
 		context.fillText(formatCandleDate(createdAt), posX, Math.floor(LEGEND_TOP + BOX_HEIGHT / 2));

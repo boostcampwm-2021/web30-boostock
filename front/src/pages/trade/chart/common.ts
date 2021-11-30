@@ -1,7 +1,7 @@
 import { IChartItem } from '@recoil/chart';
 import formatNumber from '@src/common/utils/formatNumber';
 
-export const OFFSET = 0.5;
+export const MAKE_CLEAR_OFFSET = 0.5;
 export const NUM_OF_CANDLES = 60;
 export const RATIO_MIN = 1.0;
 export const RATIO_MAX = 1.0;

@@ -14,6 +14,7 @@ import {
 	getBorderColor,
 	getText,
 	CANVAS_TOP_BOTTOM_PADDING,
+	MAKE_CLEAR_OFFSET,
 } from '../common';
 
 const CANVAS_WIDTH = 950;
@@ -51,8 +52,8 @@ const drawCandleLegend = ({ ctx, chartData, theme, convertToYPosition }: IDrawCa
 		ctx.strokeStyle = getPriceColor(priceStart, priceEnd, theme);
 		ctx.beginPath();
 		ctx.setLineDash([4, 4]);
-		ctx.moveTo(0, yPos);
-		ctx.lineTo(LEGEND_LEFT, yPos);
+		ctx.moveTo(0, yPos + MAKE_CLEAR_OFFSET);
+		ctx.lineTo(LEGEND_LEFT, yPos + MAKE_CLEAR_OFFSET);
 		ctx.stroke();
 
 		ctx.fillStyle = ctx.strokeStyle;
@@ -73,8 +74,8 @@ const drawHoverCandleLegend = ({ crossLine, ctx, minPrice, maxPrice, theme, conv
 	ctx.strokeStyle = getBorderColor(theme);
 	ctx.beginPath();
 	ctx.setLineDash([6, 6]);
-	ctx.moveTo(0, yPos);
-	ctx.lineTo(LEGEND_LEFT, yPos);
+	ctx.moveTo(0, yPos + MAKE_CLEAR_OFFSET);
+	ctx.lineTo(LEGEND_LEFT, yPos + MAKE_CLEAR_OFFSET);
 	ctx.stroke();
 
 	ctx.fillStyle = getBorderColor(theme);
