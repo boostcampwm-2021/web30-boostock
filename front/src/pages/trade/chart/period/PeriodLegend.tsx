@@ -22,7 +22,9 @@ interface IDrawPeriodLegendArgs {
 
 const formatPeriodLegend = (timestamp: number) => {
 	const date = new Date(timestamp);
-	const [mm, dd, yyyy] = date.toLocaleString('en').slice(0, 10).split('/');
+	const yyyy = date.getFullYear().toString();
+	const mm = (date.getMonth() + 1).toString().padStart(2, '0');
+	const dd = date.getDate().toString().padStart(2, '0');
 
 	return `${yyyy}-${mm}-${dd} ${formatCandleDate(timestamp)}`;
 };
