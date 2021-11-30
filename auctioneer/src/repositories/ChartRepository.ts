@@ -1,22 +1,23 @@
 /* eslint-disable no-param-reassign */
 import { EntityRepository, Repository, UpdateResult } from 'typeorm';
 import { Chart } from '@models/index';
+import ILockVersion from '@interfaces/ILockVersion';
 
 @EntityRepository(Chart)
 export default class ChartRepository extends Repository<Chart> {
-	public async readByStockIdLock(stockId: number): Promise<Chart[]> {
+	public async readByStockIdLock(stockId: number, lock: ILockVersion): Promise<Chart[]> {
 		return this.find({
 			where: { stockId },
 			relations: ['stock'],
-			lock: { mode: 'pessimistic_read' },
+			lock: { mode: lock },
 		});
 	}
 
-	public async readByTypeLock(type: number): Promise<Chart[]> {
+	public async readByTypeLock(type: number, lock: ILockVersion): Promise<Chart[]> {
 		return this.find({
 			where: { type },
 			relations: ['stock'],
-			lock: { mode: 'pessimistic_read' },
+			lock: { mode: lock },
 		});
 	}
 

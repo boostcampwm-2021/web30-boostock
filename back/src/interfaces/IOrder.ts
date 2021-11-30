@@ -1,7 +1,7 @@
 import { ORDERTYPE } from '@models/Order';
 
-export interface IAskOrder {
-	type: ORDERTYPE.ASK;
+export interface IOrder {
+	type: number;
 	price: number;
 	volume: string;
 }

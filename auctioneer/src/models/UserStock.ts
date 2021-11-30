@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 import 'reflect-metadata';
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne, VersionColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm';
 import { Stock, User } from './index';
 
 @Entity({ name: 'user_stock' })

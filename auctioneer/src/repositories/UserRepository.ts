@@ -1,5 +1,6 @@
 import { EntityRepository, Repository, InsertResult } from 'typeorm';
 import User from '@models/User';
+import ILockVersion from '@interfaces/ILockVersion';
 
 @EntityRepository(User)
 export default class UserRepository extends Repository<User> {
@@ -8,18 +9,24 @@ export default class UserRepository extends Repository<User> {
 		return result.raw.length > 0;
 	}
 
-	async readByIdLock(UserId: number): Promise<User[]> {
-		return this.createQueryBuilder('User')
-			.where('User.userId = :askUserId', { UserId })
-			.setLock('pessimistic_read')
-			.getMany();
+	async readByIdLock(UserId: number, lock: ILockVersion): Promise<User[]> {
+		return this.createQueryBuilder('User').where('User.userId = :askUserId', { UserId }).setLock(lock).getMany();
 	}
 
-	async readAskBidByIdLock(askUserId: number, bidUserId: number): Promise<User[]> {
+	async readAskBidByIdLock(askUserId: number, bidUserId: number, lock: ILockVersion): Promise<User[]> {
 		return this.createQueryBuilder('User')
 			.where('User.userId = :askUserId', { askUserId })
 			.orWhere('User.userId = :bidUserId', { bidUserId })
-			.setLock('pessimistic_read')
+			.setLock(lock)
 			.getMany();
+	}
+
+	async updateBalance(userId: number, changeValue: number): Promise<boolean> {
+		const { affected } = await this.createQueryBuilder()
+			.update()
+			.set({ balance: () => `balance + ${changeValue}` })
+			.where('userId = :userId', { userId })
+			.execute();
+		return affected === 1;
 	}
 }
