@@ -2,11 +2,9 @@ import wsModule from 'ws';
 import fs from 'fs';
 import _http from 'http';
 import _https from 'https';
-import { Application } from 'express';
 import Emitter from '@helper/eventEmitter';
 import { binArrayToJson, JsonToBinArray } from '@helper/tools';
 import { StockError, StockErrorMessage } from '@errors/index';
-import Logger from './logger';
 import { ISocketRequest } from '../interfaces/socketRequest';
 import StockService from '../services/StockService';
 

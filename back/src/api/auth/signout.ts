@@ -2,6 +2,8 @@ import { AuthError, AuthErrorMessage } from 'errors';
 import UserService from '@services/UserService';
 import express, { NextFunction, Request, Response } from 'express';
 import eventEmitter from '@helper/eventEmitter';
+import session from 'express-session';
+import sessionValidator from '@api/middleware/sessionValidator';
 
 export default (): express.Router => {
 	const router = express.Router();
@@ -19,11 +21,11 @@ export default (): express.Router => {
 		}
 	});
 
-	router.delete('/signout', async (req: Request, res: Response, next: NextFunction) => {
+	router.delete('/signout', sessionValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const userId = req.session.data?.userId;
-			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
+			const { userId } = res.locals;
 			await UserService.destroyAllSession(userId);
+
 			res.status(200).json({});
 		} catch (error) {
 			next(error);
