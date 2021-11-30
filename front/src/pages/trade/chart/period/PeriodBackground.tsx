@@ -2,9 +2,17 @@ import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@recoil/user';
 import { IChartItem } from '@recoil/chart';
-import { TTheme, MAKE_CLEAR_OFFSET, CANDLE_GAP, formatCandleDate, getTextColor, getBorderColor, getLegendColor } from '../common';
+import {
+	TTheme,
+	MAKE_CLEAR_OFFSET,
+	MAX_NUM_OF_CANDLES,
+	CANDLE_GAP,
+	formatCandleDate,
+	getTextColor,
+	getBorderColor,
+	getLegendColor,
+} from '../common';
 
-const NUM_OF_PARTITIONS = 5;
 const CANVAS_WIDTH = 850;
 const CANVAS_HEIGHT = 400;
 const BOX_HEIGHT = 20;
@@ -21,8 +29,25 @@ interface IDrawPeriodBackground {
 	theme: TTheme;
 }
 
-const drawCandleDate = (ctx: CanvasRenderingContext2D, index: number, createdAt: number, candleWidth: number) => {
-	if (index % NUM_OF_PARTITIONS !== 0) return;
+interface IDrawCandleDateArgs {
+	ctx: CanvasRenderingContext2D;
+	index: number;
+	createdAt: number;
+	candleWidth: number;
+	numOfPartitions: number;
+}
+
+const calculateNumOfPartitions = (numOfCandles: number) => {
+	if (numOfCandles >= MAX_NUM_OF_CANDLES) return 20;
+	if (numOfCandles >= MAX_NUM_OF_CANDLES * 0.8) return 15;
+	if (numOfCandles >= MAX_NUM_OF_CANDLES * 0.65) return 10;
+	if (numOfCandles >= MAX_NUM_OF_CANDLES * 0.4) return 5;
+	if (numOfCandles >= MAX_NUM_OF_CANDLES * 0.3) return 4;
+	return 3;
+};
+
+const drawCandleDate = ({ ctx, index, createdAt, candleWidth, numOfPartitions }: IDrawCandleDateArgs) => {
+	if (index % numOfPartitions !== 0) return;
 
 	const posX = Math.floor(CANVAS_WIDTH - (candleWidth + CANDLE_GAP) * (index + 1) + candleWidth / 2);
 
@@ -54,7 +79,7 @@ const drawPeriodBackground = ({ ctx, chartData, candleWidth, theme }: IDrawPerio
 	ctx.strokeStyle = getLegendColor(theme);
 	ctx.fillStyle = getTextColor(theme);
 	chartData.forEach(({ createdAt }, index) => {
-		drawCandleDate(ctx, index, createdAt, candleWidth);
+		drawCandleDate({ ctx, index, createdAt, candleWidth, numOfPartitions: calculateNumOfPartitions(chartData.length) });
 	});
 };
 

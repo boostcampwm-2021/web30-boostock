@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { IStockListItem, IStockChartItem } from '@recoil/stockList/index';
 import chartAtom, { IChartItem } from '@recoil/chart/index';
-import { TChartType } from '../common';
+import { TChartType, MAX_NUM_OF_CANDLES } from '../common';
 import fetchChartData from '../fetchChartData';
 
 interface IProps {
@@ -20,7 +20,6 @@ interface ISliceIndex {
 const DEFAULT_START_INDEX = 0;
 const DEFAULT_END_INDEX = 60;
 const MIN_NUM_OF_CANDLES = 10;
-const MAX_NUM_OF_CANDLES = 120;
 
 const useChart = ({ stockState, stockCode, chartType }: IProps) => {
 	const [chart, setChart] = useRecoilState<IChartItem[]>(chartAtom);
