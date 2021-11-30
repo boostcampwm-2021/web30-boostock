@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { EntityRepository, Repository, UpdateResult } from 'typeorm';
-import { Chart, Stock } from '@models/index';
+import { Chart } from '@models/index';
 
 @EntityRepository(Chart)
 export default class ChartRepository extends Repository<Chart> {
@@ -31,7 +31,6 @@ export default class ChartRepository extends Repository<Chart> {
 	}
 
 	public async updateChart(chart: Chart, price: number, amount: number): Promise<UpdateResult> {
-		chart.stock.price = price;
 		if (chart.amount === 0) {
 			chart.priceStart = price;
 			chart.priceHigh = price;

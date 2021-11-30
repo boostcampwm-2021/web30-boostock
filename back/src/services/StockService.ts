@@ -20,18 +20,19 @@ export default class StockService {
 		StockService.instance = this;
 	}
 
-	public async getCurrentStockPrice(entityManager: EntityManager, stockId: number): Promise<{ price: number }> {
-		const stockRepository: StockRepository = this.getStockRepository(entityManager);
+	// Deprecated?
+	// public async getCurrentStockPrice(entityManager: EntityManager, stockId: number): Promise<{ price: number }> {
+	// 	const stockRepository: StockRepository = this.getStockRepository(entityManager);
 
-		const stockPrice = await stockRepository.getCurrentStockPrice(stockId);
-		if (!stockPrice) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-		return stockPrice;
-	}
+	// 	const stockPrice = await stockRepository.getCurrentStockPrice(stockId);
+	// 	if (!stockPrice) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+	// 	return stockPrice;
+	// }
 
 	public async getStockById(entityManager: EntityManager, id: number): Promise<Stock> {
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
 
-		const stock = await stockRepository.readStockById(id);
+		const stock = await stockRepository.readById(id);
 		if (!stock) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 		return stock;
 	}
@@ -39,7 +40,7 @@ export default class StockService {
 	public async getStockByCode(entityManager: EntityManager, code: string): Promise<Stock> {
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
 
-		const stock = await stockRepository.readStockByCode(code);
+		const stock = await stockRepository.readByCode(code);
 		if (!stock) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
 		return stock;
 	}
@@ -65,7 +66,7 @@ export default class StockService {
 	public async getStocksBaseInfo(): Promise<{ stock_id: number; code: string }[]> {
 		const connection = await getConnection();
 		const stockRepository = connection.getCustomRepository(StockRepository);
-		const baseInfo = await stockRepository.readStockBaseInfo();
+		const baseInfo = await stockRepository.readBaseInfo();
 
 		return baseInfo;
 	}
@@ -78,32 +79,37 @@ export default class StockService {
 		return conclusionsData;
 	}
 
-	public async getCurrentPriceByCode(code: string): Promise<number> {
-		const connection = getConnection();
-		const queryRunner = connection.createQueryRunner();
-		await queryRunner.connect();
-		await queryRunner.startTransaction();
+	// Deprecated
+	// public async getCurrentPriceByCode(code: string): Promise<number> {
+	// 	const connection = getConnection();
+	// 	const queryRunner = connection.createQueryRunner();
+	// 	await queryRunner.connect();
+	// 	await queryRunner.startTransaction();
 
-		try {
-			const stockRepository: StockRepository = this.getStockRepository(queryRunner.manager);
-			const stock = await stockRepository.readStockByCode(code);
-			if (!stock) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-			await queryRunner.commitTransaction();
+	// 	try {
+	// 		const stockRepository: StockRepository = this.getStockRepository(queryRunner.manager);
+	// 		const stock = await stockRepository.readStockByCode(code);
+	// 		if (!stock) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
+	// 		await queryRunner.commitTransaction();
 
-			return stock.price;
-		} catch (error) {
-			await queryRunner.rollbackTransaction();
-			throw new StockError(StockErrorMessage.CANNOT_READ_STOCK);
-		} finally {
-			await queryRunner.release();
-		}
-	}
+	// 		return stock.price;
+	// 	} catch (error) {
+	// 		await queryRunner.rollbackTransaction();
+	// 		throw new StockError(StockErrorMessage.CANNOT_READ_STOCK);
+	// 	} finally {
+	// 		await queryRunner.release();
+	// 	}
+	// }
 
 	public async getPriceStockAll(): Promise<{ code: string; price: number }[]> {
-		const connection = await getConnection();
-		const stockRepository = connection.getCustomRepository(StockRepository);
-		const stockPrices = await stockRepository.readPriceStocks();
-		return stockPrices;
+		const stockRepository = await getConnection().getCustomRepository(StockRepository);
+		const stockPrices = await stockRepository.readAllStocks();
+		return stockPrices.map((stock: Stock) => {
+			return {
+				code: stock.code,
+				price: stock.charts[0].priceEnd,
+			};
+		});
 	}
 
 	public async getDailyLogs(code: string): Promise<IChartLog[]> {

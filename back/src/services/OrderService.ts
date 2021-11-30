@@ -31,10 +31,7 @@ export default class OrderService {
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
 		try {
-			const [user, stock] = await Promise.all([
-				userRepository.readUserById(userId),
-				stockRepository.readStockByCode(stockCode),
-			]);
+			const [user, stock] = await Promise.all([userRepository.readUserById(userId), stockRepository.readByCode(stockCode)]);
 			if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
 
 			if (type === ORDERTYPE.ASK) {
@@ -89,7 +86,7 @@ export default class OrderService {
 			if (!order || order.userId !== userId) throw new OrderError(OrderErrorMessage.INVALID_ORDER);
 
 			const user = await userRepository.readUserById(userId);
-			const stock = await stockRepository.readStockById(order.stockId);
+			const stock = await stockRepository.readById(order.stockId);
 			if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
 			if (order.type === ORDERTYPE.ASK) {
 				const holdStock = await userStockRepository.readUserStockLock(userId, stock.stockId);
@@ -135,7 +132,7 @@ export default class OrderService {
 			const order = await orderRepository.readOrderById(orderId);
 			if (!order || order.userId !== userId) throw new OrderError(OrderErrorMessage.INVALID_ORDER);
 			const user = await userRepository.readUserById(userId);
-			const stock = await stockRepository.readStockById(order.stockId);
+			const stock = await stockRepository.readById(order.stockId);
 			if (!user || !stock) throw new OrderError(OrderErrorMessage.INVALID_DATA);
 
 			if (order.type === ORDERTYPE.ASK) {

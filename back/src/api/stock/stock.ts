@@ -21,7 +21,7 @@ export default (): express.Router => {
 		Emitter.emit('notice', askUser, { userType: 'ask', stockCode });
 	});
 
-	router.post('/chart/new', async (req: Request, res: Response) => {
+	router.post('/chart/new', (req: Request, res: Response) => {
 		const { charts } = req.body;
 		const stockChartJson = {};
 		charts.forEach((stock) => {

@@ -15,10 +15,4 @@ export default class Stock {
 
 	@Column({ name: 'name_english' })
 	nameEnglish: string;
-
-	@Column()
-	price: number;
-
-	@Column({ name: 'previous_close' })
-	previousClose: number;
 }
