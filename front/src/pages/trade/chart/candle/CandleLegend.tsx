@@ -1,0 +1,120 @@
+import React, { useEffect, useRef } from 'react';
+import { useRecoilValue } from 'recoil';
+import userAtom, { IUser } from '@src/recoil/user/atom';
+import formatNumber from '@src/common/utils/formatNumber';
+import { IChartItem } from '@recoil/chart/index';
+import {
+	IProps,
+	ICrossLine,
+	TTheme,
+	getPriceColor,
+	getMaxValue,
+	getMinValue,
+	getTextColor,
+	getBorderColor,
+	getText,
+	CANVAS_TOP_BOTTOM_PADDING,
+} from '../common';
+
+const CANVAS_WIDTH = 950;
+const CANVAS_HEIGHT = 252;
+const LEGEND_WIDTH = 100;
+const LEGEND_HEIGHT = 20;
+const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 100);
+
+interface IDrawCandleLegendArgs {
+	ctx: CanvasRenderingContext2D;
+	chartData: IChartItem[];
+	theme: TTheme;
+	convertToYPosition: (value: number) => number;
+}
+
+interface IDrawHoverCandleLegendArgs {
+	ctx: CanvasRenderingContext2D;
+	crossLine: ICrossLine;
+	maxPrice: number;
+	minPrice: number;
+	theme: TTheme;
+	convertToYPosition: (value: number) => number;
+}
+
+const drawCandleLegend = ({ ctx, chartData, theme, convertToYPosition }: IDrawCandleLegendArgs): void => {
+	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+	ctx.font = '11px dotum';
+	ctx.fillStyle = getTextColor(theme);
+
+	const recentChart = chartData[0];
+	if (recentChart && recentChart.priceEnd > 0) {
+		const { priceStart, priceEnd } = recentChart;
+		const yPos = convertToYPosition(priceEnd);
+
+		ctx.strokeStyle = getPriceColor(priceStart, priceEnd, theme);
+		ctx.beginPath();
+		ctx.setLineDash([3, 3]);
+		ctx.moveTo(0, yPos);
+		ctx.lineTo(LEGEND_LEFT, yPos);
+		ctx.stroke();
+
+		ctx.fillStyle = ctx.strokeStyle;
+		ctx.fillRect(LEGEND_LEFT, yPos - LEGEND_HEIGHT / 2, LEGEND_WIDTH, LEGEND_HEIGHT);
+		ctx.fillStyle = getTextColor(theme === 'light' ? 'dark' : 'light');
+		ctx.fillText(formatNumber(recentChart.priceEnd), LEGEND_LEFT + LEGEND_WIDTH / 10, yPos + LEGEND_HEIGHT / 4);
+	}
+};
+
+const drawHoverCandleLegend = ({ crossLine, ctx, minPrice, maxPrice, theme, convertToYPosition }: IDrawHoverCandleLegendArgs) => {
+	if (!crossLine.event || crossLine.event.target !== ctx.canvas) return;
+
+	const ratio = (crossLine.posY - CANVAS_TOP_BOTTOM_PADDING) / (CANVAS_HEIGHT - CANVAS_TOP_BOTTOM_PADDING * 2);
+	const priceValue = Math.floor(minPrice + (maxPrice - minPrice) * (1 - ratio));
+	const yPos = convertToYPosition(priceValue);
+	const text = getText(priceValue, Number.isNaN);
+
+	ctx.strokeStyle = getBorderColor(theme);
+	ctx.beginPath();
+	ctx.moveTo(0, yPos);
+	ctx.lineTo(LEGEND_LEFT, yPos);
+	ctx.stroke();
+
+	ctx.fillStyle = getBorderColor(theme);
+	ctx.fillRect(LEGEND_LEFT, yPos - LEGEND_HEIGHT / 2, LEGEND_WIDTH, LEGEND_HEIGHT);
+	ctx.fillStyle = getTextColor(theme === 'light' ? 'dark' : 'light');
+	ctx.fillText(text, LEGEND_LEFT + LEGEND_WIDTH / 10, yPos + LEGEND_HEIGHT / 4);
+};
+
+const CandleLegend = ({ chartData, crossLine, getYPosition }: IProps) => {
+	const candleLegendRef = useRef<HTMLCanvasElement>(null);
+	const { theme } = useRecoilValue<IUser>(userAtom);
+	const maxPrice = getMaxValue(chartData, 'amount', 'priceHigh');
+	const minPrice = getMinValue(chartData, 'amount', 'priceLow');
+	const convertToYPosition = getYPosition(maxPrice, minPrice, CANVAS_HEIGHT);
+
+	useEffect(() => {
+		if (!candleLegendRef.current) return;
+
+		const ctx = candleLegendRef.current.getContext('2d');
+		if (!ctx) return;
+
+		drawCandleLegend({
+			ctx,
+			chartData,
+			theme,
+			convertToYPosition,
+		});
+
+		drawHoverCandleLegend({
+			ctx,
+			crossLine,
+			maxPrice,
+			minPrice,
+			theme,
+			convertToYPosition,
+		});
+	}, [candleLegendRef, crossLine, chartData, theme]);
+
+	return (
+		<canvas className="chart-canvas chart-candle-legend" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={candleLegendRef} />
+	);
+};
+
+export default CandleLegend;

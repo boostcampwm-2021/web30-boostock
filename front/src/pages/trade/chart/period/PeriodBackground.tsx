@@ -1,9 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@src/recoil/user/atom';
-import { OFFSET, CANDLE_GAP, IProps, IDrawProps, formatCandleDate, getTextColor, getBorderColor, getLegendColor } from './common';
-
-import './Chart.scss';
+import {
+	OFFSET,
+	CANDLE_GAP,
+	IProps,
+	IDrawProps,
+	formatCandleDate,
+	getTextColor,
+	getBorderColor,
+	getLegendColor,
+} from '../common';
 
 const PARTITION = 5;
 const CANVAS_WIDTH = 850;

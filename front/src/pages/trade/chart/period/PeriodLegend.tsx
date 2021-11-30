@@ -1,9 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@src/recoil/user/atom';
-import { OFFSET, IProps, IDrawLegendProps, getTextColor, getBorderColor, formatCandleDate } from './common';
-
-import './Chart.scss';
+import { OFFSET, IProps, IDrawLegendProps, getTextColor, getBorderColor, formatCandleDate } from '../common';
 
 const CANVAS_WIDTH = 850;
 const CANVAS_HEIGHT = 400;

@@ -6,6 +6,7 @@ export const NUM_OF_CANDLES = 60;
 export const RATIO_MIN = 1.0;
 export const RATIO_MAX = 1.0;
 export const CANDLE_GAP = 5;
+export const CANVAS_TOP_BOTTOM_PADDING = 14;
 
 export type TTheme = 'light' | 'dark';
 export type TChartType = 1 | 1440;
@@ -19,6 +20,7 @@ export interface ICrossLine {
 export interface IProps {
 	chartData: IChartItem[];
 	crossLine: ICrossLine;
+	getYPosition: (maxValue: number, minValue: number, canvasHeight: number) => (value: number) => number;
 }
 
 export interface IDrawProps {
@@ -30,7 +32,10 @@ export interface IDrawProps {
 
 export interface IDrawLegendProps extends IDrawProps {
 	crossLine: ICrossLine;
+	maxPrice: number;
+	minPrice: number;
 	numOfCandles?: number;
+	convertToYPosition: (value: number) => number;
 }
 
 export const getText = (value: number, predicate: (arg: number) => boolean) => {
