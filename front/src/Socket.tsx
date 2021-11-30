@@ -1,15 +1,14 @@
 import React from 'react';
 import toast from 'react-hot-toast';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
+import fetchHoldStocks from '@common/utils/fetchHoldStocks';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
 import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
 import stockExecutionAtom, { IStockExecutionInfo, IStockExecutionItem } from './recoil/stockExecution/atom';
 import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
-import fetchHoldStocks from '@common/utils/fetchHoldStocks';
 import Emitter from './common/utils/eventEmitter';
 import HoldStockListAtom from './recoil/holdStockList/atom';
-import { getHoldStocks } from './pages/trade/sideBar/refreshStockData';
 import dailyLogAtom, { IDailyLog } from './recoil/stockDailyLog/atom';
 import chartAtom, { IChartItem } from './recoil/chart/atom';
 
