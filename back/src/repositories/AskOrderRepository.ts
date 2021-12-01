@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import AskOrder, { ORDERTYPE } from '@models/AskOrder';
+import { AskOrder, ORDERTYPE } from '@models/index';
 import { IOrder } from '@interfaces/IOrder';
 import { DBError, DBErrorMessage, OptimisticVersionError, OptimisticVersionErrorMessage } from '@errors/index';
 

@@ -53,24 +53,23 @@ export default class OrderTransaction {
 		}
 	}
 
-	public async insertOrder() {
-		if (this.type === ORDERTYPE.ASK)
+	public async insertOrder(): Promise<void> {
+		if (this.type === ORDERTYPE.ASK) {
 			await this.askOrderRepository.insertQueryRunner({
 				userId: this.userId,
 				stockId: this.stockId,
-				type: this.type,
 				amount: this.amount,
 				price: this.price,
 				createdAt: new Date(),
 			});
-		else if (this.type === ORDERTYPE.BID)
+		} else if (this.type === ORDERTYPE.BID) {
 			await this.bidOrderRepository.insertQueryRunner({
 				userId: this.userId,
 				stockId: this.stockId,
-				type: this.type,
 				amount: this.amount,
 				price: this.price,
 				createdAt: new Date(),
 			});
+		}
 	}
 }
