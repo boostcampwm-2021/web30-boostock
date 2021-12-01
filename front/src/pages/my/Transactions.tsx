@@ -42,30 +42,26 @@ const refresh = (
 		},
 	}).then((res: Response) => {
 		if (res.ok) {
-			res.json()
-				.then((data) => {
-					setTransactions((prev) => [
-						...prev,
-						...data.log.map(
-							(log: { type: number; amount: number; createdAt: number; price: number; stockCode: string }) => {
-								return {
-									transactionTime: log.createdAt,
-									orderType: log.type,
-									stockCode: log.stockCode,
-									stockName: stockList.find((stock) => stock.code === log.stockCode)?.nameKorean,
-									price: log.price,
-									amount: log.amount,
-									volume: log.price * log.amount,
-								};
-							},
-						),
-					]);
-				})
-				.finally(() => {
-					setLoading(false);
-				});
-		} else {
-			setLoading(false);
+			res.json().then((data) => {
+				setTransactions((prev) => [
+					...prev,
+					...data.log.map(
+						(log: { type: number; amount: number; createdAt: number; price: number; stockCode: string }) => {
+							return {
+								transactionTime: log.createdAt,
+								orderType: log.type,
+								stockCode: log.stockCode,
+								stockName: stockList.find((stock) => stock.code === log.stockCode)?.nameKorean,
+								price: log.price,
+								amount: log.amount,
+								volume: log.price * log.amount,
+							};
+						},
+					),
+				]);
+
+				if (data.log.length > 0) setLoading(false);
+			});
 		}
 	});
 };

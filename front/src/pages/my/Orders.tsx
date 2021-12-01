@@ -41,38 +41,34 @@ const refresh = (
 		},
 	}).then((res: Response) => {
 		if (res.ok) {
-			res.json()
-				.then((data) => {
-					setOrders((prev) => [
-						...prev,
-						...data.pendingOrder.map(
-							(order: {
-								orderId: number;
-								stockCode: string;
-								nameKorean: string;
-								type: ORDERTYPE;
-								amount: number;
-								price: number;
-								createdAt: number;
-							}) => {
-								return {
-									orderId: order.orderId,
-									orderTime: new Date(order.createdAt).getTime() + 32400000,
-									orderType: order.type,
-									stockCode: order.stockCode,
-									stockName: stockList.find((stock) => stock.code === order.stockCode)?.nameKorean,
-									price: order.price,
-									orderAmount: order.amount,
-								};
-							},
-						),
-					]);
-				})
-				.finally(() => {
-					setLoading(false);
-				});
-		} else {
-			setLoading(false);
+			res.json().then((data) => {
+				setOrders((prev) => [
+					...prev,
+					...data.pendingOrder.map(
+						(order: {
+							orderId: number;
+							stockCode: string;
+							nameKorean: string;
+							type: ORDERTYPE;
+							amount: number;
+							price: number;
+							createdAt: number;
+						}) => {
+							return {
+								orderId: order.orderId,
+								orderTime: new Date(order.createdAt).getTime() + 32400000,
+								orderType: order.type,
+								stockCode: order.stockCode,
+								stockName: stockList.find((stock) => stock.code === order.stockCode)?.nameKorean,
+								price: order.price,
+								orderAmount: order.amount,
+							};
+						},
+					),
+				]);
+
+				if (data.pendingOrder.length > 0) setLoading(false);
+			});
 		}
 	});
 };
