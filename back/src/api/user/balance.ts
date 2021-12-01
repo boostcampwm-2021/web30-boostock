@@ -12,7 +12,7 @@ export default (): express.Router => {
 		try {
 			const { userId } = res.locals;
 			const { type, start, end } = req.query;
-			const result = await UserService.getUserById(userId);
+			const result = await UserService.readById(userId);
 			const { balance } = result;
 			const log = await UserService.readBalanceLog(userId, Number(start), Number(end), Number(type));
 
@@ -21,7 +21,7 @@ export default (): express.Router => {
 			next(error);
 		}
 	});
-
+  
 	router.post(
 		'/balance/deposit',
 		sessionValidator,
@@ -43,7 +43,7 @@ export default (): express.Router => {
 				};
 				await UserService.pushBalanceLog(userId, newBalanceLog);
 
-				res.status(200).json({ balance });
+			  res.status(201).json({});
 			} catch (error) {
 				next(error);
 			}
@@ -72,7 +72,7 @@ export default (): express.Router => {
 				};
 				await UserService.pushBalanceLog(userId, newBalanceLog);
 
-				res.status(200).json({ balance });
+			  res.status(201).json({});
 			} catch (error) {
 				next(error);
 			}

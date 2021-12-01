@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import { getConnection } from 'typeorm';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
-import { Stock, Order } from '@models/index';
-import { OrderError, OrderErrorMessage } from '@errors/index';
+import { Order } from '@models/index';
+import { OptimisticVersionError, OrderError, OrderErrorMessage } from '@errors/index';
 import BidAskTransaction from './BidAskTransaction';
 
 export default class AuctioneerService {
@@ -27,20 +27,6 @@ export default class AuctioneerService {
 			const OrderRepositoryRunner = queryRunner.manager.getCustomRepository(OrderRepository);
 			const ChartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
 
-			const [stock, orderBid, orderAsk]: [Stock | undefined, Order | undefined, Order | undefined] = await Promise.all([
-				StockRepositoryRunner.readStockByCode(code),
-				OrderRepositoryRunner.readBidOrderByCode(code),
-				OrderRepositoryRunner.readAskOrderByCode(code),
-			]);
-			if (stock === undefined || orderAsk === undefined || orderBid === undefined || orderAsk.price > orderBid.price)
-				throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
-
-			const [askUser, bidUser] = await Promise.all([
-				UserRepositoryRunner.readUserById(orderAsk.userId),
-				UserRepositoryRunner.readUserById(orderBid.userId),
-			]);
-			if (askUser === undefined || bidUser === undefined) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
-			const bidUserStock = await UserStockRepositoryRunner.readUserStockByCode(bidUser.userId, code);
 			const task = new BidAskTransaction(
 				StockRepositoryRunner,
 				UserRepositoryRunner,
@@ -49,26 +35,53 @@ export default class AuctioneerService {
 				ChartRepositoryRunner,
 			);
 
+			const [bidOrder, askOrder]: Order[] = await Promise.all([
+				OrderRepositoryRunner.readBidOrderByCode(code),
+				OrderRepositoryRunner.readAskOrderByCode(code),
+			]);
+			if (askOrder.price > bidOrder.price) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
+
 			task.init({
 				code,
-				price: orderAsk.createdAt < orderBid.createdAt ? orderAsk.price : orderBid.price,
-				amount: Math.min(orderBid.amount, orderAsk.amount),
+				price: askOrder.createdAt < bidOrder.createdAt ? askOrder.price : bidOrder.price,
+				amount: Math.min(bidOrder.amount, askOrder.amount),
 				createdAt: new Date().getTime(),
-				askUser: orderAsk.userId,
-				bidUser: orderBid.userId,
-				stockId: orderAsk.stockId,
+				askUser: askOrder.userId,
+				bidUser: bidOrder.userId,
+				stockId: askOrder.stockId,
 			});
 
+			let askUser;
+			let bidUser;
+
+			if (askOrder.userId === bidOrder.userId) {
+				const user = await UserRepositoryRunner.readByIdLock(askOrder.userId, 'pessimistic_write');
+				askUser = user;
+				bidUser = user;
+			} else {
+				const users = await UserRepositoryRunner.readAskBidByIdLock(
+					askOrder.userId,
+					bidOrder.userId,
+					'pessimistic_write',
+				);
+				askUser = users.find((user) => user.userId === askOrder.userId);
+				bidUser = users.find((user) => user.userId === bidOrder.userId);
+			}
+			if (askUser === undefined || bidUser === undefined) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
+
 			await Promise.all([
-				task.bidOrderProcess(bidUser, bidUserStock, orderBid),
-				task.askOrderProcess(askUser, orderAsk),
-				task.chartProcess(stock),
+				task.bidUserProcess(bidUser, bidOrder),
+				task.askUserProcess(askUser),
+				task.bidOrderProcess(bidOrder),
+				task.askOrderProcess(askOrder),
+				task.chartProcess(),
 			]);
 
 			await queryRunner.commitTransaction();
 			await task.logProcess();
 			result = true;
 		} catch (err) {
+			if (err instanceof OptimisticVersionError) console.error(err);
 			await queryRunner.rollbackTransaction();
 			result = false;
 		} finally {

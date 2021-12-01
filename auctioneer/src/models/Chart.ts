@@ -8,9 +8,12 @@ export default class Chart {
 	@PrimaryGeneratedColumn({ name: 'chart_id' })
 	chartId: number;
 
-	@ManyToOne(() => Stock, (stock: Stock) => stock.stockId, { cascade: ['update'] })
+	@ManyToOne(() => Stock, (stock: Stock) => stock.stockId)
 	@JoinColumn({ name: 'stock_id', referencedColumnName: 'stockId' })
 	stock: Stock;
+
+	@Column({ name: 'stock_id' })
+	stockId: number;
 
 	@Column()
 	type: number;

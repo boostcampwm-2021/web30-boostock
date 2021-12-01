@@ -60,7 +60,7 @@ export default class UserService {
 		return user;
 	}
 
-	static async getUserByEmail(email: string): Promise<User> {
+	static async readByEmail(email: string): Promise<User> {
 		if (!checkEmail(email)) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
 		const user = await userRepository.findOne({ where: { email } });
@@ -68,21 +68,16 @@ export default class UserService {
 		return user;
 	}
 
-	static async getUserById(id: number): Promise<User> {
+	static async readById(id: number): Promise<User> {
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
 		const user = await userRepository.findOne({ where: { userId: id } });
 		if (!user) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
 		return user;
 	}
 
-	static async updateBalance(userId: number, changeValue: number): Promise<User> {
-		const userRepository: UserRepository = getCustomRepository(UserRepository);
-		const user = await userRepository.findOne({ where: { userId } });
-		if (user === undefined) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
-		user.balance += changeValue;
-		if (user.balance < 0) throw new ParamError(ParamErrorMessage.BALANCE_CANNOT_BE_NEGATIVE);
-		await userRepository.updateUser(user);
-		return user;
+	static async updateBalance(userId: number, changeValue: number): Promise<void> {
+		const userRepository = getCustomRepository(UserRepository);
+		await userRepository.updateBalance(userId, changeValue);
 	}
 
 	static async unregister(user: User): Promise<User> {

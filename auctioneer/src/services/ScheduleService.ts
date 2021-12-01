@@ -1,10 +1,9 @@
 /* eslint-disable class-methods-use-this */
-/* eslint-disable no-param-reassign */
-import IChartLog, { CHARTTYPE } from '@interfaces/IChartLog';
+import fetch from 'node-fetch';
+import { getConnection } from 'typeorm';
+import IChartLog from '@interfaces/IChartLog';
 import { Chart, ChartLog } from '@models/index';
 import { ChartRepository } from '@repositories/index';
-import { getConnection } from 'typeorm';
-import fetch from 'node-fetch';
 
 const ONE_SEC_IN_MILLISECONDS = 1000;
 
@@ -45,27 +44,15 @@ export default class ScheduleService {
 		return chartLog;
 	}
 
-	async initializeChartAndStock(chart: Chart, chartRepositoryRunner: ChartRepository): Promise<IChartLog> {
-		chart.stock.previousClose = chart.priceEnd;
-		return this.initializeChart(chart, chartRepositoryRunner);
-	}
-
 	async runAllChart(type: number): Promise<void> {
 		const queryRunner = getConnection().createQueryRunner();
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
 		try {
 			const chartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
-			const charts = await chartRepositoryRunner.readByType(type);
-			if (type === CHARTTYPE.DAYS) {
-				const chartLogList = await Promise.all(
-					charts.map((chart) => this.initializeChartAndStock(chart, chartRepositoryRunner)),
-				);
-				this.reportNewChart(chartLogList);
-			} else {
-				const chartLogList = await Promise.all(charts.map((chart) => this.initializeChart(chart, chartRepositoryRunner)));
-				this.reportNewChart(chartLogList);
-			}
+			const charts = await chartRepositoryRunner.readByTypeLock(type, 'pessimistic_read');
+			const chartLogList = await Promise.all(charts.map((chart) => this.initializeChart(chart, chartRepositoryRunner)));
+			this.reportNewChart(chartLogList);
 			await queryRunner.commitTransaction();
 		} catch (error) {
 			await queryRunner.rollbackTransaction();

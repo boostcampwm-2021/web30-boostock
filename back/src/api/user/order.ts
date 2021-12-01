@@ -36,7 +36,7 @@ export default (): express.Router => {
 				},
 			};
 
-			res.status(200).json({});
+			res.status(201).json({});
 			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
 			Emitter.emit('ACCEPTED_ORDER', acceptedOrderInfo);
 		} catch (error) {
@@ -50,20 +50,8 @@ export default (): express.Router => {
 			const { id } = req.query;
 			if (!id) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.cancel(userId, Number(id));
-
-			res.status(200).json({});
-		} catch (error) {
-			next(error);
-		}
-	});
-
-	router.put('/order', sessionValidator, orderValidator, async (req: Request, res: Response, next: NextFunction) => {
-		try {
-			const { userId } = res.locals;
-			const { orderId, amount, price } = req.body;
-			await OrderService.modify(userId, orderId, amount, price);
-
-			res.status(200).json({});
+      
+			res.status(201).json({});
 		} catch (error) {
 			next(error);
 		}

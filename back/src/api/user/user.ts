@@ -9,7 +9,7 @@ export default (): express.Router => {
 	router.get('/', sessionValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { userId } = res.locals;
-			const user = await UserService.getUserById(userId);
+			const user = await UserService.readById(userId);
 
 			res.status(200).json({ user });
 		} catch (error) {
@@ -20,7 +20,7 @@ export default (): express.Router => {
 	router.get('/email', async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { email } = req.query;
-			await UserService.getUserByEmail(String(email));
+			await UserService.readByEmail(String(email));
 
 			return res.status(200).json({ result: false });
 		} catch (error) {

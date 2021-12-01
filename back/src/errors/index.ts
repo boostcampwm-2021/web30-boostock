@@ -21,3 +21,9 @@ export { default as NotFoundError } from './NotFoundError';
 
 export * from './ValidationError';
 export { default as ValidationError } from './ValidationError';
+
+export * from './OptimisticVersionError';
+export { default as OptimisticVersionError } from './OptimisticVersionError';
+
+export * from './DBError';
+export { default as DBError } from './DBError';

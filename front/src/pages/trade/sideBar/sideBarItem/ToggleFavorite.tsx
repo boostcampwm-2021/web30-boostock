@@ -28,7 +28,7 @@ const ToggleFavorite = ({ isFavorite, isLoggedIn, stockCode, nameKorean, onRefre
 
 		try {
 			const res = await fetch(`${process.env.SERVER_URL}/api/user/favorite`, config);
-			if (res.status !== 200) throw new Error();
+			if (!res.ok) throw new Error();
 
 			const toastMessage = isFavorite ? ` 종목이 관심 종목에서 제거되었습니다.` : ` 종목이 관심 종목으로 등록되었습니다.`;
 

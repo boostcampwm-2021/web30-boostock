@@ -9,7 +9,7 @@ export default (): express.Router => {
 	router.get('/hold', sessionValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { userId } = res.locals;
-			const result = await UserStockService.readUserStockWithStockInfo(userId);
+			const result = await UserStockService.readWithStockInfo(userId);
 			const holdStocks = result.map((elem) => {
 				return {
 					amount: elem.amount,

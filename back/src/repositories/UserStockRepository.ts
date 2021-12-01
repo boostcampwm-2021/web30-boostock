@@ -1,23 +1,37 @@
-import { EntityRepository, Repository, InsertResult, UpdateResult } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import UserStock from '@models/UserStock';
+import ILockVersion from '@interfaces/ILockVersion';
+import { DBError, DBErrorMessage } from '@errors/index';
 
 @EntityRepository(UserStock)
 export default class UserStockRepository extends Repository<UserStock> {
-	async readUserStockById(userId: number): Promise<UserStock[]> {
-		return this.find({ where: { userId }, relations: ['stock'] });
+	// UNUSED
+	async insertQueryRunner(value): Promise<boolean> {
+		const { identifiers } = await this.createQueryBuilder().insert().into(UserStock).values(value).execute();
+		return identifiers.length === 1;
 	}
 
-	async createUserStock(userStock: UserStock): Promise<boolean> {
-		const result: InsertResult = await this.insert(userStock);
-		return result.identifiers.length > 0;
+	async read(userId: number, stockId: number): Promise<UserStock | undefined> {
+		return this.createQueryBuilder()
+			.where('UserStock.userId = :userId', { userId })
+			.andWhere('UserStock.stockId = :stockId', { stockId })
+			.getOne();
 	}
 
-	async updateUserStock(userStock: UserStock): Promise<boolean> {
-		const result: UpdateResult = await this.update(userStock.userStockId, userStock);
-		return result.affected != null && result.affected > 0;
+	async readLock(userStockId: number, lock: ILockVersion): Promise<UserStock> {
+		return this.createQueryBuilder()
+			.where('UserStock.userStockId = :userStockId', { userStockId })
+			.setLock(lock)
+			.getOneOrFail();
 	}
 
-	async readUserStockLock(userId: number, stockId: number): Promise<UserStock | undefined> {
-		return this.findOne({ where: { userId, stockId }, lock: { mode: 'pessimistic_write' } });
+	async updateQueryRunner(userStock: UserStock): Promise<void> {
+		const { affected } = await this.createQueryBuilder().update().set(userStock).whereInIds(userStock.userStockId).execute();
+		if (affected !== 1) throw new DBError(DBErrorMessage.UPDATE_FAIL);
+	}
+
+	async deleteQueryRunner(userStockId: number): Promise<void> {
+		const { affected } = await this.createQueryBuilder().delete().whereInIds(userStockId).execute();
+		if (affected !== 1) throw new DBError(DBErrorMessage.UPDATE_FAIL);
 	}
 }

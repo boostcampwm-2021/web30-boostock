@@ -12,39 +12,32 @@ export default class UserFavoriteService {
 		UserFavoriteService.instance = this;
 	}
 
-	private getUserFavoriteRepository(entityManager: EntityManager): UserFavoriteRepository {
-		const userFavoriteRepository: UserFavoriteRepository | null = entityManager.getCustomRepository(UserFavoriteRepository);
+	// Deprecated
+	// private getUserFavoriteRepository(entityManager: EntityManager): UserFavoriteRepository {
+	// 	const userFavoriteRepository: UserFavoriteRepository | null = entityManager.getCustomRepository(UserFavoriteRepository);
+	// 	if (!entityManager || !userFavoriteRepository) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+	// 	return userFavoriteRepository;
+	// }
 
-		if (!entityManager || !userFavoriteRepository) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
-		return userFavoriteRepository;
-	}
-
-	static async getUserFavoriteByUserId(userId: number): Promise<Stock[]> {
-		const userFavorites = await getCustomRepository(UserFavoriteRepository).readUserFavoriteById(userId);
+	static async readByUserId(userId: number): Promise<Stock[]> {
+		const userFavorites = await getCustomRepository(UserFavoriteRepository).readByUserId(userId);
 		return userFavorites.map((userFavorite) => userFavorite.stockId);
 	}
 
-	static async createUserFavorite(userId: number, stockCode: string): Promise<UserFavorite> {
+	static async createUserFavorite(userId: number, stockCode: string): Promise<void> {
 		const targetUser = await getCustomRepository(UserRepository).findOne(userId);
 		const targetStock = await getCustomRepository(StockRepository).findOne({ where: { code: stockCode } });
 		if (targetUser === undefined || targetStock === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 		const newFavorite = new UserFavorite();
 		newFavorite.userId = targetUser;
 		newFavorite.stockId = targetStock;
-		return getCustomRepository(UserFavoriteRepository).save(newFavorite);
+		await getCustomRepository(UserFavoriteRepository).save(newFavorite);
 	}
 
-	static async removeUserFavorite(userId: number, stockCode: string): Promise<UserFavorite> {
+	static async removeUserFavorite(userId: number, stockCode: string): Promise<void> {
 		const userFavoriteRepository = getCustomRepository(UserFavoriteRepository);
 		const targetStock = await getCustomRepository(StockRepository).findOne({ where: { code: stockCode } });
 		if (targetStock === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-		const targetFavorite = await userFavoriteRepository.findOne({
-			where: {
-				userId,
-				stockId: targetStock,
-			},
-		});
-		if (targetFavorite === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-		return userFavoriteRepository.remove(targetFavorite);
+		await userFavoriteRepository.deleteByUserIdStock(userId, targetStock);
 	}
 }
