@@ -1,11 +1,9 @@
 import fetch from 'node-fetch';
 import express, { NextFunction, Request, Response } from 'express';
-
 import { OrderService, UserService } from '@services/index';
 import Emitter from '@helper/eventEmitter';
 import { ParamError, ParamErrorMessage } from 'errors/index';
 import { orderValidator, stockIdValidator } from '@api/middleware/orderValidator';
-import config from '@config/index';
 import sessionValidator from '@api/middleware/sessionValidator';
 
 export default (): express.Router => {
@@ -42,7 +40,7 @@ export default (): express.Router => {
 
 			res.status(200).json({});
 			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
-			Emitter.emit('order accepted', acceptedOrderInfo);
+			Emitter.emit('ACCEPTED_ORDER', acceptedOrderInfo);
 		} catch (error) {
 			next(error);
 		}
@@ -54,6 +52,7 @@ export default (): express.Router => {
 			const { id } = req.query;
 			if (!id) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.cancel(userId, Number(id));
+
 			res.status(200).json({});
 		} catch (error) {
 			next(error);
@@ -102,7 +101,7 @@ export default (): express.Router => {
 
 			res.status(200).json({});
 			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
-			Emitter.emit('order accepted', acceptedOrderInfo);
+			Emitter.emit('ACCEPTED_ORDER', acceptedOrderInfo);
 		} catch (error) {
 			next(error);
 		}

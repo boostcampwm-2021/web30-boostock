@@ -17,7 +17,7 @@ const connectNewUser = async (client) => {
 		const stockService = new StockService();
 		const stockList = await stockService.getStocksCurrent();
 
-		client.send(translateResponseFormat('stocksInfo', stockList));
+		client.send(translateResponseFormat('STOCKS_INFO', stockList));
 		socketClientMap.set(client, getNemClientForm());
 	} catch (error) {
 		throw new StockError(StockErrorMessage.CANNOT_READ_STOCK_LIST);
@@ -41,21 +41,21 @@ const broadcast = ({ stockCode, msg }) => {
 	socketClientMap.forEach(({ target: targetStockCode }, client) => {
 		if (targetStockCode === stockCode) {
 			// 모든 데이터 전송, 현재가, 호가, 차트 등...
-			client?.send(translateResponseFormat('updateTarget', msg));
+			client?.send(translateResponseFormat('UPDATE_TARGET', msg));
 		} else {
 			// msg 오브젝트의 데이터에서 aside 바에 필요한 데이터만 골라서 전송
-			client?.send(translateResponseFormat('updateStock', msg.match));
+			client?.send(translateResponseFormat('UPDATE_STOCK', msg.match));
 		}
 	});
 };
 const sendAlarmMessage = (userId, msg) => {
 	const client = socketAlarmMap.get(userId);
-	client?.send(translateResponseFormat('notice', msg));
+	client?.send(translateResponseFormat('NOTICE', msg));
 };
 const sendNewChart = (stockCharts) => {
 	socketClientMap.forEach(({ target: targetStockCode }, client) => {
 		if (!stockCharts[targetStockCode]) return;
-		client.send(translateResponseFormat('chart', stockCharts[targetStockCode]));
+		client.send(translateResponseFormat('CHART', stockCharts[targetStockCode]));
 	});
 };
 const loginUser = (userId, alarmToken) => {
@@ -81,7 +81,7 @@ export default (webSocketServer): void => {
 					const stockCode = requestData.stockCode ?? '';
 					const conclusions = await stockService.getConclusionByCode(stockCode);
 
-					ws.send(translateResponseFormat('baseStock', { stockCode, conclusions }));
+					ws.send(translateResponseFormat('BASE_STOCK', { stockCode, conclusions }));
 					socketClientMap.set(ws, { ...socketClientMap.get(ws), target: stockCode });
 					break;
 				}
@@ -91,7 +91,7 @@ export default (webSocketServer): void => {
 					break;
 				}
 				default:
-					ws.send(translateResponseFormat('error', '알 수 없는 오류가 발생했습니다.'));
+					ws.send(translateResponseFormat('ERROR', '알 수 없는 오류가 발생했습니다.'));
 			}
 		});
 
@@ -101,9 +101,9 @@ export default (webSocketServer): void => {
 	});
 };
 
-Emitter.on('broadcast', broadcast);
-Emitter.on('loginUser', loginUser);
-Emitter.on('order accepted', broadcast);
-Emitter.on('notice', sendAlarmMessage);
-Emitter.on('chart', sendNewChart);
-Emitter.on('logout', logoutUserHandler);
+Emitter.on('BROADCAST', broadcast);
+Emitter.on('LOGIN_USER', loginUser);
+Emitter.on('ACCEPTED_ORDER', broadcast);
+Emitter.on('NOTICE', sendAlarmMessage);
+Emitter.on('CHART', sendNewChart);
+Emitter.on('LOGOUT', logoutUserHandler);

@@ -15,6 +15,7 @@ export default (): express.Router => {
 			const result = await UserService.getUserById(userId);
 			const { balance } = result;
 			const log = await UserService.readBalanceLog(userId, Number(start), Number(end), Number(type));
+
 			res.status(200).json({ balance, log });
 		} catch (error) {
 			next(error);
@@ -41,6 +42,7 @@ export default (): express.Router => {
 					createdAt: new Date().getTime(),
 				};
 				await UserService.pushBalanceLog(userId, newBalanceLog);
+
 				res.status(200).json({ balance });
 			} catch (error) {
 				next(error);
@@ -69,6 +71,7 @@ export default (): express.Router => {
 					createdAt: new Date().getTime(),
 				};
 				await UserService.pushBalanceLog(userId, newBalanceLog);
+
 				res.status(200).json({ balance });
 			} catch (error) {
 				next(error);

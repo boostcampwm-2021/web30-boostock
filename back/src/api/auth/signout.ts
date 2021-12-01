@@ -15,7 +15,7 @@ export default (): express.Router => {
 			res.clearCookie('alarmToken');
 			req.session.destroy(() => res.status(200).json({}));
 
-			eventEmitter.emit('logout', alarmToken);
+			eventEmitter.emit('LOGOUT', alarmToken);
 		} catch (error) {
 			next(error);
 		}

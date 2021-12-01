@@ -23,7 +23,7 @@ export default (): express.Router => {
 			};
 
 			res.status(200).cookie('alarmToken', alarmToken).json({});
-			eventEmitter.emit('loginUser', userInfo.userId, alarmToken);
+			eventEmitter.emit('LOGIN_USER', userInfo.userId, alarmToken);
 		} catch (error) {
 			next(error);
 		}
@@ -43,7 +43,7 @@ export default (): express.Router => {
 			};
 
 			res.status(200).cookie('alarmToken', alarmToken).json({});
-			eventEmitter.emit('loginUser', userInfo.userId, alarmToken);
+			eventEmitter.emit('LOGIN_USER', userInfo.userId, alarmToken);
 		} catch (error) {
 			next(error);
 		}

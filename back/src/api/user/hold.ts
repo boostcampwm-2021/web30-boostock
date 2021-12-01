@@ -6,10 +6,9 @@ import sessionValidator from '@api/middleware/sessionValidator';
 export default (): express.Router => {
 	const router = express.Router();
 
-	router.get('/hold', async (req: Request, res: Response, next: NextFunction) => {
+	router.get('/hold', sessionValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const userId = req.session.data?.userId;
-			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
+			const { userId } = res.locals;
 			const result = await UserStockService.readUserStockWithStockInfo(userId);
 			const holdStocks = result.map((elem) => {
 				return {
