@@ -22,7 +22,6 @@ export default (): express.Router => {
 	});
 
 	router.post('/chart/new', (req: Request, res: Response) => {
-		// 차트데이터를 auctioneer에게서 받아와야 하는가 여기서 chartTable을 한번더 조회하는가
 		const { charts } = req.body;
 		const stockChartJson = {};
 		charts.forEach((stock) => {

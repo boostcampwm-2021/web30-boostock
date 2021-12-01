@@ -1,5 +1,4 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { ParamError, UserError } from '@errors/index';
 import { UserService } from '@services/index';
 import sessionValidator from '@api/middleware/sessionValidator';
 
@@ -22,11 +21,9 @@ export default (): express.Router => {
 			const { email } = req.query;
 			await UserService.readByEmail(String(email));
 
-			return res.status(200).json({ result: false });
+			res.status(200).json({});
 		} catch (error) {
-			if (error instanceof UserError) return res.status(200).json({ result: true });
-			if (error instanceof ParamError) return res.status(200).json({ result: false });
-			return next(error);
+			next(error);
 		}
 	});
 

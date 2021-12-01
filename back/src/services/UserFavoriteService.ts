@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, getCustomRepository } from 'typeorm';
+import { getCustomRepository } from 'typeorm';
 import { Stock, UserFavorite } from '@models/index';
 import { StockRepository, UserFavoriteRepository, UserRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage } from '@errors/index';
+import { ParamError, ParamErrorMessage } from '@errors/index';
 
 export default class UserFavoriteService {
 	static instance: UserFavoriteService | null = null;
@@ -11,13 +11,6 @@ export default class UserFavoriteService {
 		if (UserFavoriteService.instance) return UserFavoriteService.instance;
 		UserFavoriteService.instance = this;
 	}
-
-	// Deprecated
-	// private getUserFavoriteRepository(entityManager: EntityManager): UserFavoriteRepository {
-	// 	const userFavoriteRepository: UserFavoriteRepository | null = entityManager.getCustomRepository(UserFavoriteRepository);
-	// 	if (!entityManager || !userFavoriteRepository) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
-	// 	return userFavoriteRepository;
-	// }
 
 	static async readByUserId(userId: number): Promise<Stock[]> {
 		const userFavorites = await getCustomRepository(UserFavoriteRepository).readByUserId(userId);

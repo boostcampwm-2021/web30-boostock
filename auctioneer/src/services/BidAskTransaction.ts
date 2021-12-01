@@ -2,7 +2,7 @@
 import fetch from 'node-fetch';
 import { User, Order, TransactionLog, Chart } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
-import { OptimisticVersionError, OptimisticVersionErrorMessage, DBError, DBErrorMessage } from '@errors/index';
+import { DBError, DBErrorMessage } from '@errors/index';
 
 export interface ITransactionInfo {
 	code: string;

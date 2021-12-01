@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import express, { NextFunction, Request, Response } from 'express';
 
 import { OrderService } from '@services/index';

@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, InsertResult, DeleteResult } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import Stock from '@models/Stock';
 import { DBError, DBErrorMessage } from '@errors/index';
 
@@ -26,15 +26,4 @@ export default class StockRepository extends Repository<Stock> {
 		const { affected } = await this.delete(id);
 		if (affected !== 1) throw new DBError(DBErrorMessage.DELETE_FAIL);
 	}
-
-	// Deprecated?
-	// public async getCurrentStockPrice(stockId: number): Promise<{ price: number } | undefined> {
-	// 	return this.createQueryBuilder().select('price').where('stock_id = :stockId', { stockId }).getRawOne();
-	// }
-
-	// Deprecated
-	// public async readPriceStocks(): Promise<{ code: string; price: number }[]> {
-	// 	const stockPrices = await this.createQueryBuilder().select(['code', 'price']).getRawMany();
-	// 	return stockPrices;
-	// }
 }

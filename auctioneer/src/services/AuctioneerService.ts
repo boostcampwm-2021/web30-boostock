@@ -81,7 +81,6 @@ export default class AuctioneerService {
 			await task.logProcess();
 			result = true;
 		} catch (err) {
-			if (err instanceof OptimisticVersionError) console.error(err);
 			await queryRunner.rollbackTransaction();
 			result = false;
 		} finally {

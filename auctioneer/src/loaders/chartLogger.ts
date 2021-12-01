@@ -4,11 +4,11 @@ import { CHARTTYPE } from '@interfaces/IChartLog';
 import Logger from './logger';
 
 const chartLogger = (): void => {
-	const candleMinutes = schedule.scheduleJob('* * * * *', () => {
+	schedule.scheduleJob('* * * * *', () => {
 		new ScheduleService().runAllChart(CHARTTYPE.MINUTES);
 		Logger.info('Minutes scheduled');
 	});
-	const candleDays = schedule.scheduleJob('0 0 * * *', () => {
+	schedule.scheduleJob('0 0 * * *', () => {
 		new ScheduleService().runAllChart(CHARTTYPE.DAYS);
 		Logger.info('Days scheduled');
 	});

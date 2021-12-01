@@ -5,6 +5,11 @@ import { StockRepository } from '@repositories/index';
 import { CommonError, CommonErrorMessage, StockError, StockErrorMessage } from '@errors/index';
 import IChartLog, { CHARTTYPE_VALUE } from '@interfaces/IChartLog';
 
+interface IStocksInfo extends Stock {
+	price: number;
+	previousClose: number;
+}
+
 export default class StockService {
 	static instance: StockService | null = null;
 
@@ -19,15 +24,6 @@ export default class StockService {
 		if (StockService.instance) return StockService.instance;
 		StockService.instance = this;
 	}
-
-	// Deprecated?
-	// public async getCurrentStockPrice(entityManager: EntityManager, stockId: number): Promise<{ price: number }> {
-	// 	const stockRepository: StockRepository = this.getStockRepository(entityManager);
-
-	// 	const stockPrice = await stockRepository.getCurrentStockPrice(stockId);
-	// 	if (!stockPrice) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-	// 	return stockPrice;
-	// }
 
 	public async getStockById(entityManager: EntityManager, id: number): Promise<Stock> {
 		const stockRepository: StockRepository = this.getStockRepository(entityManager);
@@ -45,11 +41,19 @@ export default class StockService {
 		return stock;
 	}
 
-	public async getStocksCurrent(): Promise<Stock[]> {
+	public async getStocksCurrent(): Promise<IStocksInfo[]> {
 		const stockRepository = getCustomRepository(StockRepository);
-
 		const allStocks: Stock[] = await stockRepository.readAllStocks();
-		return allStocks;
+
+		const stocksInfo = allStocks.map((stock) => {
+			return {
+				...stock,
+				price: stock.charts.filter((chart) => chart.type === 1)[0].priceEnd,
+				previousClose: stock.charts.filter((chart) => chart.type === 1440)[0].priceBefore,
+			};
+		});
+
+		return stocksInfo;
 	}
 
 	static async getStockLog(code: string, type: CHARTTYPE_VALUE, start: number, end: number): Promise<IChartLog[]> {
@@ -90,35 +94,13 @@ export default class StockService {
 		return conclusionsData;
 	}
 
-	// Deprecated
-	// public async getCurrentPriceByCode(code: string): Promise<number> {
-	// 	const connection = getConnection();
-	// 	const queryRunner = connection.createQueryRunner();
-	// 	await queryRunner.connect();
-	// 	await queryRunner.startTransaction();
-
-	// 	try {
-	// 		const stockRepository: StockRepository = this.getStockRepository(queryRunner.manager);
-	// 		const stock = await stockRepository.readStockByCode(code);
-	// 		if (!stock) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-	// 		await queryRunner.commitTransaction();
-
-	// 		return stock.price;
-	// 	} catch (error) {
-	// 		await queryRunner.rollbackTransaction();
-	// 		throw new StockError(StockErrorMessage.CANNOT_READ_STOCK);
-	// 	} finally {
-	// 		await queryRunner.release();
-	// 	}
-	// }
-
 	public async getPriceStockAll(): Promise<{ code: string; price: number }[]> {
 		const stockRepository = getConnection().getCustomRepository(StockRepository);
 		const stockPrices = await stockRepository.readAllStocks();
 		return stockPrices.map((stock: Stock) => {
 			return {
 				code: stock.code,
-				price: stock.charts[0].priceEnd,
+				price: stock.charts.filter((chart) => chart.type === 1)[0].priceEnd,
 			};
 		});
 	}

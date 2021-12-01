@@ -1,7 +1,8 @@
 import CommonError from './CommonError';
 
 export enum UserErrorMessage {
-	NOT_EXIST_USER = 'Not Exist User',
+	NOT_EXIST_USER = 'NOT EXIST USER',
+	EXIST_USER = 'EXIST USER',
 	INVALID_PARAM = 'INVALID PARAM',
 	CANNOT_CREATE_USER = 'CANNOT CREATE USER',
 }

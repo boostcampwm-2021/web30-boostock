@@ -1,6 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { UserFavoriteService } from '@services/index';
-import { AuthError, AuthErrorMessage } from 'errors/index';
 import sessionValidator from '@api/middleware/sessionValidator';
 
 export default (): express.Router => {
