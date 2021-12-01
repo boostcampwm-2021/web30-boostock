@@ -2,7 +2,7 @@ import Emitter from '@helper/eventEmitter';
 import { binArrayToJson, JsonToBinArray } from '@helper/tools';
 import { StockError, StockErrorMessage } from '@errors/index';
 import { ISocketRequest } from '../interfaces/socketRequest';
-import StockService from '../services/StockService';
+import StockService from './StockService';
 
 const loginUserMap = new Map();
 const socketClientMap = new Map();
