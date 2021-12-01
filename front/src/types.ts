@@ -77,6 +77,14 @@ export interface IUser {
 	theme: Theme;
 }
 
+export interface IUserDataResponse {
+	userId: number;
+	username: string;
+	email: string;
+	socialGithub: string;
+	balance: number;
+}
+
 export interface IAskOrderItem {
 	type: ORDER_TYPE.ASK;
 	price: number;
