@@ -8,14 +8,15 @@ import fetchUserHold from './api/fetchUserHold';
 import Info from './Info';
 import Holds from './Holds';
 import Transactions from './Transactions';
-import Orders from './Orders';
+import Orders, { ORDERTYPE } from './Orders';
 
 import './My.scss';
 
 enum TAB {
 	HOLDS = '보유종목',
 	TRANSACTIONS = '체결내역',
-	ORDERS = '주문내역',
+	ORDERS_ASK = '매도내역',
+	ORDERS_BID = '매수내역',
 }
 
 const calculateValuationPrice = (stockCode: string, stockList: IStockListItem[]) =>
@@ -59,8 +60,10 @@ const My = () => {
 				return <Holds key={tab} holds={holds} />;
 			case TAB.TRANSACTIONS:
 				return <Transactions key={tab} />;
-			case TAB.ORDERS:
-				return <Orders key={tab} />;
+			case TAB.ORDERS_ASK:
+				return <Orders key={tab} type={ORDERTYPE.매도} />;
+			case TAB.ORDERS_BID:
+				return <Orders key={tab} type={ORDERTYPE.매수} />;
 			default:
 				return <Holds key={tab} holds={holds} />;
 		}
