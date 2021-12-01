@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, InsertResult, UpdateResult, DeleteResult } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import User from '@models/User';
 import ILockVersion from '@interfaces/ILockVersion';
 import DBError, { DBErrorMessage } from '@errors/DBError';

@@ -1,5 +1,4 @@
 import express from 'express';
-
 import message from './message/index';
 
 export default (): express.Router => {

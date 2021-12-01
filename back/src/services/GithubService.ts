@@ -1,5 +1,4 @@
 import fetch from 'node-fetch';
-
 import config from '@config/index';
 import { IGithubUserInfo } from '@interfaces/GithubUserInfo';
 import AuthError, { AuthErrorMessage } from '@errors/AuthError';

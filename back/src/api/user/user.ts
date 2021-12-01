@@ -1,5 +1,4 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { ParamError, UserError } from '@errors/index';
 import { UserService } from '@services/index';
 import sessionValidator from '@api/middleware/sessionValidator';
 
