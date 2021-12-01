@@ -1,12 +1,13 @@
-import { EntityRepository, Repository, UpdateResult, DeleteResult } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import Order, { ORDERTYPE } from '@models/Order';
 import { IOrder } from '@interfaces/IOrder';
-import { OptimisticVersionError, OptimisticVersionErrorMessage } from '@errors/index';
+import { DBError, DBErrorMessage, OptimisticVersionError, OptimisticVersionErrorMessage } from '@errors/index';
 
 @EntityRepository(Order)
 export default class OrderRepository extends Repository<Order> {
-	public async insertNewOrder(value) {
-		return this.createQueryBuilder().insert().into(Order).values(value).execute();
+	public async insertQueryRunner(value): Promise<void> {
+		const { identifiers } = await this.createQueryBuilder().insert().into(Order).values(value).execute();
+		if (identifiers.length !== 1) throw new DBError(DBErrorMessage.INSERT_FAIL);
 	}
 
 	public async readById(id: number): Promise<Order> {

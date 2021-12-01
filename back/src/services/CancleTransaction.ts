@@ -31,16 +31,14 @@ export default class CancleTransaction {
 			if (holdStock) {
 				holdStock = await this.userStockRepository.readLock(holdStock.userStockId, 'pessimistic_write');
 				holdStock.amount += this.order.amount;
-				await this.userStockRepository.save(holdStock);
+				await this.userStockRepository.updateQueryRunner(holdStock);
 			} else {
-				await this.userStockRepository.save(
-					this.userStockRepository.create({
-						userId: this.userId,
-						stockId: this.order.stockId,
-						amount: this.order.amount,
-						average: this.order.price,
-					}),
-				);
+				await this.userStockRepository.insertQueryRunner({
+					userId: this.userId,
+					stockId: this.order.stockId,
+					amount: this.order.amount,
+					average: this.order.price,
+				});
 			}
 		}
 	}

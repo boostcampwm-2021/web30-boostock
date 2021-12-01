@@ -77,7 +77,7 @@ export default class UserService {
 
 	static async updateBalance(userId: number, changeValue: number): Promise<void> {
 		const userRepository = getCustomRepository(UserRepository);
-		if (!(await userRepository.updateBalance(userId, changeValue))) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+		await userRepository.updateBalance(userId, changeValue);
 	}
 
 	static async unregister(user: User): Promise<User> {

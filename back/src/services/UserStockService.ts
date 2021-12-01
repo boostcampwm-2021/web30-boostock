@@ -12,6 +12,7 @@ export default class UserStockService {
 		UserStockService.instance = this;
 	}
 
+	// UNUSED
 	private getUserStockRepository(entityManager: EntityManager): UserStockRepository {
 		const userStockRepository: UserStockRepository | null = entityManager.getCustomRepository(UserStockRepository);
 
@@ -19,30 +20,12 @@ export default class UserStockService {
 		return userStockRepository;
 	}
 
-	static async createOrUpdate(
-		userId: number,
-		stockId: number,
-		amount: number | undefined,
-		average: number | undefined,
-	): Promise<UserStock> {
-		const userStockRepository = getCustomRepository(UserStockRepository);
-		let targetUserStock = await userStockRepository.findOne({ where: { userId, stockId } });
-		if (targetUserStock === undefined) {
-			targetUserStock = userStockRepository.create({
-				userId,
-				stockId,
-			});
-		}
-		targetUserStock.amount = amount || 0;
-		targetUserStock.average = average || 0;
-		return userStockRepository.save(targetUserStock);
-	}
-
 	static async readWithStockInfo(userId: number): Promise<UserStock[]> {
 		const userStockRepository = getCustomRepository(UserStockRepository);
 		return userStockRepository.find({ where: { userId }, relations: ['stock'] });
 	}
 
+	// UNUSED
 	static async createUserStock(userId: number, stockId: number, amount: number, average: number): Promise<UserStock> {
 		const targetUser = await getCustomRepository(UserRepository).findOne(userId);
 		const targetStock = await getCustomRepository(StockRepository).findOne(stockId);
@@ -55,6 +38,7 @@ export default class UserStockService {
 		return getCustomRepository(UserStockRepository).save(newUserStock);
 	}
 
+	// UNUSED
 	static async removeUserStock(userId: number, stockId: number): Promise<UserStock> {
 		const userFavoriteRepository = getCustomRepository(UserStockRepository);
 		const targetFavorite = await userFavoriteRepository.findOne({

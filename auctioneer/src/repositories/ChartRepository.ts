@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
-import { EntityRepository, Repository, UpdateResult } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import { Chart } from '@models/index';
 import ILockVersion from '@interfaces/ILockVersion';
+import { DBError, DBErrorMessage } from '@errors/index';
 
 @EntityRepository(Chart)
 export default class ChartRepository extends Repository<Chart> {
@@ -21,17 +22,18 @@ export default class ChartRepository extends Repository<Chart> {
 		});
 	}
 
-	public async resetChart(chart: Chart): Promise<UpdateResult> {
+	public async resetChart(chart: Chart): Promise<void> {
 		chart.priceBefore = chart.priceEnd;
 		chart.priceStart = chart.priceEnd;
 		chart.priceHigh = chart.priceEnd;
 		chart.priceLow = chart.priceEnd;
 		chart.amount = 0;
 		chart.volume = 0;
-		return this.createQueryBuilder().update(chart).where({ chartId: chart.chartId }).execute();
+		const { affected } = await this.createQueryBuilder().update(chart).where({ chartId: chart.chartId }).execute();
+		if (affected !== 1) throw new DBError(DBErrorMessage.UPDATE_FAIL);
 	}
 
-	public async updateChart(chart: Chart, price: number, amount: number): Promise<UpdateResult> {
+	public async updateChart(chart: Chart, price: number, amount: number): Promise<void> {
 		if (chart.amount === 0) {
 			chart.priceStart = price;
 			chart.priceHigh = price;
@@ -43,6 +45,7 @@ export default class ChartRepository extends Repository<Chart> {
 		chart.priceEnd = price;
 		chart.amount += amount;
 		chart.volume += price * amount;
-		return this.createQueryBuilder().update(chart).where({ chartId: chart.chartId }).execute();
+		const { affected } = await this.createQueryBuilder().update(chart).where({ chartId: chart.chartId }).execute();
+		if (affected !== 1) throw new DBError(DBErrorMessage.UPDATE_FAIL);
 	}
 }

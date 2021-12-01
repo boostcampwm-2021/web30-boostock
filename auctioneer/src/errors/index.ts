@@ -18,3 +18,6 @@ export { default as NotFoundError } from './NotFoundError';
 
 export * from './OptimisticVersionError';
 export { default as OptimisticVersionError } from './OptimisticVersionError';
+
+export * from './DBError';
+export { default as DBError } from './DBError';

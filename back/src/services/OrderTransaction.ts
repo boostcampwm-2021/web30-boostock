@@ -38,7 +38,7 @@ export default class OrderTransaction {
 				throw new OrderError(OrderErrorMessage.NOT_ENOUGH_STOCK);
 			if (holdStock) holdStock = await this.userStockRepository.readLock(holdStock.userStockId, 'pessimistic_write');
 			holdStock.amount -= this.amount;
-			if (holdStock.amount > 0) await this.userStockRepository.update(holdStock.userStockId, holdStock);
+			if (holdStock.amount > 0) await this.userStockRepository.updateQueryRunner(holdStock);
 			else await this.userStockRepository.delete(holdStock.userStockId);
 		}
 
@@ -46,13 +46,12 @@ export default class OrderTransaction {
 			const payout: number = this.price * this.amount;
 			if (user.balance < payout) throw new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
 
-			if (!(await this.userRepository.updateBalance(this.userId, payout * -1)))
-				new OrderError(OrderErrorMessage.NOT_ENOUGH_BALANCE);
+			await this.userRepository.updateBalance(this.userId, payout * -1);
 		}
 	}
 
 	public async insertOrder() {
-		await this.orderRepository.insertNewOrder({
+		await this.orderRepository.insertQueryRunner({
 			userId: this.userId,
 			stockId: this.stockId,
 			type: this.type,

@@ -1,5 +1,6 @@
 import { EntityRepository, Repository, InsertResult, DeleteResult } from 'typeorm';
 import Stock from '@models/Stock';
+import { DBError, DBErrorMessage } from '@errors/index';
 
 @EntityRepository(Stock)
 export default class StockRepository extends Repository<Stock> {
@@ -21,9 +22,9 @@ export default class StockRepository extends Repository<Stock> {
 		return this.createQueryBuilder().select(['stock_id', 'code']).getRawMany();
 	}
 
-	public async deleteStock(id: number): Promise<boolean> {
-		const result: DeleteResult = await this.delete(id);
-		return result.affected != null && result.affected > 0;
+	public async deleteStock(id: number): Promise<void> {
+		const { affected } = await this.delete(id);
+		if (affected !== 1) throw new DBError(DBErrorMessage.DELETE_FAIL);
 	}
 
 	// Deprecated?

@@ -2,7 +2,7 @@
 import fetch from 'node-fetch';
 import { User, Order, TransactionLog, Chart } from '@models/index';
 import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage } from '@errors/index';
+import { OptimisticVersionError, OptimisticVersionErrorMessage, DBError, DBErrorMessage } from '@errors/index';
 
 export interface ITransactionInfo {
 	code: string;
@@ -78,15 +78,14 @@ export default class BidAskTransaction {
 				this.TransactionInfo.amount,
 				this.TransactionInfo.price,
 			);
-			await this.userStockRepository.update(bidUserStock.userStockId, bidUserStock);
+			await this.userStockRepository.updateQueryRunner(bidUserStock);
 		} else {
-			bidUserStock = this.userStockRepository.create({
+			await this.userStockRepository.insertQueryRunner({
 				userId: bidUser.userId,
 				stockId: bidOrder.stockId,
 				amount: this.TransactionInfo.amount,
 				average: bidOrder.price,
 			});
-			await this.userStockRepository.save(bidUserStock);
 		}
 	}
 
@@ -108,7 +107,7 @@ export default class BidAskTransaction {
 				this.chartRepository.updateChart(chart, this.TransactionInfo.price, this.TransactionInfo.amount),
 			),
 		);
-		this.updatedCharts = await this.chartRepository.readByStockIdLock(this.TransactionInfo.stockId, 'pessimistic_write');
+		this.updatedCharts = await this.chartRepository.readByStockIdLock(this.TransactionInfo.stockId, 'pessimistic_read');
 	}
 
 	async logProcess(): Promise<void> {
@@ -122,7 +121,7 @@ export default class BidAskTransaction {
 		});
 
 		transaction.save((err, document) => {
-			if (err) throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+			if (err) throw new DBError(DBErrorMessage.UPDATE_FAIL);
 
 			fetch(`${process.env.API_SERVER_URL}/api/stock/conclusion`, {
 				method: 'POST',

@@ -1,12 +1,13 @@
-import { EntityRepository, Repository, InsertResult } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import UserStock from '@models/UserStock';
 import ILockVersion from '@interfaces/ILockVersion';
+import { DBError, DBErrorMessage } from '@errors/index';
 
 @EntityRepository(UserStock)
 export default class UserStockRepository extends Repository<UserStock> {
-	async createUserStock(userStock: UserStock): Promise<boolean> {
-		const result: InsertResult = await this.insert(userStock);
-		return result.identifiers.length > 0;
+	async insertQueryRunner(value): Promise<void> {
+		const { identifiers } = await this.createQueryBuilder().insert().into(UserStock).values(value).execute();
+		if (identifiers.length !== 1) throw new DBError(DBErrorMessage.INSERT_FAIL);
 	}
 
 	async read(userId: number, stockId: number): Promise<UserStock | undefined> {
@@ -23,12 +24,13 @@ export default class UserStockRepository extends Repository<UserStock> {
 			.getOneOrFail();
 	}
 
-	// async updateAmountAverage(userStockId: number, changeValue: number): Promise<boolean> {
-	// 	const { affected } = await this.createQueryBuilder()
-	// 		.update()
-	// 		.set({ amount: () => `amount += ${changeValue}` })
-	// 		.whereInIds(userStockId)
-	// 		.execute();
-	// 	return affected === 1;
-	// }
+	async updateQueryRunner(userStock: UserStock): Promise<void> {
+		const { affected } = await this.createQueryBuilder().update().set(userStock).whereInIds(userStock.userStockId).execute();
+		if (affected !== 1) throw new DBError(DBErrorMessage.UPDATE_FAIL);
+	}
+
+	async deleteQueryRunner(userStockId: number): Promise<void> {
+		const { affected } = await this.createQueryBuilder().delete().whereInIds(userStockId).execute();
+		if (affected !== 1) throw new DBError(DBErrorMessage.UPDATE_FAIL);
+	}
 }
