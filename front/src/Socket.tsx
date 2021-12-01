@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import { IChartItem } from '@src/types';
 import chartAtom from '@recoil/chart';
+import HoldStockListAtom from '@recoil/holdStockList';
 import fetchHoldStocks from '@common/utils/fetchHoldStocks';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
@@ -10,7 +11,6 @@ import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@rec
 import stockExecutionAtom, { IStockExecutionInfo, IStockExecutionItem } from './recoil/stockExecution/atom';
 import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
 import Emitter from './common/utils/eventEmitter';
-import HoldStockListAtom from './recoil/holdStockList/atom';
 import dailyLogAtom, { IDailyLog } from './recoil/stockDailyLog/atom';
 
 interface IProps {
