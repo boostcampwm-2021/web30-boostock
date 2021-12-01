@@ -1,18 +1,5 @@
 import { atom } from 'recoil';
-
-export interface IStockExecutionItem {
-	timestamp: number;
-	price: number;
-	volume: number;
-	amount: number;
-	stockCode: string;
-	id: string;
-}
-
-export interface IStockExecutionInfo {
-	stockCode: string;
-	executions: IStockExecutionItem[];
-}
+import { IStockExecutionInfo } from '@src/types';
 
 const stockExecutionAtom = atom<IStockExecutionInfo>({
 	key: 'stockExecutionAtom',

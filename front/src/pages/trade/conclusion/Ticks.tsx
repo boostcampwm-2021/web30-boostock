@@ -1,7 +1,7 @@
-import { IStockExecutionItem } from '@src/recoil/stockExecution';
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import StockExecution from '@recoil/stockExecution/index';
+import { IStockExecutionItem } from '@src/types';
+import StockExecution from '@recoil/stockExecution';
 
 interface Props {
 	previousClose: number;

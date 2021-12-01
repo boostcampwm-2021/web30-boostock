@@ -30,3 +30,17 @@ export interface IDailyLog {
 	amount: number;
 	createdAt: number;
 }
+
+export interface IStockExecutionItem {
+	timestamp: number;
+	price: number;
+	volume: number;
+	amount: number;
+	stockCode: string;
+	id: string;
+}
+
+export interface IStockExecutionInfo {
+	stockCode: string;
+	executions: IStockExecutionItem[];
+}
