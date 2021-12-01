@@ -15,6 +15,7 @@ const logValidator = (req: Request, res: Response, next: NextFunction): void => 
 		)
 			throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 		res.locals = { code, start: Number(start), end: Number(end), type };
+
 		next();
 	} catch (error) {
 		next(error);

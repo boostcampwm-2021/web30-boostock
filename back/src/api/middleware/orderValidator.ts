@@ -68,7 +68,6 @@ export const balanceValidator = (req: Request, res: Response, next: NextFunction
 			throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 		next();
 	} catch (err) {
-		console.log('validator');
 		next(err);
 	}
 };

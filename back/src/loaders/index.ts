@@ -15,4 +15,5 @@ export default async ({ expressApp }: { expressApp: Application }): Promise<void
 	await mongooseLoader();
 	Logger.info('✌️ Mongoose loaded');
 	webSocketLoader();
+	Logger.info('✌️ WebSocket loaded');
 };
