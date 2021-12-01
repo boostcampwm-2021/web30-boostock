@@ -22,32 +22,32 @@ function refundBetweenDepositTransacionAmount(deposit: number, price: number, am
 }
 
 export default class BidAskTransaction {
-	StockRepositoryRunner: StockRepository;
+	stockRepository: StockRepository;
 
-	UserRepositoryRunner: UserRepository;
+	userRepository: UserRepository;
 
-	UserStockRepositoryRunner: UserStockRepository;
+	userStockRepository: UserStockRepository;
 
-	OrderRepositoryRunner: OrderRepository;
+	orderRepository: OrderRepository;
 
-	ChartRepositoryRunner: ChartRepository;
+	chartRepository: ChartRepository;
 
 	TransactionInfo: ITransactionInfo;
 
 	updatedCharts: Chart[];
 
 	constructor(
-		StockRepositoryRunner: StockRepository,
-		UserRepositoryRunner: UserRepository,
-		UserStockRepositoryRunner: UserStockRepository,
-		OrderRepositoryRunner: OrderRepository,
-		ChartRepositoryRunner: ChartRepository,
+		stockRepository: StockRepository,
+		userRepository: UserRepository,
+		userStockRepository: UserStockRepository,
+		orderRepository: OrderRepository,
+		chartRepository: ChartRepository,
 	) {
-		this.StockRepositoryRunner = StockRepositoryRunner;
-		this.UserRepositoryRunner = UserRepositoryRunner;
-		this.UserStockRepositoryRunner = UserStockRepositoryRunner;
-		this.OrderRepositoryRunner = OrderRepositoryRunner;
-		this.ChartRepositoryRunner = ChartRepositoryRunner;
+		this.stockRepository = stockRepository;
+		this.userRepository = userRepository;
+		this.userStockRepository = userStockRepository;
+		this.orderRepository = orderRepository;
+		this.chartRepository = chartRepository;
 	}
 
 	init(TransactionInfo: ITransactionInfo): BidAskTransaction {
@@ -56,7 +56,7 @@ export default class BidAskTransaction {
 	}
 
 	async askUserProcess(askUser: User): Promise<void> {
-		await this.UserRepositoryRunner.updateBalance(askUser.userId, this.TransactionInfo.amount * this.TransactionInfo.price);
+		await this.userRepository.updateBalance(askUser.userId, this.TransactionInfo.amount * this.TransactionInfo.price);
 	}
 
 	async bidUserProcess(bidUser: User, bidOrder: Order): Promise<void> {
@@ -65,12 +65,12 @@ export default class BidAskTransaction {
 			this.TransactionInfo.price,
 			this.TransactionInfo.amount,
 		);
-		this.UserRepositoryRunner.updateBalance(bidUser.userId, refund);
+		this.userRepository.updateBalance(bidUser.userId, refund);
 
-		let bidUserStock = await this.UserStockRepositoryRunner.read(bidUser.userId, this.TransactionInfo.stockId);
+		let bidUserStock = await this.userStockRepository.read(bidUser.userId, this.TransactionInfo.stockId);
 
 		if (bidUserStock) {
-			bidUserStock = await this.UserStockRepositoryRunner.readLock(bidUserStock.userStockId, 'pessimistic_read');
+			bidUserStock = await this.userStockRepository.readLock(bidUserStock.userStockId, 'pessimistic_write');
 			bidUserStock.amount += this.TransactionInfo.amount;
 			bidUserStock.average = getAveragePrice(
 				bidUserStock.amount,
@@ -78,37 +78,37 @@ export default class BidAskTransaction {
 				this.TransactionInfo.amount,
 				this.TransactionInfo.price,
 			);
-			await this.UserStockRepositoryRunner.update(bidUserStock.userStockId, bidUserStock);
+			await this.userStockRepository.update(bidUserStock.userStockId, bidUserStock);
 		} else {
-			bidUserStock = this.UserStockRepositoryRunner.create({
+			bidUserStock = this.userStockRepository.create({
 				userId: bidUser.userId,
 				stockId: bidOrder.stockId,
 				amount: this.TransactionInfo.amount,
 				average: bidOrder.price,
 			});
-			await this.UserStockRepositoryRunner.save(bidUserStock);
+			await this.userStockRepository.save(bidUserStock);
 		}
 	}
 
 	async askOrderProcess(askOrder: Order): Promise<void> {
-		if (askOrder.amount === this.TransactionInfo.amount) await this.OrderRepositoryRunner.removeOrderOCC(askOrder);
-		else await this.OrderRepositoryRunner.decreaseAmountOCC(askOrder, this.TransactionInfo.amount);
+		if (askOrder.amount === this.TransactionInfo.amount) await this.orderRepository.removeOrderOCC(askOrder);
+		else await this.orderRepository.decreaseAmountOCC(askOrder, this.TransactionInfo.amount);
 	}
 
 	async bidOrderProcess(bidOrder: Order): Promise<void> {
-		if (bidOrder.amount === this.TransactionInfo.amount) await this.OrderRepositoryRunner.removeOrderOCC(bidOrder);
-		else await this.OrderRepositoryRunner.decreaseAmountOCC(bidOrder, this.TransactionInfo.amount);
+		if (bidOrder.amount === this.TransactionInfo.amount) await this.orderRepository.removeOrderOCC(bidOrder);
+		else await this.orderRepository.decreaseAmountOCC(bidOrder, this.TransactionInfo.amount);
 	}
 
 	async chartProcess(): Promise<void> {
-		const charts = await this.ChartRepositoryRunner.readByStockIdLock(this.TransactionInfo.stockId, 'pessimistic_read');
+		const charts = await this.chartRepository.readByStockIdLock(this.TransactionInfo.stockId, 'pessimistic_write');
 
 		await Promise.all(
 			charts.map((chart: Chart) =>
-				this.ChartRepositoryRunner.updateChart(chart, this.TransactionInfo.price, this.TransactionInfo.amount),
+				this.chartRepository.updateChart(chart, this.TransactionInfo.price, this.TransactionInfo.amount),
 			),
 		);
-		this.updatedCharts = await this.ChartRepositoryRunner.readByStockIdLock(this.TransactionInfo.stockId, 'pessimistic_read');
+		this.updatedCharts = await this.chartRepository.readByStockIdLock(this.TransactionInfo.stockId, 'pessimistic_write');
 	}
 
 	async logProcess(): Promise<void> {
