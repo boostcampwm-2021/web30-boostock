@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, LegacyRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import StockList, { IStockListItem } from '@recoil/stockList/index';
 import toDateString from '@src/common/utils/toDateString';
+import useInfinityScroll from './useInfinityScroll';
 
 import './Transactions.scss';
 
@@ -22,24 +23,30 @@ interface ITransaction {
 	volume: number;
 }
 
-const Transactions = () => {
-	const stockList = useRecoilValue<IStockListItem[]>(StockList);
-	const [transactions, setTransactions] = useState<ITransaction[]>([]);
+const refresh = (
+	stockList: IStockListItem[],
+	transactions: ITransaction[],
+	setTransactions: React.Dispatch<React.SetStateAction<ITransaction[]>>,
+	setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
+	setLoading(true);
 
-	useEffect(() => {
-		const currentTime = new Date().getTime();
-		const beforeTime = currentTime - 1000 * 60 * 60 * 24 * 30;
-		fetch(`${process.env.SERVER_URL}/api/user/transaction?start=${beforeTime}&end=${currentTime}`, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json; charset=utf-8',
-			},
-		}).then((res: Response) => {
-			if (res.ok) {
-				res.json().then((data) => {
-					setTransactions(
-						data.log.map(
+	const currentTime = new Date().getTime();
+	const beforeTime = currentTime - 1000 * 60 * 60 * 24 * 30;
+	const lastTime = transactions[transactions.length - 1]?.transactionTime || currentTime;
+	fetch(`${process.env.SERVER_URL}/api/user/transaction?start=${beforeTime}&end=${Math.min(lastTime, currentTime)}`, {
+		method: 'GET',
+		credentials: 'include',
+		headers: {
+			'Content-Type': 'application/json; charset=utf-8',
+		},
+	}).then((res: Response) => {
+		if (res.ok) {
+			res.json()
+				.then((data) => {
+					setTransactions((prev) => [
+						...prev,
+						...data.log.map(
 							(log: { type: number; amount: number; createdAt: number; price: number; stockCode: string }) => {
 								return {
 									transactionTime: log.createdAt,
@@ -52,32 +59,42 @@ const Transactions = () => {
 								};
 							},
 						),
-					);
+					]);
+				})
+				.finally(() => {
+					setLoading(false);
 				});
-			}
-		});
-	}, []);
+		} else {
+			setLoading(false);
+		}
+	});
+};
 
-	const getTransaction = (transaction: ITransaction) => {
-		let status = 'my__item-center';
-		if (transaction.orderType === ORDERTYPE.매수) status += ' my__item--up';
-		else if (transaction.orderType === ORDERTYPE.매도) status += ' my__item--down';
+const getTransaction = (transaction: ITransaction) => {
+	let status = 'my__item-center';
+	if (transaction.orderType === ORDERTYPE.매수) status += ' my__item--up';
+	else if (transaction.orderType === ORDERTYPE.매도) status += ' my__item--down';
 
-		return (
-			<tr className="my__item" key={transaction.transactionTime}>
-				<td>{toDateString(transaction.transactionTime + 32400000)}</td>
-				<td className={status}>{ORDERTYPE[transaction.orderType]}</td>
-				<td className="my__item-center">
-					<span className="my__item-unit">{transaction.stockCode}</span>
-					<br />
-					<span className="my__item-title">{transaction.stockName}</span>
-				</td>
-				<td className="my__item-number">{transaction.amount.toLocaleString()}</td>
-				<td className="my__item-number">{transaction.price.toLocaleString()}</td>
-				<td className="my__item-number">{transaction.volume.toLocaleString()}</td>
-			</tr>
-		);
-	};
+	return (
+		<tr className="my__item" key={transaction.transactionTime + Math.random()}>
+			<td>{toDateString(transaction.transactionTime + 32400000)}</td>
+			<td className={status}>{ORDERTYPE[transaction.orderType]}</td>
+			<td className="my__item-center">
+				<span className="my__item-unit">{transaction.stockCode}</span>
+				<br />
+				<span className="my__item-title">{transaction.stockName}</span>
+			</td>
+			<td className="my__item-number">{transaction.amount.toLocaleString()}</td>
+			<td className="my__item-number">{transaction.price.toLocaleString()}</td>
+			<td className="my__item-number">{transaction.volume.toLocaleString()}</td>
+		</tr>
+	);
+};
+
+const Transactions = () => {
+	const stockList = useRecoilValue<IStockListItem[]>(StockList);
+	const [transactions, setTransactions] = useState<ITransaction[]>([]);
+	const [rootRef, targetRef, loading] = useInfinityScroll(refresh.bind(undefined, stockList, transactions, setTransactions));
 
 	return (
 		<table className="my-transactions">
@@ -91,12 +108,17 @@ const Transactions = () => {
 					<th className="my__legend-number">거래금액 (원)</th>
 				</tr>
 			</thead>
-			<tbody className="transaction-items">
+			<tbody className="transaction-items" ref={rootRef as LegacyRef<HTMLTableSectionElement>}>
 				{transactions.length > 0 ? (
 					transactions.map((transaction: ITransaction) => getTransaction(transaction))
 				) : (
 					<tr className="my__item">
 						<td className="my__item-center">거래 내역이 없습니다.</td>
+					</tr>
+				)}
+				{loading === false && (
+					<tr className="my__item" ref={targetRef as LegacyRef<HTMLTableRowElement>}>
+						<td className="my__item-center" />
 					</tr>
 				)}
 			</tbody>
