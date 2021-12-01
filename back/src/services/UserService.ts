@@ -60,12 +60,11 @@ export default class UserService {
 		return user;
 	}
 
-	static async readByEmail(email: string): Promise<User> {
+	static async getUserByEmail(email: string): Promise<void> {
 		if (!checkEmail(email)) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
 		const user = await userRepository.findOne({ where: { email } });
-		if (user === undefined) throw new UserError(UserErrorMessage.NOT_EXIST_USER);
-		return user;
+		if (user !== undefined) throw new UserError(UserErrorMessage.EXIST_USER);
 	}
 
 	static async readById(id: number): Promise<User> {

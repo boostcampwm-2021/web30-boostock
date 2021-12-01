@@ -37,15 +37,16 @@ const SignUp = () => {
 			headers: {
 				'Content-Type': 'application/json;charset=utf-8',
 			},
-		}).then((res: Response) => {
+		}).then(async (res: Response) => {
+			const data = await res.json();
 			if (res.ok) {
-				res.json().then((data) => {
-					setEmailValidate(data.result);
-					if (data.result === true) toast.success('사용할 수 있는 이메일입니다.');
-					else toast.error('이 이메일은 사용할 수 없습니다.');
-				});
+				setEmailValidate(true);
+				toast.success('사용할 수 있는 이메일입니다.');
 			} else {
-				toast.error('중복확인에 실패했습니다.');
+				setEmailValidate(false);
+				if (data.message === 'EXIST USER') toast.error('중복된 이메일입니다.');
+				else if (data.message === 'INVALID PARAM') toast.error('사용할 수 없는 이메일입니다.');
+				else toast.error('중복확인에 실패했습니다.');
 			}
 		});
 	};
