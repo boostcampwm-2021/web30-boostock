@@ -30,8 +30,7 @@ export default (): express.Router => {
 			try {
 				const { userId } = res.locals;
 				const { bank, bankAccount, changeValue } = req.body;
-				const result = await UserService.updateBalance(userId, changeValue);
-				const { balance } = result;
+				await UserService.updateBalance(userId, changeValue);
 
 				const newBalanceLog: IBalanceLog = {
 					type: BALANCETYPE.DEPOSIT,
