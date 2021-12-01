@@ -25,6 +25,7 @@ interface IOrder {
 }
 
 const refresh = (
+	type: ORDERTYPE,
 	stockList: IStockListItem[],
 	orders: IOrder[],
 	setOrders: React.Dispatch<React.SetStateAction<IOrder[]>>,
@@ -33,7 +34,7 @@ const refresh = (
 	setLoading(true);
 
 	const id = orders[orders.length - 1]?.orderId || 0;
-	fetch(`${process.env.SERVER_URL}/api/user/order?end=${id}`, {
+	fetch(`${process.env.SERVER_URL}/api/user/order?type=${type}&end=${id}`, {
 		method: 'GET',
 		credentials: 'include',
 		headers: {
@@ -88,20 +89,15 @@ const cancel = (orderId: number, orderType: ORDERTYPE, setOrders: React.Dispatch
 	});
 };
 
-const Orders = () => {
+const Orders = ({ type }: { type: ORDERTYPE }) => {
 	const stockList = useRecoilValue<IStockListItem[]>(StockList);
 	const [orders, setOrders] = useState<IOrder[]>([]);
-	const [rootRef, targetRef, loading] = useInfinityScroll(refresh.bind(undefined, stockList, orders, setOrders));
+	const [rootRef, targetRef, loading] = useInfinityScroll(refresh.bind(undefined, type, stockList, orders, setOrders));
 
 	const getOrder = (order: IOrder) => {
-		let status = 'my__item-center';
-		if (order.orderType === ORDERTYPE.매수) status += ' my__item--up';
-		else if (order.orderType === ORDERTYPE.매도) status += ' my__item--down';
-
 		return (
 			<tr className="my__item" key={order.orderId}>
 				<td>{toDateString(order.orderTime)}</td>
-				<td className={status}>{ORDERTYPE[order.orderType]}</td>
 				<td className="my__item-center">
 					<span className="my__item-unit">{order.stockCode}</span>
 					<br />
@@ -127,7 +123,6 @@ const Orders = () => {
 			<thead className="my__legend">
 				<tr className="my-legend-row">
 					<th className="my__legend-left">주문시간</th>
-					<th className="my__legend-center">주문종류</th>
 					<th className="my__legend-center">종목명</th>
 					<th className="my__legend-number">주문가격 (원)</th>
 					<th className="my__legend-number">주문수량 (주)</th>
