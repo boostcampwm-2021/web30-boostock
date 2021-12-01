@@ -23,7 +23,7 @@ export default (): express.Router => {
 			const { userId } = res.locals;
 			const { stockCode } = req.body;
 			await UserFavoriteService.createUserFavorite(userId, stockCode);
-      
+
 			res.status(201).json({});
 		} catch (error) {
 			next(error);

@@ -50,7 +50,7 @@ export default (): express.Router => {
 			const { id } = req.query;
 			if (!id) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 			await OrderService.cancel(userId, Number(id));
-      
+
 			res.status(201).json({});
 		} catch (error) {
 			next(error);

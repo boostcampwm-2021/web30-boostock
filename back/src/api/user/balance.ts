@@ -21,7 +21,7 @@ export default (): express.Router => {
 			next(error);
 		}
 	});
-  
+
 	router.post(
 		'/balance/deposit',
 		sessionValidator,
@@ -42,7 +42,7 @@ export default (): express.Router => {
 				};
 				await UserService.pushBalanceLog(userId, newBalanceLog);
 
-			  res.status(201).json({});
+				res.status(201).json({});
 			} catch (error) {
 				next(error);
 			}
@@ -58,8 +58,7 @@ export default (): express.Router => {
 				const { userId } = res.locals;
 				const { bank, bankAccount, changeValue } = req.body;
 
-				const result = await UserService.updateBalance(userId, changeValue * -1);
-				const { balance } = result;
+				await UserService.updateBalance(userId, changeValue * -1);
 
 				const newBalanceLog: IBalanceLog = {
 					type: BALANCETYPE.WITHDRAW,
@@ -71,7 +70,7 @@ export default (): express.Router => {
 				};
 				await UserService.pushBalanceLog(userId, newBalanceLog);
 
-			  res.status(201).json({});
+				res.status(201).json({});
 			} catch (error) {
 				next(error);
 			}
