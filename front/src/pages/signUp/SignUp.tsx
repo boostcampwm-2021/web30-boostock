@@ -5,6 +5,7 @@ import { useRecoilState } from 'recoil';
 import User from '@recoil/user';
 import eventEmitter from '@common/utils/eventEmitter';
 import { getCookie } from '@src/common/utils/cookie';
+import Terms from './Terms';
 import './SignUp.scss';
 
 const SignUp = () => {
@@ -77,32 +78,7 @@ const SignUp = () => {
 		<form className="signup" action="#">
 			<div className="signup-container">
 				<h1>회원가입</h1>
-				<div className="signup-box">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tincidunt elementum facilisis. Duis ac ligula
-					feugiat, tempor tellus sit amet, egestas turpis. Maecenas purus ipsum, porttitor at sodales quis, sollicitudin
-					et ipsum. Donec eleifend et nisi non semper. Nulla id fermentum dui. Vivamus hendrerit erat luctus, tincidunt
-					nisi in, finibus lacus. Aliquam sed arcu non lacus dapibus finibus sit amet sed turpis. Sed pharetra ante eget
-					sollicitudin rhoncus. Integer rhoncus ligula nec congue vulputate. Aenean sed justo ac est scelerisque
-					malesuada. Curabitur laoreet urna sit amet sem porta, et finibus risus convallis. Aenean vitae tortor cursus,
-					vestibulum purus bibendum, efficitur nibh. Suspendisse potenti. Ut nulla elit, posuere id fermentum vitae,
-					efficitur a nunc. Praesent sed mauris pharetra, suscipit magna et, ultricies ligula. Phasellus lacinia ut
-					metus id cursus. Ut tincidunt luctus nisl ut auctor. Pellentesque ullamcorper orci nibh, eu gravida felis
-					tempor a. Integer vel est a mauris pharetra ultrices. Sed consequat vehicula ipsum quis viverra. Phasellus
-					vitae nisl lorem. Praesent dignissim blandit nunc nec consectetur. Nunc vitae metus sit amet lectus vestibulum
-					fermentum. Sed tristique ac nisl a convallis. In molestie, ligula non pellentesque lobortis, orci orci
-					volutpat neque, vitae lobortis lectus elit eget libero. Donec tempus finibus nulla non fringilla. Sed dapibus
-					lacus eu nulla lacinia semper. Integer vitae elementum leo. Aenean neque quam, luctus eu rutrum a, ornare at
-					nisi. Praesent ac erat ac tortor luctus commodo. Sed aliquet nunc quis augue finibus, venenatis dignissim
-					nulla congue. Praesent non nisl turpis. Donec vel faucibus tortor. Aliquam a pulvinar risus. Nam volutpat
-					lobortis odio, sed malesuada neque finibus vel. Curabitur elementum metus ut faucibus scelerisque. Nulla
-					tortor tellus, euismod quis nisi ut, viverra fermentum odio. Phasellus purus magna, eleifend nec erat luctus,
-					mattis vehicula sapien. Donec pretium velit arcu, a posuere justo accumsan sit amet. Nulla luctus rhoncus
-					placerat. Cras efficitur hendrerit tellus, vitae dignissim nisl luctus condimentum. Aliquam id elit vitae
-					lorem lobortis sagittis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
-					himenaeos. Nulla bibendum quis leo id feugiat. Proin id porta massa. Nunc quis maximus felis, auctor malesuada
-					nisl.
-				</div>
-
+				<Terms />
 				<label className="signup-label" htmlFor="terms">
 					<input type="checkbox" id="terms" name="terms" value={term ? 'on' : 'off'} onClick={changeTerm} /> 이용약관
 					동의
