@@ -19,6 +19,7 @@ export default class CancleTransaction {
 
 	constructor(userId: number, type: number, order: AskOrder | BidOrder, queryRunner: QueryRunner) {
 		this.userId = userId;
+		this.type = type;
 		this.order = order;
 		this.userRepository = queryRunner.manager.getCustomRepository(UserRepository);
 		this.userStockRepository = queryRunner.manager.getCustomRepository(UserStockRepository);
