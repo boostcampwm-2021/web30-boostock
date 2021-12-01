@@ -8,7 +8,7 @@ import {
 	ChartRepository,
 	BidOrderRepository,
 } from '@repositories/index';
-import { AskOrder } from '@models/index';
+import { AskOrder, BidOrder } from '@models/index';
 import { OrderError, OrderErrorMessage } from '@errors/index';
 import BidAskTransaction from './BidAskTransaction';
 
@@ -44,7 +44,7 @@ export default class AuctioneerService {
 				chartRepository,
 			);
 
-			const [bidOrder, askOrder]: AskOrder[] = await Promise.all([
+			const [bidOrder, askOrder]: [BidOrder, AskOrder] = await Promise.all([
 				bidOrderRepository.readByCode(code),
 				askOrderRepository.readByCode(code),
 			]);
