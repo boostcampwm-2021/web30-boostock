@@ -48,6 +48,12 @@ const broadcast = ({ stockCode, msg }) => {
 		}
 	});
 };
+const sendOrderMessage = ({ stockCode, msg }) => {
+	socketClientMap.forEach(({ target: targetStockCode }, client) => {
+		if (targetStockCode !== stockCode) return;
+		client?.send(translateResponseFormat('ORDER', msg));
+	});
+};
 const sendAlarmMessage = (userId, msg) => {
 	const client = socketAlarmMap.get(userId);
 	client?.send(translateResponseFormat('NOTICE', msg));
@@ -103,7 +109,7 @@ export default (webSocketServer): void => {
 
 Emitter.on('BROADCAST', broadcast);
 Emitter.on('LOGIN_USER', loginUser);
-Emitter.on('ACCEPTED_ORDER', broadcast);
+Emitter.on('ACCEPTED_ORDER', sendOrderMessage);
 Emitter.on('NOTICE', sendAlarmMessage);
 Emitter.on('CHART', sendNewChart);
 Emitter.on('LOGOUT', logoutUserHandler);
