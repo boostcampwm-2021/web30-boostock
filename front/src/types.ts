@@ -23,3 +23,10 @@ export interface IChartItem {
 	priceHigh: number;
 	amount: number;
 }
+
+export interface IDailyLog {
+	_id: string;
+	priceEnd: number;
+	amount: number;
+	createdAt: number;
+}

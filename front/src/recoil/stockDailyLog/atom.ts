@@ -1,11 +1,5 @@
 import { atom } from 'recoil';
-
-export interface IDailyLog {
-	_id: string;
-	priceEnd: number;
-	amount: number;
-	createdAt: number;
-}
+import { IDailyLog } from '@src/types';
 
 const dailyLogAtom = atom<IDailyLog[]>({
 	key: 'dailyLogAtom',
