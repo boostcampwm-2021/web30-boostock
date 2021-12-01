@@ -72,6 +72,22 @@ const My = () => {
 				]);
 			});
 		});
+	}, []);
+
+	useEffect(() => {
+		setHolds((prev) => [
+			...prev.map((hold: IHold) => {
+				const valuationPrice =
+					stockListState.find((stockListStateItem: IStockListItem) => hold.stockCode === stockListStateItem.code)
+						?.price || 0;
+
+				return {
+					...hold,
+					totalValuationPrice: hold.holdAmount * valuationPrice,
+					totalValuationProfit: hold.holdAmount * valuationPrice - hold.holdAmount * hold.averageAskPrice,
+				};
+			}),
+		]);
 	}, [stockListState]);
 
 	if (!isLoggedIn) {
