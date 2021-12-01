@@ -5,8 +5,11 @@ export { default as Chart } from './Chart';
 export * from './ChartLog';
 export { default as ChartLog } from './ChartLog';
 
-export * from './Order';
-export { default as Order } from './Order';
+export * from './AskOrder';
+export { default as AskOrder } from './AskOrder';
+
+export * from './BidOrder';
+export { default as BidOrder } from './BidOrder';
 
 export * from './Stock';
 export { default as Stock } from './Stock';

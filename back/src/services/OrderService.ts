@@ -1,9 +1,15 @@
 /* eslint-disable class-methods-use-this */
 import { getConnection } from 'typeorm';
-import { OrderRepository, StockRepository, UserRepository } from '@repositories/index';
-import { OrderError, OrderErrorMessage } from '@errors/index';
+import {
+	AskOrderRepository,
+	BidOrderRepository,
+	StockRepository,
+	UserRepository,
+	UserStockRepository,
+} from '@repositories/index';
+import { CommonError, CommonErrorMessage, OrderError, OrderErrorMessage } from '@errors/index';
 import { IOrder } from '@interfaces/IOrder';
-import { ORDERTYPE } from '@models/Order';
+import { ORDERTYPE } from '@models/AskOrder';
 import OrderTransaction from './OrderTransaction';
 import CancleTransaction from './CancleTransaction';
 
@@ -36,19 +42,22 @@ export default class OrderService {
 		}
 	}
 
-	static async cancel(userId: number, orderId: number): Promise<void> {
+	static async cancel(userId: number, type: number, orderId: number): Promise<void> {
 		const queryRunner = getConnection().createQueryRunner();
 
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
 
 		try {
-			const [order, user] = await Promise.all([
-				queryRunner.manager.getCustomRepository(OrderRepository).readById(orderId),
-				queryRunner.manager.getCustomRepository(UserRepository).readByIdLock(userId, 'pessimistic_write'),
-			]);
+			let order;
+			if (type === ORDERTYPE.ASK)
+				order = await queryRunner.manager.getCustomRepository(AskOrderRepository).readById(orderId);
+			else if (type === ORDERTYPE.BID)
+				order = await queryRunner.manager.getCustomRepository(BidOrderRepository).readById(orderId);
+			else throw new CommonError(CommonErrorMessage.UNKNOWN_ERROR);
+			const user = await queryRunner.manager.getCustomRepository(UserRepository).readByIdLock(userId, 'pessimistic_write');
 			if (order.userId !== userId) throw new OrderError(OrderErrorMessage.INVALID_ORDER);
-			const task = new CancleTransaction(userId, order, queryRunner);
+			const task = new CancleTransaction(userId, type, order, queryRunner);
 			await Promise.all([task.updateUser(user), task.removeOrder()]);
 			await queryRunner.commitTransaction();
 		} catch (error) {
@@ -66,10 +75,11 @@ export default class OrderService {
 		await queryRunner.startTransaction();
 
 		try {
-			const orderRepository = queryRunner.manager.getCustomRepository(OrderRepository);
+			const askOrderRepository = queryRunner.manager.getCustomRepository(AskOrderRepository);
+			const bidOrderRepository = queryRunner.manager.getCustomRepository(BidOrderRepository);
 			const [askOrders, bidOrders] = await Promise.all([
-				orderRepository.readSummary(stockId, ORDERTYPE.ASK),
-				orderRepository.readSummary(stockId, ORDERTYPE.BID),
+				askOrderRepository.readSummary(stockId),
+				bidOrderRepository.readSummary(stockId),
 			]);
 			await queryRunner.commitTransaction();
 			return { askOrders, bidOrders };

@@ -15,8 +15,8 @@ export enum STATUSTYPE {
 	CANCELED = 4,
 }
 
-@Entity()
-export default class Order {
+@Entity({ name: 'ask_order' })
+export default class AskOrder {
 	@PrimaryGeneratedColumn({ name: 'order_id' })
 	orderId: number;
 
@@ -30,16 +30,13 @@ export default class Order {
 	@Column({ name: 'stock_id' })
 	stockId: number;
 
-	@Column({ type: 'enum', enum: ORDERTYPE })
-	type: ORDERTYPE;
-
 	@Column()
 	amount: number;
 
 	@Column()
 	price: number;
 
-	@Column({ name: 'created_at', type: 'datetime' })
+	@Column({ name: 'created_at' })
 	createdAt: Date;
 
 	@VersionColumn()

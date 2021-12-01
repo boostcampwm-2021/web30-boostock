@@ -3,8 +3,11 @@
 export * from './Chart';
 export { default as Chart } from './Chart';
 
-export * from './Order';
-export { default as Order } from './Order';
+export * from './AskOrder';
+export { default as AskOrder } from './AskOrder';
+
+export * from './BidOrder';
+export { default as BidOrder } from './BidOrder';
 
 export * from './Session';
 export { default as Session } from './Session';

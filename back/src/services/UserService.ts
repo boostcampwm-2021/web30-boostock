@@ -1,7 +1,16 @@
 /* eslint-disable class-methods-use-this */
 import { EntityManager, getCustomRepository, LessThan } from 'typeorm';
-import { OrderRepository, SessionRepository, UserRepository } from '@repositories/index';
-import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage, UserError, UserErrorMessage } from '@errors/index';
+import { AskOrderRepository, BidOrderRepository, SessionRepository, StockRepository, UserRepository } from '@repositories/index';
+import {
+	CommonError,
+	CommonErrorMessage,
+	ParamError,
+	ParamErrorMessage,
+	StockError,
+	StockErrorMessage,
+	UserError,
+	UserErrorMessage,
+} from '@errors/index';
 import { User, UserBalance, IBalanceLog, TransactionLog, ITransactionLog, ORDERTYPE } from '@models/index';
 
 interface IUserInfo {
@@ -83,9 +92,9 @@ export default class UserService {
 	}
 
 	static async readPendingOrder(userId: number, end: number): Promise<unknown> {
-		const orderRepository = getCustomRepository(OrderRepository);
-		const orders = await orderRepository.find({
-			select: ['orderId', 'type', 'amount', 'price', 'createdAt'],
+		const askOrderRepository = getCustomRepository(AskOrderRepository);
+		const orders = await askOrderRepository.find({
+			select: ['orderId', 'amount', 'price', 'createdAt'],
 			where: { userId, orderId: LessThan(end > 0 ? end : Number.MAX_SAFE_INTEGER) },
 			order: { orderId: 'DESC' },
 			relations: ['stock'],
@@ -96,7 +105,7 @@ export default class UserService {
 			return {
 				orderId: elem.orderId,
 				stockCode: elem.stock.code,
-				type: elem.type,
+				type: 1,
 				amount: elem.amount,
 				price: elem.price,
 				createdAt: elem.createdAt,

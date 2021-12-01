@@ -1,39 +1,37 @@
 import { EntityRepository, Repository } from 'typeorm';
-import Order, { ORDERTYPE } from '@models/Order';
+import { AskOrder, ORDERTYPE } from '@models/index';
 import { IOrder } from '@interfaces/IOrder';
 import { DBError, DBErrorMessage, OptimisticVersionError, OptimisticVersionErrorMessage } from '@errors/index';
 
-@EntityRepository(Order)
-export default class OrderRepository extends Repository<Order> {
+@EntityRepository(AskOrder)
+export default class AskOrderRepository extends Repository<AskOrder> {
 	public async insertQueryRunner(value): Promise<void> {
-		const { identifiers } = await this.createQueryBuilder().insert().into(Order).values(value).execute();
+		const { identifiers } = await this.createQueryBuilder().insert().into(AskOrder).values(value).execute();
 		if (identifiers.length !== 1) throw new DBError(DBErrorMessage.INSERT_FAIL);
 	}
 
-	public async readById(id: number): Promise<Order> {
+	public async readById(id: number): Promise<AskOrder> {
 		return this.findOneOrFail(id);
 	}
 
-	public async readSummary(stockId: number, type: ORDERTYPE): Promise<IOrder[]> {
+	public async readSummary(stockId: number): Promise<IOrder[]> {
 		const LIMIT = 10;
-		const orderPredicate = type === ORDERTYPE.ASK ? 'ASC' : 'DESC';
 
 		const result = await this.createQueryBuilder()
-			.select(['price', 'SUM(amount) AS amount', 'type'])
+			.select(['price', 'SUM(amount) AS amount'])
 			.where('stock_id = :stockId', { stockId })
-			.andWhere('type = :type', { type })
 			.groupBy('price')
-			.orderBy({ price: orderPredicate })
+			.orderBy({ price: 'ASC' })
 			.limit(LIMIT)
 			.getRawMany<IOrder>();
 
-		return type === ORDERTYPE.ASK ? result.reverse() : result;
+		return result.reverse();
 	}
 
-	public async removeOrderOCC(order: Order): Promise<void> {
+	public async removeOrderOCC(order: AskOrder): Promise<void> {
 		const { affected } = await this.createQueryBuilder()
 			.delete()
-			.from(Order)
+			.from(AskOrder)
 			.where('order_id = :orderId', { orderId: order.orderId })
 			.andWhere('version = :version', { version: order.version })
 			.execute();
@@ -41,9 +39,9 @@ export default class OrderRepository extends Repository<Order> {
 			throw new OptimisticVersionError(OptimisticVersionErrorMessage.OPTIMISTIC_LOCK_VERSION_MISMATCH_ERROR);
 	}
 
-	public async decreaseAmountOCC(order: Order, amount: number): Promise<void> {
+	public async decreaseAmountOCC(order: AskOrder, amount: number): Promise<void> {
 		const { affected } = await this.createQueryBuilder()
-			.update(Order)
+			.update(AskOrder)
 			.set({
 				amount: () => `amount - ${amount}`,
 				version: order.version + 1,
