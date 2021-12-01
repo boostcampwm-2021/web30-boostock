@@ -1,14 +1,14 @@
-export enum ORDERTYPE {
+export enum ORDER_TYPE {
 	ASK = 1,
 	BID = 2,
 }
 
-export enum BALANCETYPE {
+export enum BALANCE_TYPE {
 	DEPOSIT = 1,
 	WITHDRAW = 2,
 }
 
-export enum STATUSTYPE {
+export enum STATUS_TYPE {
 	PENDING = 1,
 	PROCEEDING = 2,
 	FINISHED = 3,
