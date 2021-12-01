@@ -1,5 +1,5 @@
 import React from 'react';
-import { IBidOrderItem } from '@recoil/stockOrders/index';
+import { IBidOrderItem } from '@src/types';
 import formatNumber from '@common/utils/formatNumber';
 import ITotalAndMaxAmount from './ITotalAndMaxAmount';
 

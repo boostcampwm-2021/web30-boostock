@@ -1,13 +1,5 @@
 import { atom } from 'recoil';
-
-export interface IChartItem {
-	createdAt: number;
-	priceStart: number;
-	priceEnd: number;
-	priceLow: number;
-	priceHigh: number;
-	amount: number;
-}
+import { IChartItem } from '@src/types';
 
 const chartAtom = atom<IChartItem[]>({
 	key: 'chatAtom',

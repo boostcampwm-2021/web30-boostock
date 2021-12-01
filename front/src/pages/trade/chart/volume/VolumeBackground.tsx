@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import { IChartItem } from '@recoil/chart';
-import userAtom, { IUser } from '@recoil/user';
-import { TTheme, getBorderColor, getLegendColor, getMaxValue, getMinValue, getText } from '../common';
+import { IChartItem, Theme, IUser } from '@src/types';
+import userAtom from '@recoil/user';
+import { getBorderColor, getLegendColor, getMaxValue, getMinValue, getText } from '../common';
 
 interface IProps {
 	chartData: IChartItem[];
@@ -13,7 +13,7 @@ interface IDrawVolumeBackgroundArgs {
 	ctx: CanvasRenderingContext2D;
 	minAmount: number;
 	maxAmount: number;
-	theme: TTheme;
+	theme: Theme;
 	convertToYPosition: (value: number) => number;
 }
 

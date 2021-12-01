@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import userAtom, { IUser } from '@recoil/user';
-import { IChartItem } from '@recoil/chart';
+import { IChartItem, Theme, IUser } from '@src/types';
+import userAtom from '@recoil/user';
 import {
 	TChartType,
-	TTheme,
 	MAKE_CLEAR_OFFSET,
 	MAX_NUM_OF_CANDLES,
 	CANDLE_GAP,
@@ -29,7 +28,7 @@ interface IDrawPeriodBackground {
 	chartData: IChartItem[];
 	candleWidth: number;
 	chartType: TChartType;
-	theme: TTheme;
+	theme: Theme;
 }
 
 interface IDrawCandleDateArgs {

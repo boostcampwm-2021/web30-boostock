@@ -1,4 +1,4 @@
-import { IChartItem } from '@recoil/chart/index';
+import { IChartItem } from '@src/types';
 import { TChartType } from './common';
 
 const ONE_MINUTE_IN_MILLISECONDS = 1000 * 60;

@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import toast from 'react-hot-toast';
-
+import userAtom from '@recoil/user';
 import { Ipage } from '@src/app';
-import User from '@recoil/user/index';
 import UserIcon from './UserIcon';
 
 import './menu.scss';
@@ -19,7 +18,7 @@ function userIconClass(isDropdownOpen: boolean): string {
 }
 
 const Menu = ({ pages }: Props) => {
-	const [userState, setUserState] = useRecoilState(User);
+	const [userState, setUserState] = useRecoilState(userAtom);
 	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
 	const handleToggleDropdownOpen = () => {

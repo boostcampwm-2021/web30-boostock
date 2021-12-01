@@ -1,16 +1,26 @@
 import React from 'react';
 import toast from 'react-hot-toast';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
+import {
+	IChartItem,
+	IDailyLog,
+	IStockExecutionInfo,
+	IStockExecutionItem,
+	IAskOrderItem,
+	IBidOrderItem,
+	IStockListItem,
+	IStockChartItem,
+} from '@src/types';
+import chartAtom from '@recoil/chart';
+import HoldStockListAtom from '@recoil/holdStockList';
+import dailyLogAtom from '@recoil/stockDailyLog';
+import stockExecutionAtom from '@recoil/stockExecution';
 import fetchHoldStocks from '@common/utils/fetchHoldStocks';
-import webSocketAtom from '@recoil/websocket/atom';
-import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
-import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
-import stockExecutionAtom, { IStockExecutionInfo, IStockExecutionItem } from './recoil/stockExecution/atom';
+import webSocketAtom from '@recoil/websocket';
+import { askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders';
+import stockListAtom from '@recoil/stockList';
 import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
 import Emitter from './common/utils/eventEmitter';
-import HoldStockListAtom from './recoil/holdStockList/atom';
-import dailyLogAtom, { IDailyLog } from './recoil/stockDailyLog/atom';
-import chartAtom, { IChartItem } from './recoil/chart/atom';
 
 interface IProps {
 	children: React.ReactNode;

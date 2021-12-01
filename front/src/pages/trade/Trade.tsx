@@ -3,12 +3,11 @@ import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
 import { ImSpinner8 } from 'react-icons/im';
 import QueryString from 'qs';
-
-import { IStockListItem } from '@recoil/stockList/index';
+import { IAskOrderItem, IBidOrderItem, IStockListItem } from '@src/types';
 import { translateRequestData } from '@common/utils/socketUtils';
-import webSocketAtom from '@src/recoil/websocket/atom';
-import stockListAtom from '@src/recoil/stockList/atom';
-import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
+import webSocketAtom from '@recoil/websocket';
+import stockListAtom from '@recoil/stockList';
+import { askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
 import Chart from './chart/Chart';

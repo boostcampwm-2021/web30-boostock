@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import userAtom, { IUser } from '@recoil/user';
-import { IChartItem } from '@recoil/chart';
-import { ICrossLine, TTheme, getTextColor, MAKE_CLEAR_OFFSET, getBorderColor, formatCandleDate } from '../common';
+import { IChartItem, Theme, IUser } from '@src/types';
+import userAtom from '@recoil/user';
+import { ICrossLine, getTextColor, MAKE_CLEAR_OFFSET, getBorderColor, formatCandleDate } from '../common';
 
 const CANVAS_WIDTH = 850;
 const CANVAS_HEIGHT = 400;
@@ -16,7 +16,7 @@ interface IDrawPeriodLegendArgs {
 	ctx: CanvasRenderingContext2D;
 	chartData: IChartItem[];
 	crossLine: ICrossLine;
-	theme: TTheme;
+	theme: Theme;
 	numOfCandles: number;
 }
 

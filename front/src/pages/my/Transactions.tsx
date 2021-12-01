@@ -1,6 +1,7 @@
 import React, { useState, LegacyRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import StockList, { IStockListItem } from '@recoil/stockList/index';
+import { IStockListItem } from '@src/types';
+import StockList from '@recoil/stockList';
 import toDateString from '@src/common/utils/toDateString';
 import useInfinityScroll from './useInfinityScroll';
 

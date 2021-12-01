@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import userAtom, { IUser } from '@recoil/user';
-import { IChartItem } from '@recoil/chart';
-import { TTheme, CANDLE_GAP, IGraphComponentProps, getPriceColor, getMaxValue, getMinValue } from '../common';
+import { IChartItem, Theme, IUser } from '@src/types';
+import userAtom from '@recoil/user';
+import { CANDLE_GAP, IGraphComponentProps, getPriceColor, getMaxValue, getMinValue } from '../common';
 import VolumeBackground from './VolumeBackground';
 import VolumeLegend from './VolumeLegend';
 
@@ -22,7 +22,7 @@ interface IDrawVolumeGraphArgs {
 	ctx: CanvasRenderingContext2D;
 	chartData: IChartItem[];
 	candleWidth: number;
-	theme: TTheme;
+	theme: Theme;
 	convertToYPosition: (curAmount: number) => number;
 }
 

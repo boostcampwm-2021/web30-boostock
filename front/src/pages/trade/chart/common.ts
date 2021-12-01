@@ -1,4 +1,4 @@
-import { IChartItem } from '@recoil/chart';
+import { IChartItem, Theme } from '@src/types';
 import formatNumber from '@common/utils/formatNumber';
 
 export const MAKE_CLEAR_OFFSET = 0.5;
@@ -10,7 +10,6 @@ export const CANDLE_GAP = 5;
 export const PRICE_CANVAS_TOP_BOT_PADDING = 14;
 export const VOLUME_CANVAS_TOP_BOT_PADDING = 7;
 
-export type TTheme = 'light' | 'dark';
 export type TChartType = 1 | 1440;
 
 export interface ICrossLine {
@@ -54,31 +53,31 @@ export const formatCandleDate = (timestamp: number, chartType: TChartType = 1) =
 	return chartType === 1 ? `${hh}:${mm}` : `${month}-${dd}`;
 };
 
-export const getTextColor = (theme: TTheme) => {
+export const getTextColor = (theme: Theme) => {
 	return theme === 'light' ? '#000' : '#f1f1f1';
 };
 
-export const getBorderColor = (theme: TTheme) => {
+export const getBorderColor = (theme: Theme) => {
 	return theme === 'light' ? '#444' : '#f1f1f1';
 };
 
-export const getLegendColor = (theme: TTheme) => {
+export const getLegendColor = (theme: Theme) => {
 	return theme === 'light' ? '#ccc' : '#404040';
 };
 
-const getPositiveCandleColor = (theme: TTheme) => {
+const getPositiveCandleColor = (theme: Theme) => {
 	return theme === 'light' ? '#d60000' : '#e34652';
 };
 
-const getNegativeCandleColor = (theme: TTheme) => {
+const getNegativeCandleColor = (theme: Theme) => {
 	return theme === 'light' ? '#0051c7' : '#4386dc';
 };
 
-const getDodgeCandleColor = (theme: TTheme) => {
+const getDodgeCandleColor = (theme: Theme) => {
 	return theme === 'light' ? '#000' : '#697081';
 };
 
-export function getPriceColor(priceStart: number, priceEnd: number, theme: TTheme): string {
+export function getPriceColor(priceStart: number, priceEnd: number, theme: Theme): string {
 	const priceDiff = priceEnd - priceStart;
 
 	if (priceDiff > 0) return getPositiveCandleColor(theme);

@@ -2,7 +2,8 @@ import React, { ChangeEvent, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import User from '@recoil/user';
+import { IUser } from '@src/types';
+import userAtom from '@recoil/user';
 import eventEmitter from '@common/utils/eventEmitter';
 import { getCookie } from '@src/common/utils/cookie';
 import Terms from './Terms';
@@ -17,7 +18,7 @@ const SignUp = () => {
 	const [email, setEmail] = useState<string>('');
 	const [isEmailValidate, setEmailValidate] = useState<boolean>(false);
 	const [term, setTerm] = useState<boolean>(false);
-	const [userState, setUserState] = useRecoilState(User);
+	const [userState, setUserState] = useRecoilState<IUser>(userAtom);
 
 	if (userState.isLoggedIn) {
 		return <Redirect to="/" />;

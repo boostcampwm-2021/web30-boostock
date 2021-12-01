@@ -1,8 +1,9 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import userAtom, { IUser } from '@src/recoil/user/atom';
 import { GrPowerReset } from 'react-icons/gr';
+import { useRecoilValue } from 'recoil';
+import { IUser } from '@src/types';
+import userAtom from '@recoil/user';
 
 interface IProps {
 	bidAskType: string;

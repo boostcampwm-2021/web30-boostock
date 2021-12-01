@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import bidAskPriceAtom from '@src/recoil/bidAskPrice/atom';
 import toast from 'react-hot-toast';
-import { IHoldStock, getUserAskAvailable, getUserBidAvailable } from '@common/utils/getAvailableAmount';
-import userAtom, { IUser } from '@recoil/user/atom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { IUser, IHoldStockItem } from '@src/types';
+import bidAskPriceAtom from '@recoil/bidAskPrice';
+import userAtom from '@recoil/user';
+import { getUserAskAvailable, getUserBidAvailable } from '@common/utils/getAvailableAmount';
 import Emitter from '@common/utils/eventEmitter';
 import BidAskType from './BidAskType';
 import BidAskInputs from './BidAskInputs';
@@ -107,7 +108,7 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 	};
 
 	useEffect(() => {
-		const listener = async (stockCode: string, holdStockList: IHoldStock[]) => {
+		const listener = async (stockCode: string, holdStockList: IHoldStockItem[]) => {
 			const [holdStock] = holdStockList.filter(({ code }) => code === stockCode);
 			setUserAvailableAmount('', isLoggedIn, holdStock.amount);
 		};

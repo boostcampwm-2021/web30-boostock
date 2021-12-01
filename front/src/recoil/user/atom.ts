@@ -1,11 +1,5 @@
 import { atom } from 'recoil';
-
-export interface IUser {
-	username: string;
-	email: string;
-	isLoggedIn: boolean;
-	theme: 'light' | 'dark';
-}
+import { IUser } from '@src/types';
 
 const userAtom = atom<IUser>({
 	key: 'userAtom',

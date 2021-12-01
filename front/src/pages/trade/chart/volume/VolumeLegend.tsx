@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import userAtom, { IUser } from '@recoil/user';
-import { IChartItem } from '@recoil/chart';
+import { IChartItem, Theme, IUser } from '@src/types';
+import userAtom from '@recoil/user';
 import {
 	ICrossLine,
-	TTheme,
 	VOLUME_CANVAS_TOP_BOT_PADDING as CANVAS_PADDING,
 	MAKE_CLEAR_OFFSET,
 	getTextColor,
@@ -30,7 +29,7 @@ interface IDrawHoverVolumeLegendArgs {
 	crossLine: ICrossLine;
 	minAmount: number;
 	maxAmount: number;
-	theme: TTheme;
+	theme: Theme;
 }
 
 const drawHoverVolumeLegend = ({ crossLine, ctx, minAmount, maxAmount, theme }: IDrawHoverVolumeLegendArgs) => {

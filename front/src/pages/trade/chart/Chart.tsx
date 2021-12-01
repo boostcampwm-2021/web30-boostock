@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState, useEffect, useRef } from 'react';
-import { IStockListItem } from '@recoil/stockList';
+import { IStockListItem } from '@src/types';
 import { ICrossLine, TChartType, PRICE_CANVAS_TOP_BOT_PADDING, VOLUME_CANVAS_TOP_BOT_PADDING } from './common';
 import PeriodBackground from './period/PeriodBackground';
 import CandleGraph from './candle/CandleGraph';
