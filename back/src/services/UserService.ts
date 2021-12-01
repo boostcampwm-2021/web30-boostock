@@ -1,16 +1,7 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, getCustomRepository } from 'typeorm';
-import { OrderRepository, SessionRepository, StockRepository, UserRepository } from '@repositories/index';
-import {
-	CommonError,
-	CommonErrorMessage,
-	ParamError,
-	ParamErrorMessage,
-	StockError,
-	StockErrorMessage,
-	UserError,
-	UserErrorMessage,
-} from '@errors/index';
+import { EntityManager, getCustomRepository, LessThan } from 'typeorm';
+import { OrderRepository, SessionRepository, UserRepository } from '@repositories/index';
+import { CommonError, CommonErrorMessage, ParamError, ParamErrorMessage, UserError, UserErrorMessage } from '@errors/index';
 import { User, UserBalance, IBalanceLog, TransactionLog, ITransactionLog, ORDERTYPE } from '@models/index';
 
 interface IUserInfo {
@@ -92,35 +83,16 @@ export default class UserService {
 		sessions.map((elem) => sessionRepository.delete(elem));
 	}
 
-	static async readPendingOrder(userId: number, stockCode: string): Promise<unknown> {
+	static async readPendingOrder(userId: number, end: number): Promise<unknown> {
 		const orderRepository = getCustomRepository(OrderRepository);
-		const stockRepository = getCustomRepository(StockRepository);
-		if (stockCode) {
-			const stock = await stockRepository.findOne({ where: { code: stockCode } });
-			if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-			const orders = await orderRepository.find({
-				select: ['orderId', 'type', 'amount', 'price', 'createdAt'],
-				where: { userId, stockId: stock.stockId },
-				order: { createdAt: 'ASC' },
-			});
-
-			return orders.map((elem) => {
-				return {
-					orderId: elem.orderId,
-					stockCode,
-					type: elem.type,
-					amount: elem.amount,
-					price: elem.price,
-					createdAt: elem.createdAt,
-				};
-			});
-		}
 		const orders = await orderRepository.find({
 			select: ['orderId', 'type', 'amount', 'price', 'createdAt'],
-			where: { userId },
-			order: { createdAt: 'ASC' },
+			where: { userId, orderId: LessThan(end > 0 ? end : Number.MAX_SAFE_INTEGER) },
+			order: { orderId: 'DESC' },
 			relations: ['stock'],
+			take: 30,
 		});
+
 		return orders.map((elem) => {
 			return {
 				orderId: elem.orderId,
@@ -142,14 +114,16 @@ export default class UserService {
 				.or([{ bidUserId: userId }, { askUserId: userId }])
 				.gte('createdAt', start)
 				.lt('createdAt', end)
-				.sort('createdAt');
+				.sort({ createdAt: -1 })
+				.limit(30);
 		}
 		document = await TransactionLog.find()
 			.select('-_id -__v -transactionId')
 			.or([{ bidUserId: userId }, { askUserId: userId }])
 			.gte('createdAt', start)
 			.lt('createdAt', end)
-			.sort('createdAt');
+			.sort({ createdAt: -1 })
+			.limit(30);
 		return document.map((elem) => {
 			return {
 				stockCode: elem.stockCode,
