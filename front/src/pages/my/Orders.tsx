@@ -73,8 +73,8 @@ const refresh = (
 	});
 };
 
-const cancel = (orderId: number, setOrders: React.Dispatch<React.SetStateAction<IOrder[]>>) => {
-	fetch(`${process.env.SERVER_URL}/api/user/order?id=${orderId}`, {
+const cancel = (orderId: number, orderType: ORDERTYPE, setOrders: React.Dispatch<React.SetStateAction<IOrder[]>>) => {
+	fetch(`${process.env.SERVER_URL}/api/user/order?id=${orderId}&type=${orderType}`, {
 		method: 'DELETE',
 		credentials: 'include',
 		headers: {
@@ -110,7 +110,11 @@ const Orders = () => {
 				<td className="my__item-number">{order.price.toLocaleString()}</td>
 				<td className="my__item-number">{order.orderAmount.toLocaleString()}</td>
 				<td className="my__item-center">
-					<button className="cancel-order-btn" type="button" onClick={() => cancel(order.orderId, setOrders)}>
+					<button
+						className="cancel-order-btn"
+						type="button"
+						onClick={() => cancel(order.orderId, order.orderType, setOrders)}
+					>
 						주문취소
 					</button>
 				</td>
