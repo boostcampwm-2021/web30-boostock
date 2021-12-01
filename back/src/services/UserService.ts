@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { EntityManager, getCustomRepository } from 'typeorm';
+import { EntityManager, getCustomRepository, LessThan } from 'typeorm';
 import { AskOrderRepository, BidOrderRepository, SessionRepository, StockRepository, UserRepository } from '@repositories/index';
 import {
 	CommonError,
@@ -92,41 +92,21 @@ export default class UserService {
 		sessions.map((elem) => sessionRepository.delete(elem));
 	}
 
-	static async readPendingOrder(userId: number, stockCode: string): Promise<unknown> {
+	static async readPendingOrder(userId: number, end: number): Promise<unknown> {
 		const askOrderRepository = getCustomRepository(AskOrderRepository);
-		const bidOrderRepository = getCustomRepository(BidOrderRepository);
-		const stockRepository = getCustomRepository(StockRepository);
-		if (stockCode) {
-			const stock = await stockRepository.findOne({ where: { code: stockCode } });
-			if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-			const askOrders = await askOrderRepository.find({
-				select: ['orderId', 'amount', 'price', 'createdAt'],
-				where: { userId, stockId: stock.stockId },
-				order: { createdAt: 'ASC' },
-			});
-
-			const newAskOrders = askOrders.map((elem) => {
-				return {
-					orderId: elem.orderId,
-					stockCode,
-					// type: elem.type,
-					amount: elem.amount,
-					price: elem.price,
-					createdAt: elem.createdAt,
-				};
-			});
-		}
 		const orders = await askOrderRepository.find({
 			select: ['orderId', 'amount', 'price', 'createdAt'],
-			where: { userId },
-			order: { createdAt: 'ASC' },
+			where: { userId, orderId: LessThan(end > 0 ? end : Number.MAX_SAFE_INTEGER) },
+			order: { orderId: 'DESC' },
 			relations: ['stock'],
+			take: 30,
 		});
+
 		return orders.map((elem) => {
 			return {
 				orderId: elem.orderId,
 				stockCode: elem.stock.code,
-				// type: elem.type,
+				type: 1,
 				amount: elem.amount,
 				price: elem.price,
 				createdAt: elem.createdAt,
@@ -143,14 +123,16 @@ export default class UserService {
 				.or([{ bidUserId: userId }, { askUserId: userId }])
 				.gte('createdAt', start)
 				.lt('createdAt', end)
-				.sort('createdAt');
+				.sort({ createdAt: -1 })
+				.limit(30);
 		}
 		document = await TransactionLog.find()
 			.select('-_id -__v -transactionId')
 			.or([{ bidUserId: userId }, { askUserId: userId }])
 			.gte('createdAt', start)
 			.lt('createdAt', end)
-			.sort('createdAt');
+			.sort({ createdAt: -1 })
+			.limit(30);
 		return document.map((elem) => {
 			return {
 				stockCode: elem.stockCode,
