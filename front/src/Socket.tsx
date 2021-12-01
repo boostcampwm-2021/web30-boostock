@@ -320,7 +320,8 @@ const startSocket = ({
 			default:
 		}
 	};
-	Emitter.on('registerAlarm', (alarmToken: string) => {
+
+	Emitter.on('REGISTER_ALARM', (alarmToken: string) => {
 		const alarmData = {
 			type: 'alarm',
 			alarmToken,

@@ -12,7 +12,7 @@ export default (): express.Router => {
 		try {
 			const { alarmToken } = req.cookies;
 			res.clearCookie('connect.sid');
-			res.clearCookie('alarmToken');
+			res.clearCookie('alarm_token');
 			req.session.destroy(() => res.status(200).json({}));
 
 			eventEmitter.emit('LOGOUT', alarmToken);
