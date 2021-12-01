@@ -4,7 +4,7 @@ import { useRecoilValue } from 'recoil';
 import { IUser, IStockListItem, IHoldStockItem, IUserHoldItem } from '@src/types';
 import userAtom from '@recoil/user';
 import StockList from '@recoil/stockList';
-
+import fetchUserHold from './api/fetchUserHold';
 import Info from './Info';
 import Holds from './Holds';
 import Transactions from './Transactions';
@@ -17,6 +17,33 @@ enum TAB {
 	TRANSACTIONS = '체결내역',
 	ORDERS = '주문내역',
 }
+
+const calculateValuationPrice = (stockCode: string, stockList: IStockListItem[]) =>
+	stockList.find((stockListStateItem: IStockListItem) => stockCode === stockListStateItem.code)?.price || 0;
+
+const calculateUserValuationInfo = (stock: IHoldStockItem, stockList: IStockListItem[]) => {
+	const valuationPrice = calculateValuationPrice(stock.code, stockList);
+
+	return {
+		stockCode: stock.code,
+		stockName: stock.nameKorean,
+		holdAmount: stock.amount,
+		averageAskPrice: stock.average,
+		totalAskPrice: stock.amount * stock.average,
+		totalValuationPrice: stock.amount * valuationPrice,
+		totalValuationProfit: stock.amount * valuationPrice - stock.amount * stock.average,
+	};
+};
+
+const reCalculateUserValuationInfo = (userHold: IUserHoldItem, stockList: IStockListItem[]) => {
+	const valuationPrice = calculateValuationPrice(userHold.stockCode, stockList);
+
+	return {
+		...userHold,
+		totalValuationPrice: userHold.holdAmount * valuationPrice,
+		totalValuationProfit: userHold.holdAmount * valuationPrice - userHold.holdAmount * userHold.averageAskPrice,
+	};
+};
 
 const My = () => {
 	const stockListState = useRecoilValue(StockList);
@@ -40,49 +67,19 @@ const My = () => {
 	};
 
 	useEffect(() => {
-		fetch(`${process.env.SERVER_URL}/api/user/hold`, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json; charset=utf-8',
-			},
-		}).then((res: Response) => {
-			res.json().then((data) => {
-				setHolds(() => [
-					...data.holdStocks.map((stock: IHoldStockItem) => {
-						const valuationPrice =
-							stockListState.find((stockListStateItem: IStockListItem) => stock.code === stockListStateItem.code)
-								?.price || 0;
+		(async () => {
+			const holdStocks = await fetchUserHold();
+			if (holdStocks.length === 0) {
+				setHolds([]);
+				return;
+			}
 
-						return {
-							stockCode: stock.code,
-							stockName: stock.nameKorean,
-							holdAmount: stock.amount,
-							averageAskPrice: stock.average,
-							totalAskPrice: stock.amount * stock.average,
-							totalValuationPrice: stock.amount * valuationPrice,
-							totalValuationProfit: stock.amount * valuationPrice - stock.amount * stock.average,
-						};
-					}),
-				]);
-			});
-		});
+			setHolds(() => [...holdStocks.map((stock) => calculateUserValuationInfo(stock, stockListState))]);
+		})();
 	}, []);
 
 	useEffect(() => {
-		setHolds((prev) => [
-			...prev.map((hold: IHold) => {
-				const valuationPrice =
-					stockListState.find((stockListStateItem: IStockListItem) => hold.stockCode === stockListStateItem.code)
-						?.price || 0;
-
-				return {
-					...hold,
-					totalValuationPrice: hold.holdAmount * valuationPrice,
-					totalValuationProfit: hold.holdAmount * valuationPrice - hold.holdAmount * hold.averageAskPrice,
-				};
-			}),
-		]);
+		setHolds((prev) => [...prev.map((hold) => reCalculateUserValuationInfo(hold, stockListState))]);
 	}, [stockListState]);
 
 	if (!isLoggedIn) {
