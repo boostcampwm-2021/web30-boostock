@@ -245,8 +245,6 @@ const startSocket = ({
 
 				setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
 				addNewExecution(setStockExecution, data.match);
-
-				Emitter.emit('order concluded', matchData.code);
 				break;
 			}
 			case 'ORDER': {
@@ -313,7 +311,7 @@ const startSocket = ({
 					);
 
 				const holdStockList = await fetchHoldStocks();
-				Emitter.emit('order concluded', data.stockCode, holdStockList);
+				Emitter.emit('CONCLUDED_ORDER', data.stockCode, holdStockList);
 				setHold(holdStockList.map((stock: { code: string }) => stock.code));
 				break;
 			}
