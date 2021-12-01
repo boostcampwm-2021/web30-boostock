@@ -16,9 +16,9 @@ export default (): express.Router => {
 
 		res.end();
 
-		Emitter.emit('broadcast', { stockCode, msg: broadcastMessage });
-		Emitter.emit('notice', bidUser, { userType: 'bid', stockCode });
-		Emitter.emit('notice', askUser, { userType: 'ask', stockCode });
+		Emitter.emit('BROADCAST', { stockCode, msg: broadcastMessage });
+		Emitter.emit('NOTICE', bidUser, { userType: 'bid', stockCode });
+		Emitter.emit('NOTICE', askUser, { userType: 'ask', stockCode });
 	});
 
 	router.post('/chart/new', async (req: Request, res: Response) => {
@@ -30,7 +30,7 @@ export default (): express.Router => {
 
 		res.end();
 
-		Emitter.emit('chart', stockChartJson);
+		Emitter.emit('CHART', stockChartJson);
 	});
 
 	router.get('/prices', async (req: Request, res: Response) => {

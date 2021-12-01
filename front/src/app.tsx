@@ -45,7 +45,7 @@ const App: React.FC = () => {
 						email: data.user.email,
 						isLoggedIn: true,
 					});
-					eventEmitter.emit('registerAlarm', getCookie('alarmToken'));
+					eventEmitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
 				});
 			}
 		});

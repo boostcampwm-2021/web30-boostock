@@ -36,7 +36,7 @@ const SignIn = () => {
 		}).then(async (res: Response) => {
 			if (res.ok) {
 				await res.json();
-				eventEmitter.emit('registerAlarm', getCookie('alarmToken'));
+				eventEmitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
 				setUserState({ ...userState, isLoggedIn: true });
 				history.push('/');
 				toast.success('성공적으로 로그인 되었습니다.');

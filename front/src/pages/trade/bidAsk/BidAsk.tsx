@@ -112,10 +112,10 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 			setUserAvailableAmount('', isLoggedIn, holdStock.amount);
 		};
 
-		Emitter.on('order concluded', listener);
+		Emitter.on('CONCLUDED_ORDER', listener);
 
 		return () => {
-			Emitter.off('order concluded', listener);
+			Emitter.off('CONCLUDED_ORDER', listener);
 		};
 	}, [isLoggedIn]);
 

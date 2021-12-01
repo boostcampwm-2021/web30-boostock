@@ -62,7 +62,7 @@ const SignUp = () => {
 			body: JSON.stringify({ code: query.get('code'), username, email }),
 		}).then((res: Response) => {
 			if (res.ok) {
-				eventEmitter.emit('registerAlarm', getCookie('alarmToken'));
+				eventEmitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
 				setUserState({ ...userState, isLoggedIn: true });
 				toast.success('성공적으로 회원가입 되었습니다.');
 				history.push('/');

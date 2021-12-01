@@ -22,8 +22,8 @@ export default (): express.Router => {
 				email: userInfo.email,
 			};
 
-			res.status(200).cookie('alarmToken', alarmToken).json({});
-			eventEmitter.emit('loginUser', userInfo.userId, alarmToken);
+			res.status(200).cookie('alarm_token', alarmToken).json({});
+			eventEmitter.emit('LOGIN_USER', userInfo.userId, alarmToken);
 		} catch (error) {
 			next(error);
 		}
@@ -42,8 +42,8 @@ export default (): express.Router => {
 				email: userInfo.email,
 			};
 
-			res.status(200).cookie('alarmToken', alarmToken).json({});
-			eventEmitter.emit('loginUser', userInfo.userId, alarmToken);
+			res.status(200).cookie('alarm_token', alarmToken).json({});
+			eventEmitter.emit('LOGIN_USER', userInfo.userId, alarmToken);
 		} catch (error) {
 			next(error);
 		}

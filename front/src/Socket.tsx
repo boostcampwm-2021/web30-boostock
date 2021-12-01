@@ -227,41 +227,38 @@ const startSocket = ({
 	webSocket.onmessage = async (event) => {
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
-			case 'stocksInfo': {
+			case 'STOCKS_INFO': {
 				setStockList(data);
 				break;
 			}
-			case 'updateStock': {
+			case 'UPDATE_STOCK': {
 				if (!data) return;
 				setStockList((prev) => updateNonTargetStock(prev, data));
 				break;
 			}
-			case 'updateTarget': {
-				const { match: matchData, currentChart, order, bidAsk } = data;
-				// 주문 접수 케이스
-				if (order) {
-					if (order.type === 1) setAskOrders((prev) => updateOrdersAfterAcceptOrder(prev, order) as IAskOrderItem[]);
-					else setBidOrders((prev) => updateOrdersAfterAcceptOrder(prev, order) as IBidOrderItem[]);
-				}
+			case 'UPDATE_TARGET': {
+				const { match: matchData, currentChart, bidAsk } = data;
+				const { askOrders, bidOrders }: { askOrders: IAskOrderItem[]; bidOrders: IBidOrderItem[] } = bidAsk;
 
-				// 주문 체결 케이스
-				if (matchData && currentChart) {
-					const { askOrders, bidOrders }: { askOrders: IAskOrderItem[]; bidOrders: IBidOrderItem[] } = bidAsk;
+				setAskOrders(() => updateAskOrders(askOrders));
+				setBidOrders(() => updateBidOrders(bidOrders));
 
-					setAskOrders(() => updateAskOrders(askOrders));
-					setBidOrders(() => updateBidOrders(bidOrders));
-
-					setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
-					addNewExecution(setStockExecution, data.match);
-				}
+				setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
+				addNewExecution(setStockExecution, data.match);
 				break;
 			}
-			case 'baseStock': {
+			case 'ORDER': {
+				const { type } = data;
+				if (type === 1) setAskOrders((prev) => updateOrdersAfterAcceptOrder(prev, data) as IAskOrderItem[]);
+				else setBidOrders((prev) => updateOrdersAfterAcceptOrder(prev, data) as IBidOrderItem[]);
+				break;
+			}
+			case 'BASE_STOCK': {
 				const stockExecutionForm = { stockCode: data.stockCode, executions: dataToExecutionForm(data.conclusions) };
 				setStockExecution(stockExecutionForm);
 				break;
 			}
-			case 'chart': {
+			case 'CHART': {
 				if (data.type === 1440) {
 					const { _id: id, priceEnd, amount, createdAt } = data;
 					setDailyLog((prev) => [{ _id: id, priceEnd, amount, createdAt }, ...prev]);
@@ -293,7 +290,7 @@ const startSocket = ({
 
 				break;
 			}
-			case 'notice': {
+			case 'NOTICE': {
 				if (data.userType === 'bid')
 					toast.success(
 						<>
@@ -314,14 +311,15 @@ const startSocket = ({
 					);
 
 				const holdStockList = await fetchHoldStocks();
-				Emitter.emit('order concluded', data.stockCode, holdStockList);
+				Emitter.emit('CONCLUDED_ORDER', data.stockCode, holdStockList);
 				setHold(holdStockList.map((stock: { code: string }) => stock.code));
 				break;
 			}
 			default:
 		}
 	};
-	Emitter.on('registerAlarm', (alarmToken: string) => {
+
+	Emitter.on('REGISTER_ALARM', (alarmToken: string) => {
 		const alarmData = {
 			type: 'alarm',
 			alarmToken,

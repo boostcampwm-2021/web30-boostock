@@ -11,7 +11,7 @@ export default (): express.Router => {
 		try {
 			const { code } = req.query;
 			if (code === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-			eventEmitter.emit('waiting', code);
+			eventEmitter.emit('WAITING', code);
 			res.end();
 		} catch (error) {
 			next(error);

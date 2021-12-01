@@ -11,7 +11,7 @@ export default (): express.Router => {
 		try {
 			const { code, start, end, type } = res.locals;
 			const log = await StockService.getStockLog(code, type as CHARTTYPE_VALUE, start, end);
-			console.log(log);
+
 			res.status(200).json({ log });
 		} catch (error) {
 			next(error);
