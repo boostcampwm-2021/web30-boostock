@@ -14,3 +14,12 @@ export enum STATUS_TYPE {
 	FINISHED = 3,
 	CANCELED = 4,
 }
+
+export interface IChartItem {
+	createdAt: number;
+	priceStart: number;
+	priceEnd: number;
+	priceLow: number;
+	priceHigh: number;
+	amount: number;
+}

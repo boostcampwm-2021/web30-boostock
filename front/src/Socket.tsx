@@ -1,6 +1,8 @@
 import React from 'react';
 import toast from 'react-hot-toast';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
+import { IChartItem } from '@src/types';
+import chartAtom from '@recoil/chart';
 import fetchHoldStocks from '@common/utils/fetchHoldStocks';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
@@ -10,7 +12,6 @@ import { translateRequestData, translateResponseData } from './common/utils/sock
 import Emitter from './common/utils/eventEmitter';
 import HoldStockListAtom from './recoil/holdStockList/atom';
 import dailyLogAtom, { IDailyLog } from './recoil/stockDailyLog/atom';
-import chartAtom, { IChartItem } from './recoil/chart/atom';
 
 interface IProps {
 	children: React.ReactNode;

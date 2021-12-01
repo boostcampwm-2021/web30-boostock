@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@recoil/user';
-import { IChartItem } from '@recoil/chart';
+import { IChartItem } from '@src/types';
 import { ICrossLine, TTheme, getTextColor, MAKE_CLEAR_OFFSET, getBorderColor, formatCandleDate } from '../common';
 
 const CANVAS_WIDTH = 850;

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import userAtom, { IUser } from '@recoil/user';
 import formatNumber from '@common/utils/formatNumber';
-import { IChartItem } from '@recoil/chart';
+import { IChartItem } from '@src/types';
 import {
 	IGraphComponentProps,
 	ICrossLine,

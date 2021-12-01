@@ -1,4 +1,4 @@
-import { IChartItem } from '@recoil/chart';
+import { IChartItem } from '@src/types';
 import formatNumber from '@common/utils/formatNumber';
 
 export const MAKE_CLEAR_OFFSET = 0.5;

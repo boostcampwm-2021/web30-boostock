@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import { IChartItem } from '@recoil/chart';
+import { IChartItem } from '@src/types';
 import userAtom, { IUser } from '@recoil/user';
 import { TTheme, getMaxValue, getMinValue, getTextColor, getLegendColor, getText } from '../common';
 
