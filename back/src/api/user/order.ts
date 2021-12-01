@@ -12,8 +12,8 @@ export default (): express.Router => {
 	router.get('/order', sessionValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { userId } = res.locals;
-			const { end } = req.query;
-			const pendingOrder = await UserService.readPendingOrder(userId, Number(end));
+			const { end, type } = req.query;
+			const pendingOrder = await UserService.readPendingOrder(userId, Number(type), Number(end));
 
 			res.status(200).json({ pendingOrder });
 		} catch (error) {
