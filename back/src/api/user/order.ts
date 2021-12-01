@@ -47,9 +47,9 @@ export default (): express.Router => {
 	router.delete('/order', sessionValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { userId } = res.locals;
-			const { id } = req.query;
-			if (!id) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-			await OrderService.cancel(userId, Number(id));
+			const { id, type } = req.query;
+			if (!id || !type) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
+			await OrderService.cancel(userId, Number(type), Number(id));
 
 			res.status(201).json({});
 		} catch (error) {

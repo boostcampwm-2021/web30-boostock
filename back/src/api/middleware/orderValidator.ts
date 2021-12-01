@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import Validator from '@helper/Validator';
-import { ORDERTYPE } from '@models/Order';
+import { ORDERTYPE } from '@models/AskOrder';
 import { ParamError, ParamErrorMessage, ValidationError, ValidationErrorMessage } from 'errors';
 import config from '@config/index';
 

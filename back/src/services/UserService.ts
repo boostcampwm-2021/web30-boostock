@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { EntityManager, getCustomRepository } from 'typeorm';
-import { OrderRepository, SessionRepository, StockRepository, UserRepository } from '@repositories/index';
+import { AskOrderRepository, BidOrderRepository, SessionRepository, StockRepository, UserRepository } from '@repositories/index';
 import {
 	CommonError,
 	CommonErrorMessage,
@@ -93,30 +93,31 @@ export default class UserService {
 	}
 
 	static async readPendingOrder(userId: number, stockCode: string): Promise<unknown> {
-		const orderRepository = getCustomRepository(OrderRepository);
+		const askOrderRepository = getCustomRepository(AskOrderRepository);
+		const bidOrderRepository = getCustomRepository(BidOrderRepository);
 		const stockRepository = getCustomRepository(StockRepository);
 		if (stockCode) {
 			const stock = await stockRepository.findOne({ where: { code: stockCode } });
 			if (stock === undefined) throw new StockError(StockErrorMessage.NOT_EXIST_STOCK);
-			const orders = await orderRepository.find({
-				select: ['orderId', 'type', 'amount', 'price', 'createdAt'],
+			const askOrders = await askOrderRepository.find({
+				select: ['orderId', 'amount', 'price', 'createdAt'],
 				where: { userId, stockId: stock.stockId },
 				order: { createdAt: 'ASC' },
 			});
 
-			return orders.map((elem) => {
+			const newAskOrders = askOrders.map((elem) => {
 				return {
 					orderId: elem.orderId,
 					stockCode,
-					type: elem.type,
+					// type: elem.type,
 					amount: elem.amount,
 					price: elem.price,
 					createdAt: elem.createdAt,
 				};
 			});
 		}
-		const orders = await orderRepository.find({
-			select: ['orderId', 'type', 'amount', 'price', 'createdAt'],
+		const orders = await askOrderRepository.find({
+			select: ['orderId', 'amount', 'price', 'createdAt'],
 			where: { userId },
 			order: { createdAt: 'ASC' },
 			relations: ['stock'],
@@ -125,7 +126,7 @@ export default class UserService {
 			return {
 				orderId: elem.orderId,
 				stockCode: elem.stock.code,
-				type: elem.type,
+				// type: elem.type,
 				amount: elem.amount,
 				price: elem.price,
 				createdAt: elem.createdAt,

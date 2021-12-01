@@ -1,8 +1,15 @@
 /* eslint-disable no-param-reassign */
 import fetch from 'node-fetch';
-import { User, Order, TransactionLog, Chart } from '@models/index';
-import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
-import { OptimisticVersionError, OptimisticVersionErrorMessage, DBError, DBErrorMessage } from '@errors/index';
+import { User, AskOrder, TransactionLog, Chart } from '@models/index';
+import {
+	StockRepository,
+	UserRepository,
+	UserStockRepository,
+	AskOrderRepository,
+	ChartRepository,
+	BidOrderRepository,
+} from '@repositories/index';
+import { DBError, DBErrorMessage } from '@errors/index';
 
 export interface ITransactionInfo {
 	code: string;
@@ -28,7 +35,9 @@ export default class BidAskTransaction {
 
 	userStockRepository: UserStockRepository;
 
-	orderRepository: OrderRepository;
+	askOrderRepository: AskOrderRepository;
+
+	bidOrderRepository: BidOrderRepository;
 
 	chartRepository: ChartRepository;
 
@@ -40,13 +49,15 @@ export default class BidAskTransaction {
 		stockRepository: StockRepository,
 		userRepository: UserRepository,
 		userStockRepository: UserStockRepository,
-		orderRepository: OrderRepository,
+		askOrderRepository: AskOrderRepository,
+		bidOrderRepository: BidOrderRepository,
 		chartRepository: ChartRepository,
 	) {
 		this.stockRepository = stockRepository;
 		this.userRepository = userRepository;
 		this.userStockRepository = userStockRepository;
-		this.orderRepository = orderRepository;
+		this.askOrderRepository = askOrderRepository;
+		this.bidOrderRepository = bidOrderRepository;
 		this.chartRepository = chartRepository;
 	}
 
@@ -59,7 +70,7 @@ export default class BidAskTransaction {
 		await this.userRepository.updateBalance(askUser.userId, this.TransactionInfo.amount * this.TransactionInfo.price);
 	}
 
-	async bidUserProcess(bidUser: User, bidOrder: Order): Promise<void> {
+	async bidUserProcess(bidUser: User, bidOrder: AskOrder): Promise<void> {
 		const refund = refundBetweenDepositTransacionAmount(
 			bidOrder.price,
 			this.TransactionInfo.price,
@@ -89,14 +100,14 @@ export default class BidAskTransaction {
 		}
 	}
 
-	async askOrderProcess(askOrder: Order): Promise<void> {
-		if (askOrder.amount === this.TransactionInfo.amount) await this.orderRepository.removeOrderOCC(askOrder);
-		else await this.orderRepository.decreaseAmountOCC(askOrder, this.TransactionInfo.amount);
+	async askOrderProcess(askOrder: AskOrder): Promise<void> {
+		if (askOrder.amount === this.TransactionInfo.amount) await this.askOrderRepository.removeOrderOCC(askOrder);
+		else await this.askOrderRepository.decreaseAmountOCC(askOrder, this.TransactionInfo.amount);
 	}
 
-	async bidOrderProcess(bidOrder: Order): Promise<void> {
-		if (bidOrder.amount === this.TransactionInfo.amount) await this.orderRepository.removeOrderOCC(bidOrder);
-		else await this.orderRepository.decreaseAmountOCC(bidOrder, this.TransactionInfo.amount);
+	async bidOrderProcess(bidOrder: AskOrder): Promise<void> {
+		if (bidOrder.amount === this.TransactionInfo.amount) await this.bidOrderRepository.removeOrderOCC(bidOrder);
+		else await this.bidOrderRepository.decreaseAmountOCC(bidOrder, this.TransactionInfo.amount);
 	}
 
 	async chartProcess(): Promise<void> {

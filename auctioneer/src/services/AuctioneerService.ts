@@ -1,7 +1,14 @@
 /* eslint-disable class-methods-use-this */
 import { getConnection } from 'typeorm';
-import { StockRepository, UserRepository, UserStockRepository, OrderRepository, ChartRepository } from '@repositories/index';
-import { Order } from '@models/index';
+import {
+	StockRepository,
+	UserRepository,
+	UserStockRepository,
+	AskOrderRepository,
+	ChartRepository,
+	BidOrderRepository,
+} from '@repositories/index';
+import { AskOrder } from '@models/index';
 import { OptimisticVersionError, OrderError, OrderErrorMessage } from '@errors/index';
 import BidAskTransaction from './BidAskTransaction';
 
@@ -21,23 +28,25 @@ export default class AuctioneerService {
 		await queryRunner.startTransaction();
 
 		try {
-			const StockRepositoryRunner = queryRunner.manager.getCustomRepository(StockRepository);
-			const UserRepositoryRunner = queryRunner.manager.getCustomRepository(UserRepository);
-			const UserStockRepositoryRunner = queryRunner.manager.getCustomRepository(UserStockRepository);
-			const OrderRepositoryRunner = queryRunner.manager.getCustomRepository(OrderRepository);
-			const ChartRepositoryRunner = queryRunner.manager.getCustomRepository(ChartRepository);
+			const stockRepository = queryRunner.manager.getCustomRepository(StockRepository);
+			const userRepository = queryRunner.manager.getCustomRepository(UserRepository);
+			const userStockRepository = queryRunner.manager.getCustomRepository(UserStockRepository);
+			const askOrderRepository = queryRunner.manager.getCustomRepository(AskOrderRepository);
+			const bidOrderRepository = queryRunner.manager.getCustomRepository(BidOrderRepository);
+			const chartRepository = queryRunner.manager.getCustomRepository(ChartRepository);
 
 			const task = new BidAskTransaction(
-				StockRepositoryRunner,
-				UserRepositoryRunner,
-				UserStockRepositoryRunner,
-				OrderRepositoryRunner,
-				ChartRepositoryRunner,
+				stockRepository,
+				userRepository,
+				userStockRepository,
+				askOrderRepository,
+				bidOrderRepository,
+				chartRepository,
 			);
 
-			const [bidOrder, askOrder]: Order[] = await Promise.all([
-				OrderRepositoryRunner.readBidOrderByCode(code),
-				OrderRepositoryRunner.readAskOrderByCode(code),
+			const [bidOrder, askOrder]: AskOrder[] = await Promise.all([
+				bidOrderRepository.readByCode(code),
+				askOrderRepository.readByCode(code),
 			]);
 			if (askOrder.price > bidOrder.price) throw new OrderError(OrderErrorMessage.NO_ORDERS_AVAILABLE);
 
@@ -55,15 +64,11 @@ export default class AuctioneerService {
 			let bidUser;
 
 			if (askOrder.userId === bidOrder.userId) {
-				const user = await UserRepositoryRunner.readByIdLock(askOrder.userId, 'pessimistic_write');
+				const user = await userRepository.readByIdLock(askOrder.userId, 'pessimistic_write');
 				askUser = user;
 				bidUser = user;
 			} else {
-				const users = await UserRepositoryRunner.readAskBidByIdLock(
-					askOrder.userId,
-					bidOrder.userId,
-					'pessimistic_write',
-				);
+				const users = await userRepository.readAskBidByIdLock(askOrder.userId, bidOrder.userId, 'pessimistic_write');
 				askUser = users.find((user) => user.userId === askOrder.userId);
 				bidUser = users.find((user) => user.userId === bidOrder.userId);
 			}

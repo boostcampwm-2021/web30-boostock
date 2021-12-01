@@ -1,6 +1,6 @@
 import { QueryRunner } from 'typeorm';
 import { ORDERTYPE, User } from '@models/index';
-import { UserRepository, UserStockRepository, OrderRepository } from '@repositories/index';
+import { UserRepository, UserStockRepository, AskOrderRepository, BidOrderRepository } from '@repositories/index';
 import { OrderError, OrderErrorMessage } from '@errors/index';
 
 export default class OrderTransaction {
@@ -18,7 +18,9 @@ export default class OrderTransaction {
 
 	userStockRepository: UserStockRepository;
 
-	orderRepository: OrderRepository;
+	askOrderRepository: AskOrderRepository;
+
+	bidOrderRepository: BidOrderRepository;
 
 	constructor(userId, stockId, type, price, amount, queryRunner: QueryRunner) {
 		this.userId = userId;
@@ -28,7 +30,8 @@ export default class OrderTransaction {
 		this.amount = amount;
 		this.userRepository = queryRunner.manager.getCustomRepository(UserRepository);
 		this.userStockRepository = queryRunner.manager.getCustomRepository(UserStockRepository);
-		this.orderRepository = queryRunner.manager.getCustomRepository(OrderRepository);
+		this.askOrderRepository = queryRunner.manager.getCustomRepository(AskOrderRepository);
+		this.bidOrderRepository = queryRunner.manager.getCustomRepository(BidOrderRepository);
 	}
 
 	public async updateUser(user: User) {
@@ -51,13 +54,23 @@ export default class OrderTransaction {
 	}
 
 	public async insertOrder() {
-		await this.orderRepository.insertQueryRunner({
-			userId: this.userId,
-			stockId: this.stockId,
-			type: this.type,
-			amount: this.amount,
-			price: this.price,
-			createdAt: new Date(),
-		});
+		if (this.type === ORDERTYPE.ASK)
+			await this.askOrderRepository.insertQueryRunner({
+				userId: this.userId,
+				stockId: this.stockId,
+				type: this.type,
+				amount: this.amount,
+				price: this.price,
+				createdAt: new Date(),
+			});
+		else if (this.type === ORDERTYPE.BID)
+			await this.bidOrderRepository.insertQueryRunner({
+				userId: this.userId,
+				stockId: this.stockId,
+				type: this.type,
+				amount: this.amount,
+				price: this.price,
+				createdAt: new Date(),
+			});
 	}
 }

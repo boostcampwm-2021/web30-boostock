@@ -3,20 +3,8 @@ import 'reflect-metadata';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, VersionColumn } from 'typeorm';
 import { Stock } from './index';
 
-export enum ORDERTYPE {
-	ASK = 1,
-	BID = 2,
-}
-
-export enum STATUSTYPE {
-	PENDING = 1,
-	PROCEEDEING = 2,
-	FINISHED = 3,
-	CANCELED = 4,
-}
-
-@Entity()
-export default class Order {
+@Entity({ name: 'bid_order' })
+export default class BidOrder {
 	@PrimaryGeneratedColumn({ name: 'order_id' })
 	orderId: number;
 
@@ -30,16 +18,13 @@ export default class Order {
 	@Column({ name: 'stock_id' })
 	stockId: number;
 
-	@Column({ type: 'enum', enum: ORDERTYPE })
-	type: number;
-
 	@Column()
 	amount: number;
 
 	@Column()
 	price: number;
 
-	@Column({ name: 'created_at' })
+	@Column({ name: 'created_at', type: 'datetime' })
 	createdAt: Date;
 
 	@VersionColumn()

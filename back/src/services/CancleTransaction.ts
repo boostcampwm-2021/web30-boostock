@@ -1,32 +1,37 @@
 import { QueryRunner } from 'typeorm';
-import { Order, ORDERTYPE, User } from '@models/index';
-import { OrderRepository, UserRepository, UserStockRepository } from '@repositories/index';
+import { AskOrder, ORDERTYPE, User } from '@models/index';
+import { AskOrderRepository, BidOrderRepository, UserRepository, UserStockRepository } from '@repositories/index';
 
 export default class CancleTransaction {
 	userId: number;
 
-	order: Order;
+	order: AskOrder;
+
+	type: number;
 
 	userRepository: UserRepository;
 
 	userStockRepository: UserStockRepository;
 
-	orderRepository: OrderRepository;
+	askOrderRepository: AskOrderRepository;
 
-	constructor(userId, order, queryRunner: QueryRunner) {
+	bidOrderRepository: BidOrderRepository;
+
+	constructor(userId, type, order, queryRunner: QueryRunner) {
 		this.userId = userId;
 		this.order = order;
 		this.userRepository = queryRunner.manager.getCustomRepository(UserRepository);
 		this.userStockRepository = queryRunner.manager.getCustomRepository(UserStockRepository);
-		this.orderRepository = queryRunner.manager.getCustomRepository(OrderRepository);
+		this.askOrderRepository = queryRunner.manager.getCustomRepository(AskOrderRepository);
+		this.bidOrderRepository = queryRunner.manager.getCustomRepository(BidOrderRepository);
 	}
 
 	public async updateUser(user: User) {
-		if (this.order.type === ORDERTYPE.BID) {
+		if (this.type === ORDERTYPE.BID) {
 			const payout: number = this.order.price * this.order.amount;
 			await this.userRepository.updateBalance(this.userId, payout * -1);
 		}
-		if (this.order.type === ORDERTYPE.ASK) {
+		if (this.type === ORDERTYPE.ASK) {
 			let holdStock = await this.userStockRepository.read(this.userId, this.order.stockId);
 			if (holdStock) {
 				holdStock = await this.userStockRepository.readLock(holdStock.userStockId, 'pessimistic_write');
@@ -44,6 +49,7 @@ export default class CancleTransaction {
 	}
 
 	public async removeOrder() {
-		await this.orderRepository.removeOrderOCC(this.order);
+		if (this.type === ORDERTYPE.ASK) await this.askOrderRepository.removeOrderOCC(this.order);
+		else if (this.type === ORDERTYPE.BID) await this.bidOrderRepository.removeOrderOCC(this.order);
 	}
 }

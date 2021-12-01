@@ -7,8 +7,11 @@ export { default as UserStockRepository } from './UserStockRepository';
 export * from './StockRepository';
 export { default as StockRepository } from './StockRepository';
 
-export * from './OrderRepository';
-export { default as OrderRepository } from './OrderRepository';
+export * from './AskOrderRepository';
+export { default as AskOrderRepository } from './AskOrderRepository';
+
+export * from './BidOrderRepository';
+export { default as BidOrderRepository } from './BidOrderRepository';
 
 export * from './ChartRepository';
 export { default as ChartRepository } from './ChartRepository';
