@@ -6,7 +6,7 @@ import QueryString from 'qs';
 import { IAskOrderItem, IBidOrderItem } from '@src/types';
 import { IStockListItem } from '@recoil/stockList/index';
 import { translateRequestData } from '@common/utils/socketUtils';
-import webSocketAtom from '@src/recoil/websocket/atom';
+import webSocketAtom from '@recoil/websocket';
 import stockListAtom from '@src/recoil/stockList/atom';
 import { askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders';
 import StockInfo from './stockInfo/StockInfo';

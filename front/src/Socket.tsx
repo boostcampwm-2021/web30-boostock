@@ -7,7 +7,7 @@ import HoldStockListAtom from '@recoil/holdStockList';
 import dailyLogAtom from '@recoil/stockDailyLog';
 import stockExecutionAtom from '@recoil/stockExecution';
 import fetchHoldStocks from '@common/utils/fetchHoldStocks';
-import webSocketAtom from '@recoil/websocket/atom';
+import webSocketAtom from '@recoil/websocket';
 import { askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
 import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
