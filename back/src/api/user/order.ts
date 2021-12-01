@@ -77,11 +77,9 @@ export default (): express.Router => {
 			const acceptedOrderInfo = {
 				stockCode,
 				msg: {
-					order: {
-						type,
-						amount,
-						price,
-					},
+					type,
+					amount,
+					price,
 				},
 			};
 
