@@ -2,7 +2,8 @@ import React, { useState, LegacyRef } from 'react';
 import toast from 'react-hot-toast';
 import toDateString from '@src/common/utils/toDateString';
 import { useRecoilValue } from 'recoil';
-import StockList, { IStockListItem } from '@src/recoil/stockList';
+import { IStockListItem } from '@src/types';
+import StockList from '@recoil/stockList';
 import useInfinityScroll from './useInfinityScroll';
 
 import './Orders.scss';

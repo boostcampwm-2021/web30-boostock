@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { IUser } from '@src/types';
+import { IUser, IStockListItem } from '@src/types';
 import HoldStockListAtom from '@recoil/holdStockList';
 import userAtom from '@recoil/user';
-import StockList, { IStockListItem } from '@recoil/stockList/index';
+import StockList from '@recoil/stockList';
 import SideBarItem from './sideBarItem/SideBarItem';
 
 import SideBarNav, { MENU } from './sideBarNav/SideBarNav';

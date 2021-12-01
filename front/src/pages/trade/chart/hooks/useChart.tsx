@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { IChartItem } from '@src/types';
+import { IChartItem, IStockListItem, IStockChartItem } from '@src/types';
 import chartAtom from '@recoil/chart';
-import { IStockListItem, IStockChartItem } from '@recoil/stockList/index';
 import { TChartType, MAX_NUM_OF_CANDLES } from '../common';
 import fetchChartData from '../fetchChartData';
 
