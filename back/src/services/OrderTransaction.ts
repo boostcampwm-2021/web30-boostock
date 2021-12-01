@@ -22,7 +22,7 @@ export default class OrderTransaction {
 
 	bidOrderRepository: BidOrderRepository;
 
-	constructor(userId, stockId, type, price, amount, queryRunner: QueryRunner) {
+	constructor(userId: number, stockId: number, type: number, price: number, amount: number, queryRunner: QueryRunner) {
 		this.userId = userId;
 		this.stockId = stockId;
 		this.type = type;
@@ -34,7 +34,7 @@ export default class OrderTransaction {
 		this.bidOrderRepository = queryRunner.manager.getCustomRepository(BidOrderRepository);
 	}
 
-	public async updateUser(user: User) {
+	public async updateUser(user: User): Promise<void> {
 		if (this.type === ORDERTYPE.ASK) {
 			let holdStock = await this.userStockRepository.read(this.userId, this.stockId);
 			if (holdStock === undefined || holdStock.amount < this.amount)
