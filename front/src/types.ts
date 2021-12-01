@@ -53,3 +53,15 @@ export interface IUser {
 	isLoggedIn: boolean;
 	theme: Theme;
 }
+
+export interface IAskOrderItem {
+	type: ORDER_TYPE.ASK;
+	price: number;
+	amount: number;
+}
+
+export interface IBidOrderItem {
+	type: ORDER_TYPE.BID;
+	price: number;
+	amount: number;
+}

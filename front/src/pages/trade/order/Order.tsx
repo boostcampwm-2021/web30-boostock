@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
+import { IAskOrderItem, IBidOrderItem } from '@src/types';
+import { askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders';
 import bidAskPriceAtom from '@recoil/bidAskPrice';
 import formatNumber from '@src/common/utils/formatNumber';
 import AskOrderItem from './AskOrderItem';
