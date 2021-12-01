@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRecoilState } from 'recoil';
 import toast from 'react-hot-toast';
 import { Link, Redirect, useLocation, useHistory } from 'react-router-dom';
-
-import User from '@recoil/user/index';
+import { IUser } from '@src/types';
+import userAtom from '@recoil/user';
 import eventEmitter from '@common/utils/eventEmitter';
 import { getCookie } from '@src/common/utils/cookie';
 
@@ -13,7 +13,7 @@ const SignIn = () => {
 	const history = useHistory();
 	const { pathname, search } = useLocation();
 	const query = new URLSearchParams(search);
-	const [userState, setUserState] = useRecoilState(User);
+	const [userState, setUserState] = useRecoilState<IUser>(userAtom);
 
 	const isSignUp = pathname === '/auth/signup';
 

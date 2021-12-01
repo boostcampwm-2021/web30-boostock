@@ -46,3 +46,10 @@ export interface IStockExecutionInfo {
 	stockCode: string;
 	executions: IStockExecutionItem[];
 }
+
+export interface IUser {
+	username: string;
+	email: string;
+	isLoggedIn: boolean;
+	theme: Theme;
+}

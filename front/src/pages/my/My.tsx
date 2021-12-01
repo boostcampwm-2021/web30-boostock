@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import userAtom, { IUser } from '@src/recoil/user/atom';
+import { IUser } from '@src/types';
+import userAtom from '@recoil/user';
 import StockList, { IStockListItem } from '@recoil/stockList/index';
 import { IHold } from './IHold';
 

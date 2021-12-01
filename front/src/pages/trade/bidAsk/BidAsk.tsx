@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import bidAskPriceAtom from '@recoil/bidAskPrice';
 import toast from 'react-hot-toast';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { IUser } from '@src/types';
+import bidAskPriceAtom from '@recoil/bidAskPrice';
+import userAtom from '@recoil/user';
 import { IHoldStock, getUserAskAvailable, getUserBidAvailable } from '@common/utils/getAvailableAmount';
-import userAtom, { IUser } from '@recoil/user/atom';
 import Emitter from '@common/utils/eventEmitter';
 import BidAskType from './BidAskType';
 import BidAskInputs from './BidAskInputs';

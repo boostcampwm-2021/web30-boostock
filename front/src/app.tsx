@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { RecoilRoot, useRecoilState } from 'recoil';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import toast, { Toaster, useToasterStore } from 'react-hot-toast';
-import User from '@recoil/user/index';
+import User from '@recoil/user';
 import TopBar from '@common/topbar/TopBar';
 import Theme from './Theme';
 import './app.scss';

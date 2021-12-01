@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import userAtom, { IUser } from '@src/recoil/user/atom';
-import { BALANCE_TYPE, STATUS_TYPE } from '@src/types';
+import { BALANCE_TYPE, STATUS_TYPE, IUser } from '@src/types';
+import userAtom from '@recoil/user';
 import toDateString from '@src/common/utils/toDateString';
 
 import Deposit from './Deposit';

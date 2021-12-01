@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import userAtom from '@recoil/user/index';
+import userAtom from '@recoil/user';
 
 interface IProps {
 	children: React.ReactNode;
