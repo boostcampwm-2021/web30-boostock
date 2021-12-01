@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import { IChartItem } from '@src/types';
+import { IChartItem, Theme } from '@src/types';
 import userAtom, { IUser } from '@recoil/user';
-import { TTheme, getMaxValue, getMinValue, getTextColor, getLegendColor, getText } from '../common';
+import { getMaxValue, getMinValue, getTextColor, getLegendColor, getText } from '../common';
 
 interface IProps {
 	chartData: IChartItem[];
@@ -13,7 +13,7 @@ interface IDrawCandleBackgroundArgs {
 	ctx: CanvasRenderingContext2D;
 	minPrice: number;
 	maxPrice: number;
-	theme: TTheme;
+	theme: Theme;
 	convertToYPosition: (value: number) => number;
 }
 

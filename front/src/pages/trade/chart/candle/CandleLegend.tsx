@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
+import { IChartItem, Theme } from '@src/types';
 import userAtom, { IUser } from '@recoil/user';
 import formatNumber from '@common/utils/formatNumber';
-import { IChartItem } from '@src/types';
 import {
 	IGraphComponentProps,
 	ICrossLine,
-	TTheme,
 	PRICE_CANVAS_TOP_BOT_PADDING as CANVAS_PADDING,
 	MAKE_CLEAR_OFFSET,
 	getPriceColor,
@@ -26,7 +25,7 @@ const LEGEND_LEFT = Math.floor(CANVAS_WIDTH - 100);
 interface IDrawCandleLegendArgs {
 	ctx: CanvasRenderingContext2D;
 	chartData: IChartItem[];
-	theme: TTheme;
+	theme: Theme;
 	convertToYPosition: (value: number) => number;
 }
 
@@ -35,7 +34,7 @@ interface IDrawHoverCandleLegendArgs {
 	crossLine: ICrossLine;
 	maxPrice: number;
 	minPrice: number;
-	theme: TTheme;
+	theme: Theme;
 	convertToYPosition: (value: number) => number;
 }
 

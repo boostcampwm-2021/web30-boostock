@@ -15,6 +15,8 @@ export enum STATUS_TYPE {
 	CANCELED = 4,
 }
 
+export type Theme = 'light' | 'dark';
+
 export interface IChartItem {
 	createdAt: number;
 	priceStart: number;

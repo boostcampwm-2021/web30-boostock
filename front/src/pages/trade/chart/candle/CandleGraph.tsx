@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
+import { IChartItem, Theme } from '@src/types';
 import userAtom, { IUser } from '@recoil/user';
-import { IChartItem } from '@src/types';
 
-import { IGraphComponentProps, TTheme, CANDLE_GAP, getMaxValue, getMinValue, getPriceColor } from '../common';
+import { IGraphComponentProps, CANDLE_GAP, getMaxValue, getMinValue, getPriceColor } from '../common';
 import CandleBackground from './CandleBackground';
 import CandleLegend from './CandleLegend';
 
@@ -17,7 +17,7 @@ interface IDrawData {
 	candleWidth: number;
 	candleGap: number;
 	tailWidth: number;
-	theme: TTheme;
+	theme: Theme;
 	convertToYPosition: (curPrice: number) => number;
 }
 
