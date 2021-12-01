@@ -9,7 +9,7 @@ import {
 	BidOrderRepository,
 } from '@repositories/index';
 import { AskOrder } from '@models/index';
-import { OptimisticVersionError, OrderError, OrderErrorMessage } from '@errors/index';
+import { OrderError, OrderErrorMessage } from '@errors/index';
 import BidAskTransaction from './BidAskTransaction';
 
 export default class AuctioneerService {

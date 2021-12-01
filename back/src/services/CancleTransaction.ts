@@ -1,11 +1,11 @@
 import { QueryRunner } from 'typeorm';
-import { AskOrder, ORDERTYPE, User } from '@models/index';
+import { AskOrder, BidOrder, ORDERTYPE } from '@models/index';
 import { AskOrderRepository, BidOrderRepository, UserRepository, UserStockRepository } from '@repositories/index';
 
 export default class CancleTransaction {
 	userId: number;
 
-	order: AskOrder;
+	order: AskOrder | BidOrder;
 
 	type: number;
 
@@ -17,7 +17,7 @@ export default class CancleTransaction {
 
 	bidOrderRepository: BidOrderRepository;
 
-	constructor(userId, type, order, queryRunner: QueryRunner) {
+	constructor(userId: number, type: number, order: AskOrder | BidOrder, queryRunner: QueryRunner) {
 		this.userId = userId;
 		this.order = order;
 		this.userRepository = queryRunner.manager.getCustomRepository(UserRepository);
@@ -26,7 +26,7 @@ export default class CancleTransaction {
 		this.bidOrderRepository = queryRunner.manager.getCustomRepository(BidOrderRepository);
 	}
 
-	public async updateUser(user: User) {
+	public async updateUser(): Promise<void> {
 		if (this.type === ORDERTYPE.BID) {
 			const payout: number = this.order.price * this.order.amount;
 			await this.userRepository.updateBalance(this.userId, payout * -1);
@@ -48,7 +48,7 @@ export default class CancleTransaction {
 		}
 	}
 
-	public async removeOrder() {
+	public async removeOrder(): Promise<void> {
 		if (this.type === ORDERTYPE.ASK) await this.askOrderRepository.removeOrderOCC(this.order);
 		else if (this.type === ORDERTYPE.BID) await this.bidOrderRepository.removeOrderOCC(this.order);
 	}

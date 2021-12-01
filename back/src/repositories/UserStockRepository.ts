@@ -5,7 +5,6 @@ import { DBError, DBErrorMessage } from '@errors/index';
 
 @EntityRepository(UserStock)
 export default class UserStockRepository extends Repository<UserStock> {
-	// UNUSED
 	async insertQueryRunner(value): Promise<boolean> {
 		const { identifiers } = await this.createQueryBuilder().insert().into(UserStock).values(value).execute();
 		return identifiers.length === 1;

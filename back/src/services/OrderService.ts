@@ -1,12 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { getConnection } from 'typeorm';
-import {
-	AskOrderRepository,
-	BidOrderRepository,
-	StockRepository,
-	UserRepository,
-	UserStockRepository,
-} from '@repositories/index';
+import { AskOrderRepository, BidOrderRepository, StockRepository, UserRepository } from '@repositories/index';
 import { CommonError, CommonErrorMessage, OrderError, OrderErrorMessage } from '@errors/index';
 import { IOrder } from '@interfaces/IOrder';
 import { ORDERTYPE } from '@models/AskOrder';
@@ -58,7 +52,7 @@ export default class OrderService {
 			const user = await queryRunner.manager.getCustomRepository(UserRepository).readByIdLock(userId, 'pessimistic_write');
 			if (order.userId !== userId) throw new OrderError(OrderErrorMessage.INVALID_ORDER);
 			const task = new CancleTransaction(userId, type, order, queryRunner);
-			await Promise.all([task.updateUser(user), task.removeOrder()]);
+			await Promise.all([task.updateUser(), task.removeOrder()]);
 			await queryRunner.commitTransaction();
 		} catch (error) {
 			await queryRunner.rollbackTransaction();

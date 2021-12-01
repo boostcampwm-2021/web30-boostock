@@ -1,8 +1,6 @@
-import { AuthError, AuthErrorMessage } from 'errors';
 import UserService from '@services/UserService';
 import express, { NextFunction, Request, Response } from 'express';
 import eventEmitter from '@helper/eventEmitter';
-import session from 'express-session';
 import sessionValidator from '@api/middleware/sessionValidator';
 
 export default (): express.Router => {
