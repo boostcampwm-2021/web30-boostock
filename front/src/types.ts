@@ -88,3 +88,21 @@ export interface IBidOrderItem {
 	price: number;
 	amount: number;
 }
+
+export interface IHoldStockItem {
+	amount: number;
+	average: number;
+	code: string;
+	nameEnglish: string;
+	nameKorean: string;
+}
+
+export interface IUserHoldItem {
+	stockCode: string;
+	stockName: string;
+	holdAmount: number;
+	averageAskPrice: number;
+	totalAskPrice: number;
+	totalValuationPrice: number;
+	totalValuationProfit: number;
+}

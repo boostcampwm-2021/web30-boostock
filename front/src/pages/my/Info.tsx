@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import formatInteger from '@src/common/utils/formatInteger';
-import { IHold } from './IHold';
+import { IUserHoldItem } from '@src/types';
 import './Info.scss';
 
 interface IInfo {
@@ -8,14 +8,13 @@ interface IInfo {
 	totalAskPrice: number;
 	totalValuationPrice: number;
 	totalValuationProfit: number;
-
 	totalAssets: number;
 	totalRate: number;
 	status: string;
 }
 
 interface InfoProps {
-	holds: IHold[];
+	holds: IUserHoldItem[];
 }
 
 const Info = (props: InfoProps) => {

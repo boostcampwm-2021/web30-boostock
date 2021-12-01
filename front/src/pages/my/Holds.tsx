@@ -1,17 +1,17 @@
 import React from 'react';
 import caretIcon from '@src/common/utils/caretIcon';
 import formatInteger from '@src/common/utils/formatInteger';
-import { IHold } from './IHold';
+import { IUserHoldItem } from '@src/types';
 import './Holds.scss';
 
 interface HoldsProps {
-	holds: IHold[];
+	holds: IUserHoldItem[];
 }
 
 const Holds = (props: HoldsProps) => {
 	const { holds } = props;
 
-	const getHold = (hold: IHold) => {
+	const getHold = (hold: IUserHoldItem) => {
 		let status = ' ';
 		if (hold.totalValuationProfit > 0) status = ' my__item--up';
 		else if (hold.totalValuationProfit < 0) status = ' my__item--down';
@@ -49,7 +49,7 @@ const Holds = (props: HoldsProps) => {
 			</thead>
 			<tbody className="hold-items">
 				{holds.length > 0 ? (
-					holds.map((hold: IHold) => getHold(hold))
+					holds.map((hold: IUserHoldItem) => getHold(hold))
 				) : (
 					<tr className="my__item">
 						<td className="my__item-center">보유 종목이 없습니다.</td>

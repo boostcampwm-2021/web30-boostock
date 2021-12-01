@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import { IUser, IStockListItem } from '@src/types';
+import { IUser, IStockListItem, IHoldStockItem, IUserHoldItem } from '@src/types';
 import userAtom from '@recoil/user';
 import StockList from '@recoil/stockList';
-import { IHold } from './IHold';
 
 import Info from './Info';
 import Holds from './Holds';
@@ -23,7 +22,7 @@ const My = () => {
 	const stockListState = useRecoilValue(StockList);
 	const { isLoggedIn } = useRecoilValue<IUser>(userAtom);
 	const [tab, setTab] = useState<TAB>(TAB.HOLDS);
-	const [holds, setHolds] = useState<IHold[]>([]);
+	const [holds, setHolds] = useState<IUserHoldItem[]>([]);
 
 	const switchTab = (index: number) => setTab(Object.values(TAB)[index]);
 
@@ -50,26 +49,21 @@ const My = () => {
 		}).then((res: Response) => {
 			res.json().then((data) => {
 				setHolds(() => [
-					...data.holdStocks.map(
-						(stock: { amount: number; average: number; code: string; nameKorean: string; nameEnglish: string }) => {
-							const valuationPrice =
-								stockListState.find(
-									(stockListStateItem: IStockListItem) => stock.code === stockListStateItem.code,
-								)?.price || 0;
+					...data.holdStocks.map((stock: IHoldStockItem) => {
+						const valuationPrice =
+							stockListState.find((stockListStateItem: IStockListItem) => stock.code === stockListStateItem.code)
+								?.price || 0;
 
-							return {
-								stockCode: stock.code,
-								stockName: stock.nameKorean,
-
-								holdAmount: stock.amount,
-								averageAskPrice: stock.average,
-								totalAskPrice: stock.amount * stock.average,
-
-								totalValuationPrice: stock.amount * valuationPrice,
-								totalValuationProfit: stock.amount * valuationPrice - stock.amount * stock.average,
-							};
-						},
-					),
+						return {
+							stockCode: stock.code,
+							stockName: stock.nameKorean,
+							holdAmount: stock.amount,
+							averageAskPrice: stock.average,
+							totalAskPrice: stock.amount * stock.average,
+							totalValuationPrice: stock.amount * valuationPrice,
+							totalValuationProfit: stock.amount * valuationPrice - stock.amount * stock.average,
+						};
+					}),
 				]);
 			});
 		});
