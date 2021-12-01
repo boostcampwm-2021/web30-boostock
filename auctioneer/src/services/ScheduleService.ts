@@ -5,6 +5,8 @@ import IChartLog from '@interfaces/IChartLog';
 import { Chart, ChartLog } from '@models/index';
 import { ChartRepository } from '@repositories/index';
 
+const ONE_SEC_IN_MILLISECONDS = 1000;
+
 export default class ScheduleService {
 	reportNewChart(chartLogList: IChartLog[]): void {
 		fetch(`${process.env.API_SERVER_URL}/api/stock/chart/new`, {
@@ -27,7 +29,7 @@ export default class ScheduleService {
 			priceLow: chart.priceLow,
 			amount: chart.amount,
 			volume: chart.volume,
-			createdAt: new Date().getTime(),
+			createdAt: Date.now() - ONE_SEC_IN_MILLISECONDS * 30,
 		};
 		const chartLog = new ChartLog(log);
 		await chartLog.save();

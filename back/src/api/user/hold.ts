@@ -1,14 +1,14 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { AuthError, AuthErrorMessage } from 'errors/index';
 import { UserStockService } from '@services/index';
+import sessionValidator from '@api/middleware/sessionValidator';
 
 export default (): express.Router => {
 	const router = express.Router();
 
-	router.get('/hold', async (req: Request, res: Response, next: NextFunction) => {
+	router.get('/hold', sessionValidator, async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const userId = req.session.data?.userId;
-			if (userId === undefined) throw new AuthError(AuthErrorMessage.INVALID_SESSION);
+			const { userId } = res.locals;
 			const result = await UserStockService.readWithStockInfo(userId);
 			const holdStocks = result.map((elem) => {
 				return {
@@ -19,6 +19,7 @@ export default (): express.Router => {
 					nameEnglish: elem.stock.nameEnglish,
 				};
 			});
+
 			res.status(200).json({ holdStocks });
 		} catch (error) {
 			next(error);

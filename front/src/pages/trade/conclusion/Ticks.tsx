@@ -1,8 +1,9 @@
 import { IStockExecutionItem } from '@src/recoil/stockExecution';
 import React from 'react';
+import { useRecoilValue } from 'recoil';
+import StockExecution from '@recoil/stockExecution/index';
 
 interface Props {
-	stockExecutionState: IStockExecutionItem[];
 	previousClose: number;
 }
 
@@ -23,7 +24,9 @@ const colorPicker = (prev: number, current: number): string => {
 };
 
 const Ticks = (props: Props) => {
-	const { stockExecutionState, previousClose } = props;
+	const { previousClose } = props;
+	const stockExecutionState = useRecoilValue(StockExecution);
+
 	return (
 		<>
 			<header className="conclusion-header">
@@ -33,10 +36,10 @@ const Ticks = (props: Props) => {
 				<div className="conclusion-total-price">체결금액(원)</div>
 			</header>
 			<div className="conclusion-content">
-				{stockExecutionState.length === 0 ? (
+				{stockExecutionState.executions.length === 0 ? (
 					<p className="conclusion-notice-no-data">체결 정보가 없습니다.</p>
 				) : (
-					stockExecutionState.map((log: IStockExecutionItem) => {
+					stockExecutionState.executions.map((log: IStockExecutionItem) => {
 						const [day, time] = translateTimestampFormat(log.timestamp).split(' ');
 						return (
 							<div className="conclusion-row" key={log.id}>

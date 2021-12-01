@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import bidAskPriceAtom from '@src/recoil/bidAskPrice/atom';
 import toast from 'react-hot-toast';
-import { getUserAskAvailable, getUserBidAvailable } from '@common/utils/getAvailableAmount';
+import { IHoldStock, getUserAskAvailable, getUserBidAvailable } from '@common/utils/getAvailableAmount';
 import userAtom, { IUser } from '@recoil/user/atom';
 import Emitter from '@common/utils/eventEmitter';
 import BidAskType from './BidAskType';
@@ -30,9 +30,13 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 
 	const handleSetBidAskType = (newType: string) => setBidAskType(newType);
 
-	const setUserAvailableAmount = async (code: string, isSignedIn: boolean) => {
-		setAskAvailable(await getUserAskAvailable(code, isSignedIn));
+	const setUserAvailableAmount = async (code: string, isSignedIn: boolean, askAvailable: number | null = null) => {
 		setBidAvailable(await getUserBidAvailable(isSignedIn));
+		if (askAvailable) {
+			setAskAvailable(askAvailable);
+			return;
+		}
+		setAskAvailable(await getUserAskAvailable(code, isSignedIn));
 	};
 
 	const handleReset = () => {
@@ -103,14 +107,15 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 	};
 
 	useEffect(() => {
-		const listener = async (code: string) => {
-			setUserAvailableAmount(code, isLoggedIn);
+		const listener = async (stockCode: string, holdStockList: IHoldStock[]) => {
+			const [holdStock] = holdStockList.filter(({ code }) => code === stockCode);
+			setUserAvailableAmount('', isLoggedIn, holdStock.amount);
 		};
 
-		Emitter.on('order concluded', listener);
+		Emitter.on('CONCLUDED_ORDER', listener);
 
 		return () => {
-			Emitter.off('order concluded', listener);
+			Emitter.off('CONCLUDED_ORDER', listener);
 		};
 	}, [isLoggedIn]);
 

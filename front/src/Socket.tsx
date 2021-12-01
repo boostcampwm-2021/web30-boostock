@@ -1,14 +1,14 @@
 import React from 'react';
 import toast from 'react-hot-toast';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
+import fetchHoldStocks from '@common/utils/fetchHoldStocks';
 import webSocketAtom from '@recoil/websocket/atom';
 import stockListAtom, { IStockListItem, IStockChartItem } from '@recoil/stockList/atom';
 import { IAskOrderItem, IBidOrderItem, askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders/index';
-import stockExecutionAtom, { IStockExecutionItem } from './recoil/stockExecution/atom';
+import stockExecutionAtom, { IStockExecutionInfo, IStockExecutionItem } from './recoil/stockExecution/atom';
 import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
 import Emitter from './common/utils/eventEmitter';
 import HoldStockListAtom from './recoil/holdStockList/atom';
-import { getHoldStocks } from './pages/trade/sideBar/refreshStockData';
 import dailyLogAtom, { IDailyLog } from './recoil/stockDailyLog/atom';
 import chartAtom, { IChartItem } from './recoil/chart/atom';
 
@@ -18,7 +18,7 @@ interface IProps {
 interface IStartSocket {
 	setSocket: SetterOrUpdater<WebSocket | null>;
 	setStockList: SetterOrUpdater<IStockListItem[]>;
-	setStockExecution: SetterOrUpdater<IStockExecutionItem[]>;
+	setStockExecution: SetterOrUpdater<IStockExecutionInfo>;
 	setAskOrders: SetterOrUpdater<IAskOrderItem[]>;
 	setBidOrders: SetterOrUpdater<IBidOrderItem[]>;
 	setHold: SetterOrUpdater<string[]>;
@@ -29,6 +29,7 @@ interface IResponseConclusions {
 	createdAt: number;
 	price: number;
 	amount: number;
+	stockCode: string;
 	_id: string;
 }
 interface IMatchData {
@@ -159,29 +160,35 @@ function updateBidOrders(orders: IBidOrderItem[]): IBidOrderItem[] {
 }
 
 const dataToExecutionForm = (conclusionList: IResponseConclusions[]): IStockExecutionItem[] =>
-	conclusionList.map(({ createdAt, price, amount, _id }): IStockExecutionItem => {
+	conclusionList.map(({ createdAt, price, amount, stockCode, _id }): IStockExecutionItem => {
 		return {
 			timestamp: createdAt,
 			price,
 			volume: price * amount,
 			amount,
+			stockCode,
 			id: _id,
 		};
 	});
 
-const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionItem[]>, match: IMatchData) => {
+const addNewExecution = (setStockExecution: SetterOrUpdater<IStockExecutionInfo>, match: IMatchData) => {
 	const newExecution = {
 		id: match.id,
 		price: match.price,
 		amount: match.amount,
 		timestamp: match.createdAt,
+		stockCode: match.code,
 		volume: match.price * match.amount,
 	};
-	setStockExecution((prev) => {
-		const executionList = [newExecution, ...prev];
-		if (executionList.length > MAX_EXECUTION_SIZE) executionList.pop();
 
-		return executionList;
+	setStockExecution((prev) => {
+		const { stockCode, executions } = prev;
+		if (stockCode !== match.code) return { stockCode, executions };
+
+		const newExecutions = [newExecution, ...executions];
+		if (newExecutions.length > MAX_EXECUTION_SIZE) newExecutions.pop();
+
+		return { stockCode: prev.stockCode, executions: newExecutions };
 	});
 };
 
@@ -205,48 +212,53 @@ const startSocket = ({
 	webSocket.onclose = () => {
 		clearInterval(reconnector);
 		reconnector = setInterval(() => {
-			startSocket({ setSocket, setStockList, setStockExecution, setAskOrders, setBidOrders, setHold, setDailyLog, setChart });
+			startSocket({
+				setSocket,
+				setStockList,
+				setStockExecution,
+				setAskOrders,
+				setBidOrders,
+				setHold,
+				setDailyLog,
+				setChart,
+			});
 		}, 1000);
 	};
 	webSocket.onmessage = async (event) => {
 		const { type, data } = translateResponseData(event.data);
 		switch (type) {
-			case 'stocksInfo': {
+			case 'STOCKS_INFO': {
 				setStockList(data);
 				break;
 			}
-			case 'updateStock': {
+			case 'UPDATE_STOCK': {
 				if (!data) return;
 				setStockList((prev) => updateNonTargetStock(prev, data));
 				break;
 			}
-			case 'updateTarget': {
-				const { match: matchData, currentChart, order, bidAsk } = data;
-				// 주문 접수 케이스
-				if (order) {
-					if (order.type === 1) setAskOrders((prev) => updateOrdersAfterAcceptOrder(prev, order) as IAskOrderItem[]);
-					else setBidOrders((prev) => updateOrdersAfterAcceptOrder(prev, order) as IBidOrderItem[]);
-				}
+			case 'UPDATE_TARGET': {
+				const { match: matchData, currentChart, bidAsk } = data;
+				const { askOrders, bidOrders }: { askOrders: IAskOrderItem[]; bidOrders: IBidOrderItem[] } = bidAsk;
 
-				// 주문 체결 케이스
-				if (matchData && currentChart) {
-					const { askOrders, bidOrders }: { askOrders: IAskOrderItem[]; bidOrders: IBidOrderItem[] } = bidAsk;
+				setAskOrders(() => updateAskOrders(askOrders));
+				setBidOrders(() => updateBidOrders(bidOrders));
 
-					setAskOrders(() => updateAskOrders(askOrders));
-					setBidOrders(() => updateBidOrders(bidOrders));
-
-					setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
-					addNewExecution(setStockExecution, data.match);
-
-					Emitter.emit('order concluded', matchData.code);
-				}
+				setStockList((prev) => updateTargetStock(prev, matchData, currentChart));
+				addNewExecution(setStockExecution, data.match);
 				break;
 			}
-			case 'baseStock': {
-				setStockExecution(dataToExecutionForm(data.conclusions));
+			case 'ORDER': {
+				const { type } = data;
+				if (type === 1) setAskOrders((prev) => updateOrdersAfterAcceptOrder(prev, data) as IAskOrderItem[]);
+				else setBidOrders((prev) => updateOrdersAfterAcceptOrder(prev, data) as IBidOrderItem[]);
 				break;
 			}
-			case 'chart': {
+			case 'BASE_STOCK': {
+				const stockExecutionForm = { stockCode: data.stockCode, executions: dataToExecutionForm(data.conclusions) };
+				setStockExecution(stockExecutionForm);
+				break;
+			}
+			case 'CHART': {
 				if (data.type === 1440) {
 					const { _id: id, priceEnd, amount, createdAt } = data;
 					setDailyLog((prev) => [{ _id: id, priceEnd, amount, createdAt }, ...prev]);
@@ -278,7 +290,7 @@ const startSocket = ({
 
 				break;
 			}
-			case 'notice': {
+			case 'NOTICE': {
 				if (data.userType === 'bid')
 					toast.success(
 						<>
@@ -297,13 +309,17 @@ const startSocket = ({
 							<p>&nbsp;매도 주문 체결되었습니다.</p>
 						</>,
 					);
-				setHold(await getHoldStocks());
+
+				const holdStockList = await fetchHoldStocks();
+				Emitter.emit('CONCLUDED_ORDER', data.stockCode, holdStockList);
+				setHold(holdStockList.map((stock: { code: string }) => stock.code));
 				break;
 			}
 			default:
 		}
 	};
-	Emitter.on('registerAlarm', (alarmToken: string) => {
+
+	Emitter.on('REGISTER_ALARM', (alarmToken: string) => {
 		const alarmData = {
 			type: 'alarm',
 			alarmToken,

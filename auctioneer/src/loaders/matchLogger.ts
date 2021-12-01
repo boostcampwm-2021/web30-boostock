@@ -21,7 +21,7 @@ const runAuctioneer = async (stockCode: string): Promise<void> => {
 	waitingSet[stockCode] = false;
 };
 
-EventEmitter.on('waiting', (stockCode: string): void => {
+EventEmitter.on('WAITING', (stockCode: string): void => {
 	if (waitingSet[stockCode]) return;
 	runAuctioneer(stockCode);
 });

@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import Validator from '@helper/Validator';
 import { ORDERTYPE } from '@models/Order';
-import { ValidationError, ValidationErrorMessage } from 'errors';
+import { ParamError, ParamErrorMessage, ValidationError, ValidationErrorMessage } from 'errors';
+import config from '@config/index';
 
 const QUOTE_DIGIT = 1000;
 const QUOTE_RATE = 1;
@@ -16,13 +17,26 @@ const isCorrectQuote = (price: number) => {
 
 export const orderValidator = (req: Request, res: Response, next: NextFunction): void => {
 	const validator = new Validator();
+	const { stockCode, type, amount, price } = req.body;
 
 	try {
-		validator.init(req.body.stockCode).isString();
-		validator.init(req.body.type).isInObject(ORDERTYPE).isInteger();
-		validator.init(req.body.amount).isInteger().isPositive();
-		validator.init(req.body.price).isInteger().isPositive();
-		isCorrectQuote(req.body.price);
+		validator.init(stockCode).isString();
+		validator.init(type).isInObject(ORDERTYPE).isInteger();
+		validator.init(amount).isInteger().isPositive();
+		validator.init(price).isInteger().isPositive();
+		isCorrectQuote(price);
+
+		if (
+			!stockCode ||
+			!type ||
+			!amount ||
+			!price ||
+			price <= 0 ||
+			price >= config.maxPrice ||
+			amount <= 0 ||
+			amount >= config.maxAmount
+		)
+			throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 
 		next();
 	} catch (err) {
@@ -34,6 +48,24 @@ export const stockIdValidator = (req: Request, res: Response, next: NextFunction
 	const validator = new Validator();
 	try {
 		validator.init(req.query.stockId).isInteger().isPositive();
+		next();
+	} catch (err) {
+		next(err);
+	}
+};
+
+export const balanceValidator = (req: Request, res: Response, next: NextFunction): void => {
+	try {
+		const { bank, bankAccount, changeValue } = req.body;
+		if (
+			!changeValue ||
+			Number.isNaN(changeValue) ||
+			!bank ||
+			!bankAccount ||
+			changeValue <= 0 ||
+			changeValue >= config.maxTransperMoney
+		)
+			throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 		next();
 	} catch (err) {
 		next(err);

@@ -80,7 +80,10 @@ export default class StockService {
 	}
 
 	public async getConclusionByCode(code: string): Promise<ITransactionLog[]> {
-		const conclusionsData = await TransactionLog.find({ stockCode: code }, { amount: 1, price: 1, createdAt: 1, _id: 1 })
+		const conclusionsData = await TransactionLog.find(
+			{ stockCode: code },
+			{ amount: 1, price: 1, createdAt: 1, _id: 1, stockCode: 1 },
+		)
 			.sort({ createdAt: -1 })
 			.limit(50);
 
