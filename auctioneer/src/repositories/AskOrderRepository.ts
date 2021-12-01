@@ -10,6 +10,7 @@ export default class AskOrderRepository extends Repository<AskOrder> {
 			.where('Stock.code = :code', { code })
 			.orderBy('Order.price', 'ASC')
 			.addOrderBy('Order.createdAt', 'ASC')
+			.limit(1)
 			.getOneOrFail();
 	}
 
