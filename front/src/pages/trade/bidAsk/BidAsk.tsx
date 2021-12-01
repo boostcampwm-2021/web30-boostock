@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import bidAskPriceAtom from '@src/recoil/bidAskPrice/atom';
+import bidAskPriceAtom from '@recoil/bidAskPrice';
 import toast from 'react-hot-toast';
 import { IHoldStock, getUserAskAvailable, getUserBidAvailable } from '@common/utils/getAvailableAmount';
 import userAtom, { IUser } from '@recoil/user/atom';
