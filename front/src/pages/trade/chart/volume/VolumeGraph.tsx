@@ -37,6 +37,8 @@ const drawVolumeGraph = ({ ctx, chartData, theme, candleWidth, convertToYPositio
 	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 	const numOfCandles = chartData.length;
 	chartData.forEach(({ amount, priceStart, priceEnd }, index) => {
+		if (amount === 0) return;
+
 		const color =
 			index + 1 >= numOfCandles
 				? getPriceColor(priceStart, priceEnd, theme)
