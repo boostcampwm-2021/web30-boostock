@@ -1,13 +1,12 @@
-export function generateConfig(options: RequestInit = {}): RequestInit {
+export function generateConfig(options: RequestInit = {}, body: unknown = null): RequestInit {
 	const requestConfig = {
 		method: options.method ?? 'GET',
 		credentials: options.credentials ?? 'include',
 		...options,
 	};
 
-	const { body } = options;
 	if (body) {
-		requestConfig.body = typeof body === 'object' ? JSON.stringify(body) : body;
+		requestConfig.body = typeof body === 'object' ? JSON.stringify(body) : (body as BodyInit);
 	}
 
 	return requestConfig;
