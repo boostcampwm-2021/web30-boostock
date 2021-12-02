@@ -23,7 +23,7 @@ const Info = (props: InfoProps) => {
 	const [info, setInfo] = useState<IInfo | null>(null);
 
 	useEffect(() => {
-		const currentTime = new Date().getTime();
+		const currentTime = Date.now();
 		const beforeTime = currentTime - ONE_MONTH_IN_MILLISECONDS;
 		fetch(`${process.env.SERVER_URL}/api/user/balance?start=${beforeTime}&end=${currentTime}`, {
 			method: 'GET',

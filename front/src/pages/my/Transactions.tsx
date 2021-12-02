@@ -33,7 +33,7 @@ const refresh = (
 ) => {
 	setLoading(true);
 
-	const currentTime = new Date().getTime();
+	const currentTime = Date.now();
 	const beforeTime = currentTime - ONE_MONTH_IN_MILLISECONDS;
 	const lastTime = transactions[transactions.length - 1]?.transactionTime || currentTime;
 	fetch(`${process.env.SERVER_URL}/api/user/transaction?start=${beforeTime}&end=${Math.min(lastTime, currentTime)}`, {

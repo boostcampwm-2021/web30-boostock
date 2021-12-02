@@ -52,7 +52,7 @@ const Balance = () => {
 	};
 
 	const refresh = () => {
-		const currentTime = new Date().getTime();
+		const currentTime = Date.now();
 		const beforeTime = currentTime - ONE_MONTH_IN_MILLISECONDS;
 
 		(async () => {
