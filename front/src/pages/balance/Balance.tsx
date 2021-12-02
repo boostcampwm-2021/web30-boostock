@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import { BALANCE_TYPE, STATUS_TYPE, IUser } from '@src/types';
+import { BALANCE_TYPE, STATUS_TYPE, IUser, IHistory } from '@src/types';
 import userAtom from '@recoil/user';
 import toDateString from '@src/common/utils/toDateString';
+import { getBalance } from '@lib/api';
 
 import Deposit from './Deposit';
 import Withdrawal from './Withdrawal';
@@ -15,17 +16,12 @@ enum TAB {
 	WITHDRAWAL = '출금',
 }
 
+const ONE_HOUR_IN_MILLISECONDS = 1000 * 60 * 60;
+const NINE_HOURS_IN_MILLISECONDS = ONE_HOUR_IN_MILLISECONDS * 9;
+const ONE_MONTH_IN_MILLISECONDS = ONE_HOUR_IN_MILLISECONDS * 24 * 30;
+
 type TBalanceType = 'DEPOSIT' | 'WITHDRAWAL';
 type TStatusType = 'PENDING' | 'PROCEEDING' | 'FINISHED' | 'CANCELED';
-
-interface IHistory {
-	type: number;
-	bank: string;
-	bankAccount: string;
-	volume: number;
-	status: number;
-	createdAt: number;
-}
 
 const translateBalanceTypeToKor = (type: TBalanceType) => {
 	return type === 'DEPOSIT' ? '입금' : '출금';
@@ -53,28 +49,23 @@ const Balance = () => {
 				<td>{history.bankAccount}</td>
 				<td className="my__item-number">{history.volume.toLocaleString()}</td>
 				<td className="my__item-number">{translateStatusTypeToKor(STATUS_TYPE[history.status] as TStatusType)}</td>
-				<td className="my__item-number">{toDateString(history.createdAt + 32400000)}</td>
+				<td className="my__item-number">{toDateString(history.createdAt + NINE_HOURS_IN_MILLISECONDS)}</td>
 			</tr>
 		);
 	};
 
 	const refresh = () => {
 		const currentTime = new Date().getTime();
-		const beforeTime = currentTime - 1000 * 60 * 60 * 24 * 30;
-		fetch(`${process.env.SERVER_URL}/api/user/balance?start=${beforeTime}&end=${currentTime}`, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json; charset=utf-8',
-			},
-		}).then((res: Response) => {
-			if (res.ok) {
-				res.json().then((data) => {
-					setBalance(data.balance || 0);
-					setHistories(data.log || []);
-				});
-			}
-		});
+		const beforeTime = currentTime - ONE_MONTH_IN_MILLISECONDS;
+
+		(async () => {
+			const balanceData = await getBalance(beforeTime, currentTime);
+			if (!balanceData) return;
+
+			const { balance, log } = balanceData;
+			setBalance(balance);
+			setHistories(log);
+		})();
 	};
 
 	const getCurrentTab = () => {

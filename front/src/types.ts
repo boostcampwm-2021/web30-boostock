@@ -114,3 +114,12 @@ export interface IUserHoldItem {
 	totalValuationPrice: number;
 	totalValuationProfit: number;
 }
+
+export interface IHistory {
+	type: number;
+	bank: string;
+	bankAccount: string;
+	volume: number;
+	status: number;
+	createdAt: number;
+}
