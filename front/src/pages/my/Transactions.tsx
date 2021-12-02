@@ -3,6 +3,7 @@ import { useRecoilValue } from 'recoil';
 import { IStockListItem } from '@src/types';
 import StockList from '@recoil/stockList';
 import toDateString from '@src/common/utils/toDateString';
+import { NINE_HOURS_IN_MILLISECONDS, ONE_MONTH_IN_MILLISECONDS } from '@common/constants';
 import useInfinityScroll from './useInfinityScroll';
 
 import './Transactions.scss';
@@ -33,7 +34,7 @@ const refresh = (
 	setLoading(true);
 
 	const currentTime = new Date().getTime();
-	const beforeTime = currentTime - 1000 * 60 * 60 * 24 * 30;
+	const beforeTime = currentTime - ONE_MONTH_IN_MILLISECONDS;
 	const lastTime = transactions[transactions.length - 1]?.transactionTime || currentTime;
 	fetch(`${process.env.SERVER_URL}/api/user/transaction?start=${beforeTime}&end=${Math.min(lastTime, currentTime)}`, {
 		method: 'GET',
@@ -74,7 +75,7 @@ const getTransaction = (transaction: ITransaction) => {
 
 	return (
 		<tr className="my__item" key={transaction.transactionTime + Math.random()}>
-			<td>{toDateString(transaction.transactionTime + 32400000)}</td>
+			<td>{toDateString(transaction.transactionTime + NINE_HOURS_IN_MILLISECONDS)}</td>
 			<td className={status}>{ORDERTYPE[transaction.orderType]}</td>
 			<td className="my__item-center">
 				<span className="my__item-unit">{transaction.stockCode}</span>

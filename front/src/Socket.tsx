@@ -20,6 +20,7 @@ import webSocketAtom from '@recoil/websocket';
 import { askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders';
 import stockListAtom from '@recoil/stockList';
 import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
+import { ONE_SEC_IN_MILLISECONDS } from '@common/constants';
 import Emitter from './common/utils/eventEmitter';
 
 interface IProps {
@@ -232,7 +233,7 @@ const startSocket = ({
 				setDailyLog,
 				setChart,
 			});
-		}, 1000);
+		}, ONE_SEC_IN_MILLISECONDS);
 	};
 	webSocket.onmessage = async (event) => {
 		const { type, data } = translateResponseData(event.data);

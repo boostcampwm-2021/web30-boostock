@@ -5,6 +5,7 @@ import { BALANCE_TYPE, STATUS_TYPE, IUser, IHistory } from '@src/types';
 import userAtom from '@recoil/user';
 import toDateString from '@src/common/utils/toDateString';
 import { getBalance } from '@lib/api';
+import { NINE_HOURS_IN_MILLISECONDS, ONE_MONTH_IN_MILLISECONDS } from '@common/constants';
 
 import Deposit from './Deposit';
 import Withdrawal from './Withdrawal';
@@ -15,10 +16,6 @@ enum TAB {
 	DEPOSIT = '입금',
 	WITHDRAWAL = '출금',
 }
-
-const ONE_HOUR_IN_MILLISECONDS = 1000 * 60 * 60;
-const NINE_HOURS_IN_MILLISECONDS = ONE_HOUR_IN_MILLISECONDS * 9;
-const ONE_MONTH_IN_MILLISECONDS = ONE_HOUR_IN_MILLISECONDS * 24 * 30;
 
 type TBalanceType = 'DEPOSIT' | 'WITHDRAWAL';
 type TStatusType = 'PENDING' | 'PROCEEDING' | 'FINISHED' | 'CANCELED';

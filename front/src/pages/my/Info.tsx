@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import formatInteger from '@src/common/utils/formatInteger';
 import { IUserHoldItem } from '@src/types';
+import { ONE_MONTH_IN_MILLISECONDS } from '@common/constants';
 import './Info.scss';
 
 interface IInfo {
@@ -23,7 +24,7 @@ const Info = (props: InfoProps) => {
 
 	useEffect(() => {
 		const currentTime = new Date().getTime();
-		const beforeTime = currentTime - 1000 * 60 * 60 * 24 * 30;
+		const beforeTime = currentTime - ONE_MONTH_IN_MILLISECONDS;
 		fetch(`${process.env.SERVER_URL}/api/user/balance?start=${beforeTime}&end=${currentTime}`, {
 			method: 'GET',
 			credentials: 'include',

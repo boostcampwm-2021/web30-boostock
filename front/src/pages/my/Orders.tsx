@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { IStockListItem } from '@src/types';
 import StockList from '@recoil/stockList';
 import useInfinityScroll from './useInfinityScroll';
+import { NINE_HOURS_IN_MILLISECONDS } from '@common/constants';
 
 import './Orders.scss';
 
@@ -58,7 +59,7 @@ const refresh = (
 						}) => {
 							return {
 								orderId: order.orderId,
-								orderTime: new Date(order.createdAt).getTime() + 32400000,
+								orderTime: new Date(order.createdAt).getTime() + NINE_HOURS_IN_MILLISECONDS,
 								orderType: order.type,
 								stockCode: order.stockCode,
 								stockName: stockList.find((stock) => stock.code === order.stockCode)?.nameKorean,
