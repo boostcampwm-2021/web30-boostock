@@ -4,8 +4,8 @@ import toDateString from '@src/common/utils/toDateString';
 import { useRecoilValue } from 'recoil';
 import { IStockListItem } from '@src/types';
 import StockList from '@recoil/stockList';
-import useInfinityScroll from './useInfinityScroll';
 import { NINE_HOURS_IN_MILLISECONDS } from '@common/constants';
+import useInfinityScroll from './useInfinityScroll';
 
 import './Orders.scss';
 
