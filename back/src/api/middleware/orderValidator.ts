@@ -32,9 +32,9 @@ export const orderValidator = (req: Request, res: Response, next: NextFunction):
 			!amount ||
 			!price ||
 			price <= 0 ||
-			price >= config.maxPrice ||
+			price > config.maxPrice ||
 			amount <= 0 ||
-			amount >= config.maxAmount
+			amount > config.maxAmount
 		)
 			throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 

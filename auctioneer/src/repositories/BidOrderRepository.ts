@@ -10,6 +10,7 @@ export default class BidOrderRepository extends Repository<BidOrder> {
 			.where('Stock.code = :code', { code })
 			.orderBy('Order.price', 'DESC')
 			.addOrderBy('Order.createdAt', 'ASC')
+			.limit(1)
 			.getOneOrFail();
 	}
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import fetch from 'node-fetch';
-import { User, AskOrder, TransactionLog, Chart } from '@models/index';
+import { User, AskOrder, TransactionLog, Chart, BidOrder } from '@models/index';
 import {
 	StockRepository,
 	UserRepository,
@@ -70,7 +70,7 @@ export default class BidAskTransaction {
 		await this.userRepository.updateBalance(askUser.userId, this.TransactionInfo.amount * this.TransactionInfo.price);
 	}
 
-	async bidUserProcess(bidUser: User, bidOrder: AskOrder): Promise<void> {
+	async bidUserProcess(bidUser: User, bidOrder: BidOrder): Promise<void> {
 		const refund = refundBetweenDepositTransacionAmount(
 			bidOrder.price,
 			this.TransactionInfo.price,
@@ -105,7 +105,7 @@ export default class BidAskTransaction {
 		else await this.askOrderRepository.decreaseAmountOCC(askOrder, this.TransactionInfo.amount);
 	}
 
-	async bidOrderProcess(bidOrder: AskOrder): Promise<void> {
+	async bidOrderProcess(bidOrder: BidOrder): Promise<void> {
 		if (bidOrder.amount === this.TransactionInfo.amount) await this.bidOrderRepository.removeOrderOCC(bidOrder);
 		else await this.bidOrderRepository.decreaseAmountOCC(bidOrder, this.TransactionInfo.amount);
 	}

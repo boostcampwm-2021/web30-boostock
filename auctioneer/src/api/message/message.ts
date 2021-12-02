@@ -18,17 +18,5 @@ export default (): express.Router => {
 		}
 	});
 
-	router.get('/ask', async (req: Request, res: Response, next: NextFunction) => {
-		try {
-			const { code } = req.query;
-			if (code === undefined) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
-			const autioneerServiceInstance = new AuctioneerService();
-			res.status(200).json({});
-			while (await autioneerServiceInstance.bidAsk(code as string));
-		} catch (error) {
-			next(error);
-		}
-	});
-
 	return router;
 };

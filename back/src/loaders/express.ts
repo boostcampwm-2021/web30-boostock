@@ -14,7 +14,7 @@ export default async ({ app }: { app: express.Application }): Promise<void> => {
 	app.use(morgan('tiny'));
 	app.use(cors({ origin: [config.clientURL, 'http://127.0.0.1'], credentials: true }));
 	app.use(express.json());
-	app.use(express.urlencoded({ extended: false }));
+	app.use(express.urlencoded({ extended: false, type: 'application/json' }));
 	app.use(cookieParser());
 	app.use(session());
 	app.use('/api', api());
