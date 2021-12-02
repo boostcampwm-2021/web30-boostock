@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState } from 'react';
 import toast from 'react-hot-toast';
 import formatNumber from '@src/common/utils/formatNumber';
+import { withdraw } from '@lib/api';
 
 interface WithdrawalProps {
 	myBalance: number;
@@ -34,30 +35,29 @@ const Withdrawal = (props: WithdrawalProps) => {
 
 	const submit = () => {
 		if (!isValid()) return;
-		setLoading(true);
 
-		fetch(`${process.env.SERVER_URL}/api/user/balance/withdraw`, {
-			method: 'POST',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8',
-			},
-			body: JSON.stringify({ bank, bankAccount: account, changeValue: Number(balance.replace(/,/g, '')) }),
-		})
-			.then((res: Response) => {
-				if (res.ok) {
-					toast.success('출금 신청이 완료되었습니다.');
-					setBank('');
-					setAccount('');
-					setBalance('');
-				} else {
-					toast.error('출금 신청에 실패했습니다. 잠시 후에 재시도 해 주세요.');
-				}
-			})
-			.finally(() => {
-				setLoading(false);
-				refresh();
-			});
+		(async () => {
+			setLoading(true);
+
+			try {
+				const withdrawRes = await withdraw({
+					bank,
+					bankAccount: account,
+					changeValue: Number(balance.replace(/,/g, '')),
+				});
+				if (!withdrawRes) throw new Error();
+
+				toast.success('출금 신청이 완료되었습니다.');
+				setBank('');
+				setAccount('');
+				setBalance('');
+			} catch (error) {
+				toast.error('출금 신청에 실패했습니다. 잠시 후에 재시도 해 주세요.');
+			}
+
+			setLoading(false);
+			refresh();
+		})();
 	};
 
 	return (
