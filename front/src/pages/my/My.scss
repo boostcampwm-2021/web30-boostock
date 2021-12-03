@@ -8,7 +8,6 @@
 	justify-content: flex-start;
 
 	width: 100vw;
-	height: 100vh;
 	padding: 96px 32px 32px 32px;
 	box-sizing: border-box;
 }
@@ -132,7 +131,7 @@
 		border-top: 1px solid $borderColor;
 	}
 
-	.dark-theme & + &{
+	.dark-theme & + & {
 		border-top: 1px solid $darkModeBorderColor;
 	}
 
