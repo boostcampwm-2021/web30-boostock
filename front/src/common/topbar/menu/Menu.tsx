@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import toast from 'react-hot-toast';
 import userAtom from '@recoil/user';
-import { Ipage } from '@src/app';
+import { Ipage } from '@src/App';
 import UserIcon from './UserIcon';
 
 import './menu.scss';

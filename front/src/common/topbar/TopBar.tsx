@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import Logo from '@common/logo/Logo';
-import { Ipage } from '@src/app';
+import { Ipage } from '@src/App';
 import Menu from './menu/Menu';
 import ModeSwitch from './modeSwitch/ModeSwitch';
 
