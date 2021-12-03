@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import * as ReactDOM from 'react-dom';
 import { RecoilRoot, useRecoilState } from 'recoil';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import toast, { Toaster, useToasterStore } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import User from '@recoil/user';
 import TopBar from '@common/topbar/TopBar';
 import Theme from './Theme';
@@ -22,10 +22,7 @@ export interface Ipage {
 	title: string;
 }
 
-const TOAST_LIMIT = 3;
-
 const App: React.FC = () => {
-	const { toasts } = useToasterStore();
 	const [userState, setUserState] = useRecoilState(User);
 	const pages: Ipage[] = [];
 
@@ -50,13 +47,6 @@ const App: React.FC = () => {
 			}
 		});
 	}, []);
-
-	useEffect(() => {
-		toasts
-			.filter((t) => t.visible) // Only consider visible toasts
-			.filter((_, i) => i >= TOAST_LIMIT) // Is toast index over limit
-			.forEach((t) => toast.dismiss(t.id)); // Dismiss – Use toast.remove(t.id) removal without animation
-	}, [toasts]);
 
 	return (
 		<BrowserRouter>

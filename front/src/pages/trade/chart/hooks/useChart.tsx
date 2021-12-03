@@ -57,8 +57,8 @@ const useChart = ({ stockState, stockCode, chartType }: IProps) => {
 			createdAt: Date.now(),
 			priceStart: targetChart.priceStart,
 			priceEnd: targetChart.priceEnd,
-			priceLow: targetChart.priceHigh,
-			priceHigh: targetChart.priceLow,
+			priceLow: targetChart.priceLow,
+			priceHigh: targetChart.priceHigh,
 			amount: targetChart.amount,
 		};
 
