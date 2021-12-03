@@ -110,7 +110,7 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 	useEffect(() => {
 		const listener = async (stockCode: string, holdStockList: IHoldStockItem[]) => {
 			const [holdStock] = holdStockList.filter(({ code }) => code === stockCode);
-			setUserAvailableAmount('', isLoggedIn, holdStock.amount);
+			setUserAvailableAmount('', isLoggedIn, holdStock?.amount ?? 0);
 		};
 
 		Emitter.on('CONCLUDED_ORDER', listener);
