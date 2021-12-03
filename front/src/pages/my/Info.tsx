@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import formatInteger from '@src/common/utils/formatInteger';
 import { IUserHoldItem } from '@src/types';
-import { ONE_MONTH_IN_MILLISECONDS } from '@common/constants';
 import { getBalance } from '@lib/api';
+import Emitter from '@common/utils/eventEmitter';
 import './Info.scss';
 
 interface IInfo {
@@ -31,33 +31,54 @@ const calculateTotalValueOf = (propToCalculate: keyof IUserHoldItem, holds: IUse
 	return holds.reduce((acc, current) => acc + (current[propToCalculate] as number), 0);
 };
 
+const fetchUserBalance = async (): Promise<number> => {
+	try {
+		const balanceData = await getBalance(0, 0);
+		if (!balanceData) return 0;
+
+		const { balance } = balanceData;
+		return balance;
+	} catch (error) {
+		return 0;
+	}
+};
+
 const Info = ({ holds }: IProps) => {
 	const [info, setInfo] = useState<IInfo | null>(null);
+	const [balance, setBalance] = useState<number>(0);
+
+	const handleUpdateBalance = async () => {
+		setBalance(await fetchUserBalance());
+	};
 
 	useEffect(() => {
-		const currentTime = Date.now();
-		const beforeTime = currentTime - ONE_MONTH_IN_MILLISECONDS;
-		(async () => {
-			const balanceData = await getBalance(beforeTime, currentTime);
-			if (!balanceData) return;
+		handleUpdateBalance();
+	}, []);
 
-			const { balance } = balanceData;
-			const totalAskPrice = calculateTotalValueOf('totalAskPrice', holds);
-			const totalValuationPrice = calculateTotalValueOf('totalValuationPrice', holds);
-			const totalValuationProfit = totalValuationPrice - totalAskPrice;
-			const totalAssets = balance + totalValuationPrice;
-			const totalRate = (totalValuationPrice / totalAskPrice) * 100 - 100 || 0;
+	useEffect(() => {
+		Emitter.on('UPDATE_USER_BALANCE', handleUpdateBalance);
 
-			setInfo({
-				balance,
-				totalAskPrice,
-				totalValuationPrice,
-				totalValuationProfit,
-				totalAssets,
-				totalRate,
-			});
-		})();
-	}, [holds]);
+		return () => {
+			Emitter.off('UPDATE_USER_BALANCE', handleUpdateBalance);
+		};
+	}, []);
+
+	useEffect(() => {
+		const totalAskPrice = calculateTotalValueOf('totalAskPrice', holds);
+		const totalValuationPrice = calculateTotalValueOf('totalValuationPrice', holds);
+		const totalValuationProfit = totalValuationPrice - totalAskPrice;
+		const totalAssets = balance + totalValuationPrice;
+		const totalRate = (totalValuationPrice / totalAskPrice) * 100 - 100 || 0;
+
+		setInfo({
+			balance,
+			totalAskPrice,
+			totalValuationPrice,
+			totalValuationProfit,
+			totalAssets,
+			totalRate,
+		});
+	}, [holds, balance]);
 
 	return (
 		<div className="my-info">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { IUser, IStockListItem, IHoldStockItem, IUserHoldItem } from '@src/types';
+import Emitter from '@common/utils/eventEmitter';
 import userAtom from '@recoil/user';
 import StockList from '@recoil/stockList';
 import fetchUserHold from './api/fetchUserHold';
@@ -46,11 +47,28 @@ const reCalculateUserValuationInfo = (userHold: IUserHoldItem, stockList: IStock
 	};
 };
 
+const fetchUserHoldList = async (): Promise<IHoldStockItem[]> => {
+	try {
+		const holdStocks = await fetchUserHold();
+		if (holdStocks.length === 0) return [];
+
+		return holdStocks;
+	} catch (error) {
+		return [];
+	}
+};
+
 const My = () => {
 	const stockListState = useRecoilValue(StockList);
 	const { isLoggedIn } = useRecoilValue<IUser>(userAtom);
 	const [tab, setTab] = useState<TAB>(TAB.HOLDS);
 	const [holds, setHolds] = useState<IUserHoldItem[]>([]);
+
+	const handleUpdateHolds = async () => {
+		const holdStocks = await fetchUserHoldList();
+
+		setHolds(() => [...holdStocks.map((stock) => calculateUserValuationInfo(stock, stockListState))]);
+	};
 
 	const switchTab = (index: number) => setTab(Object.values(TAB)[index]);
 
@@ -70,15 +88,15 @@ const My = () => {
 	};
 
 	useEffect(() => {
-		(async () => {
-			const holdStocks = await fetchUserHold();
-			if (holdStocks.length === 0) {
-				setHolds([]);
-				return;
-			}
+		Emitter.on('UPDATE_USER_HOLDS', handleUpdateHolds);
 
-			setHolds(() => [...holdStocks.map((stock) => calculateUserValuationInfo(stock, stockListState))]);
-		})();
+		return () => {
+			Emitter.off('UPDATE_USER_HOLDS', handleUpdateHolds);
+		};
+	}, []);
+
+	useEffect(() => {
+		handleUpdateHolds();
 	}, []);
 
 	useEffect(() => {

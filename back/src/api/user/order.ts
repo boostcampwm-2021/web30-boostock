@@ -37,7 +37,9 @@ export default (): express.Router => {
 			};
 
 			res.status(201).json({});
-			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`);
+			fetch(`${process.env.AUCTIONEER_URL}/api/message/bid?code=${req.body.stockCode}`).catch(() => {
+				/*no-op */
+			});
 			Emitter.emit('ACCEPTED_ORDER', acceptedOrderInfo);
 		} catch (error) {
 			next(error);

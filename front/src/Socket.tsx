@@ -19,8 +19,8 @@ import fetchHoldStocks from '@common/utils/fetchHoldStocks';
 import webSocketAtom from '@recoil/websocket';
 import { askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders';
 import stockListAtom from '@recoil/stockList';
-import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
 import { ONE_SEC_IN_MILLISECONDS } from '@common/constants';
+import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
 import Emitter from './common/utils/eventEmitter';
 
 interface IProps {
@@ -302,7 +302,7 @@ const startSocket = ({
 				break;
 			}
 			case 'NOTICE': {
-				if (data.userType === 'bid')
+				if (data.userType === 'bid') {
 					toast.success(
 						<>
 							<p>
@@ -311,7 +311,10 @@ const startSocket = ({
 							<p>&nbsp;매수 주문 체결되었습니다.</p>
 						</>,
 					);
-				if (data.userType === 'ask')
+
+					Emitter.emit('UPDATE_USER_HOLDS');
+				}
+				if (data.userType === 'ask') {
 					toast.success(
 						<>
 							<p>
@@ -320,6 +323,9 @@ const startSocket = ({
 							<p>&nbsp;매도 주문 체결되었습니다.</p>
 						</>,
 					);
+
+					Emitter.emit('UPDATE_USER_BALANCE');
+				}
 
 				const holdStockList = await fetchHoldStocks();
 				Emitter.emit('CONCLUDED_ORDER', data.stockCode, holdStockList);
