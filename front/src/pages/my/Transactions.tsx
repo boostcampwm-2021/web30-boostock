@@ -1,6 +1,6 @@
 import React, { useState, LegacyRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import { IStockListItem } from '@src/types';
+import { OrderType, IStockListItem } from '@src/types';
 import { stockListAtom } from '@recoil';
 import { toDateString } from '@common/utils';
 import { NINE_HOURS_IN_MILLISECONDS, ONE_MONTH_IN_MILLISECONDS } from '@common/constants';
@@ -8,22 +8,20 @@ import useInfinityScroll from './useInfinityScroll';
 
 import './Transactions.scss';
 
-export enum ORDERTYPE {
-	매도 = 1,
-	매수 = 2,
-}
-
 interface ITransaction {
 	transactionTime: number;
 	orderType: number;
-
 	stockCode: string;
 	stockName: string;
-
 	price: number;
 	amount: number;
 	volume: number;
 }
+
+const translateOrderTypeToKor = (type: string) => {
+	if (type === 'BID') return '매수';
+	return '매도';
+};
 
 const refresh = (
 	stockList: IStockListItem[],
@@ -70,13 +68,13 @@ const refresh = (
 
 const getTransaction = (transaction: ITransaction) => {
 	let status = 'my__item-center';
-	if (transaction.orderType === ORDERTYPE.매수) status += ' my__item--up';
-	else if (transaction.orderType === ORDERTYPE.매도) status += ' my__item--down';
+	if (transaction.orderType === OrderType.BID) status += ' my__item--up';
+	else if (transaction.orderType === OrderType.ASK) status += ' my__item--down';
 
 	return (
 		<tr className="my__item" key={transaction.transactionTime + Math.random()}>
 			<td>{toDateString(transaction.transactionTime + NINE_HOURS_IN_MILLISECONDS)}</td>
-			<td className={status}>{ORDERTYPE[transaction.orderType]}</td>
+			<td className={status}>{translateOrderTypeToKor(OrderType[transaction.orderType])}</td>
 			<td className="my__item-center">
 				<span className="my__item-unit">{transaction.stockCode}</span>
 				<br />

@@ -2,32 +2,25 @@ import React, { useState, LegacyRef } from 'react';
 import TOAST from '@lib/toastify';
 import { toDateString } from '@common/utils';
 import { useRecoilValue } from 'recoil';
-import { IStockListItem } from '@src/types';
+import { OrderType, IStockListItem } from '@src/types';
 import { stockListAtom } from '@recoil';
 import { NINE_HOURS_IN_MILLISECONDS } from '@common/constants';
 import useInfinityScroll from './useInfinityScroll';
 
 import './Orders.scss';
 
-export enum ORDERTYPE {
-	매도 = 1,
-	매수 = 2,
-}
-
 interface IOrder {
 	orderId: number;
 	orderTime: number;
-	orderType: ORDERTYPE;
-
+	orderType: OrderType;
 	stockCode: string;
 	stockName: string;
-
 	price: number;
 	orderAmount: number;
 }
 
 const refresh = (
-	type: ORDERTYPE,
+	type: OrderType,
 	stockList: IStockListItem[],
 	orders: IOrder[],
 	setOrders: React.Dispatch<React.SetStateAction<IOrder[]>>,
@@ -52,7 +45,7 @@ const refresh = (
 							orderId: number;
 							stockCode: string;
 							nameKorean: string;
-							type: ORDERTYPE;
+							type: OrderType;
 							amount: number;
 							price: number;
 							createdAt: number;
@@ -76,7 +69,7 @@ const refresh = (
 	});
 };
 
-const cancel = (orderId: number, orderType: ORDERTYPE, setOrders: React.Dispatch<React.SetStateAction<IOrder[]>>) => {
+const cancel = (orderId: number, orderType: OrderType, setOrders: React.Dispatch<React.SetStateAction<IOrder[]>>) => {
 	fetch(`${process.env.SERVER_URL}/api/user/order?id=${orderId}&type=${orderType}`, {
 		method: 'DELETE',
 		credentials: 'include',
@@ -91,7 +84,7 @@ const cancel = (orderId: number, orderType: ORDERTYPE, setOrders: React.Dispatch
 	});
 };
 
-const Orders = ({ type }: { type: ORDERTYPE }) => {
+const Orders = ({ type }: { type: OrderType }) => {
 	const stockList = useRecoilValue<IStockListItem[]>(stockListAtom);
 	const [orders, setOrders] = useState<IOrder[]>([]);
 	const [rootRef, targetRef, loading] = useInfinityScroll(refresh.bind(undefined, type, stockList, orders, setOrders));

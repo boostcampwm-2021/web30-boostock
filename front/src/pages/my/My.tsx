@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import { IUser, IStockListItem, IHoldStockItem, IUserHoldItem } from '@src/types';
+import { IUser, IStockListItem, IHoldStockItem, IUserHoldItem, OrderType } from '@src/types';
 import { Emitter } from '@common/utils';
 import { userAtom, stockListAtom } from '@recoil';
 import fetchUserHold from './api/fetchUserHold';
 import Info from './Info';
 import Holds from './Holds';
 import Transactions from './Transactions';
-import Orders, { ORDERTYPE } from './Orders';
+import Orders from './Orders';
 
 import './My.scss';
 
@@ -78,9 +78,9 @@ const My = () => {
 			case TAB.TRANSACTIONS:
 				return <Transactions key={tab} />;
 			case TAB.ORDERS_ASK:
-				return <Orders key={tab} type={ORDERTYPE.매도} />;
+				return <Orders key={tab} type={OrderType.ASK} />;
 			case TAB.ORDERS_BID:
-				return <Orders key={tab} type={ORDERTYPE.매수} />;
+				return <Orders key={tab} type={OrderType.BID} />;
 			default:
 				return <Holds key={tab} holds={holds} />;
 		}
