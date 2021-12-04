@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import { BALANCE_TYPE, STATUS_TYPE, IUser, IHistory } from '@src/types';
+import { BalanceType, StatusType, IUser, IHistory } from '@src/types';
 import { userAtom } from '@recoil';
 import { toDateString } from '@common/utils';
 import { getBalance } from '@lib/api';
@@ -41,11 +41,11 @@ const Balance = () => {
 	const getHistory = (history: IHistory) => {
 		return (
 			<tr className="my__item" key={history.createdAt}>
-				<td>{translateBalanceTypeToKor(BALANCE_TYPE[history.type] as TBalanceType)}</td>
+				<td>{translateBalanceTypeToKor(BalanceType[history.type] as TBalanceType)}</td>
 				<td>{history.bank}</td>
 				<td>{history.bankAccount}</td>
 				<td className="my__item-number">{history.volume.toLocaleString()}</td>
-				<td className="my__item-number">{translateStatusTypeToKor(STATUS_TYPE[history.status] as TStatusType)}</td>
+				<td className="my__item-number">{translateStatusTypeToKor(StatusType[history.status] as TStatusType)}</td>
 				<td className="my__item-number">{toDateString(history.createdAt + NINE_HOURS_IN_MILLISECONDS)}</td>
 			</tr>
 		);
