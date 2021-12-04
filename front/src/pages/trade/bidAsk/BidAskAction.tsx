@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { GrPowerReset } from 'react-icons/gr';
 import { useRecoilValue } from 'recoil';
 import { IUser } from '@src/types';
-import userAtom from '@recoil/user';
+import { userAtom } from '@recoil';
 
 interface IProps {
 	bidAskType: string;

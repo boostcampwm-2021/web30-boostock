@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
-import userAtom from '@src/recoil/user';
+import { IUser } from '@src/types';
+import { userAtom } from '@recoil';
 import { BsFillSunFill, BsMoonStarsFill } from 'react-icons/bs';
 
 import style from './modeSwitch.module.scss';
 
 const ModeSwitch = () => {
-	const setUser = useSetRecoilState(userAtom);
+	const setUser = useSetRecoilState<IUser>(userAtom);
 
 	const toggleTheme = () => {
 		setUser((user) => {

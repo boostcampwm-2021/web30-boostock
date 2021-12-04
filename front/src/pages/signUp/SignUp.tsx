@@ -3,7 +3,7 @@ import TOAST from '@lib/toastify';
 import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { IUser } from '@src/types';
-import userAtom from '@recoil/user';
+import { userAtom } from '@recoil';
 import eventEmitter from '@common/utils/eventEmitter';
 import { getCookie } from '@src/common/utils/cookie';
 import Terms from './Terms';

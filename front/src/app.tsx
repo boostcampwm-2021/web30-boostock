@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { RecoilRoot, useRecoilState } from 'recoil';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Flip, ToastContainer } from '@lib/toastify';
-import User from '@recoil/user';
+import { userAtom } from '@recoil';
 import { getUserInfo } from '@lib/api';
 import TopBar from '@common/topbar/TopBar';
 import { MAX_NUM_OF_TOAST_MESSAGES, TOAST_AUTO_CLOSE_TIME } from '@common/constants';
@@ -26,7 +26,7 @@ export interface Ipage {
 }
 
 const App = () => {
-	const [userState, setUserState] = useRecoilState(User);
+	const [userState, setUserState] = useRecoilState(userAtom);
 	const pages: Ipage[] = [];
 	const { theme } = userState;
 

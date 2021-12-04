@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { IChartItem, Theme, IUser } from '@src/types';
-import userAtom from '@recoil/user';
+import { userAtom } from '@recoil';
 import { CANDLE_GAP, IGraphComponentProps, getPriceColor, getMaxValue, getMinValue } from '../common';
 import VolumeBackground from './VolumeBackground';
 import VolumeLegend from './VolumeLegend';

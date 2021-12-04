@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect } from 'react';
 import { SetterOrUpdater, useRecoilState } from 'recoil';
-import dailyLogAtom from '@recoil/stockDailyLog';
 import { IDailyLog } from '@src/types';
+import { dailyLogAtom } from '@recoil';
 
 interface Props {
 	stockCode: string;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { IUser } from '@src/types';
-import userAtom from '@recoil/user';
+import { userAtom } from '@recoil';
 import { Ipage } from '@src/App';
 import SignOutButton from './SignOutButton';
 import UserIcon from './UserIcon';

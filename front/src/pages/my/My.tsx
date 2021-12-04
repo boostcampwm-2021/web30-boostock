@@ -3,8 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { IUser, IStockListItem, IHoldStockItem, IUserHoldItem } from '@src/types';
 import Emitter from '@common/utils/eventEmitter';
-import userAtom from '@recoil/user';
-import StockList from '@recoil/stockList';
+import { userAtom, stockListAtom } from '@recoil';
 import fetchUserHold from './api/fetchUserHold';
 import Info from './Info';
 import Holds from './Holds';
@@ -59,7 +58,7 @@ const fetchUserHoldList = async (): Promise<IHoldStockItem[]> => {
 };
 
 const My = () => {
-	const stockListState = useRecoilValue(StockList);
+	const stockListState = useRecoilValue<IStockListItem[]>(stockListAtom);
 	const { isLoggedIn } = useRecoilValue<IUser>(userAtom);
 	const [tab, setTab] = useState<TAB>(TAB.HOLDS);
 	const [holds, setHolds] = useState<IUserHoldItem[]>([]);

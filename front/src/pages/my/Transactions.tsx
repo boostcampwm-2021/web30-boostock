@@ -1,7 +1,7 @@
 import React, { useState, LegacyRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { IStockListItem } from '@src/types';
-import StockList from '@recoil/stockList';
+import { stockListAtom } from '@recoil';
 import toDateString from '@src/common/utils/toDateString';
 import { NINE_HOURS_IN_MILLISECONDS, ONE_MONTH_IN_MILLISECONDS } from '@common/constants';
 import useInfinityScroll from './useInfinityScroll';
@@ -90,7 +90,7 @@ const getTransaction = (transaction: ITransaction) => {
 };
 
 const Transactions = () => {
-	const stockList = useRecoilValue<IStockListItem[]>(StockList);
+	const stockList = useRecoilValue<IStockListItem[]>(stockListAtom);
 	const [transactions, setTransactions] = useState<ITransaction[]>([]);
 	const [rootRef, targetRef, loading] = useInfinityScroll(refresh.bind(undefined, stockList, transactions, setTransactions));
 

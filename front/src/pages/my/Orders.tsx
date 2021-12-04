@@ -3,7 +3,7 @@ import TOAST from '@lib/toastify';
 import toDateString from '@src/common/utils/toDateString';
 import { useRecoilValue } from 'recoil';
 import { IStockListItem } from '@src/types';
-import StockList from '@recoil/stockList';
+import { stockListAtom } from '@recoil';
 import { NINE_HOURS_IN_MILLISECONDS } from '@common/constants';
 import useInfinityScroll from './useInfinityScroll';
 
@@ -92,7 +92,7 @@ const cancel = (orderId: number, orderType: ORDERTYPE, setOrders: React.Dispatch
 };
 
 const Orders = ({ type }: { type: ORDERTYPE }) => {
-	const stockList = useRecoilValue<IStockListItem[]>(StockList);
+	const stockList = useRecoilValue<IStockListItem[]>(stockListAtom);
 	const [orders, setOrders] = useState<IOrder[]>([]);
 	const [rootRef, targetRef, loading] = useInfinityScroll(refresh.bind(undefined, type, stockList, orders, setOrders));
 

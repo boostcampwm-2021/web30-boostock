@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { IUser, IStockListItem } from '@src/types';
-import HoldStockListAtom from '@recoil/holdStockList';
-import userAtom from '@recoil/user';
-import StockList from '@recoil/stockList';
+import { userAtom, stockListAtom, holdStockListAtom } from '@recoil';
 import SideBarItem from './sideBarItem/SideBarItem';
 
 import SideBarNav, { MENU } from './sideBarNav/SideBarNav';
@@ -18,11 +16,11 @@ const SideBar = () => {
 	const [menu, setMenu] = useState(MENU.ALL);
 	const [regex, setRegex] = useState(/.*/);
 
-	const stockListState = useRecoilValue(StockList);
+	const stockListState = useRecoilValue<IStockListItem[]>(stockListAtom);
 	const [filteredStockListState, setFilteredStockListState] = useState<IStockListItem[]>([]);
 
 	const [favorite, setFavorite] = useState<string[]>([]);
-	const [hold, setHold] = useRecoilState(HoldStockListAtom);
+	const [hold, setHold] = useRecoilState<string[]>(holdStockListAtom);
 
 	const searchEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setRegex(getRegExp(event?.target?.value));

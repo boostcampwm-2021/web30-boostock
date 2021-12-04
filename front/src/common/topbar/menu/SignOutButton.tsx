@@ -2,7 +2,7 @@ import React from 'react';
 import TOAST from '@lib/toastify';
 import { useSetRecoilState } from 'recoil';
 import { IUser } from '@src/types';
-import userAtom from '@recoil/user';
+import { userAtom } from '@recoil';
 import { signOut } from '@lib/api';
 
 const SignOutButton = () => {

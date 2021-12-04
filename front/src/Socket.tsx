@@ -11,14 +11,17 @@ import {
 	IStockListItem,
 	IStockChartItem,
 } from '@src/types';
-import chartAtom from '@recoil/chart';
-import HoldStockListAtom from '@recoil/holdStockList';
-import dailyLogAtom from '@recoil/stockDailyLog';
-import stockExecutionAtom from '@recoil/stockExecution';
+import {
+	chartAtom,
+	holdStockListAtom,
+	dailyLogAtom,
+	stockExecutionAtom,
+	websocketAtom,
+	askOrdersAtom,
+	bidOrdersAtom,
+	stockListAtom,
+} from '@recoil';
 import fetchHoldStocks from '@common/utils/fetchHoldStocks';
-import webSocketAtom from '@recoil/websocket';
-import { askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders';
-import stockListAtom from '@recoil/stockList';
 import { ONE_SEC_IN_MILLISECONDS } from '@common/constants';
 import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
 import Emitter from './common/utils/eventEmitter';
@@ -340,12 +343,12 @@ const startSocket = ({
 };
 
 const Socket = ({ children }: IProps) => {
-	const setSocket = useSetRecoilState(webSocketAtom);
+	const setSocket = useSetRecoilState(websocketAtom);
 	const setStockList = useSetRecoilState(stockListAtom);
 	const setAskOrders = useSetRecoilState(askOrdersAtom);
 	const setBidOrders = useSetRecoilState(bidOrdersAtom);
 	const setStockExecution = useSetRecoilState(stockExecutionAtom);
-	const setHold = useSetRecoilState(HoldStockListAtom);
+	const setHold = useSetRecoilState(holdStockListAtom);
 	const setDailyLog = useSetRecoilState(dailyLogAtom);
 	const setChart = useSetRecoilState(chartAtom);
 

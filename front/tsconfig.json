@@ -41,8 +41,8 @@
       "@tools/*": [
         "src/tools/*"
       ],
-      "@recoil/*": [
-        "src/recoil/*"
+      "@recoil": [
+        "src/recoil/index.ts"
       ],
       "@lib/*": [
         "src/lib/*"

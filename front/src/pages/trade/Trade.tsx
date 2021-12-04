@@ -5,9 +5,7 @@ import { ImSpinner8 } from 'react-icons/im';
 import QueryString from 'qs';
 import { IAskOrderItem, IBidOrderItem, IStockListItem } from '@src/types';
 import { translateRequestData } from '@common/utils/socketUtils';
-import webSocketAtom from '@recoil/websocket';
-import stockListAtom from '@recoil/stockList';
-import { askOrdersAtom, bidOrdersAtom } from '@recoil/stockOrders';
+import { websocketAtom, stockListAtom, askOrdersAtom, bidOrdersAtom } from '@recoil';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';
 import Chart from './chart/Chart';
@@ -38,7 +36,7 @@ const Trade = () => {
 	const queryData = QueryString.parse(location.search, {
 		ignoreQueryPrefix: true,
 	});
-	const webSocket = useRecoilValue(webSocketAtom);
+	const webSocket = useRecoilValue<WebSocket | null>(websocketAtom);
 	const stockState = getStockState(stockList, queryData);
 	const stockCode = stockState?.code;
 	const stockId = stockState?.stockId;
