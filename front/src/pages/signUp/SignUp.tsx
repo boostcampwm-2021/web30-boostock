@@ -4,8 +4,7 @@ import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { IUser } from '@src/types';
 import { userAtom } from '@recoil';
-import eventEmitter from '@common/utils/eventEmitter';
-import { getCookie } from '@src/common/utils/cookie';
+import { Emitter, getCookie } from '@common/utils';
 import Terms from './Terms';
 import './SignUp.scss';
 
@@ -65,7 +64,7 @@ const SignUp = () => {
 			body: JSON.stringify({ code: query.get('code'), username, email }),
 		}).then((res: Response) => {
 			if (res.ok) {
-				eventEmitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
+				Emitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
 				setUserState({ ...userState, isLoggedIn: true });
 				TOAST.success('성공적으로 회원가입 되었습니다.');
 				history.push('/');

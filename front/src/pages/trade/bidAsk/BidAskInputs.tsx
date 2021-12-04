@@ -1,6 +1,6 @@
 import React, { SyntheticEvent } from 'react';
 import { BiInfoCircle } from 'react-icons/bi';
-import formatNumber from '@src/common/utils/formatNumber';
+import { formatNumber } from '@common/utils';
 
 interface IProps {
 	bidAskType: string;

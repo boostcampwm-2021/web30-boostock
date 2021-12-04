@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { BALANCE_TYPE, STATUS_TYPE, IUser, IHistory } from '@src/types';
 import { userAtom } from '@recoil';
-import toDateString from '@src/common/utils/toDateString';
+import { toDateString } from '@common/utils';
 import { getBalance } from '@lib/api';
 import { NINE_HOURS_IN_MILLISECONDS, ONE_MONTH_IN_MILLISECONDS } from '@common/constants';
 

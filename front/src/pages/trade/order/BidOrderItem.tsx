@@ -1,6 +1,6 @@
 import React from 'react';
 import { IBidOrderItem } from '@src/types';
-import formatNumber from '@common/utils/formatNumber';
+import { formatNumber } from '@common/utils';
 import ITotalAndMaxAmount from './ITotalAndMaxAmount';
 
 interface IProps {

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { IAskOrderItem, IBidOrderItem } from '@src/types';
 import { askOrdersAtom, bidOrdersAtom, bidAskPriceAtom } from '@recoil';
-import formatNumber from '@src/common/utils/formatNumber';
+import { formatNumber } from '@common/utils';
 import AskOrderItem from './AskOrderItem';
 import BidOrderItem from './BidOrderItem';
 import ITotalAndMaxAmount from './ITotalAndMaxAmount';

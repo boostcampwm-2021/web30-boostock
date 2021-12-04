@@ -1,7 +1,6 @@
 import React from 'react';
-import caretIcon from '@src/common/utils/caretIcon';
-import formatInteger from '@src/common/utils/formatInteger';
 import { IUserHoldItem } from '@src/types';
+import { caretIcon, formatInteger } from '@common/utils';
 import './Holds.scss';
 
 interface HoldsProps {

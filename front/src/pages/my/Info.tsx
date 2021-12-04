@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import formatInteger from '@src/common/utils/formatInteger';
 import { IUserHoldItem } from '@src/types';
+import { formatInteger, Emitter } from '@common/utils';
 import { getBalance } from '@lib/api';
-import Emitter from '@common/utils/eventEmitter';
 import './Info.scss';
 
 interface IInfo {

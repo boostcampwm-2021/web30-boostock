@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { IStockListItem } from '@src/types';
-import formatNumber from '@src/common/utils/formatNumber';
-import { truncateNumber, truncateUnit } from '@src/common/utils/truncateNumber';
-import caretIcon from '@src/common/utils/caretIcon';
+import { formatNumber, truncateNumber, truncateUnit, caretIcon } from '@common/utils';
 
 import './StockInfo.scss';
 

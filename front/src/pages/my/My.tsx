@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { IUser, IStockListItem, IHoldStockItem, IUserHoldItem } from '@src/types';
-import Emitter from '@common/utils/eventEmitter';
+import { Emitter } from '@common/utils';
 import { userAtom, stockListAtom } from '@recoil';
 import fetchUserHold from './api/fetchUserHold';
 import Info from './Info';

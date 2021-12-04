@@ -4,8 +4,7 @@ import TOAST from '@lib/toastify';
 import { Link, Redirect, useLocation, useHistory } from 'react-router-dom';
 import { IUser } from '@src/types';
 import { userAtom } from '@recoil';
-import eventEmitter from '@common/utils/eventEmitter';
-import { getCookie } from '@src/common/utils/cookie';
+import { Emitter, getCookie } from '@common/utils';
 
 import './SignIn.scss';
 
@@ -36,7 +35,7 @@ const SignIn = () => {
 		}).then(async (res: Response) => {
 			if (res.ok) {
 				await res.json();
-				eventEmitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
+				Emitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
 				setUserState({ ...userState, isLoggedIn: true });
 				history.push('/');
 				TOAST.success('성공적으로 로그인 되었습니다.');

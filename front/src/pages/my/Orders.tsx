@@ -1,6 +1,6 @@
 import React, { useState, LegacyRef } from 'react';
 import TOAST from '@lib/toastify';
-import toDateString from '@src/common/utils/toDateString';
+import { toDateString } from '@common/utils';
 import { useRecoilValue } from 'recoil';
 import { IStockListItem } from '@src/types';
 import { stockListAtom } from '@recoil';

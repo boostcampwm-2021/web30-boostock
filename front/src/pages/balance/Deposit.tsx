@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react';
 import TOAST from '@lib/toastify';
-import formatNumber from '@src/common/utils/formatNumber';
+import { formatNumber } from '@common/utils';
 import { deposit } from '@lib/api';
 
 interface DepositProps {

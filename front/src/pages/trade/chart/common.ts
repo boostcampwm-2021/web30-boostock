@@ -1,5 +1,5 @@
 import { IChartItem, Theme } from '@src/types';
-import formatNumber from '@common/utils/formatNumber';
+import { formatNumber } from '@common/utils';
 
 export const MAKE_CLEAR_OFFSET = 0.5;
 export const NUM_OF_CANDLES = 60;

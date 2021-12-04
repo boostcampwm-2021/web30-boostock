@@ -2,7 +2,7 @@ import React, { useState, LegacyRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { IStockListItem } from '@src/types';
 import { stockListAtom } from '@recoil';
-import toDateString from '@src/common/utils/toDateString';
+import { toDateString } from '@common/utils';
 import { NINE_HOURS_IN_MILLISECONDS, ONE_MONTH_IN_MILLISECONDS } from '@common/constants';
 import useInfinityScroll from './useInfinityScroll';
 

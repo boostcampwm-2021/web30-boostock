@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { ImSpinner8 } from 'react-icons/im';
 import QueryString from 'qs';
 import { IAskOrderItem, IBidOrderItem, IStockListItem } from '@src/types';
-import { translateRequestData } from '@common/utils/socketUtils';
+import { translateRequestData } from '@common/utils';
 import { websocketAtom, stockListAtom, askOrdersAtom, bidOrdersAtom } from '@recoil';
 import StockInfo from './stockInfo/StockInfo';
 import SideBar from './sideBar/SideBar';

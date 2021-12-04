@@ -5,8 +5,9 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Flip, ToastContainer } from '@lib/toastify';
 import { userAtom } from '@recoil';
 import { getUserInfo } from '@lib/api';
-import TopBar from '@common/topbar/TopBar';
 import { MAX_NUM_OF_TOAST_MESSAGES, TOAST_AUTO_CLOSE_TIME } from '@common/constants';
+import { Emitter, getCookie } from '@common/utils';
+import TopBar from '@common/topbar/TopBar';
 import Theme from './Theme';
 import './app.scss';
 import SignIn from './pages/signIn/SignIn';
@@ -15,8 +16,6 @@ import Trade from './pages/trade/Trade';
 import My from './pages/my/My';
 import Balance from './pages/balance/Balance';
 import Socket from './Socket';
-import eventEmitter from './common/utils/eventEmitter';
-import { getCookie } from './common/utils/cookie';
 import '@lib/toastify/ReactToastify.min.css';
 
 export interface Ipage {
@@ -42,7 +41,7 @@ const App = () => {
 				email,
 				isLoggedIn: true,
 			});
-			eventEmitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
+			Emitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
 		})();
 	}, []);
 

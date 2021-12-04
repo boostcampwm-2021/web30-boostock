@@ -21,10 +21,8 @@ import {
 	bidOrdersAtom,
 	stockListAtom,
 } from '@recoil';
-import fetchHoldStocks from '@common/utils/fetchHoldStocks';
+import { fetchHoldStocks, translateRequestData, translateResponseData, Emitter } from '@common/utils';
 import { ONE_SEC_IN_MILLISECONDS } from '@common/constants';
-import { translateRequestData, translateResponseData } from './common/utils/socketUtils';
-import Emitter from './common/utils/eventEmitter';
 
 interface IProps {
 	children: React.ReactNode;

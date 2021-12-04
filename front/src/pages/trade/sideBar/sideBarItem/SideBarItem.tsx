@@ -1,10 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
-import caretIcon from '@src/common/utils/caretIcon';
-import formatNumber from '@src/common/utils/formatNumber';
-import { truncateNumber, truncateUnit } from '@src/common/utils/truncateNumber';
 import { IStockListItem } from '@src/types';
+import { caretIcon, formatNumber, truncateNumber, truncateUnit } from '@common/utils';
 import ToggleFavorite from './ToggleFavorite';
 import './SideBarItem.scss';
 
