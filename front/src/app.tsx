@@ -24,6 +24,10 @@ export interface Ipage {
 	title: string;
 }
 
+const insertDefaultChartTypeToLocalStorage = () => {
+	window.localStorage.setItem('chartType', '1');
+};
+
 const App = () => {
 	const [userState, setUserState] = useRecoilState(userAtom);
 	const pages: Ipage[] = [];
@@ -43,6 +47,10 @@ const App = () => {
 			});
 			Emitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
 		})();
+	}, []);
+
+	useEffect(() => {
+		insertDefaultChartTypeToLocalStorage();
 	}, []);
 
 	return (
