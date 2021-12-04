@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from 'react';
-import toast from 'react-hot-toast';
+import TOAST from '@lib/toastify';
 import formatNumber from '@src/common/utils/formatNumber';
 import { deposit } from '@lib/api';
 
@@ -42,12 +42,12 @@ const Deposit = (props: DepositProps) => {
 				const depositRes = await deposit({ bank, bankAccount: account, changeValue: Number(balance.replace(/,/g, '')) });
 				if (!depositRes) throw new Error();
 
-				toast.success('입금 신청이 완료되었습니다.');
+				TOAST.success('입금 신청이 완료되었습니다.');
 				setBank('');
 				setAccount('');
 				setBalance('');
 			} catch (error) {
-				toast.error('입금 신청에 실패했습니다. 잠시 후에 재시도 해 주세요.');
+				TOAST.error('입금 신청에 실패했습니다. 잠시 후에 재시도 해 주세요.');
 			}
 
 			setLoading(false);

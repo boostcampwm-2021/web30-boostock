@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import * as ReactDOM from 'react-dom';
 import { RecoilRoot, useRecoilState } from 'recoil';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
+import { Flip, ToastContainer } from '@lib/toastify';
 import User from '@recoil/user';
 import { getUserInfo } from '@lib/api';
 import TopBar from '@common/topbar/TopBar';
+import { MAX_NUM_OF_TOAST_MESSAGES, TOAST_AUTO_CLOSE_TIME } from '@common/constants';
 import Theme from './Theme';
 import './app.scss';
 import SignIn from './pages/signIn/SignIn';
@@ -16,6 +17,7 @@ import Balance from './pages/balance/Balance';
 import Socket from './Socket';
 import eventEmitter from './common/utils/eventEmitter';
 import { getCookie } from './common/utils/cookie';
+import '@lib/toastify/ReactToastify.min.css';
 
 export interface Ipage {
 	id: number;
@@ -23,9 +25,10 @@ export interface Ipage {
 	title: string;
 }
 
-const App: React.FC = () => {
+const App = () => {
 	const [userState, setUserState] = useRecoilState(User);
 	const pages: Ipage[] = [];
+	const { theme } = userState;
 
 	useEffect(() => {
 		(async () => {
@@ -45,7 +48,20 @@ const App: React.FC = () => {
 
 	return (
 		<BrowserRouter>
-			<Toaster position="bottom-left" reverseOrder={false} />
+			<ToastContainer
+				position="bottom-left"
+				autoClose={TOAST_AUTO_CLOSE_TIME}
+				hideProgressBar={false}
+				newestOnTop
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss={false}
+				draggable={false}
+				pauseOnHover={false}
+				transition={Flip}
+				limit={MAX_NUM_OF_TOAST_MESSAGES}
+				theme={theme}
+			/>
 			<Theme>
 				<TopBar pages={pages} />
 				<Switch>

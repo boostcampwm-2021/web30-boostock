@@ -1,5 +1,5 @@
 import React, { useState, LegacyRef } from 'react';
-import toast from 'react-hot-toast';
+import TOAST from '@lib/toastify';
 import toDateString from '@src/common/utils/toDateString';
 import { useRecoilValue } from 'recoil';
 import { IStockListItem } from '@src/types';
@@ -84,8 +84,8 @@ const cancel = (orderId: number, orderType: ORDERTYPE, setOrders: React.Dispatch
 			'Content-Type': 'application/json;charset=utf-8',
 		},
 	}).then((res: Response) => {
-		if (res.ok) toast.success('주문이 취소되었습니다.');
-		else toast.error('주문이 취소하지 못했습니다. 잠시후 재시도해주세요.');
+		if (res.ok) TOAST.success('주문이 취소되었습니다.');
+		else TOAST.error('주문이 취소하지 못했습니다. 잠시후 재시도해주세요.');
 
 		setOrders((prev) => [...prev.filter((order) => order.orderId !== orderId)]);
 	});

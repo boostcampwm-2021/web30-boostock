@@ -1,5 +1,5 @@
 import React from 'react';
-import toast from 'react-hot-toast';
+import TOAST from '@lib/toastify';
 import { SetterOrUpdater, useSetRecoilState } from 'recoil';
 import {
 	IChartItem,
@@ -303,25 +303,19 @@ const startSocket = ({
 			}
 			case 'NOTICE': {
 				if (data.userType === 'bid') {
-					toast.success(
-						<>
-							<p>
-								<b>{data.stockCode}</b>
-							</p>
-							<p>&nbsp;매수 주문 체결되었습니다.</p>
-						</>,
+					TOAST.success(
+						<p>
+							<b>{data.stockCode}</b> 매수 주문 체결되었습니다.
+						</p>,
 					);
 
 					Emitter.emit('UPDATE_USER_HOLDS');
 				}
 				if (data.userType === 'ask') {
-					toast.success(
-						<>
-							<p>
-								<b>{data.stockCode}</b>
-							</p>
-							<p>&nbsp;매도 주문 체결되었습니다.</p>
-						</>,
+					TOAST.success(
+						<p>
+							<b>{data.stockCode}</b> 매도 주문 체결되었습니다.
+						</p>,
 					);
 
 					Emitter.emit('UPDATE_USER_BALANCE');

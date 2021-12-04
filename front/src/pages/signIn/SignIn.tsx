@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
-import toast from 'react-hot-toast';
+import TOAST from '@lib/toastify';
 import { Link, Redirect, useLocation, useHistory } from 'react-router-dom';
 import { IUser } from '@src/types';
 import userAtom from '@recoil/user';
@@ -39,10 +39,10 @@ const SignIn = () => {
 				eventEmitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
 				setUserState({ ...userState, isLoggedIn: true });
 				history.push('/');
-				toast.success('성공적으로 로그인 되었습니다.');
+				TOAST.success('성공적으로 로그인 되었습니다.');
 			} else {
 				history.push('/auth/signin');
-				toast.error('로그인에 실패했습니다. 잠시 후 재시도 해주세요.');
+				TOAST.error('로그인에 실패했습니다. 잠시 후 재시도 해주세요.');
 			}
 		});
 	}

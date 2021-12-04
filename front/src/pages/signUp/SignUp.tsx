@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from 'react';
-import toast from 'react-hot-toast';
+import TOAST from '@lib/toastify';
 import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { IUser } from '@src/types';
@@ -43,12 +43,12 @@ const SignUp = () => {
 			const data = await res.json();
 			if (res.ok) {
 				setEmailValidate(true);
-				toast.success('사용할 수 있는 이메일입니다.');
+				TOAST.success('사용할 수 있는 이메일입니다.');
 			} else {
 				setEmailValidate(false);
-				if (data.message === 'EXIST USER') toast.error('중복된 이메일입니다.');
-				else if (data.message === 'INVALID PARAM') toast.error('사용할 수 없는 이메일입니다.');
-				else toast.error('중복확인에 실패했습니다.');
+				if (data.message === 'EXIST USER') TOAST.error('중복된 이메일입니다.');
+				else if (data.message === 'INVALID PARAM') TOAST.error('사용할 수 없는 이메일입니다.');
+				else TOAST.error('중복확인에 실패했습니다.');
 			}
 		});
 	};
@@ -67,10 +67,10 @@ const SignUp = () => {
 			if (res.ok) {
 				eventEmitter.emit('REGISTER_ALARM', getCookie('alarm_token'));
 				setUserState({ ...userState, isLoggedIn: true });
-				toast.success('성공적으로 회원가입 되었습니다.');
+				TOAST.success('성공적으로 회원가입 되었습니다.');
 				history.push('/');
 			} else {
-				toast.error('회원가입에 실패했습니다. 잠시 후 재시도 해주세요.');
+				TOAST.error('회원가입에 실패했습니다. 잠시 후 재시도 해주세요.');
 			}
 		});
 	};

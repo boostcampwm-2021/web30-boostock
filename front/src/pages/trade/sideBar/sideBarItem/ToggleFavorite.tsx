@@ -1,5 +1,5 @@
 import React from 'react';
-import toast from 'react-hot-toast';
+import TOAST from '@lib/toastify';
 import { AiFillStar } from 'react-icons/ai';
 
 interface IProps {
@@ -13,7 +13,7 @@ interface IProps {
 const ToggleFavorite = ({ isFavorite, isLoggedIn, stockCode, nameKorean, onRefresh }: IProps) => {
 	const toggleFavorite = async () => {
 		if (!isLoggedIn) {
-			toast.error('로그인이 필요합니다');
+			TOAST.error('로그인이 필요합니다');
 			return;
 		}
 
@@ -32,7 +32,7 @@ const ToggleFavorite = ({ isFavorite, isLoggedIn, stockCode, nameKorean, onRefre
 
 			const toastMessage = isFavorite ? ` 종목이 관심 종목에서 제거되었습니다.` : ` 종목이 관심 종목으로 등록되었습니다.`;
 
-			toast.success(
+			TOAST.success(
 				<span>
 					<b>{nameKorean}</b>
 					{toastMessage}
@@ -40,7 +40,7 @@ const ToggleFavorite = ({ isFavorite, isLoggedIn, stockCode, nameKorean, onRefre
 			);
 			onRefresh(isLoggedIn);
 		} catch (error) {
-			toast.error('관심 종목 설정에 실패했습니다. 다시 시도해 주세요!');
+			TOAST.error('관심 종목 설정에 실패했습니다. 다시 시도해 주세요!');
 		}
 	};
 

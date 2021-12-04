@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import TOAST from '@lib/toastify';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { IUser, IHoldStockItem } from '@src/types';
 import bidAskPriceAtom from '@recoil/bidAskPrice';
@@ -80,24 +80,24 @@ const BidAsk = ({ stockCode }: { stockCode: string }) => {
 			}
 			handleReset();
 			await setUserAvailableAmount(stockCode, isLoggedIn);
-			toast.success('주문이 접수되었습니다.');
+			TOAST.success('주문이 접수되었습니다.');
 		} catch (error) {
 			if (error.message === 'Not Correct Quote Digit') {
-				toast.error('주문 접수에 실패했습니다. 호가 단위를 확인해주세요.', {
+				TOAST.error('주문 접수에 실패했습니다. 호가 단위를 확인해주세요.', {
 					style: {
 						textAlign: 'center',
 						maxWidth: '220px',
 					},
 				});
 			} else if (error.message === 'Not Enough Balance') {
-				toast.error('주문 접수에 실패했습니다. 잔액이 부족합니다.', {
+				TOAST.error('주문 접수에 실패했습니다. 잔액이 부족합니다.', {
 					style: {
 						textAlign: 'center',
 						maxWidth: '220px',
 					},
 				});
 			} else {
-				toast.error('주문 접수에 실패했습니다. 다시 시도해 주세요.', {
+				TOAST.error('주문 접수에 실패했습니다. 다시 시도해 주세요.', {
 					style: {
 						textAlign: 'center',
 						maxWidth: '236px',

@@ -3,7 +3,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 export default {
 	entry: {
-		app: './src/app.tsx',
+		app: './src/App.tsx',
 	},
 	output: {
 		filename: '[name].bundle.js',
