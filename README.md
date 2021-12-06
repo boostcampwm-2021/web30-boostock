@@ -15,7 +15,7 @@
 ## 데모링크
 
 ```
-https://https://boostock.kro.kr/
+https://boostock.kro.kr/
 ```
 
 ## 🧑‍💻 참여자
