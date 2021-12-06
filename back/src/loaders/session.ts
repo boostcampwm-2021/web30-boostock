@@ -26,7 +26,7 @@ export default function session(): express.Application {
 			cookie: {
 				path: '/',
 				httpOnly: true,
-				secure: true,
+				secure: config.cookieSecure,
 				sameSite: 'strict',
 				maxAge: config.maxAge,
 			},

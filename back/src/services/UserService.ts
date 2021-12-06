@@ -31,7 +31,7 @@ export default class UserService {
 		return userRepository;
 	}
 
-	static async signUp({ username, email, socialGithub, balance = 0 }: IUserInfo): Promise<User> {
+	static async signUp({ username, email, socialGithub, balance = 5000000 }: IUserInfo): Promise<User> {
 		if (!checkEmail(email)) throw new ParamError(ParamErrorMessage.INVALID_PARAM);
 		const userRepository: UserRepository = getCustomRepository(UserRepository);
 		const user = userRepository.create({

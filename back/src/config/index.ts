@@ -23,4 +23,5 @@ export default {
 	maxTransperMoney: 10000000,
 	maxPrice: 10000000000,
 	maxAmount: 10000,
+	cookieSecure: process.env.NODE_ENV === 'production',
 };
